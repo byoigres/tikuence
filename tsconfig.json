@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "module": "commonjs",
+    "rootDir": "./",
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "*": ["node_modules/@types/*", "@types/*"],
+      "@middlewares/*":["src/middlewares/*"],
+      "@models/*":["src/models/*"],
+      "@routes/*":["src/routes/*"],
+    },
+    "typeRoots": [
+      "@types/",
+      "node_modules/@types"
+    ]
+  }
+}
