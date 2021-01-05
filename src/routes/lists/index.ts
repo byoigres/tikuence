@@ -3,6 +3,7 @@ import list from './list'
 import details from './details'
 import createList from './createList'
 import edit from './edit'
+import appendVideo from './appendVideo'
 
 const router = Router()
 
@@ -13,6 +14,8 @@ router.get('/', list)
 router.post('/', createList)
 
 router.get('/:id', details)
+
+router.post('/:listId/video', appendVideo)
 
 router.get('/:listId/edit', edit)
 
