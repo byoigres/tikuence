@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import { ModalProvider } from "styled-react-modal";
-import NavBar from "./NavBar";
+import React from 'react'
+import styled from 'styled-components'
+import { ModalProvider } from 'styled-react-modal'
+import NavBar from './NavBar'
 
 const Container = styled.section`
   max-width: 32rem;
@@ -19,13 +19,12 @@ const Container = styled.section`
   z-index: 1;
   /* border-radius: 15px;
   border: none; */
-`;
-
+`
 
 const InnerContainer = styled.div`
-  /* margin: ${(p) => p.isFull ? 0 : 24}px; */
+  /* margin: ${(p) => (p.isFull ? 0 : 24)}px; */
   margin: 0;
-`;
+`
 
 const Backdrop = styled.div`
   position: fixed;
@@ -36,7 +35,7 @@ const Backdrop = styled.div`
   z-index: 9;
   border: 19px solid black;
   pointer-events: none;
-`;
+`
 
 const Layout = ({ children, isFull = false }) => (
   <Container>
@@ -46,6 +45,6 @@ const Layout = ({ children, isFull = false }) => (
       <NavBar>Hola</NavBar>
     </ModalProvider>
   </Container>
-);
+)
 
-export default Layout;
+export default Layout

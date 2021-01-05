@@ -1,7 +1,7 @@
-import React, { Fragment, useState } from "react";
-import styled from "styled-components";
-import { InertiaLink } from "@inertiajs/inertia-react"
-import AddPage from "../Pages/Lists/Add";
+import React, { Fragment, useState } from 'react'
+import styled from 'styled-components'
+import { InertiaLink } from '@inertiajs/inertia-react'
+import AddPage from '../Pages/Lists/Add'
 
 const NavBarContainer = styled.header`
   position: fixed;
@@ -14,7 +14,7 @@ const NavBarContainer = styled.header`
   background-color: #000;
   display: flex;
   align-items: center;
-`;
+`
 
 const NavBarItem = styled.div`
   color: #fff;
@@ -25,13 +25,13 @@ const NavBarItem = styled.div`
     padding: 0.5rem;
     color: white;
   }
-`;
+`
 
 const NavBar = () => {
-  const [isCreateListModalOpen, setIsCreateListModalOpen] = useState(false);
+  const [isCreateListModalOpen, setIsCreateListModalOpen] = useState(false)
 
   function toggleCreateListModalOpen(e) {
-    setIsCreateListModalOpen(!isCreateListModalOpen);
+    setIsCreateListModalOpen(!isCreateListModalOpen)
   }
 
   return (
@@ -46,8 +46,8 @@ const NavBar = () => {
           <InertiaLink
             href="#"
             onClick={(e) => {
-              e.preventDefault();
-              setIsCreateListModalOpen(true);
+              e.preventDefault()
+              setIsCreateListModalOpen(true)
             }}
           >
             <i className="fas fa-plus-square"></i>
@@ -59,12 +59,9 @@ const NavBar = () => {
           </InertiaLink>
         </NavBarItem>
       </NavBarContainer>
-      <AddPage
-        isOpen={isCreateListModalOpen}
-        closeCallback={toggleCreateListModalOpen}
-      />
+      <AddPage isOpen={isCreateListModalOpen} closeCallback={toggleCreateListModalOpen} />
     </Fragment>
-  );
+  )
 }
 
-export default NavBar;
+export default NavBar
