@@ -103,12 +103,7 @@ const Edit = ({ list }) => {
         </AddVideoContainer>
         {list.videos.map((video) => (
           <VideoListItemContainer key={video.id}>
-            <VideoListItemContent
-              onClick={(e) => {
-                e.preventDefault();
-                Inertia.replace(`/lists/1`);
-              }}
-            >
+            <VideoListItemContent>
               <VideoListItemImage src={`/images/${video.thumbnail_name}`} />
               <VideoListItemDescriptions>
                 <ItemSubtitle>{video.title}</ItemSubtitle>
