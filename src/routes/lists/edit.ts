@@ -15,7 +15,7 @@ async function getCounters (req: Request) {
   const list = await List.findOne({
     attributes: ['id', 'title'],
     where: {
-      id: params.id
+      id: params.listId
     },
     include: [
       {

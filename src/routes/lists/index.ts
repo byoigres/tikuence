@@ -14,7 +14,7 @@ router.post('/', createList)
 
 router.get('/:id', details)
 
-router.get('/:id/edit', edit)
+router.get('/:listId/edit', edit)
 
 export default router
 
