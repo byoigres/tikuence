@@ -22,7 +22,7 @@ const List = ({ lists }) => {
             <VideoListItemContent
               onClick={(e) => {
                 e.preventDefault();
-                Inertia.replace(`/lists/1`);
+                Inertia.replace(`/list/1`);
               }}
             >
               <VideoListItemImage
