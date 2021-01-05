@@ -136,6 +136,7 @@ const Edit = ({ list }) => {
               onChange={handleNewVideoURLChange}
               placeholder="Video URL"
               type="url"
+              autoFocus
               autoComplete="off"
               required
               // disabled={isLoading}
