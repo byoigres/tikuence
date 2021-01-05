@@ -153,7 +153,7 @@ const Edit = ({ list }) => {
               // disabled={isLoading}
               // loading={isLoading}
             >
-              Create List
+              Add video
             </Button>
           </ModalActions>
         </Modal>
