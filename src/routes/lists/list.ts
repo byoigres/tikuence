@@ -6,7 +6,7 @@ import Video from '../../models/video.model'
 import List from '../../models/list.model'
 
 async function queryAllLists(withVideos = false) {
-  const lists = await List.findAll({
+  return await List.findAll({
     attributes: ['id', 'title'],
     include: [
       {
