@@ -1,10 +1,15 @@
 import { Request, Response, NextFunction } from 'express'
+import httpContext from 'express-http-context'
 import Url from 'url'
+import { getLists } from './list'
+import List from '../../models/list.model'
 
 interface iPayload {
   url: string
   listId: number
 }
+
+const pathRegExp = /^\/@[A-Za-z0-9_]+\/video\/[0-9]+/
 
 async function validatePayload(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
@@ -12,7 +17,9 @@ async function validatePayload(req: Request, _res: Response, next: NextFunction)
 
   const parsedUrl = new Url.URL(payload.url)
 
-  if (parsedUrl.hostname !== 'www.tiktok.com') {
+  console.log(parsedUrl)
+
+  if (parsedUrl.hostname !== 'www.tiktok.com' && pathRegExp.test(parsedUrl.pathname)) {
     return req.Inertia.setViewData({ title: 'Add new list' }).render({
       component: 'Lists/Edit',
       props: {
@@ -39,10 +46,14 @@ async function createList(req: Request, _res: Response, next: NextFunction) {
 }
 
 function response(req: Request) {
+  const lists: List[] = httpContext.get('lists')
+
   req.Inertia.setViewData({ title: 'Add new list' }).render({
     component: 'Lists/Edit',
-    props: {}
+    props: {
+      lists
+    }
   })
 }
 
-export default [validatePayload, createList, response]
+export default [validatePayload, createList, getLists, response]
