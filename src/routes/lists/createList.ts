@@ -28,13 +28,9 @@ function response (req: Request, res: Response) {
 
   console.log('ID:', listId)
 
-  req.Inertia.setViewData({ title: 'Lists' }).render({
-    component: 'Lists/List',
-    props: {
-      lists,
-      listId
-    }
-  })
+  req.flash("success", "List created successfully")
+
+  res.redirect('/')
 }
 
 export default [createList, getLists, response]
