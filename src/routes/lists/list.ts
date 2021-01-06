@@ -5,6 +5,13 @@ import Author from '../../models/author.model'
 import Video from '../../models/video.model'
 import List from '../../models/list.model'
 
+/**
+ * Return all lists that include at least one video
+ * [httpContext = lists]
+ * @param req 
+ * @param _res 
+ * @param next 
+ */
 export async function getLists (req: Request, _res: Response, next: NextFunction) {
   const lists = await List.findAll({
     attributes: ['id', 'title'],
