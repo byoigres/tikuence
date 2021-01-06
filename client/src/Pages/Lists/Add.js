@@ -8,6 +8,7 @@ import {
   ModalActions,
 } from "../../components/Modal";
 import Button from "../../components/Button"
+import Input from "../../components/Input"
 
 
 const Add = ({ isOpen, closeCallback }) => {
@@ -66,9 +67,10 @@ const Add = ({ isOpen, closeCallback }) => {
               <strong>{error}</strong>
             </div>
           )}
-          <input
+          <Input
             id="title"
             name="title"
+            placehoder="List name"
             autoFocus
             value={values.title}
             onChange={handleChange}
