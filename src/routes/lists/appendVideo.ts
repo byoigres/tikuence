@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import Url from 'url'
-import { getLists } from './list'
+import { getAllLists } from './list'
 import List from '../../models/list.model'
 
 interface iPayload {
@@ -56,4 +56,4 @@ function response(req: Request) {
   })
 }
 
-export default [validatePayload, createList, getLists, response]
+export default [validatePayload, createList, getAllLists, response]

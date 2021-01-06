@@ -5,14 +5,7 @@ import Author from '../../models/author.model'
 import Video from '../../models/video.model'
 import List from '../../models/list.model'
 
-/**
- * Return all lists that include at least one video
- * [httpContext = lists]
- * @param req 
- * @param _res 
- * @param next 
- */
-export async function getLists (req: Request, _res: Response, next: NextFunction) {
+async function queryAllLists(withVideos = false) {
   const lists = await List.findAll({
     attributes: ['id', 'title'],
     include: [
@@ -26,7 +19,7 @@ export async function getLists (req: Request, _res: Response, next: NextFunction
         as: 'videos',
         attributes: ['id', 'title', 'thumbnail_width', 'thumbnail_height', 'thumbnail_name'],
         // The list must have videos
-        required: true,
+        required: withVideos,
         include: [
           {
             model: Author,
@@ -37,6 +30,27 @@ export async function getLists (req: Request, _res: Response, next: NextFunction
       }
     ]
   })
+}
+
+/**
+ * Return all lists that include at least one video
+ * [httpContext = lists]
+ * @param req 
+ * @param _res 
+ * @param next 
+ */
+export async function getAllLists (req: Request, _res: Response, next: NextFunction) {
+
+  const lists = await queryAllLists(false);
+
+  httpContext.set('lists', lists)
+
+  next()
+}
+
+export async function getAllListsWithVideos(req: Request, _res: Response, next: NextFunction) {
+
+  const lists = await queryAllLists(true);
 
   httpContext.set('lists', lists)
 
@@ -54,4 +68,4 @@ async function response (req: Request) {
   })
 }
 
-export default [getLists, response]
+export default [getAllListsWithVideos, response]

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
-import { getLists } from './list'
+import { getAllListsWithVideos } from './list'
 import List from '../../models/list.model'
 
 interface iPayload {
@@ -33,4 +33,4 @@ function response (req: Request, res: Response) {
   res.redirect('/')
 }
 
-export default [createList, getLists, response]
+export default [createList, getAllListsWithVideos, response]
