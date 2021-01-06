@@ -49,10 +49,17 @@ export function populateAuth(req: Request, _res: Response, next: NextFunction) {
 
   req.Inertia.shareProps({
     auth: req.auth.credentials,
-    flash: () => ({
-      success: req.flash('success'),
-      error: req.flash('error')
-    })
+    flash: () => {
+      const messages = {
+        success: req.flash('success'),
+        error: req.flash('error')
+      }
+
+      return {
+        success: messages.success.length > 0 ? messages.success : null,
+        error: messages.error.length > 0 ? messages.error : null,
+      }
+    }
   })
 
   next()
