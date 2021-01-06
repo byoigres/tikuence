@@ -59,7 +59,7 @@ const Edit = ({ list }) => {
 
   function handleNewVideo(e) {
     e.preventDefault();
-    Inertia.post(`/list/${id}/video`, {
+    Inertia.post(`/list/${list.id}/video`, {
       url: newVideoURL,
     });
   }
