@@ -6,6 +6,9 @@ public/assets
 public/images
 client/node_modules
 
+### tmp
+.sequelize/seeders
+
 ### Linux ###
 *~
 

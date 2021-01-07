@@ -54,7 +54,7 @@ const NavBar = () => {
           </InertiaLink>
         </NavBarItem>
         <NavBarItem>
-          <InertiaLink href="/profie">
+          <InertiaLink href="/profile/lists">
             <i className="fas fa-user"></i>
           </InertiaLink>
         </NavBarItem>

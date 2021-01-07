@@ -24,11 +24,10 @@ async function createList (req: Request, _res: Response, next: NextFunction) {
 
 function response (req: Request, res: Response) {
   const listId: List = httpContext.get('listId')
-  const lists: List[] = httpContext.get('lists')
 
   console.log('ID:', listId)
 
-  req.flash("success", "List created successfully")
+  req.flash('success', 'List created successfully')
 
   res.redirect('/')
 }

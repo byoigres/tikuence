@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import list from './list'
 import details from './details'
+import deleteList from './delete'
 import createList from './createList'
 import edit from './edit'
 import appendVideo from './appendVideo'
@@ -14,6 +15,8 @@ router.get('/', list)
 router.post('/', createList)
 
 router.get('/:id', details)
+
+router.delete('/:listId', deleteList)
 
 router.post('/:listId/video', appendVideo)
 
