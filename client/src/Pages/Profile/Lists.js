@@ -12,8 +12,6 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import { makeStyles } from "@material-ui/core/styles";
-import AddBoxIcon from "@material-ui/icons/AddBox";
-import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import {
@@ -32,13 +30,8 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginBottom: "1rem"
   },
-  actionArea: {
-    display: "flex",
-    justifyContent: "flex-start"
-  },
-  cover: {
-    width: 100
-  },
+  actionArea: {},
+  cover: {},
   details: {
     display: "flex",
     flexDirection: "column"
