@@ -1,7 +1,25 @@
 import React, { Fragment, useState } from 'react'
 import styled from 'styled-components'
+import { Inertia } from '@inertiajs/inertia'
 import { InertiaLink } from '@inertiajs/inertia-react'
+import { makeStyles } from "@material-ui/core/styles";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import ListIcon from "@material-ui/icons/List";
+import AddBoxIcon from "@material-ui/icons/AddBox";
+import PersonIcon from "@material-ui/icons/Person";
 import AddPage from '../Pages/Lists/Add'
+
+const useStyles = makeStyles({
+  bottomNavigation: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    zIndex: 99
+  }
+});
+
 
 const NavBarContainer = styled.header`
   position: fixed;
@@ -27,7 +45,7 @@ const NavBarItem = styled.div`
   }
 `
 
-const NavBar = () => {
+const NavBar2 = () => {
   const [isCreateListModalOpen, setIsCreateListModalOpen] = useState(false)
 
   function toggleCreateListModalOpen(e) {
@@ -64,4 +82,39 @@ const NavBar = () => {
   )
 }
 
+const NavBar = () => {
+  const classes = useStyles();
+  const [selectedAction, setSelectedAction] = React.useState(0);
+
+  return (
+    <BottomNavigation
+      value={selectedAction}
+      onChange={(_, action) => {
+        console.log(action);
+
+        switch (action) {
+          case 0:
+            Inertia.get("/")
+            break;
+          case 1:
+            Inertia.get("/")
+            break;
+          case 2:
+            Inertia.get("/profile/lists")
+            break;
+          default:
+            Inertia.get("/")
+            break;
+        }
+        setSelectedAction(action);
+      }}
+      showLabels
+      className={classes.bottomNavigation}
+    >
+      <BottomNavigationAction label="Lists" icon={<ListIcon />} />
+      <BottomNavigationAction label="Add" icon={<AddBoxIcon />} />
+      <BottomNavigationAction label="Profile" icon={<PersonIcon />} />
+    </BottomNavigation>
+  );
+};
 export default NavBar

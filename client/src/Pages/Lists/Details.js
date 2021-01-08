@@ -1,10 +1,10 @@
 import React, { useState } from "react";
+import Layout from "../../components/Layout";
 import styled from "styled-components";
 import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-react";
 import { TikTok } from "react-tiktok";
 import TikTokVideo from "../../components/TikTokVideo";
-import Layout from "../../components/Layout";
 
 const Container = styled.section`
   height: 100vh;
@@ -36,16 +36,16 @@ const Details = ({ list }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <Layout isFull data-name="Layout">
-      <Container data-name="Container">
-        {list.videos.map((video) => (
-          <Video key={video.id}>
-            <TikTokVideo html={video.html} />
-          </Video>
-        ))}
-      </Container>
-    </Layout>
+    <Container data-name="Container">
+      {list.videos.map((video) => (
+        <Video key={video.id}>
+          <TikTokVideo html={video.html} />
+        </Video>
+      ))}
+    </Container>
   );
 };
+
+Details.layout = page => <Layout children={page} title="Welcome" />;
 
 export default Details;

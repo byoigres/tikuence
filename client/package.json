@@ -37,6 +37,8 @@
     "@inertiajs/inertia": "^0.8.2",
     "@inertiajs/inertia-react": "^0.4.4",
     "@inertiajs/progress": "^0.2.3",
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
     "assets-webpack-plugin": "^6.1.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

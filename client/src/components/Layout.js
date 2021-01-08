@@ -1,50 +1,55 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import styled from 'styled-components'
 import { ModalProvider } from 'styled-react-modal'
 import NavBar from './NavBar'
+import {
+  createMuiTheme,
+  makeStyles,
+  ThemeProvider
+} from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import blueGrey from '@material-ui/core/colors/blueGrey';
+import blue from '@material-ui/core/colors/blue';
 
-const Container = styled.section`
-  max-width: 32rem;
-  height: 100vh;
-  width: 100vw;
+const useStyles = makeStyles({
+  container: p => ({
+      marginTop: "4rem",
+      marginLeft: p.fullLayout ? 0 : "1rem",
+      marginRight: p.fullLayout ? 0 : "1rem",
+    }),
+})
 
-  overflow-y: scroll;
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+    secondary: blueGrey,
+  },
+  typography: {
+    // fontFamily: `"Source Sans Pro", "Helvetica", "Arial", sans-serif`,
+    fontSize: 14,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 600
+  }
+});
 
-  scroll-snap-type: mandatory;
-  scroll-snap-points-y: repeat(3rem);
-  scroll-snap-type: y mandatory;
-  position: relative;
-  /* left: 510px;
-  top: 50px; */
-  z-index: 1;
-  /* border-radius: 15px;
-  border: none; */
-`
-
-const InnerContainer = styled.div`
-  /* margin: ${(p) => (p.isFull ? 0 : 24)}px; */
-  margin: 0;
-`
-
-const Backdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: calc(100% - 38px);
-  z-index: 9;
-  border: 19px solid black;
-  pointer-events: none;
-`
-
-const Layout = ({ children, isFull = false }) => (
-  <Container>
-    <ModalProvider>
-      <Backdrop />
-      <InnerContainer isFull={isFull}>{children}</InnerContainer>
-      <NavBar>Hola</NavBar>
-    </ModalProvider>
-  </Container>
-)
+const Layout = ({ children, title = "Tikuence", fullLayout = false }) => {
+  const classes = useStyles({ fullLayout });
+  return (
+    <ThemeProvider theme={theme}>
+      <AppBar position="fixed">
+        <Toolbar>
+          <Typography variant="h6">{title}</Typography>
+        </Toolbar>
+      </AppBar>
+      <div className={classes.container}>
+        {children}
+      </div>
+      <NavBar />
+    </ThemeProvider>
+  );
+}
 
 export default Layout
