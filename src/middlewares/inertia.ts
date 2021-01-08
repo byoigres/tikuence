@@ -56,8 +56,8 @@ export function populateAuth(req: Request, _res: Response, next: NextFunction) {
       }
 
       return {
-        success: messages.success.length > 0 ? messages.success : null,
-        error: messages.error.length > 0 ? messages.error : null
+        success: messages.success.length > 0 ? messages.success[0] : null,
+        error: messages.error.length > 0 ? messages.error[0] : null
       }
     }
   })
