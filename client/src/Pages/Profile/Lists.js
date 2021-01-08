@@ -144,7 +144,14 @@ const List = ({ lists, flash }) => {
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit">
-              <IconButton aria-label="edit">
+              <IconButton
+                aria-label="edit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  console.log("delete icon handler")
+                  Inertia.visit(`/list/${list.id}/edit`);
+                }}
+              >
                 <EditIcon fontSize="small" />
               </IconButton>
             </Tooltip>
