@@ -7,12 +7,12 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import Layout from '../../components/Layout';
+import { Inertia } from '@inertiajs/inertia';
 
 // NOOP
 const useStyles = makeStyles((theme) => ({
@@ -47,6 +47,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Edit = ({ list }) => {
   const classes = useStyles();
+
+  function handleAddVideo(e) {
+    e.preventDefault();
+    Inertia.get(`/list/${list.id}/video/add?returnUrl=${encodeURIComponent(location.pathname)}`);
+  }
+
   return (
     <>
       <Typography component="h4" variant="h4">
@@ -57,7 +63,7 @@ const Edit = ({ list }) => {
           Your list is not visible to others because doesn't have any videos.
         </Typography>
       )}
-      <Button variant="outlined" color="primary" fullWidth>Add videos</Button>
+      <Button variant="outlined" color="primary" fullWidth onClick={handleAddVideo} type="button">Add videos</Button>
       {list.videos.length > 0 && `There are ${list.videos.length} videos in this list`}
       <List dense className={classes.list} style={{ display: list.videos.length > 0 ? 'block' : 'none' }}>
         {list.videos.map((video) => (
