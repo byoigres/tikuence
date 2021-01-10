@@ -29,13 +29,8 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const AddPage = (props) => {
-  console.log('props', props);
+const AddPage = ({ errors }) => {
   const classes = useStyles();
-
-  const {
-    props: { errors },
-  } = usePage();
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
@@ -78,7 +73,6 @@ const AddPage = (props) => {
           setIsLoading(true);
         },
         onSuccess(page) {
-          console.log(page.props.flash);
           if (page.props.flash && page.props.flash.error) {
             enqueueSnackbar(page.props.flash.error, { variant: 'error' });
           }
