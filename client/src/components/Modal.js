@@ -1,10 +1,10 @@
-import React from 'react'
-import styled from 'styled-components'
-import StyledReactModal from 'styled-react-modal'
+import React from 'react';
+import styled from 'styled-components';
+import StyledReactModal from 'styled-react-modal';
 
-var __gutter = '14px'
-var __modal_color = '#fff'
-var __soft_color = '#fafafa'
+const __gutter = '14px';
+const __modal_color = '#fff';
+const __soft_color = '#fafafa';
 
 export const Modal = StyledReactModal.styled`
   position: relative;
@@ -12,7 +12,7 @@ export const Modal = StyledReactModal.styled`
   background-color: white;
   opacity: ${(props) => props.opacity};
   transition: opacity ease 500ms;
-`
+`;
 
 const ModalHeaderContainer = styled.div`
   height: 3rem;
@@ -39,20 +39,20 @@ const ModalHeaderContainer = styled.div`
       opacity: 1;
     }
   }
-`
+`;
 
 export const ModalHeader = ({ title, closeCallback = () => {} }) => (
   <ModalHeaderContainer>
     <h4>{title}</h4>
-    <span className="fas fa-times" onClick={closeCallback}></span>
+    <span className="fas fa-times" onClick={closeCallback} />
   </ModalHeaderContainer>
-)
+);
 export const ModalContent = styled.div`
   flex: 1;
   text-align: left;
   overflow: auto;
   padding: ${__gutter};
-`
+`;
 
 export const ModalActions = styled.div`
   height: auto;
@@ -68,4 +68,4 @@ export const ModalActions = styled.div`
       margin-right: ${__gutter};
     }
   }
-`
+`;

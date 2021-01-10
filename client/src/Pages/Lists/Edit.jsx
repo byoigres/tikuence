@@ -1,30 +1,24 @@
-import React, { Fragment, useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
-import { usePage } from "@inertiajs/inertia-react";
-import Layout from "../../components/Layout";
-import Typography from "@material-ui/core/Typography";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
+import React, { Fragment } from 'react';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Divider from '@material-ui/core/Divider';
-import Checkbox from '@material-ui/core/Checkbox';
 import Avatar from '@material-ui/core/Avatar';
-import DeleteIcon from "@material-ui/icons/Delete";
-import { makeStyles } from "@material-ui/core/styles";
+import DeleteIcon from '@material-ui/icons/Delete';
+import { makeStyles } from '@material-ui/core/styles';
+import Layout from '../../components/Layout';
 
 // NOOP
 const useStyles = makeStyles((theme) => ({
+  list: {
+    backgroundColor: '#fff',
+  },
   card: {
-    marginBottom: "1rem"
+    marginBottom: '1rem',
   },
   actionArea: {
     // display: "flex",
@@ -34,85 +28,55 @@ const useStyles = makeStyles((theme) => ({
     // width: 100
   },
   details: {
-    display: "flex",
-    flexDirection: "column"
+    display: 'flex',
+    flexDirection: 'column',
   },
   content: {
-    flex: "1 0 auto"
+    flex: '1 0 auto',
   },
   listItemAvatar: {
-    minWidth: 72
+    minWidth: 72,
   },
   avatar: {
-      width: theme.spacing(7),
-      height: '100%'
-    },
+    width: theme.spacing(7),
+    height: '100%',
+  },
 }));
 
-const Edit = ({ list, flash }) => {
+const Edit = ({ list }) => {
   const classes = useStyles();
   return (
-    <div>
+    <>
       <Typography component="h4" variant="h4">
         {list.title}
       </Typography>
       {`There are ${list.videos.length} videos in this list`}
-      <List dense className={classes.root}>
-        {list.videos.map(video => {
-          return (
-            <Fragment>
-              <ListItem key={video.id} button>
-                <ListItemAvatar className={classes.listItemAvatar}>
-                  <Avatar
-                    alt={video.title}
-                    className={classes.avatar}
-                    variant="square"
-                    src={`/images/${video.thumbnail_name}`}
-                  />
-                </ListItemAvatar>
-                <ListItemText id={video.id} primary={video.title} />
-                <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="delete">
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider variant="fullWidth" component="li" />
-            </Fragment>
-          );
-        })}
+      <List dense className={classes.list}>
+        {list.videos.map((video) => (
+          <Fragment key={video.id}>
+            <ListItem key={video.id} button>
+              <ListItemAvatar className={classes.listItemAvatar}>
+                <Avatar
+                  alt={video.title}
+                  className={classes.avatar}
+                  variant="square"
+                  src={`/images/${video.thumbnail_name}`}
+                />
+              </ListItemAvatar>
+              <ListItemText id={video.id} primary={video.title} />
+              <ListItemSecondaryAction>
+                <IconButton edge="end" aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider variant="fullWidth" component="li" />
+          </Fragment>
+        ))}
       </List>
-      {list.videos.map(video => (
-        <Card className={classes.card} key={video.id}>
-          <CardActionArea className={classes.actionArea}>
-            <CardMedia
-              className={classes.cover}
-              component="img"
-              alt={video.title}
-              height="150"
-              image={`/images/${video.thumbnail_name}`}
-              title="Make Computers Fast Again"
-            />
-            <div className={classes.details}>
-              <CardContent className={classes.content}>
-                <Typography component="h6" variant="h6">
-                  {video.title}
-                </Typography>
-              </CardContent>
-            </div>
-          </CardActionArea>
-          <CardActions>
-            <Tooltip title="Delete">
-              <IconButton aria-label="delete">
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </CardActions>
-        </Card>
-      ))}
-    </div>
+    </>
   );
-}
+};
 
 /*
 const Edit = ({ list }) => {
@@ -243,6 +207,6 @@ const Edit = ({ list }) => {
   );
 };
 */
-Edit.layout = page => <Layout children={page} title="Edit list" />;
+Edit.layout = (page) => <Layout children={page} title="Edit list" />;
 
 export default Edit;

@@ -1,28 +1,21 @@
-import React, { Fragment, useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
-import { usePage } from "@inertiajs/inertia-react";
-import {
-  Modal,
-  ModalHeader,
-  ModalContent,
-  ModalActions,
-} from "../../components/Modal";
-import Button from "../../components/Button"
-import Input from "../../components/Input"
-
+import React, { Fragment, useState } from 'react';
+import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
+import { Modal, ModalHeader, ModalContent, ModalActions } from '../../components/Modal';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
 
 const Add = ({ isOpen, closeCallback }) => {
   const { error } = usePage();
   const [isLoading, setIsLoading] = useState(false);
   const [values, setValues] = useState({
-    title: "",
-    initialVideo: "",
+    title: '',
+    initialVideo: '',
   });
 
   function handleChange(e) {
     const key = e.target.name;
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
 
     setValues((values) => ({
       ...values,
@@ -34,7 +27,7 @@ const Add = ({ isOpen, closeCallback }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    Inertia.post("/list", values, {
+    Inertia.post('/list', values, {
       onStart() {
         setIsLoading(true);
       },
@@ -48,7 +41,7 @@ const Add = ({ isOpen, closeCallback }) => {
   }
 
   return (
-    <Fragment>
+    <>
       <Modal
         isOpen={isOpen}
         onBackgroundClick={closeCallback}
@@ -56,10 +49,7 @@ const Add = ({ isOpen, closeCallback }) => {
         opacity={1}
         backgroundProps={{ opacity: 1 }}
       >
-        <ModalHeader
-          title="New list"
-          closeCallback={closeCallback}
-        />
+        <ModalHeader title="New list" closeCallback={closeCallback} />
         <ModalContent>
           {isLoading && <strong>Enviando...</strong>}
           {error && (
@@ -85,7 +75,7 @@ const Add = ({ isOpen, closeCallback }) => {
           </Button>
         </ModalActions>
       </Modal>
-    </Fragment>
+    </>
   );
 };
 

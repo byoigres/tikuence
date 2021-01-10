@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import Layout from "../../components/Layout";
-import styled from "styled-components";
-import { Inertia } from "@inertiajs/inertia";
-import { usePage } from "@inertiajs/inertia-react";
-import { TikTok } from "react-tiktok";
-import TikTokVideo from "../../components/TikTokVideo";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
+import { TikTok } from 'react-tiktok';
+import Layout from '../../components/Layout';
+import TikTokVideo from '../../components/TikTokVideo';
 
 const Container = styled.section`
   height: 100vh;
@@ -46,6 +46,6 @@ const Details = ({ list }) => {
   );
 };
 
-Details.layout = page => <Layout children={page} title="Welcome" />;
+Details.layout = (page) => <Layout children={page} title="Welcome" />;
 
 export default Details;

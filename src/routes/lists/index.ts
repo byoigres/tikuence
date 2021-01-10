@@ -4,6 +4,7 @@ import details from './details'
 import deleteList from './delete'
 import createList from './createList'
 import edit from './edit'
+import add from './add'
 import appendVideo from './appendVideo'
 
 const router = Router()
@@ -13,6 +14,8 @@ const router = Router()
 router.get('/', list)
 
 router.post('/', createList)
+
+router.get('/add', add)
 
 router.get('/:id', details)
 

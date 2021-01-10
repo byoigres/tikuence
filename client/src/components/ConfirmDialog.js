@@ -13,7 +13,7 @@ function ConfirmDialog({
   description,
   actionText,
   cancelText,
-  actionHandler
+  actionHandler,
 }) {
   const [open, setOpen] = React.useState(isOpen);
 
@@ -23,28 +23,26 @@ function ConfirmDialog({
 
   return (
     <Dialog
-        open={open}
-        disableBackdropClick
-        disableEscapeKeyDown
-        onClose={onDialogClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {description}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onDialogClose} color="primary" autoFocus>
-            {cancelText}
-          </Button>
-          <Button onClick={actionHandler} color="primary" autoFocus>
-            {actionText}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      open={open}
+      disableBackdropClick
+      disableEscapeKeyDown
+      onClose={onDialogClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">{description}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onDialogClose} color="primary" autoFocus>
+          {cancelText}
+        </Button>
+        <Button onClick={actionHandler} color="primary" autoFocus>
+          {actionText}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

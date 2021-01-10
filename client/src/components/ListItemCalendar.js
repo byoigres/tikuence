@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const styles = {
   root: {
@@ -12,25 +12,25 @@ const styles = {
     textTransform: 'uppercase',
     paddingRight: 5,
     borderRight: '1px solid grey',
-    marginRight: 10
+    marginRight: 10,
   },
   prefix: {
     textAlign: 'right',
     fontWeight: 700,
-    lineHeight: 1.5
+    lineHeight: 1.5,
   },
   value: {
     fontWeight: 700,
     fontSize: 32,
-    color: '#3076D2'
+    color: '#3076D2',
   },
   unit: {
-    fontWeight: 700
+    fontWeight: 700,
   },
   text: {
-    marginLeft: 10
-  }
-}
+    marginLeft: 10,
+  },
+};
 
 const ListItemCalendar = ({ prefix, value, unit }) => (
   <div style={styles.root}>
@@ -38,12 +38,12 @@ const ListItemCalendar = ({ prefix, value, unit }) => (
     <div style={styles.value}>{value}</div>
     <div style={styles.unit}>{unit}</div>
   </div>
-)
+);
 
 ListItemCalendar.propTypes = {
   prefix: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
-  unit: PropTypes.string.isRequired
-}
+  unit: PropTypes.string.isRequired,
+};
 
-export default ListItemCalendar
+export default ListItemCalendar;

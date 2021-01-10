@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    app: "./src/App.js",
+    app: "./src/App.jsx",
     vendor: [
       "react",
       "react-dom",
@@ -13,6 +13,9 @@ module.exports = {
       "styled-components",
       "@inertiajs/progress/src",
     ],
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   },
   output: {
     path: path.resolve(__dirname, "..", "..", "public", "assets"),
@@ -24,7 +27,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js)$/,
+        test: /\.(jsx?)$/,
         use: "babel-loader",
         exclude: /node_modules/,
       },

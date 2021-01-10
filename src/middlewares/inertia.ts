@@ -26,6 +26,7 @@ const template = (page: object, viewData: ViewData) => `
     <style>
         html, body {
             font-family: 'Source Sans Pro', sans-serif;
+            background-color: #f5f5f5;
         }
     </style>
   </head>
