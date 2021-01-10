@@ -40,6 +40,22 @@ const AddPage = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
 
+  function getReturnURL() {
+    const query = location.search.slice(1);
+    const parts = query.split('&');
+
+    const values = parts.map(part => part.split('='))
+      .reduce((previous, current) => {
+        if (current.length > 1) {
+          previous[current[0]] = decodeURIComponent(current[1]);
+        }
+        
+        return previous;
+      }, {});
+
+    return values['returnUrl'] ? values['returnUrl'] : '/';
+  }
+
   function handleChange(e) {
     const { value } = e.target;
 
@@ -47,7 +63,7 @@ const AddPage = (props) => {
   }
 
   const handleClose = () => {
-    Inertia.get('/');
+    Inertia.get(getReturnURL());
   };
 
   const handleCreate = (e) => {
