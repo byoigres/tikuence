@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import Url from 'url'
+import fetch from 'node-fetch'
 import { getAllLists } from './list'
 import List from '../../models/list.model'
 
 interface iPayload {
-  url: string
+  videoUrl: string
   listId: number
 }
 
@@ -15,8 +16,8 @@ async function validatePayload(req: Request, _res: Response, next: NextFunction)
   const payload = <iPayload>req.body
   // const params = req.params
 
-  const parsedUrl = new Url.URL(payload.url)
-
+  const parsedUrl = new Url.URL(payload.videoUrl)
+  
   console.log(parsedUrl)
 
   if (parsedUrl.hostname !== 'www.tiktok.com' && pathRegExp.test(parsedUrl.pathname)) {
@@ -27,6 +28,28 @@ async function validatePayload(req: Request, _res: Response, next: NextFunction)
       }
     })
   }
+
+  next()
+}
+
+async function fetchVideoInfo(req: Request, _res: Response, next: NextFunction) {
+  const payload = <iPayload>req.body
+
+  const response = await fetch(payload.videoUrl)
+
+  const json = await response.json();
+
+  httpContext.set('videoInfo', json)
+
+  next()
+}
+
+async function fetchVideoThumbnail(req: Request, _res: Response, next: NextFunction) {
+  const videoInfo = httpContext.get('videoInfo')
+
+  const response = await fetch(videoInfo.thumbnail_url)
+
+  const buffer = await response.buffer();
 
   next()
 }
@@ -56,4 +79,10 @@ function response(req: Request) {
   })
 }
 
-export default [validatePayload, createList, getAllLists, response]
+export default [
+  fetchVideoInfo,
+  fetchVideoThumbnail,
+  createList, 
+  getAllLists,
+  response
+]
