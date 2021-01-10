@@ -6,6 +6,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -50,8 +52,14 @@ const Edit = ({ list }) => {
       <Typography component="h4" variant="h4">
         {list.title}
       </Typography>
-      {`There are ${list.videos.length} videos in this list`}
-      <List dense className={classes.list}>
+      {list.videos.length === 0 && (
+        <Typography component="h6" variant="h6">
+          Your list is not visible to others because doesn't have any videos.
+        </Typography>
+      )}
+      <Button variant="outlined" color="primary" fullWidth>Add videos</Button>
+      {list.videos.length > 0 && `There are ${list.videos.length} videos in this list`}
+      <List dense className={classes.list} style={{ display: list.videos.length > 0 ? 'block' : 'none' }}>
         {list.videos.map((video) => (
           <Fragment key={video.id}>
             <ListItem key={video.id} button>
