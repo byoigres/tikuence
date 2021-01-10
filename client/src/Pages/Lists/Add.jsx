@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,10 +29,13 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const AddPage = ({ flash }) => {
+const AddPage = (props) => {
+  console.log('props', props);
   const classes = useStyles();
 
-  // const { error } = usePage();
+  const {
+    props: { errors },
+  } = usePage();
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
@@ -56,8 +61,12 @@ const AddPage = ({ flash }) => {
         onStart() {
           setIsLoading(true);
         },
-        onSuccess() {
-          handleClose();
+        onSuccess(page) {
+          console.log(page.props.flash);
+          if (page.props.flash && page.props.flash.error) {
+            enqueueSnackbar(page.props.flash.error, { variant: 'error' });
+          }
+          // handleClose();
         },
         onFinish() {
           setIsLoading(false);
@@ -97,7 +106,12 @@ const AddPage = ({ flash }) => {
           disabled={isLoading}
           value={title}
           onChange={handleChange}
+          error={errors.title !== undefined}
+          helperText={errors.title}
         />
+        <DialogContentText>
+          After creating the list you would be able to add videos to it.
+        </DialogContentText>
       </DialogContent>
     </Dialog>
   );
@@ -179,6 +193,6 @@ const Add = ({ isOpen, closeCallback }) => {
 };
 */
 
-AddPage.layout = (page) => <Layout children={page} cleanLayout />;
+AddPage.layout = (page) => <Layout children={page} cleanLayout flash={page.props.flash} />;
 
 export default AddPage;

@@ -97,16 +97,6 @@ const PageList = (props) => {
             <Divider variant="fullWidth" component="li" />
           </Fragment>
         ))}
-        <button
-          onClick={() => {
-            enqueueSnackbar('Messsssagggee', {
-              variant: 'info',
-            });
-          }}
-          type="button"
-        >
-          Noty
-        </button>
       </List>
     </>
   );

@@ -7,19 +7,45 @@ interface iPayload {
   title: string
 }
 
-async function createList (req: Request, _res: Response, next: NextFunction) {
+async function createList (req: Request, res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
 
-  const list = await List.create({
-    title: payload.title,
-    user_id: 1
-  })
+  console.log('payload', payload)
+  if (payload.title.length === 0) {
+    console.log('title', payload.title)
 
-  console.log('new list', list)
+    req.method = 'GET'
 
-  httpContext.set('listId', list.id)
+    req.flash('error', 'You must provide a name for the list')
+    req.flash(
+      'errors',
+      JSON.stringify({
+        title: 'This field is required'
+      })
+    )
 
-  next()
+    return req.Inertia.redirect('/list/add')
+    /*
+    const referer = req.get('referer')
+
+    if (referer) {
+      res.redirect(303, referer)
+    } else {
+      res.redirect(303, '/profile/lists')
+    }
+    */
+  } else {
+    const list = await List.create({
+      title: payload.title,
+      user_id: 1
+    })
+
+    console.log('new list', list)
+
+    httpContext.set('listId', list.id)
+
+    next()
+  }
 }
 
 function response (req: Request, res: Response) {
@@ -29,7 +55,7 @@ function response (req: Request, res: Response) {
 
   req.flash('success', 'List created successfully')
 
-  res.redirect('/')
+  req.Inertia.redirect(`/list/${listId}/edit`)
 }
 
 export default [createList, getAllListsWithVideos, response]

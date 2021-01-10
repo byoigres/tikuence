@@ -60,6 +60,15 @@ export function populateAuth(req: Request, _res: Response, next: NextFunction) {
         success: messages.success.length > 0 ? messages.success[0] : null,
         error: messages.error.length > 0 ? messages.error[0] : null
       }
+    },
+    errors: () => {
+      const errors = req.flash('errors')
+
+      if (errors && errors.length > 0) {
+        return JSON.parse(errors[0])
+      }
+
+      return {}
     }
   })
 

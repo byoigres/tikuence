@@ -1,6 +1,5 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -30,21 +29,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const SuccessMessage = styled.strong`
-  display: block;
-  background-color: #096d08;
-  color: white;
-  padding: 0.5rem 1rem;
-  margin: 1rem 0;
-  cursor: pointer;
-`;
 
-const List = ({ lists, flash }) => {
+const List = ({ lists }) => {
   const classes = useStyles();
   const [_isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentItemToDelete, setCurrentItemToDelete] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(flash.success);
 
   function onDeleteDialogClose() {
     setIsDeleteDialogOpen(false);
@@ -69,15 +59,8 @@ const List = ({ lists, flash }) => {
     });
   }
 
-  useEffect(() => {
-    setSuccessMessage(flash.success);
-  }, [flash.success]);
-
   return (
     <>
-      {successMessage && (
-        <SuccessMessage onClick={() => setSuccessMessage(null)}>{successMessage}</SuccessMessage>
-      )}
       {lists.map((list) => (
         <Card className={classes.card} key={list.id}>
           <CardActionArea className={classes.actionArea}>
@@ -143,6 +126,8 @@ const List = ({ lists, flash }) => {
   );
 };
 
-List.layout = (page) => <Layout children={page} page="Profile/Lists" title="My lists" />;
+List.layout = (page) => (
+  <Layout children={page} page="Profile/Lists" title="My lists" flash={page.props.flash} />
+);
 
 export default List;

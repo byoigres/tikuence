@@ -49,6 +49,10 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false, flash }) =>
     <ThemeProvider theme={theme}>
       <SnackbarProvider
         ref={notistackRef}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
         action={(key) => (
           <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
         )}

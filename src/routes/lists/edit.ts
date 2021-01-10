@@ -24,7 +24,7 @@ async function getCounters (req: Request) {
         as: 'videos',
         attributes: ['id', 'title', 'thumbnail_width', 'thumbnail_height', 'thumbnail_name'],
         // The list must have videos
-        required: true,
+        required: false,
         include: [
           {
             model: Author,
