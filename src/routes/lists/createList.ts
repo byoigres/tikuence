@@ -16,7 +16,7 @@ async function createList (req: Request, res: Response, next: NextFunction) {
 
     req.method = 'GET'
 
-    req.flash('error', 'You must provide a name for the list')
+    // req.flash('error', 'You must provide a name for the list')
     req.flash(
       'errors',
       JSON.stringify({
@@ -25,15 +25,6 @@ async function createList (req: Request, res: Response, next: NextFunction) {
     )
 
     return req.Inertia.redirect('/list/add')
-    /*
-    const referer = req.get('referer')
-
-    if (referer) {
-      res.redirect(303, referer)
-    } else {
-      res.redirect(303, '/profile/lists')
-    }
-    */
   } else {
     const list = await List.create({
       title: payload.title,
