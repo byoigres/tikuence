@@ -113,6 +113,9 @@ const AddPage = ({ errors }) => {
           autoFocus
           fullWidth
           margin="dense"
+          inputProps={{
+            maxLength: 150
+          }}
           disabled={isLoading}
           value={title}
           onChange={handleChange}
