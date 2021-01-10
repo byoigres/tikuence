@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -129,82 +128,6 @@ const AddPage = ({ errors }) => {
     </Dialog>
   );
 };
-
-/*
-const Add = ({ isOpen, closeCallback }) => {
-  const { error } = usePage();
-  const [isLoading, setIsLoading] = useState(false);
-  const [values, setValues] = useState({
-    title: '',
-    initialVideo: '',
-  });
-
-  function handleChange(e) {
-    const key = e.target.name;
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-
-    setValues((values) => ({
-      ...values,
-      [key]: value,
-    }));
-  }
-
-  function handleNewList(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    Inertia.post('/list', values, {
-      onStart() {
-        setIsLoading(true);
-      },
-      onSuccess() {
-        closeCallback();
-      },
-      onFinish() {
-        setIsLoading(false);
-      },
-    });
-  }
-
-  return (
-    <>
-      <Modal
-        isOpen={isOpen}
-        onBackgroundClick={closeCallback}
-        onEscapeKeydown={closeCallback}
-        opacity={1}
-        backgroundProps={{ opacity: 1 }}
-      >
-        <ModalHeader title="New list" closeCallback={closeCallback} />
-        <ModalContent>
-          {isLoading && <strong>Enviando...</strong>}
-          {error && (
-            <div>
-              <strong>{error}</strong>
-            </div>
-          )}
-          <Input
-            id="title"
-            name="title"
-            placehoder="List name"
-            autoFocus
-            value={values.title}
-            onChange={handleChange}
-            autoComplete="off"
-            required
-            disabled={isLoading}
-          />
-        </ModalContent>
-        <ModalActions>
-          <Button type="button" onClick={handleNewList}>
-            Create List
-          </Button>
-        </ModalActions>
-      </Modal>
-    </>
-  );
-};
-*/
 
 AddPage.layout = (page) => <Layout children={page} cleanLayout flash={page.props.flash} />;
 
