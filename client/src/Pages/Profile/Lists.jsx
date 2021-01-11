@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
 
 const List = ({ lists }) => {
   const classes = useStyles();
-  const [_isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentItemToDelete, setCurrentItemToDelete] = useState(null);
 
@@ -95,6 +95,7 @@ const List = ({ lists }) => {
             <Tooltip title="Delete">
               <IconButton
                 aria-label="delete"
+                disabled={isLoading}
                 onClick={(e) => {
                   e.preventDefault();
                   onDeleteButtonClick(list.id);
@@ -106,6 +107,7 @@ const List = ({ lists }) => {
             <Tooltip title="Edit">
               <IconButton
                 aria-label="edit"
+                disabled={isLoading}
                 onClick={(e) => {
                   e.preventDefault();
                   Inertia.visit(`/list/${list.id}/edit`);
