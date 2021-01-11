@@ -8,7 +8,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
-import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
 import Layout from '../../components/Layout';
 
@@ -45,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 const PageList = (props) => {
   const { lists } = props;
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
 
   return (
     <>
@@ -78,15 +76,11 @@ const PageList = (props) => {
               </ListItemAvatar>
               <ListItemText
                 id={item.id}
-                primary={(
-                  <Typography
-                    component="strong"
-                    variant="h6"
-                    color="textPrimary"
-                  >
+                primary={
+                  <Typography component="strong" variant="h6" color="textPrimary">
                     {item.title}
                   </Typography>
-                )}
+                }
                 secondary={
                   <>
                     <Typography
@@ -95,13 +89,9 @@ const PageList = (props) => {
                       color="textPrimary"
                       style={{ display: 'block' }}
                     >
-                      4 videos
+                      {`${item.videos.length} videos`}
                     </Typography>
-                    <Typography
-                      component="span"
-                      variant="subtitle1"
-                      color="textPrimary"
-                    >
+                    <Typography component="span" variant="subtitle1" color="textPrimary">
                       {`List by ${item.user.email}`}
                     </Typography>
                   </>
