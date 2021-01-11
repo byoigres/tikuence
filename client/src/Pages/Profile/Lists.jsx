@@ -29,7 +29,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-
 const List = ({ lists }) => {
   const classes = useStyles();
   const [_isLoading, setIsLoading] = useState(false);
@@ -61,6 +60,11 @@ const List = ({ lists }) => {
 
   return (
     <>
+      {lists.length === 0 && (
+        <Typography variant="h5" color="textPrimary">
+          You don&apos;t have any list yet
+        </Typography>
+      )}
       {lists.map((list) => (
         <Card className={classes.card} key={list.id}>
           <CardActionArea className={classes.actionArea}>
