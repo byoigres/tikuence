@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
@@ -7,12 +7,14 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import { Inertia } from '@inertiajs/inertia';
 import Layout from '../../components/Layout';
+import ConfirmDialog from '../../components/ConfirmDialog';
 
 // NOOP
 const useStyles = makeStyles((theme) => ({
@@ -47,12 +49,39 @@ const useStyles = makeStyles((theme) => ({
 
 const Edit = ({ list }) => {
   const classes = useStyles();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
+  const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
 
+  function onRemoveVideoDialogClose() {
+    setIsRemoveVideoDialogOpen(false);
+  }
+
+  function onRemoveButtonClick(id) {
+    setIsRemoveVideoDialogOpen(true);
+    setCurrentVideoToDelete(id);
+  }
+
+  // HTTP handlers
   function handleAddVideo(e) {
     e.preventDefault();
     Inertia.get(
       `/list/${list.id}/video/add?returnUrl=${encodeURIComponent(window.location.pathname)}`
     );
+  }
+
+  function onRemove() {
+    Inertia.delete(`/list/${list.id}/video/${currentVideoToDelete}`, {
+      onStart() {
+        setIsLoading(true);
+      },
+      onSuccess() {},
+      onFinish() {
+        setIsLoading(false);
+        setIsRemoveVideoDialogOpen(false);
+        setCurrentVideoToDelete(null);
+      },
+    });
   }
 
   return (
@@ -76,7 +105,7 @@ const Edit = ({ list }) => {
       >
         {list.videos.map((video) => (
           <Fragment key={video.id}>
-            <ListItem key={video.id} button>
+            <ListItem key={video.id} button disabled={isLoading}>
               <ListItemAvatar className={classes.listItemAvatar}>
                 <Avatar
                   alt={video.title}
@@ -87,15 +116,34 @@ const Edit = ({ list }) => {
               </ListItemAvatar>
               <ListItemText id={video.id} primary={video.title} />
               <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="delete">
-                  <DeleteIcon />
-                </IconButton>
+                <Tooltip title="Remove">
+                  <IconButton
+                    edge="end"
+                    aria-label="remove"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onRemoveButtonClick(video.id);
+                    }}
+                    disabled={isLoading}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
               </ListItemSecondaryAction>
             </ListItem>
             <Divider variant="fullWidth" component="li" />
           </Fragment>
         ))}
       </List>
+      <ConfirmDialog
+        isOpen={isRemoveVideoDialogOpen}
+        onDialogClose={onRemoveVideoDialogClose}
+        actionHandler={onRemove}
+        title="Confirm"
+        description="Are you sure to remove this video from the list?"
+        actionText="Remove"
+        cancelText="Cancel"
+      />
     </>
   );
 };
