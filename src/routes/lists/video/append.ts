@@ -5,10 +5,10 @@ import fetch from 'node-fetch'
 import fs from 'fs/promises'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
-import { getAllLists } from './list'
-import Author from '../../models/author.model'
-import Video from '../../models/video.model'
-import ListsVideos from '../../models/listsvideos.model'
+import { getAllLists } from '../list'
+import Author from '../../../models/author.model'
+import Video from '../../../models/video.model'
+import ListsVideos from '../../../models/listsvideos.model'
 
 interface iPayload {
   videoUrl: string
@@ -61,12 +61,8 @@ async function validatePayload(req: Request, _res: Response, next: NextFunction)
   const parsedPath = parsedUrl.pathname.match(pathRegExp)
 
   if (parsedUrl.hostname !== 'www.tiktok.com' || parsedPath === null) {
-    return req.Inertia.setViewData({ title: 'Add new list' }).render({
-      component: 'Lists/Edit',
-      props: {
-        message: 'Bad URL'
-      }
-    })
+    req.flash('error', `That doesn't seems to be a TikTok video URL`) /* eslint quotes: 0 */
+    return req.Inertia.redirect(`/list/${params.listId}/video/add${req.returnUrl()}`)
   }
 
   const authorName = parsedPath[1].toString()
@@ -98,7 +94,7 @@ async function fetchVideoThumbnail(req: Request, _res: Response, next: NextFunct
   const buffer = await response.buffer()
 
   const imageName = `${uuidv4()}.jpg`
-  const imagePath = path.join(__dirname, '..', '..', '..', 'public', 'images', imageName)
+  const imagePath = path.join(__dirname, '..', '..', '..', '..', 'public', 'images', imageName)
 
   await fs.writeFile(imagePath, buffer)
 
@@ -145,7 +141,7 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
       thumbnail_width: videoInfo.thumbnail_width,
       thumbnail_height: videoInfo.thumbnail_height,
       thumbnail_name: imageName,
-      author: authorId
+      author_id: authorId
     }
   })
 
