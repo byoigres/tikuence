@@ -145,11 +145,6 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
     }
   })
 
-  if (!alreadyExists) {
-    req.flash('info', 'The video you are trying to add is already on the list')
-    return req.Inertia.redirect(`/list/${listId}/edit${req.returnUrl()}`)
-  }
-
   console.log('new video', video)
   console.log('boolean', alreadyExists)
 
@@ -162,16 +157,27 @@ async function matchVideoWithList(req: Request, _res: Response, next: NextFuncti
   const { listId } = req.params
   const videoId = httpContext.get('videoId')
 
-  await ListsVideos.create({
+  const values = {
     list_id: listId,
     video_id: videoId
+  }
+  const [, relationExists] = await ListsVideos.findOrCreate({
+    where: values,
+    defaults: values
   })
+
+  if (!relationExists) {
+    req.flash('info', 'The video you are trying to add is already on the list')
+    return req.Inertia.redirect(`/list/${listId}/edit${req.returnUrl()}`)
+  }
 
   next()
 }
 
 function response(req: Request) {
   const { listId } = req.params
+
+  req.flash('success', 'Video added successfully')
 
   req.Inertia.redirect(`/list/${listId}/edit${req.returnUrl()}`)
 }
