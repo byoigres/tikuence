@@ -36,12 +36,29 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false, flash }) =>
   const notistackRef = React.createRef();
 
   useEffect(() => {
-    const message = flash && (flash.success || flash.error);
+    if (flash) {
+      let message = null;
+      let variant = null;
 
-    if (message) {
-      notistackRef.current.enqueueSnackbar(message, {
-        variant: 'success',
-      });
+      if (flash.success) {
+        message = flash.success;
+        variant = 'success';
+      } else if (flash.info) {
+        message = flash.info;
+        variant = 'info';
+      } else if (flash.warning) {
+        message = flash.warning;
+        variant = 'warning';
+      } else if (flash.error) {
+        message = flash.error;
+        variant = 'error';
+      }
+
+      if (message) {
+        notistackRef.current.enqueueSnackbar(message, {
+          variant,
+        });
+      }
     }
   }, [flash]);
 
