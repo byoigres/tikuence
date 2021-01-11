@@ -184,7 +184,7 @@ function response(req: Request) {
 
   req.flash('success', 'Video added successfully')
 
-  req.Inertia.redirect(`/list/${listId}/edit${req.returnUrl()}`)
+  req.Inertia.redirect(`/list/${listId}/edit`)
 }
 
 export default [
