@@ -53,12 +53,16 @@ export function populateAuth(req: Request, _res: Response, next: NextFunction) {
     flash: () => {
       const messages = {
         success: req.flash('success'),
-        error: req.flash('error')
+        error: req.flash('error'),
+        info: req.flash('info'),
+        warning: req.flash('warning')
       }
 
       return {
         success: messages.success.length > 0 ? messages.success[0] : null,
-        error: messages.error.length > 0 ? messages.error[0] : null
+        error: messages.error.length > 0 ? messages.error[0] : null,
+        info: messages.info.length > 0 ? messages.info[0] : null,
+        warning: messages.warning.length > 0 ? messages.warning[0] : null
       }
     },
     errors: () => {
