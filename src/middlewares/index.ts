@@ -5,10 +5,12 @@ import session from 'express-session'
 import flash from 'connect-flash'
 
 import cookies from './cookies'
+import returnUrl from './returnUrl'
 
 function middlewares(app: Express) {
   app.use(express.static('public'))
   app.use(express.json())
+  app.use(returnUrl)
   app.use(cookies)
   app.use(session({
     secret: 'keyboard cat',
