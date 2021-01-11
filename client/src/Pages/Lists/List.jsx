@@ -78,18 +78,32 @@ const PageList = (props) => {
               </ListItemAvatar>
               <ListItemText
                 id={item.id}
-                primary={item.title}
+                primary={(
+                  <Typography
+                    component="strong"
+                    variant="h6"
+                    color="textPrimary"
+                  >
+                    {item.title}
+                  </Typography>
+                )}
                 secondary={
                   <>
                     <Typography
-                      component="span"
-                      variant="body2"
-                      className={classes.inline}
+                      component="strong"
+                      variant="subtitle2"
                       color="textPrimary"
+                      style={{ display: 'block' }}
                     >
                       4 videos
                     </Typography>
-                    {`List by ${item.user.email}`}
+                    <Typography
+                      component="span"
+                      variant="subtitle1"
+                      color="textPrimary"
+                    >
+                      {`List by ${item.user.email}`}
+                    </Typography>
                   </>
                 }
               />
@@ -102,6 +116,6 @@ const PageList = (props) => {
   );
 };
 
-PageList.layout = (page) => <Layout children={page} title="Lists" flash={page.props.flash} />;
+PageList.layout = (page) => <Layout children={page} title="Tikuence" flash={page.props.flash} />;
 
 export default PageList;
