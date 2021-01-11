@@ -11,7 +11,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import { useSnackbar } from 'notistack';
 import Slide from '@material-ui/core/Slide';
 import Layout from '../../components/Layout';
 
@@ -29,24 +28,25 @@ const useStyles = makeStyles((theme) => ({
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 function getReturnURL() {
-  const query = location.search.slice(1);
+  const query = window.location.search.slice(1);
   const parts = query.split('&');
 
-  const values = parts.map(part => part.split('='))
+  const values = parts
+    .map((part) => part.split('='))
     .reduce((previous, current) => {
+      const item = previous;
       if (current.length > 1) {
-        previous[current[0]] = decodeURIComponent(current[1]);
+        item[current[0]] = decodeURIComponent(current[1]);
       }
 
-      return previous;
+      return item;
     }, {});
 
-  return values['returnUrl'] ? values['returnUrl'] : '/';
+  return values.returnUrl ? values.returnUrl : '/';
 }
 
 const AddVideoPage = ({ listId, errors }) => {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [returnUrl] = useState(getReturnURL());
@@ -72,12 +72,7 @@ const AddVideoPage = ({ listId, errors }) => {
         onStart() {
           setIsLoading(true);
         },
-        onSuccess(page) {
-          if (page.props.flash && page.props.flash.error) {
-            enqueueSnackbar(page.props.flash.error, { variant: 'error' });
-          }
-          // handleClose();
-        },
+        onSuccess() {},
         onFinish() {
           setIsLoading(false);
         },
@@ -115,7 +110,7 @@ const AddVideoPage = ({ listId, errors }) => {
           margin="dense"
           inputProps={{
             maxLength: 150,
-            required: true
+            required: true,
           }}
           required
           disabled={isLoading}
