@@ -11,8 +11,8 @@ import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
-import Layout from '../../components/Layout';
 import { Inertia } from '@inertiajs/inertia';
+import Layout from '../../components/Layout';
 
 // NOOP
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +50,9 @@ const Edit = ({ list }) => {
 
   function handleAddVideo(e) {
     e.preventDefault();
-    Inertia.get(`/list/${list.id}/video/add?returnUrl=${encodeURIComponent(location.pathname)}`);
+    Inertia.get(
+      `/list/${list.id}/video/add?returnUrl=${encodeURIComponent(window.location.pathname)}`
+    );
   }
 
   return (
@@ -60,7 +62,7 @@ const Edit = ({ list }) => {
       </Typography>
       {list.videos.length === 0 && (
         <Typography component="h6" variant="h6">
-          Your list is not visible to others because doesn't have any videos.
+          Your list is not visible to others because doesn&apos;t have any videos.
         </Typography>
       )}
       <Button variant="outlined" color="primary" fullWidth onClick={handleAddVideo} type="button">
