@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
-import Url from 'url'
 import fetch from 'node-fetch'
 import fs from 'fs/promises'
 import path from 'path'
@@ -130,7 +129,6 @@ async function createAuthor(req: Request, _res: Response, next: NextFunction) {
 }
 
 async function createVideo(req: Request, _res: Response, next: NextFunction) {
-  const { listId } = req.params
   const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
   const authorId = httpContext.get('authorId')
 
