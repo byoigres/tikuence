@@ -56,7 +56,14 @@ async function validatePayload(req: Request, _res: Response, next: NextFunction)
     req.Inertia.redirect(`/list/${params.listId}/video/add${req.returnUrl()}`)
   }
 
-  const parsedUrl = new Url.URL(payload.videoUrl)
+  let parsedUrl = null
+
+  try {
+    parsedUrl = new URL(payload.videoUrl)
+  } catch (err) {
+    req.flash('error', `That doesn't seems to be a valid URL`) /* eslint quotes: 0 */
+    return req.Inertia.redirect(`/list/${params.listId}/video/add${req.returnUrl()}`)
+  }
 
   const parsedPath = parsedUrl.pathname.match(pathRegExp)
 
