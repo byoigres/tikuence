@@ -63,9 +63,15 @@ const Edit = ({ list }) => {
           Your list is not visible to others because doesn't have any videos.
         </Typography>
       )}
-      <Button variant="outlined" color="primary" fullWidth onClick={handleAddVideo} type="button">Add videos</Button>
+      <Button variant="outlined" color="primary" fullWidth onClick={handleAddVideo} type="button">
+        Add videos
+      </Button>
       {list.videos.length > 0 && `There are ${list.videos.length} videos in this list`}
-      <List dense className={classes.list} style={{ display: list.videos.length > 0 ? 'block' : 'none' }}>
+      <List
+        dense
+        className={classes.list}
+        style={{ display: list.videos.length > 0 ? 'block' : 'none' }}
+      >
         {list.videos.map((video) => (
           <Fragment key={video.id}>
             <ListItem key={video.id} button>
@@ -221,6 +227,6 @@ const Edit = ({ list }) => {
   );
 };
 */
-Edit.layout = (page) => <Layout children={page} title="Edit list" />;
+Edit.layout = (page) => <Layout children={page} title="Edit list" flash={page.props.flash} />;
 
 export default Edit;
