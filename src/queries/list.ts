@@ -45,6 +45,7 @@ export async function queryDeleteListById(id: number) {
   return await List.destroy({
     where: {
       id
-    }
+    },
+    cascade: true
   })
 }
