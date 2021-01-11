@@ -9,19 +9,9 @@ async function deleteList(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
-async function response(req: Request, res: Response, next: NextFunction) {
-  req.flash('success', 'List deleted successfully')
-  req.method = 'GET'
-
+async function response(req: Request, res: Response) {
   req.flash('success', 'List had been removed')
-
-  const referer = req.get('referer')
-
-  if (referer) {
-    res.redirect(303, referer)
-  } else {
-    res.redirect(303, '/profile/lists')
-  }
+  req.Inertia.redirect('/profile/lists')
 }
 
 export default [deleteList, response]
