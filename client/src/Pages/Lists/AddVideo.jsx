@@ -28,27 +28,28 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
+function getReturnURL() {
+  const query = location.search.slice(1);
+  const parts = query.split('&');
+
+  const values = parts.map(part => part.split('='))
+    .reduce((previous, current) => {
+      if (current.length > 1) {
+        previous[current[0]] = decodeURIComponent(current[1]);
+      }
+
+      return previous;
+    }, {});
+
+  return values['returnUrl'] ? values['returnUrl'] : '/';
+}
+
 const AddVideoPage = ({ listId, errors }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
-
-  function getReturnURL() {
-    const query = location.search.slice(1);
-    const parts = query.split('&');
-
-    const values = parts.map(part => part.split('='))
-      .reduce((previous, current) => {
-        if (current.length > 1) {
-          previous[current[0]] = decodeURIComponent(current[1]);
-        }
-        
-        return previous;
-      }, {});
-
-    return values['returnUrl'] ? values['returnUrl'] : '/';
-  }
+  const [returnUrl] = useState(getReturnURL());
 
   function handleChange(e) {
     const { value } = e.target;
@@ -65,7 +66,7 @@ const AddVideoPage = ({ listId, errors }) => {
     e.stopPropagation();
 
     Inertia.post(
-      `/list/${listId}/video`,
+      `/list/${listId}/video${returnUrl ? `?returnUrl=${encodeURIComponent(returnUrl)}` : ''}`,
       { videoUrl },
       {
         onStart() {
@@ -113,8 +114,10 @@ const AddVideoPage = ({ listId, errors }) => {
           fullWidth
           margin="dense"
           inputProps={{
-            maxLength: 150
+            maxLength: 150,
+            required: true
           }}
+          required
           disabled={isLoading}
           value={videoUrl}
           onChange={handleChange}

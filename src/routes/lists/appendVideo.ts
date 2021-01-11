@@ -14,10 +14,26 @@ const pathRegExp = /^\/@[A-Za-z0-9_]+\/video\/[0-9]+/
 
 async function validatePayload(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
-  // const params = req.params
+  const params = req.params
+  const query = req.query
+
+  console.log('req.path', req.path)
+  console.log('req.query', req.query)
+
+  if (payload.videoUrl.length === 0) {
+    req.flash(
+      'errors',
+      JSON.stringify({
+        videoUrl: 'This field is required'
+      })
+    )
+
+    return req.Inertia.redirect(
+      `/list/${params.listId}/video/add?returnUrl=${encodeURIComponent(query.returnUrl ? query.returnUrl as string: '')}`)
+  }
 
   const parsedUrl = new Url.URL(payload.videoUrl)
-  
+
   console.log(parsedUrl)
 
   if (parsedUrl.hostname !== 'www.tiktok.com' && pathRegExp.test(parsedUrl.pathname)) {
@@ -80,6 +96,7 @@ function response(req: Request) {
 }
 
 export default [
+  validatePayload,
   fetchVideoInfo,
   fetchVideoThumbnail,
   createList, 
