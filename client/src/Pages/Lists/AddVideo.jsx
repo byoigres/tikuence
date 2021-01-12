@@ -61,10 +61,7 @@ const AddVideoPage = ({ listId, errors }) => {
     Inertia.get(getReturnURL());
   };
 
-  const handleCreate = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
+  function onCreate() {
     Inertia.post(
       `/list/${listId}/video${returnUrl ? `?returnUrl=${encodeURIComponent(returnUrl)}` : ''}`,
       { videoUrl },
@@ -78,7 +75,21 @@ const AddVideoPage = ({ listId, errors }) => {
         },
       }
     );
+  }
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    onCreate();
   };
+
+  function handleOnKeyPress(ev) {
+    if (ev.key === 'Enter') {
+      ev.preventDefault();
+      onCreate();
+    }
+  }
 
   return (
     <Dialog fullScreen open onClose={handleClose} TransitionComponent={Transition}>
@@ -116,6 +127,7 @@ const AddVideoPage = ({ listId, errors }) => {
           disabled={isLoading}
           value={videoUrl}
           onChange={handleChange}
+          onKeyPress={handleOnKeyPress}
           error={errors.videoUrl !== undefined}
           helperText={errors.videoUrl}
         />
