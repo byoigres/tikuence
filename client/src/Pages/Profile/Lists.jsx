@@ -85,6 +85,9 @@ const List = ({ lists }) => {
                 <Typography component="h5" variant="h5">
                   {list.title}
                 </Typography>
+                <Typography variant="subtitle1" color="textPrimary">
+                  {list.videos.length} videos
+                </Typography>
                 <Typography variant="subtitle2" color="textSecondary">
                   List by {list.user.email}
                 </Typography>
