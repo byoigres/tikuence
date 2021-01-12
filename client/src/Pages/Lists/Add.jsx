@@ -50,20 +50,7 @@ const AddPage = ({ errors }) => {
     return values['returnUrl'] ? values['returnUrl'] : '/';
   }
 
-  function handleChange(e) {
-    const { value } = e.target;
-
-    setTitle(value);
-  }
-
-  const handleClose = () => {
-    Inertia.get(getReturnURL());
-  };
-
-  const handleCreate = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
+  function onCreate() {
     Inertia.post(
       '/list',
       { title },
@@ -82,6 +69,30 @@ const AddPage = ({ errors }) => {
         },
       }
     );
+  }
+
+  function handleChange(e) {
+    const { value } = e.target;
+
+    setTitle(value);
+  }
+
+  const handleClose = () => {
+    Inertia.get(getReturnURL());
+  };
+
+  function handleOnKeyPress(ev) {
+    if (ev.key === 'Enter') {
+      ev.preventDefault();
+      onCreate();
+    }
+  }
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    onCreate();
   };
 
   return (
@@ -113,11 +124,12 @@ const AddPage = ({ errors }) => {
           fullWidth
           margin="dense"
           inputProps={{
-            maxLength: 150
+            maxLength: 150,
           }}
           disabled={isLoading}
           value={title}
           onChange={handleChange}
+          onKeyPress={handleOnKeyPress}
           error={errors.title !== undefined}
           helperText={errors.title}
         />
