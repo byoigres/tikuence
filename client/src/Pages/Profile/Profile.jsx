@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const List = ({ user }) => {
+const ProfilePage = ({ user }) => {
   const classes = useStyles();
 
   return (
@@ -34,6 +34,6 @@ const List = ({ user }) => {
   );
 };
 
-List.layout = (page) => <Layout children={page} title="Profile" flash={page.props.flash} />;
+ProfilePage.layout = (page) => <Layout children={page} title="Profile" flash={page.props.flash} />;
 
-export default List;
+export default ProfilePage;
