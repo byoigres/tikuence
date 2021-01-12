@@ -35,19 +35,21 @@ const AddPage = ({ errors }) => {
   const [title, setTitle] = useState('');
 
   function getReturnURL() {
-    const query = location.search.slice(1);
+    const query = window.location.search.slice(1);
     const parts = query.split('&');
 
-    const values = parts.map(part => part.split('='))
+    const values = parts
+      .map((part) => part.split('='))
       .reduce((previous, current) => {
+        const item = previous;
         if (current.length > 1) {
-          previous[current[0]] = decodeURIComponent(current[1]);
+          item[current[0]] = decodeURIComponent(current[1]);
         }
-        
-        return previous;
+
+        return item;
       }, {});
 
-    return values['returnUrl'] ? values['returnUrl'] : '/';
+    return values.returnUrl ? values.returnUrl : '/';
   }
 
   function onCreate() {
