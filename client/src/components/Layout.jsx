@@ -67,7 +67,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false, flash }) =>
       <SnackbarProvider
         ref={notistackRef}
         anchorOrigin={{
-          vertical: 'top',
+          vertical: 'bottom',
           horizontal: 'center',
         }}
         action={(key) => (
