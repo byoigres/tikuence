@@ -45,6 +45,21 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(7),
     height: '100%',
   },
+  messageNumberOfVideos: {
+    display: 'block',
+    textAlign: 'center',
+    margin: '1rem 0',
+  },
+  messageNoVideos: {
+    textAlign: 'center',
+    margin: '1rem 0',
+  },
+  title: {
+    textAlign: 'center',
+  },
+  addVideoButton: {
+    marginBottom: '1rem',
+  },
 }));
 
 const Edit = ({ list }) => {
@@ -86,55 +101,69 @@ const Edit = ({ list }) => {
 
   return (
     <>
-      <Typography component="h4" variant="h4">
+      <Typography component="h4" variant="h4" className={classes.title}>
         {list.title}
       </Typography>
       {list.videos.length === 0 && (
-        <Typography component="h6" variant="h6">
+        <Typography
+          component="h6"
+          variant="h6"
+          color="secondary"
+          className={classes.messageNoVideos}
+        >
           Your list is not visible to others because doesn&apos;t have any videos.
         </Typography>
       )}
-      <Button variant="outlined" color="primary" fullWidth onClick={handleAddVideo} type="button">
+      {list.videos.length > 0 && (
+        <Typography component="span" variant="secondary" className={classes.messageNumberOfVideos}>
+          {`There are ${list.videos.length} videos in this list`}
+        </Typography>
+      )}
+      <Button
+        variant="outlined"
+        color="primary"
+        fullWidth
+        onClick={handleAddVideo}
+        type="button"
+        className={classes.addVideoButton}
+      >
         Add videos
       </Button>
-      {list.videos.length > 0 && `There are ${list.videos.length} videos in this list`}
-      <List
-        dense
-        className={classes.list}
-        style={{ display: list.videos.length > 0 ? 'block' : 'none' }}
-      >
-        {list.videos.map((video) => (
-          <Fragment key={video.id}>
-            <ListItem key={video.id} button disabled={isLoading}>
-              <ListItemAvatar className={classes.listItemAvatar}>
-                <Avatar
-                  alt={video.title}
-                  className={classes.avatar}
-                  variant="square"
-                  src={`/images/${video.thumbnail_name}`}
-                />
-              </ListItemAvatar>
-              <ListItemText id={video.id} primary={video.title} />
-              <ListItemSecondaryAction>
-                <Tooltip title="Remove">
-                  <IconButton
-                    edge="end"
-                    aria-label="remove"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onRemoveButtonClick(video.id);
-                    }}
-                    disabled={isLoading}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              </ListItemSecondaryAction>
-            </ListItem>
-            <Divider variant="fullWidth" component="li" />
-          </Fragment>
-        ))}
-      </List>
+      {list.videos.length > 0 && (
+        <List dense className={classes.list}>
+          {list.videos.map((video, index) => (
+            <Fragment key={video.id}>
+              <ListItem key={video.id} button disabled={isLoading}>
+                <ListItemAvatar className={classes.listItemAvatar}>
+                  <Avatar
+                    alt={video.title}
+                    className={classes.avatar}
+                    variant="square"
+                    src={`/images/${video.thumbnail_name}`}
+                  />
+                </ListItemAvatar>
+                <ListItemText id={video.id} primary={video.title} />
+                <ListItemSecondaryAction>
+                  <Tooltip title="Remove">
+                    <IconButton
+                      edge="end"
+                      aria-label="remove"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onRemoveButtonClick(video.id);
+                      }}
+                      disabled={isLoading}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </ListItemSecondaryAction>
+              </ListItem>
+              {index !== list.videos.length - 1 && <Divider variant="fullWidth" component="li" />}
+            </Fragment>
+          ))}
+        </List>
+      )}
       <ConfirmDialog
         isOpen={isRemoveVideoDialogOpen}
         onDialogClose={onRemoveVideoDialogClose}
