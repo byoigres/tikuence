@@ -29,6 +29,7 @@ const NavBar = ({ html }) => {
         </Helmet>
         <div
           ref={ref}
+          data-name="TikTokVideo"
           style={{ display: loaded && html ? 'flex' : 'none' }}
           dangerouslySetInnerHTML={{ __html: content || '' }}
         />
