@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     flex: 1,
   },
+  dialog: {
+    padding: 0,
+  },
 }));
 
 const Container = styled.section`
@@ -89,7 +92,7 @@ const Details = ({ list }) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <DialogContent>
+      <DialogContent className={classes.dialog}>
         <Container data-name="Container">
           {list.videos.map((video) => (
             <Video key={video.id}>
