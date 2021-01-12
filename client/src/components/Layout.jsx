@@ -14,6 +14,7 @@ const useStyles = makeStyles({
     marginTop: '4rem',
     marginLeft: p.cleanLayout ? 0 : '1rem',
     marginRight: p.cleanLayout ? 0 : '1rem',
+    paddingBottom: '4rem',
   }),
 });
 
