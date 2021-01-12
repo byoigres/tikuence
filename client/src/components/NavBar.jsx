@@ -96,7 +96,7 @@ const NavBar = () => {
             Inertia.get(`/list/add?returnUrl=${encodeURIComponent(location.pathname)}`);
             break;
           case 2:
-            Inertia.get('/profile/lists');
+            Inertia.get('/profile');
             break;
           default:
             Inertia.get('/');
