@@ -4,10 +4,6 @@ import Author from '../../models/author.model'
 import Video from '../../models/video.model'
 import List from '../../models/list.model'
 
-// interface iPayload {
-//     id: number;
-// }
-
 async function getCounters (req: Request) {
   const payload = req.params
 
@@ -39,7 +35,7 @@ async function getCounters (req: Request) {
     ]
   })
 
-  req.Inertia.setViewData({ title: 'Counter events' }).render({
+  req.Inertia.setViewData({ title: list?.title }).render({
     component: 'Lists/Details',
     props: {
       list

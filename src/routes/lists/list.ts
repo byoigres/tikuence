@@ -35,12 +35,11 @@ async function queryAllLists(withVideos = false) {
 /**
  * Return all lists that include at least one video
  * [httpContext = lists]
- * @param req 
- * @param _res 
- * @param next 
+ * @param req
+ * @param _res
+ * @param next
  */
 export async function getAllLists (req: Request, _res: Response, next: NextFunction) {
-
   const lists = await queryAllLists(false);
 
   httpContext.set('lists', lists)
@@ -49,7 +48,6 @@ export async function getAllLists (req: Request, _res: Response, next: NextFunct
 }
 
 export async function getAllListsWithVideos(req: Request, _res: Response, next: NextFunction) {
-
   const lists = await queryAllLists(true);
 
   httpContext.set('lists', lists)
@@ -60,7 +58,7 @@ export async function getAllListsWithVideos(req: Request, _res: Response, next: 
 async function response (req: Request) {
   const lists: List[] = httpContext.get('lists')
 
-  req.Inertia.setViewData({ title: 'Counter events' }).render({
+  req.Inertia.setViewData({ title: 'Lists' }).render({
     component: 'Lists/List',
     props: {
       lists
