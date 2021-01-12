@@ -8,6 +8,7 @@ import { getAllLists } from '../list'
 import Author from '../../../models/author.model'
 import Video from '../../../models/video.model'
 import ListsVideos from '../../../models/listsvideos.model'
+import url from 'url'
 
 interface iPayload {
   videoUrl: string
@@ -37,8 +38,8 @@ interface iTikTokOembed {
   provider_name: string
 }
 
-// const pathRegExp = /^\/@[A-Za-z0-9_]+\/video\/[0-9]+/
-const pathRegExp = /^\/@([A-Za-z0-9_.]+)\/video\/([0-9]+)/
+const regExpPathForWeb = /^\/@[A-Za-z0-9_.]+\/video\/([0-9]+)/
+const regExpPathForMobile = /^\/v\/([0-9]+).html/
 
 async function validatePayload(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
@@ -55,37 +56,55 @@ async function validatePayload(req: Request, _res: Response, next: NextFunction)
     req.Inertia.redirect(`/list/${params.listId}/video/add${req.returnUrl()}`)
   }
 
-  let parsedUrl = null
-
-  try {
-    parsedUrl = new URL(payload.videoUrl)
-  } catch (err) {
-    req.flash('error', `That doesn't seems to be a valid URL`) /* eslint quotes: 0 */
-    return req.Inertia.redirect(`/list/${params.listId}/video/add${req.returnUrl()}`)
-  }
-
-  const parsedPath = parsedUrl.pathname.match(pathRegExp)
-
-  if (parsedUrl.hostname !== 'www.tiktok.com' || parsedPath === null) {
-    req.flash('error', `That doesn't seems to be a TikTok video URL`) /* eslint quotes: 0 */
-    return req.Inertia.redirect(`/list/${params.listId}/video/add${req.returnUrl()}`)
-  }
-
-  const authorName = parsedPath[1].toString()
-  const videoId = parsedPath[2].toString()
-
-  httpContext.set('authorName', authorName)
-  httpContext.set('videoId', videoId)
-
   next()
 }
 
-async function fetchVideoInfo(req: Request, _res: Response, next: NextFunction) {
+async function validateUrl(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
+  const { listId } = req.params
 
-  const response = await fetch(`https://www.tiktok.com/oembed?url=${payload.videoUrl}`)
+  let parsedUrl: url.URL
 
-  const json : iTikTokOembed = await response.json()
+  try {
+    parsedUrl = new url.URL(payload.videoUrl)
+  } catch (err) {
+    req.flash('error', `That doesn't seems to be a valid url.URL`) /* eslint quotes: 0 */
+    return req.Inertia.redirect(`/list/${listId}/video/add${req.returnUrl()}`)
+  }
+
+  // If the url.URL is a shorturl, get the "real" url by following the redirection
+  if (parsedUrl.hostname === 'vm.tiktok.com') {
+    const response = await fetch(payload.videoUrl)
+
+    if (response.redirected) {
+      parsedUrl = new url.URL(response.url)
+    }
+  }
+
+  if (parsedUrl.hostname === 'www.tiktok.com' || parsedUrl.hostname === 'm.tiktok.com') {
+    const parsedPath = parsedUrl.pathname.match(
+      parsedUrl.hostname === 'www.tiktok.com' ? regExpPathForWeb : regExpPathForMobile
+    )
+
+    if (!parsedPath) {
+      req.flash('error', `That doesn't seems to be a TikTok video url.URL`) /* eslint quotes: 0 */
+      return req.Inertia.redirect(`/list/${listId}/video/add${req.returnUrl()}`)
+    }
+
+    const [, videoId] = parsedPath
+    httpContext.set('videoId', videoId)
+    httpContext.set('tiktokUrl', url.format(parsedUrl))
+
+    next()
+  }
+}
+
+async function fetchVideoInfo(req: Request, _res: Response, next: NextFunction) {
+  const videoUrl = httpContext.get('tiktokUrl')
+
+  const response = await fetch(`https://www.tiktok.com/oembed?url=${videoUrl}`)
+
+  const json: iTikTokOembed = await response.json()
 
   httpContext.set('videoInfo', json)
 
@@ -106,6 +125,16 @@ async function fetchVideoThumbnail(req: Request, _res: Response, next: NextFunct
 
   httpContext.set('imageName', imageName)
 
+  next()
+}
+
+async function extractAuthorFromUrl(req: Request, _res: Response, next: NextFunction) {
+  const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
+  const parsedUrl = new url.URL(videoInfo.author_url)
+
+  const authroName = parsedUrl.pathname.slice(2)
+
+  httpContext.set('authorName', authroName)
   next()
 }
 
@@ -189,8 +218,10 @@ function response(req: Request) {
 
 export default [
   validatePayload,
+  validateUrl,
   fetchVideoInfo,
   fetchVideoThumbnail,
+  extractAuthorFromUrl,
   createAuthor,
   createVideo,
   matchVideoWithList,
