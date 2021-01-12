@@ -115,7 +115,7 @@ const Edit = ({ list }) => {
         </Typography>
       )}
       {list.videos.length > 0 && (
-        <Typography component="span" variant="secondary" className={classes.messageNumberOfVideos}>
+        <Typography component="span" variant="subtitle1" className={classes.messageNumberOfVideos}>
           {`There are ${list.videos.length} videos in this list`}
         </Typography>
       )}
