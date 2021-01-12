@@ -12,15 +12,17 @@ function middlewares(app: Express) {
   app.use(express.json())
   app.use(returnUrl)
   app.use(cookies)
-  app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: false,
-      maxAge: 60000
-    }
-  }))
+  app.use(
+    session({
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        secure: false,
+        maxAge: 60000
+      }
+    })
+  )
   app.use(flash())
   app.use(inertia)
   app.use(populateAuth)

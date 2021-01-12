@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 
 export function configureReturnUrl(req: Request, res: Response, next: NextFunction) {
   function returnUrl() {
-    const params = `?returnUrl=${encodeURIComponent(req.query.returnUrl ? req.query.returnUrl as string : '')}`
+    const params = `?returnUrl=${encodeURIComponent(req.query.returnUrl ? (req.query.returnUrl as string) : '')}`
 
     return params
   }

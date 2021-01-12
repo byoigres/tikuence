@@ -1,4 +1,3 @@
-
 import User from '../models/user.model'
 import Author from '../models/author.model'
 import Video from '../models/video.model'
