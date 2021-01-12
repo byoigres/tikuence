@@ -11,7 +11,7 @@ import NavBar from './NavBar';
 
 const useStyles = makeStyles({
   container: (p) => ({
-    marginTop: '4rem',
+    marginTop: p.cleanLayout ? 0 : '4rem',
     marginLeft: p.cleanLayout ? 0 : '1rem',
     marginRight: p.cleanLayout ? 0 : '1rem',
   }),
@@ -82,7 +82,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false, flash }) =>
           </AppBar>
         )}
         <div className={classes.container}>{children}</div>
-        {!cleanLayout && <NavBar />}
+        <NavBar />
       </SnackbarProvider>
     </ThemeProvider>
   );
