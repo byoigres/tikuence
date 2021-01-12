@@ -63,7 +63,9 @@ const PageList = (props) => {
               button
               onClick={(e) => {
                 e.preventDefault();
-                Inertia.visit(`/list/${item.id}`);
+                Inertia.visit(`/list/${item.id}`, {
+                  preserveScroll: false,
+                });
               }}
             >
               <ListItemAvatar className={classes.listItemAvatar}>
