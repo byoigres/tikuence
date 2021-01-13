@@ -93,7 +93,7 @@ const NavBar = () => {
             Inertia.get('/');
             break;
           case 1:
-            Inertia.get(`/list/add?returnUrl=${encodeURIComponent(location.pathname)}`);
+            Inertia.get(`/list/add?returnUrl=${encodeURIComponent(window.location.pathname)}`);
             break;
           case 2:
             Inertia.get('/profile');
