@@ -72,8 +72,14 @@ const List = ({ lists }) => {
     Inertia.visit('/profile');
   };
 
+  const animationProp = {};
+
+  if (!window.location.search.includes('an=0')) {
+    animationProp.TransitionComponent = Transition;
+  }
+
   return (
-    <Dialog fullScreen open onClose={handleListDialogClose} TransitionComponent={Transition}>
+    <Dialog fullScreen open onClose={handleListDialogClose} {...animationProp}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton

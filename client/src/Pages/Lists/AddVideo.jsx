@@ -27,29 +27,10 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-function getReturnURL() {
-  const query = window.location.search.slice(1);
-  const parts = query.split('&');
-
-  const values = parts
-    .map((part) => part.split('='))
-    .reduce((previous, current) => {
-      const item = previous;
-      if (current.length > 1) {
-        item[current[0]] = decodeURIComponent(current[1]);
-      }
-
-      return item;
-    }, {});
-
-  return values.returnUrl ? values.returnUrl : '/';
-}
-
 const AddVideoPage = ({ listId, errors }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
-  const [returnUrl] = useState(getReturnURL());
 
   function handleChange(e) {
     const { value } = e.target;
@@ -58,12 +39,12 @@ const AddVideoPage = ({ listId, errors }) => {
   }
 
   const handleClose = () => {
-    Inertia.get(getReturnURL());
+    Inertia.visit(`/list/${listId}/edit?an=0`);
   };
 
   function onCreate() {
     Inertia.post(
-      `/list/${listId}/video${returnUrl ? `?returnUrl=${encodeURIComponent(returnUrl)}` : ''}`,
+      `/list/${listId}/video`,
       { videoUrl },
       {
         onStart() {
