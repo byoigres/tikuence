@@ -1,17 +1,24 @@
 import React, { Fragment, useState } from 'react';
+
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import { makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Slide from '@material-ui/core/Slide';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core/styles';
 import { Inertia } from '@inertiajs/inertia';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
@@ -62,6 +69,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/* eslint react/jsx-props-no-spreading: 0 */
+const Transition = React.forwardRef((props, ref) => (
+  <Slide direction="left" ref={ref} {...props} />
+));
+
 const Edit = ({ list }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
@@ -80,9 +92,7 @@ const Edit = ({ list }) => {
   // HTTP handlers
   function handleAddVideo(e) {
     e.preventDefault();
-    Inertia.get(
-      `/list/${list.id}/video/add?returnUrl=${encodeURIComponent(window.location.pathname)}`
-    );
+    Inertia.get(`/list/${list.id}/video/add`);
   }
 
   function onRemove() {
@@ -99,71 +109,107 @@ const Edit = ({ list }) => {
     });
   }
 
+  const handleEditDialogClose = () => {
+    Inertia.get('/profile/lists', { an: 0 });
+  };
+
+  const animationProp = {};
+
+  if (!window.location.search.includes('an=0')) {
+    animationProp.TransitionComponent = Transition;
+  }
+
   return (
     <>
-      <Typography component="h4" variant="h4" className={classes.title}>
-        {list.title}
-      </Typography>
-      {list.videos.length === 0 && (
-        <Typography
-          component="h6"
-          variant="h6"
-          color="secondary"
-          className={classes.messageNoVideos}
-        >
-          Your list is not visible to others because doesn&apos;t have any videos.
-        </Typography>
-      )}
-      {list.videos.length > 0 && (
-        <Typography component="span" variant="subtitle1" className={classes.messageNumberOfVideos}>
-          {`There are ${list.videos.length} videos in this list`}
-        </Typography>
-      )}
-      <Button
-        variant="outlined"
-        color="primary"
-        fullWidth
-        onClick={handleAddVideo}
-        type="button"
-        className={classes.addVideoButton}
-      >
-        Add videos
-      </Button>
-      {list.videos.length > 0 && (
-        <List dense className={classes.list}>
-          {list.videos.map((video, index) => (
-            <Fragment key={video.id}>
-              <ListItem key={video.id} button disabled={isLoading}>
-                <ListItemAvatar className={classes.listItemAvatar}>
-                  <Avatar
-                    alt={video.title}
-                    className={classes.avatar}
-                    variant="square"
-                    src={`/images/${video.thumbnail_name}`}
-                  />
-                </ListItemAvatar>
-                <ListItemText id={video.id} primary={video.title} />
-                <ListItemSecondaryAction>
-                  <Tooltip title="Remove">
-                    <IconButton
-                      edge="end"
-                      aria-label="remove"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onRemoveButtonClick(video.id);
-                      }}
-                      disabled={isLoading}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
-                </ListItemSecondaryAction>
-              </ListItem>
-              {index !== list.videos.length - 1 && <Divider variant="fullWidth" component="li" />}
-            </Fragment>
-          ))}
-        </List>
-      )}
+      <Dialog fullScreen open onClose={handleEditDialogClose} {...animationProp}>
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleEditDialogClose}
+              aria-label="close"
+              disabled={isLoading}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              {list.title}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <DialogContent>
+          <Typography component="h4" variant="h4" className={classes.title}>
+            {list.title}
+          </Typography>
+          {list.videos.length === 0 && (
+            <Typography
+              component="h6"
+              variant="h6"
+              color="secondary"
+              className={classes.messageNoVideos}
+            >
+              Your list is not visible to others because doesn&apos;t have any videos.
+            </Typography>
+          )}
+          {list.videos.length > 0 && (
+            <Typography
+              component="span"
+              variant="subtitle1"
+              className={classes.messageNumberOfVideos}
+            >
+              {`There are ${list.videos.length} videos in this list`}
+            </Typography>
+          )}
+          <Button
+            variant="outlined"
+            color="primary"
+            fullWidth
+            onClick={handleAddVideo}
+            type="button"
+            className={classes.addVideoButton}
+          >
+            Add videos
+          </Button>
+          {list.videos.length > 0 && (
+            <List dense className={classes.list}>
+              {list.videos.map((video, index) => (
+                <Fragment key={video.id}>
+                  <ListItem key={video.id} button disabled={isLoading}>
+                    <ListItemAvatar className={classes.listItemAvatar}>
+                      <Avatar
+                        alt={video.title}
+                        className={classes.avatar}
+                        variant="square"
+                        src={`/images/${video.thumbnail_name}`}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText id={video.id} primary={video.title} />
+                    <ListItemSecondaryAction>
+                      <Tooltip title="Remove">
+                        <IconButton
+                          edge="end"
+                          aria-label="remove"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onRemoveButtonClick(video.id);
+                          }}
+                          disabled={isLoading}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                  {index !== list.videos.length - 1 && (
+                    <Divider variant="fullWidth" component="li" />
+                  )}
+                </Fragment>
+              ))}
+            </List>
+          )}
+        </DialogContent>
+      </Dialog>
       <ConfirmDialog
         isOpen={isRemoveVideoDialogOpen}
         onDialogClose={onRemoveVideoDialogClose}
