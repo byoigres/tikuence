@@ -40,7 +40,7 @@ async function queryAllLists(withVideos = false) {
  * @param next
  */
 export async function getAllLists (req: Request, _res: Response, next: NextFunction) {
-  const lists = await queryAllLists(false);
+  const lists = await queryAllLists(false)
 
   httpContext.set('lists', lists)
 
@@ -48,7 +48,7 @@ export async function getAllLists (req: Request, _res: Response, next: NextFunct
 }
 
 export async function getAllListsWithVideos(req: Request, _res: Response, next: NextFunction) {
-  const lists = await queryAllLists(true);
+  const lists = await queryAllLists(true)
 
   httpContext.set('lists', lists)
 

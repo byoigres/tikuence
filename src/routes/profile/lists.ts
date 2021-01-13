@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request } from 'express'
 import httpContext from 'express-http-context'
 import { getAllLists } from '../lists/list'
 import List from '../../models/list.model'
