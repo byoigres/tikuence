@@ -53,7 +53,7 @@ async function validatePayload(req: Request, _res: Response, next: NextFunction)
       })
     )
 
-    req.Inertia.redirect(`/list/${params.listId}/video/add${req.returnUrl()}`)
+    req.Inertia.redirect(`/list/${params.listId}/video/add`)
   }
 
   next()
@@ -69,7 +69,7 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
     parsedUrl = new url.URL(payload.videoUrl)
   } catch (err) {
     req.flash('error', `That doesn't seems to be a valid url.URL`) /* eslint quotes: 0 */
-    return req.Inertia.redirect(`/list/${listId}/video/add${req.returnUrl()}`)
+    return req.Inertia.redirect(`/list/${listId}/video/add`)
   }
 
   // If the url.URL is a shorturl, get the "real" url by following the redirection
@@ -88,7 +88,7 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
 
     if (!parsedPath) {
       req.flash('error', `That doesn't seems to be a TikTok video url.URL`) /* eslint quotes: 0 */
-      return req.Inertia.redirect(`/list/${listId}/video/add${req.returnUrl()}`)
+      return req.Inertia.redirect(`/list/${listId}/video/add`)
     }
 
     const [, videoId] = parsedPath
@@ -202,7 +202,7 @@ async function matchVideoWithList(req: Request, _res: Response, next: NextFuncti
 
   if (!relationExists) {
     req.flash('info', 'The video you are trying to add is already on the list')
-    return req.Inertia.redirect(`/list/${listId}/edit${req.returnUrl()}`)
+    return req.Inertia.redirect(`/list/${listId}/edit`)
   }
 
   next()
