@@ -1,5 +1,6 @@
 import { Request } from 'express'
 import { getAllLists } from '../lists/list'
+import { isAuthenticated } from '../../middlewares/inertia'
 import User from '../../models/user.model'
 
 async function response(req: Request) {
@@ -18,4 +19,4 @@ async function response(req: Request) {
   })
 }
 
-export default [getAllLists, response]
+export default [isAuthenticated, getAllLists, response]

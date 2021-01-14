@@ -42,6 +42,16 @@ const template = (page: object, viewData: ViewData) => `
 </html>
 `
 
+export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+
+  req.flash('warning', 'You need to login first to acces this page')
+
+  req.Inertia.redirect('/login')
+}
+
 export function populateAuth(req: Request, _res: Response, next: NextFunction) {
   req.Inertia.shareProps({
     auth: {
