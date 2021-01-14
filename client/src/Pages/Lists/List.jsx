@@ -108,6 +108,6 @@ const PageList = (props) => {
   );
 };
 
-PageList.layout = (page) => <Layout children={page} title="Tikuence" flash={page.props.flash} />;
+PageList.layout = (page) => <Layout children={page} title="Tikuence" />;
 
 export default PageList;

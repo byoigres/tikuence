@@ -352,6 +352,6 @@ const Edit = ({ list }) => {
   );
 };
 */
-Edit.layout = (page) => <Layout children={page} title="Edit list" flash={page.props.flash} />;
+Edit.layout = (page) => <Layout children={page} title="Edit list" />;
 
 export default Edit;

@@ -176,6 +176,6 @@ const List = ({ lists }) => {
   );
 };
 
-List.layout = (page) => <Layout children={page} cleanLayout flash={page.props.flash} />;
+List.layout = (page) => <Layout children={page} cleanLayout />;
 
 export default List;

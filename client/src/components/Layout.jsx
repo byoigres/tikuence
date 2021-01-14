@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -32,8 +33,14 @@ const theme = createMuiTheme({
   },
 });
 
-const Layout = ({ children, title = 'Tikuence', cleanLayout = false, flash }) => {
+const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
   const classes = useStyles({ cleanLayout });
+  const {
+    props: {
+      auth: { isAuthenticated },
+      flash,
+    },
+  } = usePage();
   const notistackRef = React.createRef();
 
   useEffect(() => {
@@ -83,7 +90,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false, flash }) =>
           </AppBar>
         )}
         <div className={classes.container}>{children}</div>
-        {!cleanLayout && <NavBar />}
+        {!cleanLayout && <NavBar isAuthenticated={isAuthenticated} />}
       </SnackbarProvider>
     </ThemeProvider>
   );

@@ -143,6 +143,6 @@ const AddPage = ({ errors }) => {
   );
 };
 
-AddPage.layout = (page) => <Layout children={page} cleanLayout flash={page.props.flash} />;
+AddPage.layout = (page) => <Layout children={page} cleanLayout />;
 
 export default AddPage;

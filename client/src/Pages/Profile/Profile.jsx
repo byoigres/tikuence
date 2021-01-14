@@ -34,6 +34,6 @@ const ProfilePage = ({ user }) => {
   );
 };
 
-ProfilePage.layout = (page) => <Layout children={page} title="Profile" flash={page.props.flash} />;
+ProfilePage.layout = (page) => <Layout children={page} title="Profile" />;
 
 export default ProfilePage;
