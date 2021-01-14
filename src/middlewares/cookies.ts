@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 import cookieParser from 'cookie-parser'
 
+export function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.redirect('/login')
+}
+
 export function checkToken(req: Request, res: Response, next: NextFunction) {
   // get authcookie from request
   const data = req.cookies.ssid
@@ -14,7 +21,7 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
 
     return next()
   } else {
-    res.redirect('/sessions')
+    res.redirect('/login')
   }
 }
 

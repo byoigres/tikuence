@@ -5,24 +5,25 @@ import session from 'express-session'
 import flash from 'connect-flash'
 
 import cookies from './cookies'
-import returnUrl from './returnUrl'
+import passport from './passport'
 
 function middlewares(app: Express) {
   app.use(express.static('public'))
   app.use(express.json())
-  app.use(returnUrl)
   app.use(cookies)
   app.use(
     session({
       secret: 'keyboard cat',
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       cookie: {
         secure: false,
         maxAge: 60000
       }
     })
   )
+  app.use(passport.initialize())
+  app.use(passport.session())
   app.use(flash())
   app.use(inertia)
   app.use(populateAuth)

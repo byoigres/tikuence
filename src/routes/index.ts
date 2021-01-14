@@ -5,9 +5,11 @@ import { Express } from 'express'
 import home from './lists/list'
 import lists from './lists'
 import profile from './profile'
+import auth from './auth'
 
 function bindRoutes(app: Express) {
   app.get('/', home)
+  app.use('/', auth)
   // app.use("/sessions", sessions);
   // app.use("/events", events);
   app.use('/list', lists)
