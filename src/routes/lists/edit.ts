@@ -4,9 +4,8 @@ import Author from '../../models/author.model'
 import Video from '../../models/video.model'
 import List from '../../models/list.model'
 
-async function getCounters (req: Request) {
+async function view (req: Request) {
   const params = req.params
-  console.log(req.params)
 
   const list = await List.findOne({
     attributes: ['id', 'title'],
@@ -44,4 +43,4 @@ async function getCounters (req: Request) {
   })
 }
 
-export default [getCounters]
+export default [view]
