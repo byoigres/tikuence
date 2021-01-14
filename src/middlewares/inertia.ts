@@ -43,13 +43,11 @@ const template = (page: object, viewData: ViewData) => `
 `
 
 export function populateAuth(req: Request, _res: Response, next: NextFunction) {
-  req.auth = {
-    isAuthenticated: req.cookies.ssid !== undefined,
-    credentials: req.cookies.ssid ?? null
-  }
-
   req.Inertia.shareProps({
-    auth: req.auth.credentials,
+    auth: {
+      isAuthenticated: req.isAuthenticated(),
+      credentials: req.user || null
+    },
     flash: () => {
       const messages = {
         success: req.flash('success'),
