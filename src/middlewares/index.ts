@@ -1,9 +1,9 @@
 import express, { Express } from 'express'
-import inertia, { populateAuth } from './inertia'
 import httpContext from 'express-http-context'
 import session from 'express-session'
 import flash from 'connect-flash'
 
+import inertia, { populateAuth } from './inertia'
 import cookies from './cookies'
 import passport from './passport'
 

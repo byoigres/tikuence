@@ -1,25 +1,28 @@
 import app from './app'
+import config from './config'
 import db from './models'
 import routes from './routes'
 import middlewares from './middlewares'
-const port = 3000
+
+const host = config.get('/app/host')
+const port = config.get('/app/port')
 
 async function start() {
   await db({
-    host: 'localhost',
-    port: 6250,
-    database: 'tikuence',
-    username: 'tikuence',
-    password: 'tikuence',
-    dialect: 'postgres'
+    host: config.get('/db/host'),
+    port: config.get('/db/port'),
+    database: config.get('/db/database'),
+    username: config.get('/db/username'),
+    password: config.get('/db/password'),
+    dialect: config.get('/db/dialect')
   })
 
   middlewares(app)
 
   routes(app)
 
-  app.listen(port, '0.0.0.0', () => {
-    console.log(`Example app listening at http://0.0.0.0:${port}`)
+  app.listen(port, host, () => {
+    console.log(`Example app listening at http://${host}:${port}`)
   })
 }
 

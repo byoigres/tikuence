@@ -1,15 +1,16 @@
-import { Express} from 'express'
+import { Express } from 'express'
 import Passport from 'passport'
-// import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as TwitterStrategy } from 'passport-twitter'
+
+import config from '../config'
 
 Passport.use(
   new TwitterStrategy(
     {
-      consumerKey: '',
-      consumerSecret: '',
-      callbackURL: ''
+      consumerKey: config.get('/passport/providers/twitter/consumerKey'),
+      consumerSecret: config.get('/passport/providers/twitter/consumerSecret'),
+      callbackURL: config.get('/passport/providers/twitter/callbackURL')
     },
     function (token, tokenSecret, profile, done) {
       // User.findOrCreate({ twitterId: profile.id }, function (err, user) {
@@ -47,9 +48,9 @@ Passport.deserializeUser(function (id : Express.User, done) {
 Passport.use(
   new GoogleStrategy(
     {
-      clientID: '',
-      clientSecret: '',
-      callbackURL: ''
+      clientID: config.get('/passport/providers/google/clientID'),
+      clientSecret: config.get('/passport/providers/google/clientSecret'),
+      callbackURL: config.get('/passport/providers/google/callbackURL')
     },
     function (accessToken, refreshToken, profile, done) {
       // console.log('accessToken', accessToken)

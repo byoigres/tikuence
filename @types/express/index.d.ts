@@ -8,7 +8,6 @@ declare global {
         credentials: object | null;
       };
       Inertia: IInertia;
-      returnUrl: Function;
     }
   }
 }
