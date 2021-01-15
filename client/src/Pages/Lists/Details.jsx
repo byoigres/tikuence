@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-react';
-import { TikTok } from 'react-tiktok';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import Paper from '@material-ui/core/Paper';
 import DialogContent from '@material-ui/core/DialogContent';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,8 +10,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Waypoint } from 'react-waypoint';
 import Layout from '../../components/Layout';
 import TikTokVideo from '../../components/TikTokVideo';
+// import TTLoader from '../../components/TTLoader';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -27,31 +26,14 @@ const useStyles = makeStyles((theme) => ({
   dialog: {
     padding: 0,
   },
+  videoContainer: {
+    minHeight: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '1rem',
+  },
 }));
-
-const Container = styled.section`
-  height: 100vh;
-  width: 100vw;
-
-  display: flex;
-  flex-direction: column;
-
-  overflow-y: scroll;
-
-  scroll-snap-type: mandatory;
-  /* scroll-snap-points-y: repeat(3rem); */
-  scroll-snap-type: y proximity;
-  position: relative;
-  z-index: 1;
-`;
-
-const Video = styled.article`
-  height: 100vh;
-  width: 100vw;
-  /* background-color: black; */
-  scroll-snap-align: start;
-  /* margin: 1rem 0; */
-`;
 
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => (
@@ -60,13 +42,14 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ list }) => {
   const classes = useStyles();
-  const { error } = usePage();
-  const [isLoading, setIsLoading] = useState(false);
+  const [videos, setVideos] = useState(
+    list.videos.map((x) => ({ id: x.id, isVisible: false, video: x }))
+  );
+  const [isLoading] = useState(false);
 
   function handleClose() {
     Inertia.visit('/');
   }
-  function handleCreate() {}
 
   return (
     <Dialog
@@ -93,13 +76,23 @@ const Details = ({ list }) => {
         </Toolbar>
       </AppBar>
       <DialogContent className={classes.dialog}>
-        <Container data-name="Container">
-          {list.videos.map((video) => (
-            <Video key={video.id}>
-              <TikTokVideo html={video.html} />
-            </Video>
+        <section>
+          {videos.map((item, index) => (
+            <Waypoint
+              key={item.id}
+              onEnter={() => {
+                videos[index].isVisible = true;
+                const newVideos = [...videos];
+                setVideos(newVideos);
+              }}
+            >
+              <Paper elevation={5} className={classes.videoContainer}>
+                {item.isVisible && <TikTokVideo html={item.video.html} />}
+                {!item.isVisible && <h1>Loading...</h1>}
+              </Paper>
+            </Waypoint>
           ))}
-        </Container>
+        </section>
       </DialogContent>
     </Dialog>
   );

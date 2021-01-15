@@ -48,7 +48,7 @@
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
     "react-is": "^17.0.1",
-    "react-tiktok": "^1.0.0",
+    "react-waypoint": "^9.0.3",
     "styled-components": "^5.2.1",
     "styled-react-modal": "^2.0.1"
   }
