@@ -13,7 +13,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
@@ -102,9 +101,6 @@ const PageProfileList = ({ lists }) => {
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <DialogContentText>
-          After creating the list you would be able to add videos to it.
-        </DialogContentText>
         {lists.length === 0 && (
           <Typography variant="h5" color="textPrimary">
             You don&apos;t have any list yet
