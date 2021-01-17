@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -36,6 +36,8 @@ const AddVideoPage = ({ listId, errors }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
 
+  const titleRef = useRef(null);
+
   function handleChange(e) {
     const { value } = e.target;
 
@@ -57,6 +59,7 @@ const AddVideoPage = ({ listId, errors }) => {
         onSuccess() {},
         onFinish() {
           setIsLoading(false);
+          titleRef.current.focus();
         },
       }
     );
@@ -107,6 +110,7 @@ const AddVideoPage = ({ listId, errors }) => {
           inputProps={{
             maxLength: 150,
             required: true,
+            ref: titleRef,
           }}
           required
           disabled={isLoading}

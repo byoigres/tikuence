@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
@@ -38,6 +38,8 @@ const AddPage = ({ errors }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
 
+  const listNameRef = useRef(null);
+
   function getReturnURL() {
     const query = window.location.search.slice(1);
     const parts = query.split('&');
@@ -72,6 +74,7 @@ const AddPage = ({ errors }) => {
         },
         onFinish() {
           setIsLoading(false);
+          listNameRef.current.focus();
         },
       }
     );
@@ -145,6 +148,7 @@ const AddPage = ({ errors }) => {
             margin="dense"
             inputProps={{
               maxLength: 150,
+              ref: listNameRef,
             }}
             disabled={isLoading}
             value={title}
