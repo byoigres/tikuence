@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import { Helmet } from 'react-helmet';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
-const TTv1 = ({ tiktokId, html, isReadyCallback = null }) => {
+const TikTokVideo = ({ tiktokId, html, isReadyCallback = null, loaderComponent = null }) => {
   const [isReady, setIsReady] = useState(false);
   const [scriptSrc, setScriptSrc] = useState(undefined);
   const [content, setContent] = useState('');
@@ -87,9 +86,9 @@ const TTv1 = ({ tiktokId, html, isReadyCallback = null }) => {
         dangerouslySetInnerHTML={{ __html: content }}
         style={{ display: isReady ? 'block' : 'none', width: '100%' }}
       />
-      {!isReady && <CircularProgress />}
+      {!isReady && loaderComponent}
     </>
   );
 };
 
-export default TTv1;
+export default TikTokVideo;
