@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,7 +13,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Waypoint } from 'react-waypoint';
 import Layout from '../../components/Layout';
 import TikTokVideo from '../../components/TikTokVideo';
-// import TTLoader from '../../components/TTLoader';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -32,6 +31,14 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '1rem',
+    maxWidth: 1024,
+    width: '100%',
+  },
+  endOfTheList: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    margin: '1rem',
+    fontStyle: 'italic',
   },
 }));
 
@@ -42,14 +49,26 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ list }) => {
   const classes = useStyles();
-  const [videos, setVideos] = useState(
-    list.videos.map((x) => ({ id: x.id, isVisible: false, video: x }))
-  );
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [videoIndex, setVideoIndex] = useState(0);
+  const [videos, setVideos] = useState([]);
 
   function handleClose() {
     Inertia.visit('/');
   }
+
+  useEffect(() => {
+    const newVideo = [
+      {
+        id: list.videos[videoIndex].id,
+        isVisible: true,
+        isReady: false,
+        video: list.videos[videoIndex],
+      },
+    ];
+    setVideos([...videos, ...newVideo]);
+    // }
+  }, [videoIndex]);
 
   return (
     <Dialog
@@ -61,13 +80,7 @@ const Details = ({ list }) => {
     >
       <AppBar className={classes.appBar}>
         <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={handleClose}
-            aria-label="close"
-            disabled={isLoading}
-          >
+          <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
             <ArrowBackIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
@@ -76,22 +89,54 @@ const Details = ({ list }) => {
         </Toolbar>
       </AppBar>
       <DialogContent className={classes.dialog}>
-        <section>
-          {videos.map((item, index) => (
-            <Waypoint
-              key={item.id}
-              onEnter={() => {
-                videos[index].isVisible = true;
-                const newVideos = [...videos];
-                setVideos(newVideos);
-              }}
-            >
-              <Paper elevation={5} className={classes.videoContainer}>
-                {item.isVisible && <TikTokVideo html={item.video.html} />}
-                {!item.isVisible && <h1>Loading...</h1>}
-              </Paper>
-            </Waypoint>
+        <section
+          id="ancestor"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            width: '100%',
+          }}
+        >
+          {videos.map((item) => (
+            <Paper key={item.id} elevation={5} className={classes.videoContainer}>
+              <TikTokVideo
+                tiktokId={item.video.tiktok_id}
+                html={item.video.html}
+                isReadyCallback={(id) => {
+                  const idx = videos.findIndex((x) => x.video.tiktok_id === id);
+
+                  if (idx >= 0) {
+                    const newVideos = [...videos];
+                    newVideos[idx].isReady = true;
+                    setVideos([...newVideos]);
+                    // setVideoIndex(videoIndex + 1);
+                    setIsLoading(false);
+                  }
+                }}
+              />
+            </Paper>
           ))}
+          {!isLoading && (
+            <Waypoint
+              data-name="waypoint"
+              debug
+              onEnter={() => {
+                setIsLoading(true);
+                const previous = videos[videoIndex];
+                if (previous.isReady && videoIndex < list.videos.length - 1) {
+                  setVideoIndex(videoIndex + 1);
+                }
+              }}
+            />
+          )}
+          {videos.length === list.videos.length && videos[videos.length - 1].isReady && (
+            <Typography variant="subtitle2" className={classes.endOfTheList}>
+              This is the end of the list
+            </Typography>
+          )}
         </section>
       </DialogContent>
     </Dialog>

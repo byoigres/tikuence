@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -30,6 +31,9 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 
 const AddPage = ({ errors }) => {
   const classes = useStyles();
+  const {
+    props: { isMobile },
+  } = usePage();
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
@@ -98,7 +102,7 @@ const AddPage = ({ errors }) => {
   };
 
   return (
-    <Dialog fullScreen open onClose={handleClose} TransitionComponent={Transition}>
+    <Dialog fullScreen={isMobile} open onClose={handleClose} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton
@@ -118,26 +122,41 @@ const AddPage = ({ errors }) => {
           </Button>
         </Toolbar>
       </AppBar>
-      <DialogContent>
-        <TextField
-          placeholder="Enter the name of the list"
-          label="List name"
-          autoFocus
-          fullWidth
-          margin="dense"
-          inputProps={{
-            maxLength: 150,
+      <DialogContent
+        data-name="DialogContent"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <div
+          style={{
+            flex: '1 0 auto',
+            display: 'block',
           }}
-          disabled={isLoading}
-          value={title}
-          onChange={handleChange}
-          onKeyPress={handleOnKeyPress}
-          error={errors.title !== undefined}
-          helperText={errors.title}
-        />
-        <DialogContentText>
-          After creating the list you would be able to add videos to it.
-        </DialogContentText>
+        >
+          <TextField
+            placeholder="Enter the name of the list"
+            label="List name"
+            autoFocus
+            fullWidth
+            margin="dense"
+            inputProps={{
+              maxLength: 150,
+            }}
+            disabled={isLoading}
+            value={title}
+            onChange={handleChange}
+            onKeyPress={handleOnKeyPress}
+            error={errors.title !== undefined}
+            helperText={errors.title}
+          />
+          <DialogContentText>
+            After creating the list you would be able to add videos to it.
+          </DialogContentText>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -20,11 +20,15 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
 // NOOP
 const useStyles = makeStyles((theme) => ({
+  appBar: {
+    position: 'relative',
+  },
   list: {
     backgroundColor: '#fff',
   },
@@ -76,6 +80,9 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Edit = ({ list }) => {
   const classes = useStyles();
+  const {
+    props: { isMobile },
+  } = usePage();
   const [isLoading, setIsLoading] = useState(false);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
@@ -121,7 +128,7 @@ const Edit = ({ list }) => {
 
   return (
     <>
-      <Dialog fullScreen open onClose={handleEditDialogClose} {...animationProp}>
+      <Dialog fullScreen={isMobile} open onClose={handleEditDialogClose} {...animationProp}>
         <AppBar className={classes.appBar}>
           <Toolbar>
             <IconButton

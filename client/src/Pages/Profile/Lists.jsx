@@ -18,10 +18,14 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+import { usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
 const useStyles = makeStyles(() => ({
+  appBar: {
+    position: 'relative',
+  },
   card: {
     marginBottom: '1rem',
   },
@@ -31,16 +35,17 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  content: {
-    flex: '1 0 auto',
-  },
+  content: {},
 }));
 
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const List = ({ lists }) => {
+const PageProfileList = ({ lists }) => {
   const classes = useStyles();
+  const {
+    props: { isMobile },
+  } = usePage();
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentItemToDelete, setCurrentItemToDelete] = useState(null);
@@ -79,7 +84,7 @@ const List = ({ lists }) => {
   }
 
   return (
-    <Dialog fullScreen open onClose={handleListDialogClose} {...animationProp}>
+    <Dialog fullScreen={isMobile} open onClose={handleListDialogClose} {...animationProp}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton
@@ -176,6 +181,6 @@ const List = ({ lists }) => {
   );
 };
 
-List.layout = (page) => <Layout children={page} cleanLayout />;
+PageProfileList.layout = (page) => <Layout children={page} cleanLayout />;
 
-export default List;
+export default PageProfileList;

@@ -11,6 +11,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import { usePage } from '@inertiajs/inertia-react';
 import Slide from '@material-ui/core/Slide';
 import Layout from '../../components/Layout';
 
@@ -29,6 +30,9 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 
 const AddVideoPage = ({ listId, errors }) => {
   const classes = useStyles();
+  const {
+    props: { isMobile },
+  } = usePage();
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
 
@@ -73,7 +77,7 @@ const AddVideoPage = ({ listId, errors }) => {
   }
 
   return (
-    <Dialog fullScreen open onClose={handleClose} TransitionComponent={Transition}>
+    <Dialog fullScreen={isMobile} open onClose={handleClose} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton

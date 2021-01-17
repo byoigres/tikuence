@@ -15,7 +15,9 @@ const useStyles = makeStyles({
     marginTop: '4rem',
     marginLeft: p.cleanLayout ? 0 : '1rem',
     marginRight: p.cleanLayout ? 0 : '1rem',
-    paddingBottom: '4rem',
+    // paddingBottom: '4rem',
+    // maxWidth: 600,
+    // marginTop: '4rem',
   }),
 });
 
@@ -82,15 +84,33 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
           <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
         )}
       >
-        {!cleanLayout && (
-          <AppBar position="fixed">
-            <Toolbar>
-              <Typography variant="h6">{title}</Typography>
-            </Toolbar>
-          </AppBar>
-        )}
-        <div className={classes.container}>{children}</div>
-        {!cleanLayout && <NavBar isAuthenticated={isAuthenticated} />}
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            style={{
+              position: 'relative',
+              maxWidth: '600px',
+              flex: '1 0 auto',
+              height: '100vh',
+              backgroundColor: '#fff',
+            }}
+          >
+            {!cleanLayout && (
+              <AppBar position="fixed">
+                <Toolbar>
+                  <Typography variant="h6">{title}</Typography>
+                </Toolbar>
+              </AppBar>
+            )}
+            <div className={classes.container}>{children}</div>
+            {!cleanLayout && <NavBar isAuthenticated={isAuthenticated} />}
+          </div>
+        </div>
       </SnackbarProvider>
     </ThemeProvider>
   );
