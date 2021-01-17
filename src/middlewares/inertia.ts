@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import inertia, { ViewData } from 'inertia-node'
 import isMobile from 'is-mobile'
+import Url from 'url'
 
 const ASSET_VERSION = '1'
 
@@ -63,6 +64,20 @@ export function populateAuth(req: Request, _res: Response, next: NextFunction) {
       isMobile({
         ua: req
       }),
+    referer: () => {
+      const { referer } = req.headers
+      console.log(referer)
+
+      if (referer) {
+        const refererUrl = new Url.URL(referer)
+
+        if (refererUrl.host === req.headers.host && refererUrl.pathname !== req.url) {
+          return refererUrl.pathname
+        }
+      }
+
+      return null
+    },
     flash: () => {
       const messages = {
         success: req.flash('success'),
