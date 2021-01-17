@@ -68,7 +68,6 @@ const Details = ({ list }) => {
       },
     ];
     setVideos([...videos, ...newVideo]);
-    // }
   }, [videoIndex]);
 
   return (
