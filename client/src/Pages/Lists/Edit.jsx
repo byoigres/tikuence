@@ -123,12 +123,45 @@ const Edit = ({ list }) => {
 
   function handleTitleClick(e) {
     e.preventDefault();
+    setTitle(list.title);
     setIsTitleInEditMode(!isTitleInEditMode);
   }
 
   function handleTitleChange(e) {
     e.preventDefault();
     setTitle(e.target.value);
+  }
+
+  function onTitleUpdate() {
+    Inertia.put(
+      `/list/${list.id}`,
+      { title },
+      {
+        onStart() {
+          setIsLoading(true);
+          setIsTitleInEditMode(false);
+        },
+        onSuccess() {},
+        onFinish() {
+          setIsLoading(false);
+          // if (listNameRef.current) {
+          //   listNameRef.current.focus();
+          // }
+        },
+      }
+    );
+  }
+
+  function handleOnKeyPress(ev) {
+    if (ev.key === 'Enter') {
+      ev.preventDefault();
+      onTitleUpdate();
+    }
+  }
+
+  function hadleTitleUpdate(e) {
+    e.preventDefault();
+    onTitleUpdate();
   }
 
   function onRemove() {
@@ -183,6 +216,7 @@ const Edit = ({ list }) => {
                 value={title}
                 autoFocus
                 onChange={handleTitleChange}
+                onKeyPress={handleOnKeyPress}
                 fullWidth
                 autoComplete="off"
                 required
@@ -195,7 +229,12 @@ const Edit = ({ list }) => {
               >
                 Cancel
               </Button>
-              <Button className={classes.titleButtons} variant="outlined" color="primary">
+              <Button
+                className={classes.titleButtons}
+                variant="outlined"
+                color="primary"
+                onClick={hadleTitleUpdate}
+              >
                 Update
               </Button>
             </div>
