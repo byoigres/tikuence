@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import DialogContent from '@material-ui/core/DialogContent';
 import AppBar from '@material-ui/core/AppBar';
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   videoContainer: {
-    minHeight: '100vh',
+    // minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -112,20 +113,20 @@ const Details = ({ list }) => {
                     const newVideos = [...videos];
                     newVideos[idx].isReady = true;
                     setVideos([...newVideos]);
-                    // setVideoIndex(videoIndex + 1);
-                    setIsLoading(false);
                   }
+                  setIsLoading(false);
                 }}
               />
             </Paper>
           ))}
+          {isLoading && <CircularProgress />}
           {!isLoading && (
             <Waypoint
               data-name="waypoint"
               onEnter={() => {
-                setIsLoading(true);
                 const previous = videos[videoIndex];
                 if (previous.isReady && videoIndex < list.videos.length - 1) {
+                  setIsLoading(true);
                   setVideoIndex(videoIndex + 1);
                 }
               }}
