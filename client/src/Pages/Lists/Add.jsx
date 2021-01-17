@@ -32,31 +32,13 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 const AddPage = ({ errors }) => {
   const classes = useStyles();
   const {
-    props: { isMobile },
+    props: { isMobile, referer },
   } = usePage();
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
 
   const listNameRef = useRef(null);
-
-  function getReturnURL() {
-    const query = window.location.search.slice(1);
-    const parts = query.split('&');
-
-    const values = parts
-      .map((part) => part.split('='))
-      .reduce((previous, current) => {
-        const item = previous;
-        if (current.length > 1) {
-          item[current[0]] = decodeURIComponent(current[1]);
-        }
-
-        return item;
-      }, {});
-
-    return values.returnUrl ? values.returnUrl : '/';
-  }
 
   function onCreate() {
     Inertia.post(
@@ -70,7 +52,6 @@ const AddPage = ({ errors }) => {
           if (page.props.flash && page.props.flash.error) {
             enqueueSnackbar(page.props.flash.error, { variant: 'error' });
           }
-          // handleClose();
         },
         onFinish() {
           setIsLoading(false);
@@ -87,7 +68,7 @@ const AddPage = ({ errors }) => {
   }
 
   const handleClose = () => {
-    Inertia.get(getReturnURL());
+    Inertia.get(referer || '/');
   };
 
   function handleOnKeyPress(ev) {

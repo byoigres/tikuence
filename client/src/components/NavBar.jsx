@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-// import styled from 'styled-components';
 import { Inertia } from '@inertiajs/inertia';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
@@ -65,7 +64,7 @@ const NavBar = ({ isAuthenticated }) => {
             Inertia.get('/');
             break;
           case 'add-list':
-            Inertia.get(`/list/add?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+            Inertia.get('/list/add');
             break;
           case 'profile':
             Inertia.get(isAuthenticated ? '/profile' : '/login');
