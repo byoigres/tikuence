@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import { isAuthenticated } from '../../middlewares/inertia'
 import { queryDeleteListById } from '../../queries/list'
 
 async function deleteList(req: Request, res: Response, next: NextFunction) {
@@ -14,4 +15,4 @@ async function response(req: Request, res: Response) {
   req.Inertia.redirect('/profile/lists')
 }
 
-export default [deleteList, response]
+export default [isAuthenticated, deleteList, response]

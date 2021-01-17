@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import { isAuthenticated } from '../../../middlewares/inertia'
 import ListsVideos from '../../../models/listsvideos.model'
 
 async function deleteList(req: Request, _res: Response, next: NextFunction) {
@@ -21,4 +22,4 @@ async function response(req: Request) {
   req.Inertia.redirect(`/list/${listId}/edit`)
 }
 
-export default [deleteList, response]
+export default [isAuthenticated, deleteList, response]

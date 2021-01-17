@@ -4,11 +4,12 @@ import fetch from 'node-fetch'
 import fs from 'fs/promises'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
+import url from 'url'
+import { isAuthenticated } from '../../../middlewares/inertia'
 import { getAllLists } from '../list'
 import Author from '../../../models/author.model'
 import Video from '../../../models/video.model'
 import ListsVideos from '../../../models/listsvideos.model'
-import url from 'url'
 
 interface iPayload {
   videoUrl: string
@@ -217,6 +218,7 @@ function response(req: Request) {
 }
 
 export default [
+  isAuthenticated,
   validatePayload,
   validateUrl,
   fetchVideoInfo,

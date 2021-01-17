@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
+import { isAuthenticated } from '../../middlewares/inertia'
 import { getAllListsWithVideos } from './list'
 import List from '../../models/list.model'
 
@@ -49,4 +50,4 @@ function response (req: Request, res: Response) {
   req.Inertia.redirect(`/list/${listId}/edit`)
 }
 
-export default [createList, getAllListsWithVideos, response]
+export default [isAuthenticated, createList, getAllListsWithVideos, response]

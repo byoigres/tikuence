@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import { isAuthenticated } from '../../../middlewares/inertia'
 
 function response (req: Request) {
   const params = req.params
@@ -11,4 +12,4 @@ function response (req: Request) {
   })
 }
 
-export default [response]
+export default [isAuthenticated, response]

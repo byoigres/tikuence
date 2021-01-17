@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import { isAuthenticated } from '../../middlewares/inertia'
 import User from '../../models/user.model'
 import Author from '../../models/author.model'
 import Video from '../../models/video.model'
@@ -43,4 +44,4 @@ async function view (req: Request) {
   })
 }
 
-export default [view]
+export default [isAuthenticated, view]

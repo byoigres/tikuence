@@ -1,5 +1,6 @@
 import { Request } from 'express'
 import httpContext from 'express-http-context'
+import { isAuthenticated } from '../../middlewares/inertia'
 import { getAllLists } from '../lists/list'
 import List from '../../models/list.model'
 
@@ -14,4 +15,4 @@ async function response(req: Request) {
   })
 }
 
-export default [getAllLists, response]
+export default [isAuthenticated, getAllLists, response]
