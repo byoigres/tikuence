@@ -1,9 +1,8 @@
-/* eslint arrow-body-style: 0, no-console: 0, no-unused-vars: 0, react/no-danger: 0 */
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const TTv1 = ({ html }) => {
+const TTv1 = ({ tiktokId, html, isReadyCallback = null }) => {
   const [isReady, setIsReady] = useState(false);
   const [scriptSrc, setScriptSrc] = useState(undefined);
   const [content, setContent] = useState('');
@@ -54,11 +53,12 @@ const TTv1 = ({ html }) => {
 
       if (iframeAdded) {
         iframeAdded.addEventListener('load', () => {
-          console.log(`Setting video setIsReady prop to true`);
           setIsReady(true);
+
+          if (isReadyCallback) {
+            isReadyCallback(tiktokId);
+          }
         });
-      } else {
-        console.log(`not found iframe for video`);
       }
     });
 
@@ -68,9 +68,8 @@ const TTv1 = ({ html }) => {
         attributes: true,
         subtree: true,
       });
-    } else {
-      console.log(`not found element for video`);
     }
+
     return () => {
       observer.disconnect();
     };
@@ -84,8 +83,9 @@ const TTv1 = ({ html }) => {
       <div
         ref={ref}
         data-name="TikTokVideo"
+        /* eslint react/no-danger: 0 */
         dangerouslySetInnerHTML={{ __html: content }}
-        style={{ display: isReady ? 'flex' : 'none' }}
+        style={{ display: isReady ? 'block' : 'none', width: '100%' }}
       />
       {!isReady && <CircularProgress />}
     </>
