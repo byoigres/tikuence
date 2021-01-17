@@ -6,6 +6,10 @@ const router = Router({
 })
 
 router.get('/login', function view(req: Request) {
+  if (req.isAuthenticated()) {
+    return req.Inertia.redirect('/')
+  }
+
   req.Inertia.setViewData({ title: 'Log in' }).render({
     component: 'Auth/Session'
   })

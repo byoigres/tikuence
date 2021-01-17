@@ -40,9 +40,7 @@ function ConfirmDialog({
         <DialogContentText id="alert-dialog-description">{description}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onDialogClose} color="primary" autoFocus>
-          {cancelText}
-        </Button>
+        <Button onClick={onDialogClose}>{cancelText}</Button>
         <Button onClick={actionHandler} color="primary" autoFocus>
           {actionText}
         </Button>
