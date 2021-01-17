@@ -3,7 +3,9 @@ import view from './view'
 import create from './create'
 import destroy from './destroy'
 
-const router = Router()
+const router = Router({
+  mergeParams: true
+})
 
 router.get('/', view)
 

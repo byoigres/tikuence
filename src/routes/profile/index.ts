@@ -2,7 +2,9 @@ import { Router } from 'express'
 import profile from './profile'
 import list from './lists'
 
-const router = Router()
+const router = Router({
+  mergeParams: true
+})
 
 // Route /list
 

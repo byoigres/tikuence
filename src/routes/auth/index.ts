@@ -1,7 +1,9 @@
 import { Router, Request } from 'express'
 import Passport from 'passport'
 
-const router = Router()
+const router = Router({
+  mergeParams: true
+})
 
 router.get('/login', function view(req: Request) {
   req.Inertia.setViewData({ title: 'Log in' }).render({

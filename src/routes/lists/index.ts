@@ -7,7 +7,9 @@ import edit from './edit'
 import add from './add'
 import video from './video'
 
-const router = Router()
+const router = Router({
+  mergeParams: true
+})
 
 // Route /list
 
