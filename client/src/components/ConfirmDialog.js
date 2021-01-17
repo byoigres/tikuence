@@ -5,6 +5,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Zoom from '@material-ui/core/Zoom';
+
+/* eslint react/jsx-props-no-spreading: 0 */
+const Transition = React.forwardRef((props, ref) => <Zoom in ref={ref} {...props} />);
 
 function ConfirmDialog({
   isOpen,
@@ -27,6 +31,7 @@ function ConfirmDialog({
       disableBackdropClick
       disableEscapeKeyDown
       onClose={onDialogClose}
+      TransitionComponent={Transition}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
