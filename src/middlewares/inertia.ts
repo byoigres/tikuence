@@ -66,7 +66,6 @@ export function populateAuth(req: Request, _res: Response, next: NextFunction) {
       }),
     referer: () => {
       const { referer } = req.headers
-      console.log(referer)
 
       if (referer) {
         const refererUrl = new Url.URL(referer)
