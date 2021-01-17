@@ -37,6 +37,7 @@ const AddPage = ({ errors }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
+  const [returnUrl] = useState(referer);
 
   const listNameRef = useRef(null);
 
@@ -55,7 +56,9 @@ const AddPage = ({ errors }) => {
         },
         onFinish() {
           setIsLoading(false);
-          listNameRef.current.focus();
+          if (listNameRef.current) {
+            listNameRef.current.focus();
+          }
         },
       }
     );
@@ -68,7 +71,7 @@ const AddPage = ({ errors }) => {
   }
 
   const handleClose = () => {
-    Inertia.get(referer || '/');
+    Inertia.get(returnUrl || '/');
   };
 
   function handleOnKeyPress(ev) {
@@ -86,7 +89,14 @@ const AddPage = ({ errors }) => {
   };
 
   return (
-    <Dialog fullScreen={isMobile} open onClose={handleClose} TransitionComponent={Transition}>
+    <Dialog
+      fullScreen={isMobile}
+      fullWidth
+      maxWidth="sm"
+      open
+      onClose={handleClose}
+      TransitionComponent={Transition}
+    >
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton
