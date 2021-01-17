@@ -122,7 +122,6 @@ const Details = ({ list }) => {
           {!isLoading && (
             <Waypoint
               data-name="waypoint"
-              debug
               onEnter={() => {
                 setIsLoading(true);
                 const previous = videos[videoIndex];
