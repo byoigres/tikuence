@@ -12,7 +12,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import { useSnackbar } from 'notistack';
 import Slide from '@material-ui/core/Slide';
 import Layout from '../../components/Layout';
 
@@ -34,7 +33,6 @@ const AddPage = ({ errors }) => {
   const {
     props: { isMobile, referer },
   } = usePage();
-  const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [returnUrl] = useState(referer);
@@ -49,11 +47,7 @@ const AddPage = ({ errors }) => {
         onStart() {
           setIsLoading(true);
         },
-        onSuccess(page) {
-          if (page.props.flash && page.props.flash.error) {
-            enqueueSnackbar(page.props.flash.error, { variant: 'error' });
-          }
-        },
+        onSuccess() {},
         onFinish() {
           setIsLoading(false);
           if (listNameRef.current) {
