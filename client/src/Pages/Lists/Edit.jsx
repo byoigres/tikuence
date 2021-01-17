@@ -9,6 +9,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import TextField from '@material-ui/core/TextField';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Slide from '@material-ui/core/Slide';
 import List from '@material-ui/core/List';
@@ -19,6 +20,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
+import EditIcon from '@material-ui/icons/Edit';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
@@ -28,6 +30,11 @@ import ConfirmDialog from '../../components/ConfirmDialog';
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
+  },
+  dialogContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   list: {
     backgroundColor: '#fff',
@@ -57,19 +64,29 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   messageNumberOfVideos: {
-    display: 'block',
-    textAlign: 'center',
     margin: '1rem 0',
   },
   messageNoVideos: {
-    textAlign: 'center',
     margin: '1rem 0',
   },
-  title: {
-    textAlign: 'center',
+  titleContainer: {
+    display: 'flex',
+    width: '100%',
   },
+  title: (p) => ({
+    '&:hover': {
+      cursor: p.isMobile ? 'default' : 'pointer',
+      color: theme.palette.text.secondary,
+    },
+  }),
+  titleButtons: (p) => ({
+    marginLeft: p.isMobile ? '0.5rem' : '1rem',
+  }),
   addVideoButton: {
     marginBottom: '1rem',
+  },
+  editIcon: {
+    marginLeft: '0.5rem',
   },
 }));
 
@@ -79,11 +96,13 @@ const Transition = React.forwardRef((props, ref) => (
 ));
 
 const Edit = ({ list }) => {
-  const classes = useStyles();
   const {
     props: { isMobile },
   } = usePage();
+  const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
+  const [isTitleInEditMode, setIsTitleInEditMode] = useState(false);
+  const [title, setTitle] = useState(list.title);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
 
@@ -100,6 +119,16 @@ const Edit = ({ list }) => {
   function handleAddVideo(e) {
     e.preventDefault();
     Inertia.get(`/list/${list.id}/video/add`);
+  }
+
+  function handleTitleClick(e) {
+    e.preventDefault();
+    setIsTitleInEditMode(!isTitleInEditMode);
+  }
+
+  function handleTitleChange(e) {
+    e.preventDefault();
+    setTitle(e.target.value);
   }
 
   function onRemove() {
@@ -145,10 +174,43 @@ const Edit = ({ list }) => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <DialogContent>
-          <Typography component="h4" variant="h4" className={classes.title}>
-            {list.title}
-          </Typography>
+        <DialogContent className={classes.dialogContent}>
+          {isTitleInEditMode && (
+            <div className={classes.titleContainer}>
+              <TextField
+                id="title"
+                name="title"
+                value={title}
+                autoFocus
+                onChange={handleTitleChange}
+                fullWidth
+                autoComplete="off"
+                required
+                disabled={isLoading}
+              />
+              <Button
+                className={classes.titleButtons}
+                variant="outlined"
+                onClick={handleTitleClick}
+              >
+                Cancel
+              </Button>
+              <Button className={classes.titleButtons} variant="outlined" color="primary">
+                Update
+              </Button>
+            </div>
+          )}
+          {!isTitleInEditMode && (
+            <Typography
+              component="h4"
+              variant="h4"
+              className={classes.title}
+              onClick={handleTitleClick}
+            >
+              {list.title}
+              <EditIcon className={classes.editIcon} />
+            </Typography>
+          )}
           {list.videos.length === 0 && (
             <Typography
               component="h6"
