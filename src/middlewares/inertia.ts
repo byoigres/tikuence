@@ -54,7 +54,23 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
   req.Inertia.redirect('/login')
 }
 
+function getReferer(req: Request) {
+  const { referer } = req.headers
+
+  if (referer && req.method === 'GET') {
+    const refererUrl = new Url.URL(referer)
+
+    if (refererUrl.host === req.headers.host && refererUrl.pathname !== req.url) {
+      return refererUrl.pathname
+    }
+  }
+
+  return null
+}
+
 export function populateAuth(req: Request, _res: Response, next: NextFunction) {
+  const referer = getReferer(req)
+
   req.Inertia.shareProps({
     auth: {
       isAuthenticated: req.isAuthenticated(),
@@ -64,19 +80,7 @@ export function populateAuth(req: Request, _res: Response, next: NextFunction) {
       isMobile({
         ua: req
       }),
-    referer: () => {
-      const { referer } = req.headers
-
-      if (referer) {
-        const refererUrl = new Url.URL(referer)
-
-        if (refererUrl.host === req.headers.host && refererUrl.pathname !== req.url) {
-          return refererUrl.pathname
-        }
-      }
-
-      return null
-    },
+    referer,
     flash: () => {
       const messages = {
         success: req.flash('success'),
