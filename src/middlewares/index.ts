@@ -18,7 +18,7 @@ function middlewares(app: Express) {
       saveUninitialized: false,
       cookie: {
         secure: false,
-        maxAge: 60000
+        maxAge: 60000 * 60
       }
     })
   )
