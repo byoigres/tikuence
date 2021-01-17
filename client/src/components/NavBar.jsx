@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // import styled from 'styled-components';
 import { Inertia } from '@inertiajs/inertia';
 import { makeStyles } from '@material-ui/core/styles';
@@ -22,16 +22,23 @@ const NavBar = ({ isAuthenticated }) => {
   const classes = useStyles();
   const [selectedAction, setSelectedAction] = React.useState(0);
 
+  useEffect(() => {
+    switch (window.location.pathname) {
+      case '/':
+        setSelectedAction(0);
+        break;
+      case '/profile':
+      case '/login':
+        setSelectedAction(2);
+        break;
+      default:
+    }
+  });
+
   const items = [
     {
       id: 'lists',
-      component: (
-        <BottomNavigationAction
-          key="lists"
-          label="Lists"
-          icon={<ListIcon data-name="lists-inner" />}
-        />
-      ),
+      component: <BottomNavigationAction key="lists" label="Lists" icon={<ListIcon />} />,
     },
     isAuthenticated && {
       id: 'add-list',
