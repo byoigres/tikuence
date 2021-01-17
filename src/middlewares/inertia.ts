@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import inertia, { ViewData } from 'inertia-node'
+import isMobile from 'is-mobile'
 
 const ASSET_VERSION = '1'
 
@@ -58,6 +59,10 @@ export function populateAuth(req: Request, _res: Response, next: NextFunction) {
       isAuthenticated: req.isAuthenticated(),
       credentials: req.user || null
     },
+    isMobile: () =>
+      isMobile({
+        ua: req
+      }),
     flash: () => {
       const messages = {
         success: req.flash('success'),
