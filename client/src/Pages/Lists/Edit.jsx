@@ -359,6 +359,6 @@ const Edit = ({ list }) => {
   );
 };
 */
-Edit.layout = (page) => <Layout children={page} title="Edit list" />;
+Edit.layout = (page) => <Layout children={page} cleanLayout />;
 
 export default Edit;
