@@ -21,7 +21,7 @@ import { usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
   },
@@ -34,7 +34,21 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  content: {},
+  content: {
+    paddingTop: 5,
+    paddingBottom: '5px!important',
+  },
+  listItemAvatar: {
+    minWidth: 72,
+  },
+  avatar: {
+    width: theme.spacing(7),
+    height: '100%',
+  },
+  cardActions: {
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
 }));
 
 /* eslint react/jsx-props-no-spreading: 0 */
@@ -106,63 +120,68 @@ const PageProfileList = ({ lists }) => {
             You don&apos;t have any list yet
           </Typography>
         )}
-        {lists.map((list) => (
-          <Card className={classes.card} key={list.id}>
-            <CardActionArea className={classes.actionArea}>
-              <CardMedia
-                className={classes.cover}
-                component="img"
-                alt={list.title}
-                height="150"
-                image={
-                  list.videos.length > 0
-                    ? `/images/${list.videos[0].thumbnail_name}`
-                    : 'https://p16-sign-sg.tiktokcdn.com/obj/tos-maliva-p-0068/cf1952143b1d41038bf8c71d50fd6f14?x-expires=1610067600&x-signature=HpeDgZ%2FwQUr9TfxSagf7AxWB7RA%3D'
-                }
-                title={list.title}
-              />
-              <div className={classes.details}>
-                <CardContent className={classes.content}>
-                  <Typography component="h5" variant="h5">
-                    {list.title}
-                  </Typography>
-                  <Typography variant="subtitle1" color="textPrimary">
-                    {list.videos.length} videos
-                  </Typography>
-                  <Typography variant="subtitle2" color="textSecondary">
-                    List by {list.user.email}
-                  </Typography>
-                </CardContent>
-              </div>
-            </CardActionArea>
-            <CardActions>
-              <Tooltip title="Delete">
-                <IconButton
-                  aria-label="delete"
-                  disabled={isLoading}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onDeleteButtonClick(list.id);
-                  }}
-                >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Edit">
-                <IconButton
-                  aria-label="edit"
-                  disabled={isLoading}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    Inertia.visit(`/list/${list.id}/edit`);
-                  }}
-                >
-                  <EditIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </CardActions>
-          </Card>
-        ))}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+          }}
+        >
+          {lists.map((list) => (
+            <Card
+              className={classes.card}
+              key={list.id}
+              style={{ flex: '1 45%', margin: '0.3rem' }}
+            >
+              <CardActionArea className={classes.actionArea}>
+                <CardMedia
+                  className={classes.cover}
+                  component="img"
+                  alt={list.title}
+                  height="150"
+                  image={
+                    list.videos.length > 0
+                      ? `/images/${list.videos[0].thumbnail_name}`
+                      : 'data:image/svg+xml;base64,PHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgc3Ryb2tlPSJibHVlIiBmaWxsPSJwdXJwbGUiIGZpbGwtb3BhY2l0eT0iMC41IiBzdHJva2Utb3BhY2l0eT0iMC44Ii8+'
+                  }
+                  title={list.title}
+                />
+                <div className={classes.details} data-name="div-details">
+                  <CardContent className={classes.content}>
+                    <Typography variant="subtitle1">{list.title}</Typography>
+                    <Typography variant="subtitle2">{list.videos.length} videos</Typography>
+                  </CardContent>
+                </div>
+              </CardActionArea>
+              <CardActions className={classes.cardActions}>
+                <Tooltip title="Delete">
+                  <IconButton
+                    aria-label="delete"
+                    size="small"
+                    disabled={isLoading}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onDeleteButtonClick(list.id);
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Edit">
+                  <IconButton
+                    aria-label="edit"
+                    disabled={isLoading}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      Inertia.visit(`/list/${list.id}/edit`);
+                    }}
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </CardActions>
+            </Card>
+          ))}
+        </div>
         <ConfirmDialog
           isOpen={isDeleteDialogOpen}
           onDialogClose={onDeleteDialogClose}
