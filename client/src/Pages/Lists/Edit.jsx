@@ -139,9 +139,10 @@ const Edit = ({ list }) => {
       {
         onStart() {
           setIsLoading(true);
+        },
+        onSuccess() {
           setIsTitleInEditMode(false);
         },
-        onSuccess() {},
         onFinish() {
           setIsLoading(false);
           // if (listNameRef.current) {
