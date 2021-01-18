@@ -35,4 +35,6 @@ router.get(
   }
 )
 
+router.post('/auth/local', Passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }))
+
 export default router

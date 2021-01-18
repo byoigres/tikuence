@@ -4,6 +4,8 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import GTranslateIcon from '@material-ui/icons/GTranslate';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import { Inertia } from '@inertiajs/inertia';
 import Layout from '../../components/Layout';
 
 const Session = () => (
@@ -37,6 +39,22 @@ const Session = () => (
         href="/auth/twitter"
       >
         Twitter
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        startIcon={<VpnKeyIcon />}
+        fullWidth
+        href="/auth/local"
+        onClick={(e) => {
+          e.preventDefault();
+          Inertia.post('/auth/local', {
+            username: 'byoigres@gmail.com',
+            password: '1234567890',
+          });
+        }}
+      >
+        Local
       </Button>
     </Paper>
   </div>

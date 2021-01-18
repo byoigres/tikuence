@@ -2,6 +2,7 @@ import { Express } from 'express'
 import Passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as TwitterStrategy } from 'passport-twitter'
+import { Strategy as LocalStrategy } from 'passport-local'
 
 import config from '../config'
 
@@ -63,6 +64,12 @@ Passport.use(
       done(undefined, profile)
     }
   )
+)
+
+Passport.use(
+  new LocalStrategy(function (username, password, done) {
+    return done(null, { username, password })
+  })
 )
 
 export default Passport
