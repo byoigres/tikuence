@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -21,9 +21,10 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Edit';
-import SortIcon from '@material-ui/icons/Sort';
+import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
+import { Container, Draggable } from 'react-smooth-dnd';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
@@ -188,6 +189,11 @@ const Edit = ({ list }) => {
     Inertia.get('/profile/lists', { an: 0 });
   };
 
+  const onVideoDrop = ({ removedIndex, addedIndex }) => {
+    // setItems((items) => arrayMove(items, removedIndex, addedIndex));
+    console.log({ removedIndex, addedIndex });
+  };
+
   const animationProp = {};
 
   if (!window.location.search.includes('an=0')) {
@@ -287,44 +293,51 @@ const Edit = ({ list }) => {
           </Button>
           {list.videos.length > 0 && (
             <List dense className={classes.list}>
-              {list.videos.map((video, index) => (
-                <Fragment key={video.id}>
-                  <ListItem key={video.id} button disabled={isLoading}>
-                    <ListItemAvatar className={classes.listItemAvatar}>
-                      <Avatar
-                        alt={video.title}
-                        className={classes.avatar}
-                        variant="square"
-                        src={`/images/${video.thumbnail_name}`}
-                      />
-                    </ListItemAvatar>
-                    <ListItemText id={video.id} primary={video.title} />
-                    <ListItemSecondaryAction className={classes.actionButtons}>
-                      <Tooltip title="Remove">
-                        <IconButton
-                          edge="end"
-                          aria-label="remove"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            onRemoveButtonClick(video.id);
-                          }}
-                          disabled={isLoading}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Sort">
-                        <IconButton edge="end" aria-label="sort" disabled={isLoading}>
-                          <SortIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                  {index !== list.videos.length - 1 && (
-                    <Divider variant="fullWidth" component="li" />
-                  )}
-                </Fragment>
-              ))}
+              <Container dragHandleSelector=".drag-handle" lockAxis="y" onDrop={onVideoDrop}>
+                {list.videos.map((video, index) => (
+                  <Draggable key={video.id}>
+                    <ListItem key={video.id} button disabled={isLoading}>
+                      <ListItemAvatar className={classes.listItemAvatar}>
+                        <Avatar
+                          alt={video.title}
+                          className={classes.avatar}
+                          variant="square"
+                          src={`/images/${video.thumbnail_name}`}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText id={video.id} primary={video.title} />
+                      <ListItemSecondaryAction className={classes.actionButtons}>
+                        <Tooltip title="Remove">
+                          <IconButton
+                            edge="end"
+                            aria-label="remove"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onRemoveButtonClick(video.id);
+                            }}
+                            disabled={isLoading}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Sort">
+                          <IconButton
+                            edge="end"
+                            aria-label="sort"
+                            disabled={isLoading}
+                            className="drag-handle"
+                          >
+                            <DragHandleIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                    {index !== list.videos.length - 1 && (
+                      <Divider variant="fullWidth" component="li" />
+                    )}
+                  </Draggable>
+                ))}
+              </Container>
             </List>
           )}
         </DialogContent>
