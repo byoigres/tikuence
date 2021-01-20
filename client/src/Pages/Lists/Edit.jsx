@@ -21,6 +21,7 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Edit';
+import SortIcon from '@material-ui/icons/Sort';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
@@ -88,6 +89,10 @@ const useStyles = makeStyles((theme) => ({
   editIcon: {
     marginLeft: '0.5rem',
   },
+  actionButtons: () => ({
+    display: 'flex',
+    flexDirection: 'column',
+  }),
 }));
 
 /* eslint react/jsx-props-no-spreading: 0 */
@@ -294,7 +299,7 @@ const Edit = ({ list }) => {
                       />
                     </ListItemAvatar>
                     <ListItemText id={video.id} primary={video.title} />
-                    <ListItemSecondaryAction>
+                    <ListItemSecondaryAction className={classes.actionButtons}>
                       <Tooltip title="Remove">
                         <IconButton
                           edge="end"
@@ -306,6 +311,11 @@ const Edit = ({ list }) => {
                           disabled={isLoading}
                         >
                           <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Sort">
+                        <IconButton edge="end" aria-label="sort" disabled={isLoading}>
+                          <SortIcon />
                         </IconButton>
                       </Tooltip>
                     </ListItemSecondaryAction>
