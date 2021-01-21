@@ -7,7 +7,7 @@
     "node": "14.x"
   },
   "scripts": {
-    "start": "nodemon --ignore public ./src/index.ts",
+    "start": "nodemon -e ts --ignore public --exec 'node --inspect=0.0.0.0:9229 --require ts-node/register ./src/index.ts'",
     "build": "tsc",
     "prettier": "prettier --config .prettierrc.json --write src/**/*.ts",
     "eslint": "eslint ./src/**/*.ts",
