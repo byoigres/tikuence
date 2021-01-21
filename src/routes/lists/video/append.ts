@@ -192,9 +192,16 @@ async function matchVideoWithList(req: Request, _res: Response, next: NextFuncti
   const { listId } = req.params
   const videoId = httpContext.get('videoId')
 
+  const count = await ListsVideos.count({
+    where: {
+      list_id: listId
+    }
+  })
+
   const values = {
     list_id: listId,
-    video_id: videoId
+    video_id: videoId,
+    order_id: count + 1
   }
   const [, relationExists] = await ListsVideos.findOrCreate({
     where: values,

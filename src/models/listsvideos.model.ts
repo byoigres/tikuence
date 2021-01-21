@@ -1,4 +1,4 @@
-import { Table, Column, Model, ForeignKey } from 'sequelize-typescript'
+import { Table, Column, Model, ForeignKey, DataType } from 'sequelize-typescript'
 
 import List from './list.model'
 import Video from './video.model'
@@ -20,6 +20,13 @@ class ListsVideos extends Model<ListsVideos> {
   @Column
   // eslint-disable-next-line camelcase
   video_id: number
+
+  @Column({
+    type: DataType.SMALLINT,
+    allowNull: false
+  })
+  // eslint-disable-next-line camelcase
+  order_id: number
 }
 
 export default ListsVideos

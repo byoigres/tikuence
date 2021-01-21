@@ -44,7 +44,7 @@ class List extends Model<List> {
   author: User
 
   @BelongsToMany(() => Video, () => ListsVideos)
-  videos: Video[]
+  videos: Array<Video & { relation: ListsVideos }>
 
   @Default(Sequelize.literal('NOW()'))
   @Column({

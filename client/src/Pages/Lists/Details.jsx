@@ -59,6 +59,11 @@ const Details = ({ list }) => {
   }
 
   useEffect(() => {
+    /* eslint no-param-reassign: 0 */
+    list.videos = list.videos.sort((a, b) => a.ListsVideos.order_id - b.ListsVideos.order_id);
+  }, []);
+
+  useEffect(() => {
     const newVideo = [
       {
         id: list.videos[videoIndex].id,

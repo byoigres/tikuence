@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
-import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -190,8 +189,22 @@ const Edit = ({ list }) => {
   };
 
   const onVideoDrop = ({ removedIndex, addedIndex }) => {
-    // setItems((items) => arrayMove(items, removedIndex, addedIndex));
-    console.log({ removedIndex, addedIndex });
+    Inertia.post(
+      `/list/${list.id}/video/${list.videos[removedIndex].id}`,
+      {
+        oldOrderIndex: removedIndex + 1,
+        newOrderIndex: addedIndex + 1,
+      },
+      {
+        onStart() {
+          setIsLoading(true);
+        },
+        onSuccess() {},
+        onFinish() {
+          setIsLoading(false);
+        },
+      }
+    );
   };
 
   const animationProp = {};
@@ -294,20 +307,21 @@ const Edit = ({ list }) => {
           {list.videos.length > 0 && (
             <List dense className={classes.list}>
               <Container dragHandleSelector=".drag-handle" lockAxis="y" onDrop={onVideoDrop}>
-                {list.videos.map((video, index) => (
-                  <Draggable key={video.id}>
-                    <ListItem key={video.id} button disabled={isLoading}>
-                      <ListItemAvatar className={classes.listItemAvatar}>
-                        <Avatar
-                          alt={video.title}
-                          className={classes.avatar}
-                          variant="square"
-                          src={`/images/${video.thumbnail_name}`}
-                        />
-                      </ListItemAvatar>
-                      <ListItemText id={video.id} primary={video.title} />
-                      <ListItemSecondaryAction className={classes.actionButtons}>
-                        <Tooltip title="Remove">
+                {list.videos
+                  .sort((a, b) => a.ListsVideos.order_id - b.ListsVideos.order_id)
+                  .map((video, index) => (
+                    <Draggable key={video.id}>
+                      <ListItem key={video.id} button disabled={isLoading}>
+                        <ListItemAvatar className={classes.listItemAvatar}>
+                          <Avatar
+                            alt={video.title}
+                            className={classes.avatar}
+                            variant="square"
+                            src={`/images/${video.thumbnail_name}`}
+                          />
+                        </ListItemAvatar>
+                        <ListItemText id={video.id} primary={video.title} />
+                        <ListItemSecondaryAction className={classes.actionButtons}>
                           <IconButton
                             edge="end"
                             aria-label="remove"
@@ -319,8 +333,6 @@ const Edit = ({ list }) => {
                           >
                             <DeleteIcon />
                           </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Sort">
                           <IconButton
                             edge="end"
                             aria-label="sort"
@@ -329,14 +341,13 @@ const Edit = ({ list }) => {
                           >
                             <DragHandleIcon />
                           </IconButton>
-                        </Tooltip>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                    {index !== list.videos.length - 1 && (
-                      <Divider variant="fullWidth" component="li" />
-                    )}
-                  </Draggable>
-                ))}
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                      {index !== list.videos.length - 1 && (
+                        <Divider variant="fullWidth" component="li" />
+                      )}
+                    </Draggable>
+                  ))}
               </Container>
             </List>
           )}
