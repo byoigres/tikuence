@@ -69,7 +69,7 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
   try {
     parsedUrl = new url.URL(payload.videoUrl)
   } catch (err) {
-    req.flash('error', `That doesn't seems to be a valid url.URL`) /* eslint quotes: 0 */
+    req.flash('error', `That doesn't seems to be a valid url.`) /* eslint quotes: 0 */
     return req.Inertia.redirect(`/list/${listId}/video/add`)
   }
 
@@ -98,6 +98,9 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
 
     next()
   }
+
+  req.flash('error', `That doesn't seems to be a TikTok video url.`) /* eslint quotes: 0 */
+  return req.Inertia.redirect(`/list/${listId}/video/add`)
 }
 
 async function fetchVideoInfo(req: Request, _res: Response, next: NextFunction) {
