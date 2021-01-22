@@ -189,22 +189,24 @@ const Edit = ({ list }) => {
   };
 
   const onVideoDrop = ({ removedIndex, addedIndex }) => {
-    Inertia.post(
-      `/list/${list.id}/video/${list.videos[removedIndex].id}`,
-      {
-        oldOrderIndex: removedIndex + 1,
-        newOrderIndex: addedIndex + 1,
-      },
-      {
-        onStart() {
-          setIsLoading(true);
+    if (removedIndex !== addedIndex) {
+      Inertia.post(
+        `/list/${list.id}/video/${list.videos[removedIndex].id}`,
+        {
+          oldOrderIndex: removedIndex + 1,
+          newOrderIndex: addedIndex + 1,
         },
-        onSuccess() {},
-        onFinish() {
-          setIsLoading(false);
-        },
-      }
-    );
+        {
+          onStart() {
+            setIsLoading(true);
+          },
+          onSuccess() {},
+          onFinish() {
+            setIsLoading(false);
+          },
+        }
+      );
+    }
   };
 
   const animationProp = {};
