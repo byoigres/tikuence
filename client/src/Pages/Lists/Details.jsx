@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
   dialog: {
     padding: 0,
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
   },
   videoContainer: {
     // minHeight: '100vh',
@@ -77,6 +81,13 @@ const Details = ({ list }) => {
 
   return (
     <Dialog
+      style={{
+        padding: 0,
+        top: 0,
+        left: 0,
+        height: '100%',
+        width: '100%',
+      }}
       fullScreen
       open
       onClose={handleClose}
@@ -141,6 +152,7 @@ const Details = ({ list }) => {
               This is the end of the list
             </Typography>
           )}
+          <div style={{ height: 10 }} />
         </section>
       </DialogContent>
     </Dialog>
