@@ -11,10 +11,14 @@ import blue from '@material-ui/core/colors/blue';
 import NavBar from './NavBar';
 
 const useStyles = makeStyles({
-  container: (p) => ({
+  container: ({ isMobile }) => ({
+    display: isMobile ? 'block' : 'flex',
+    justifyContent: isMobile ? 'unset' : 'center',
+  }),
+  content: ({ cleanLayout }) => ({
     marginTop: '4rem',
-    marginLeft: p.cleanLayout ? 0 : '1rem',
-    marginRight: p.cleanLayout ? 0 : '1rem',
+    marginLeft: cleanLayout ? 0 : '1rem',
+    marginRight: cleanLayout ? 0 : '1rem',
     // paddingBottom: '4rem',
     // maxWidth: 600,
     // marginTop: '4rem',
@@ -36,13 +40,14 @@ const theme = createMuiTheme({
 });
 
 const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
-  const classes = useStyles({ cleanLayout });
   const {
     props: {
       auth: { isAuthenticated },
       flash,
+      isMobile,
     },
   } = usePage();
+  const classes = useStyles({ cleanLayout, isMobile });
   const notistackRef = React.createRef();
 
   useEffect(() => {
@@ -84,7 +89,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
           <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
         )}
       >
-        <div>
+        <div className={classes.container}>
           <div
             style={{
               position: 'relative',
@@ -101,7 +106,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                 </Toolbar>
               </AppBar>
             )}
-            <div className={classes.container}>{children}</div>
+            <div className={classes.content}>{children}</div>
             {!cleanLayout && <NavBar isAuthenticated={isAuthenticated} />}
           </div>
         </div>
