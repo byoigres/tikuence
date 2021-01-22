@@ -84,13 +84,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
           <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
         )}
       >
-        <div
-          style={{
-            position: 'relative',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
+        <div>
           <div
             style={{
               position: 'relative',
