@@ -113,6 +113,7 @@ const AddVideoPage = ({ listId, errors }) => {
             ref: titleRef,
           }}
           required
+          type="url"
           disabled={isLoading}
           value={videoUrl}
           onChange={handleChange}
