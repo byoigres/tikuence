@@ -3,7 +3,7 @@ import httpContext from 'express-http-context'
 import session from 'express-session'
 import flash from 'connect-flash'
 
-import inertia, { populateAuth } from './inertia'
+import inertia, { populateSharedProps } from './inertia'
 import cookies from './cookies'
 import passport from './passport'
 
@@ -26,7 +26,7 @@ function middlewares(app: Express) {
   app.use(passport.session())
   app.use(flash())
   app.use(inertia)
-  app.use(populateAuth)
+  app.use(populateSharedProps)
   app.use(httpContext.middleware)
 }
 
