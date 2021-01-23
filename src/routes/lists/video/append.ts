@@ -96,7 +96,7 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
     httpContext.set('videoId', videoId)
     httpContext.set('tiktokUrl', url.format(parsedUrl))
 
-    next()
+    return next()
   }
 
   req.flash('error', `That doesn't seems to be a TikTok video url.`) /* eslint quotes: 0 */
@@ -203,12 +203,11 @@ async function matchVideoWithList(req: Request, _res: Response, next: NextFuncti
 
   const values = {
     list_id: listId,
-    video_id: videoId,
-    order_id: count + 1
+    video_id: videoId
   }
   const [, relationExists] = await ListsVideos.findOrCreate({
     where: values,
-    defaults: values
+    defaults: { ...values, order_id: count + 1 }
   })
 
   if (!relationExists) {
