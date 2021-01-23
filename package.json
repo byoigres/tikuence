@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "nodemon -e ts --ignore public --exec 'node --inspect=0.0.0.0:9229 --require ts-node/register ./src/index.ts'",
+    "debug_start": "nodemon -e ts --ignore public ./src/index.ts",
     "build": "tsc",
     "prettier": "prettier --config .prettierrc.json --write src/**/*.ts",
     "eslint": "eslint ./src/**/*.ts",
@@ -30,6 +31,7 @@
     "express": "^4.17.1",
     "express-http-context": "^1.2.4",
     "express-session": "^1.17.1",
+    "express-validator": "^6.9.2",
     "inertia-node": "^1.1.2",
     "is-mobile": "^2.2.2",
     "node-fetch": "^2.6.1",
