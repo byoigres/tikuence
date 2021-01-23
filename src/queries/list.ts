@@ -48,3 +48,11 @@ export async function queryDeleteListById(id: number) {
     cascade: true
   })
 }
+
+export async function queryVerifyListExistsById(id: number) {
+  return await List.findOne({
+    where: {
+      id
+    }
+  })
+}

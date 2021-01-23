@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import { checkSchema } from 'express-validator'
-import prepareValidations from '../../middlewares/validations'
+import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
 import { getAllListsWithVideos } from './list'
 import List from '../../models/list.model'
@@ -48,7 +48,7 @@ function response(req: Request, res: Response) {
 export default [
   isAuthenticated,
   ...validations,
-  prepareValidations('/list/add'),
+  prepareValidationForErrorMessages('/list/add'),
   createList,
   getAllListsWithVideos,
   response
