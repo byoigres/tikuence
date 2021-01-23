@@ -68,7 +68,7 @@ function getReferer(req: Request) {
   return null
 }
 
-export function populateAuth(req: Request, _res: Response, next: NextFunction) {
+export function populateSharedProps(req: Request, _res: Response, next: NextFunction) {
   const referer = getReferer(req)
 
   req.Inertia.shareProps({
