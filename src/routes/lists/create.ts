@@ -11,11 +11,8 @@ interface iPayload {
 async function createList (req: Request, res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
 
-  console.log('payload', payload)
   if (payload.title.length === 0) {
-    console.log('title', payload.title)
-
-    req.method = 'GET'
+    // req.method = 'GET'
 
     // req.flash('error', 'You must provide a name for the list')
     req.flash(
@@ -32,8 +29,6 @@ async function createList (req: Request, res: Response, next: NextFunction) {
       user_id: 1
     })
 
-    console.log('new list', list)
-
     httpContext.set('listId', list.id)
 
     next()
@@ -42,8 +37,6 @@ async function createList (req: Request, res: Response, next: NextFunction) {
 
 function response (req: Request, res: Response) {
   const listId: List = httpContext.get('listId')
-
-  console.log('ID:', listId)
 
   req.flash('success', 'List created successfully')
 

@@ -41,13 +41,9 @@ async function DataBase(options: iPluginOptions) {
     // sequelize.import(Path.join(__dirname, "./models/counter/category"));
     // sequelize.import(Path.join(__dirname, "./models/counter/event"));
 
-    console.log('models', Object.keys(sequelize.models))
-
     await sequelize.sync({ force: false })
-
-    console.log(['plugins/sequelize', 'info'], 'Sequelize models added')
   } catch (err) {
-    console.log(['plugins/sequelize', 'error'], err)
+    console.error(['plugins/sequelize', 'error'], err)
   }
 }
 

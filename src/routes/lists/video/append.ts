@@ -183,9 +183,6 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
     }
   })
 
-  console.log('new video', video)
-  console.log('boolean', alreadyExists)
-
   httpContext.set('videoId', video.id)
 
   next()

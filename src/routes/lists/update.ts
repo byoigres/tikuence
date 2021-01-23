@@ -6,9 +6,6 @@ async function updateList(req: Request, _res: Response, next: NextFunction) {
   const { listId } = req.params
   const { title } = req.body
 
-  console.log('req.params', req.params)
-  console.log('req.body', req.body)
-
   await List.update(
     {
       title
