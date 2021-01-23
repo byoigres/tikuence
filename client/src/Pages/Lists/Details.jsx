@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -53,13 +54,16 @@ const Transition = React.forwardRef((props, ref) => (
 ));
 
 const Details = ({ list }) => {
+  const {
+    props: { referer },
+  } = usePage();
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true);
   const [videoIndex, setVideoIndex] = useState(0);
   const [videos, setVideos] = useState([]);
 
   function handleClose() {
-    Inertia.visit('/');
+    Inertia.visit(referer || '/');
   }
 
   useEffect(() => {

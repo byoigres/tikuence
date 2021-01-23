@@ -188,6 +188,10 @@ const Edit = ({ list }) => {
     Inertia.get('/profile/lists', { an: 0 });
   };
 
+  const onItemClick = (videoId) => {
+    Inertia.visit(`/list/${list.id}/video/${videoId}`);
+  };
+
   const onVideoDrop = ({ removedIndex, addedIndex }) => {
     if (removedIndex !== addedIndex) {
       Inertia.post(
@@ -313,7 +317,15 @@ const Edit = ({ list }) => {
                   .sort((a, b) => a.ListsVideos.order_id - b.ListsVideos.order_id)
                   .map((video, index) => (
                     <Draggable key={video.id}>
-                      <ListItem key={video.id} button disabled={isLoading}>
+                      <ListItem
+                        key={video.id}
+                        button
+                        disabled={isLoading}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onItemClick(video.id);
+                        }}
+                      >
                         <ListItemAvatar className={classes.listItemAvatar}>
                           <Avatar
                             alt={video.title}

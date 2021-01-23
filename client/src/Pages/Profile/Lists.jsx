@@ -57,7 +57,7 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 const PageProfileList = ({ lists }) => {
   const classes = useStyles();
   const {
-    props: { isMobile },
+    props: { isMobile, referal },
   } = usePage();
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -87,7 +87,7 @@ const PageProfileList = ({ lists }) => {
   }
 
   const handleListDialogClose = () => {
-    Inertia.visit('/profile');
+    Inertia.visit(referal || '/profile');
   };
 
   const animationProp = {};
@@ -132,7 +132,14 @@ const PageProfileList = ({ lists }) => {
               key={list.id}
               style={{ flex: '1 45%', margin: '0.3rem' }}
             >
-              <CardActionArea className={classes.actionArea}>
+              <CardActionArea
+                className={classes.actionArea}
+                onClick={() => {
+                  Inertia.visit(`/list/${list.id}`, {
+                    preserveScroll: false,
+                  });
+                }}
+              >
                 <CardMedia
                   className={classes.cover}
                   component="img"
