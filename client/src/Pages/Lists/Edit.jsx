@@ -100,7 +100,7 @@ const Transition = React.forwardRef((props, ref) => (
   <Slide direction="left" ref={ref} {...props} />
 ));
 
-const Edit = ({ list }) => {
+const Edit = ({ list, errors }) => {
   const {
     props: { isMobile },
   } = usePage();
@@ -110,7 +110,7 @@ const Edit = ({ list }) => {
   const [title, setTitle] = useState(list.title);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
-
+console.log(errors);
   function onRemoveVideoDialogClose() {
     setIsRemoveVideoDialogOpen(false);
   }
@@ -251,12 +251,20 @@ const Edit = ({ list }) => {
                 fullWidth
                 autoComplete="off"
                 required
+                error={errors.title !== undefined}
+                helperText={errors.title}
                 disabled={isLoading}
               />
               <Button
                 className={classes.titleButtons}
                 variant="outlined"
-                onClick={handleTitleClick}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsTitleInEditMode(!isTitleInEditMode);
+                  Inertia.reload({
+                    replace: true,
+                  });
+                }}
               >
                 Cancel
               </Button>

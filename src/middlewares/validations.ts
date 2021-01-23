@@ -19,7 +19,7 @@ export function prepareValidationForFlashMessage(redirectURL: string) {
   }
 }
 
-export function prepareValidationForErrorMessages(redirectURL : string) {
+export function prepareValidationForErrorMessages(redirectURL : string | Function) {
   return async (req: Request, _res: Response, next: NextFunction) => {
     const result = validationResult(req)
 
@@ -34,6 +34,10 @@ export function prepareValidationForErrorMessages(redirectURL : string) {
     }, {})
 
     req.flash('errors', JSON.stringify(errors))
+
+    if (typeof redirectURL === 'function') {
+      return req.Inertia.redirect(redirectURL(req))
+    }
 
     return req.Inertia.redirect(redirectURL)
   }
