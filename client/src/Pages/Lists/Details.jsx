@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     left: 0,
     height: '100%',
-    width: '100%',
+    // -- width: '100%',
   },
   videoContainer: {
     // minHeight: '100vh',
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     marginBottom: '1rem',
     maxWidth: 1024,
-    width: '100%',
+    // -- width: '100%',
   },
   endOfTheList: {
     textAlign: 'center',
@@ -55,7 +55,7 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ list }) => {
   const {
-    props: { referer },
+    props: { isMobile, referer },
   } = usePage();
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true);
@@ -85,14 +85,18 @@ const Details = ({ list }) => {
 
   return (
     <Dialog
-      style={{
-        padding: 0,
-        top: 0,
-        left: 0,
-        height: '100%',
-        width: '100%',
-      }}
-      fullScreen
+      style={
+        {
+          // padding: 0,
+          // top: 0,
+          // left: 0,
+          // height: '100%',
+          // width: '100%',
+        }
+      }
+      fullScreen={isMobile}
+      fullWidth
+      maxWidth="sm"
       open
       onClose={handleClose}
       TransitionComponent={Transition}
@@ -111,14 +115,16 @@ const Details = ({ list }) => {
       <DialogContent className={classes.dialog}>
         <section
           id="ancestor"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'center',
-            width: '100%',
-          }}
+          style={
+            {
+              // display: 'flex',
+              // flexDirection: 'column',
+              // justifyContent: 'center',
+              // alignItems: 'center',
+              // alignSelf: 'center',
+              // width: '100%',
+            }
+          }
         >
           {videos.map((item) => (
             <Paper key={item.id} elevation={5} className={classes.videoContainer}>

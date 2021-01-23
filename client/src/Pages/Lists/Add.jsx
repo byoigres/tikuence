@@ -110,42 +110,27 @@ const AddPage = ({ errors }) => {
           </Button>
         </Toolbar>
       </AppBar>
-      <DialogContent
-        data-name="DialogContent"
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <div
-          style={{
-            flex: '1 0 auto',
-            display: 'block',
+      <DialogContent>
+        <TextField
+          placeholder="Enter the name of the list"
+          label="List name"
+          autoFocus
+          fullWidth
+          margin="dense"
+          inputProps={{
+            maxLength: 150,
+            ref: listNameRef,
           }}
-        >
-          <TextField
-            placeholder="Enter the name of the list"
-            label="List name"
-            autoFocus
-            fullWidth
-            margin="dense"
-            inputProps={{
-              maxLength: 150,
-              ref: listNameRef,
-            }}
-            disabled={isLoading}
-            value={title}
-            onChange={handleChange}
-            onKeyPress={handleOnKeyPress}
-            error={errors.title !== undefined}
-            helperText={errors.title}
-          />
-          <DialogContentText>
-            After creating the list you would be able to add videos to it.
-          </DialogContentText>
-        </div>
+          disabled={isLoading}
+          value={title}
+          onChange={handleChange}
+          onKeyPress={handleOnKeyPress}
+          error={errors.title !== undefined}
+          helperText={errors.title}
+        />
+        <DialogContentText>
+          After creating the list you would be able to add videos to it.
+        </DialogContentText>
       </DialogContent>
     </Dialog>
   );

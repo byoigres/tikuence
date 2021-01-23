@@ -80,7 +80,14 @@ const AddVideoPage = ({ listId, errors }) => {
   }
 
   return (
-    <Dialog fullScreen={isMobile} open onClose={handleClose} TransitionComponent={Transition}>
+    <Dialog
+      fullScreen={isMobile}
+      fullWidth
+      maxWidth="sm"
+      open
+      onClose={handleClose}
+      TransitionComponent={Transition}
+    >
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton

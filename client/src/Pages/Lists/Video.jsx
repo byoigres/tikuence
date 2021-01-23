@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -54,7 +55,10 @@ const Transition = React.forwardRef((props, ref) => (
   <Slide direction="left" ref={ref} {...props} />
 ));
 
-const Details = ({ video, referer }) => {
+const Details = ({ video }) => {
+  const {
+    props: { isMobile, referer },
+  } = usePage();
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -64,7 +68,9 @@ const Details = ({ video, referer }) => {
 
   return (
     <Dialog
-      fullScreen
+      fullScreen={isMobile}
+      fullWidth
+      maxWidth="sm"
       open
       onClose={handleClose}
       TransitionComponent={Transition}
@@ -96,6 +102,6 @@ const Details = ({ video, referer }) => {
   );
 };
 
-Details.layout = (page) => <Layout children={page} title={page.props.video.title} cleanLayout />;
+Details.layout = (page) => <Layout children={page} cleanLayout />;
 
 export default Details;
