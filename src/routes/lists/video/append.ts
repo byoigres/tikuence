@@ -5,6 +5,8 @@ import fs from 'fs/promises'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import url from 'url'
+import { checkSchema } from 'express-validator'
+// import { prepareValidationForFlashMessage } from '../../../middlewares/validations'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import { getAllLists } from '../list'
 import Author from '../../../models/author.model'
@@ -41,6 +43,27 @@ interface iTikTokOembed {
 
 const regExpPathForWeb = /^\/@[A-Za-z0-9_.]+\/video\/([0-9]+)/
 const regExpPathForMobile = /^\/v\/([0-9]+).html/
+
+const validations = checkSchema({
+  listId: {
+    in: 'params',
+    isNumeric: {
+      errorMessage: 'The provided id of the list is not valid',
+      bail: true
+    },
+    toInt: true,
+    custom: {
+      errorMessage: 'The id does not exists 1',
+      options: async (value) => {
+        const list = await queryVerifyListExistsById(value)
+        if (!list) {
+          /* eslint prefer-promise-reject-errors: 0 */
+          return Promise.reject('The list does not exists 2.')
+        }
+      }
+    }
+  }
+})
 
 async function validatePayload(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
@@ -225,6 +248,7 @@ function response(req: Request) {
 
 export default [
   isAuthenticated,
+  ...validations,
   validatePayload,
   validateUrl,
   fetchVideoInfo,
