@@ -6,7 +6,8 @@ import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import url from 'url'
 import { checkSchema } from 'express-validator'
-// import { prepareValidationForFlashMessage } from '../../../middlewares/validations'
+import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
+import { queryVerifyListExistsById } from '../../../queries/list'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import { getAllLists } from '../list'
 import Author from '../../../models/author.model'
@@ -53,7 +54,7 @@ const validations = checkSchema({
     },
     toInt: true,
     custom: {
-      errorMessage: 'The id does not exists 1',
+      // errorMessage: 'The id does not exists 1',
       options: async (value) => {
         const list = await queryVerifyListExistsById(value)
         if (!list) {
@@ -62,26 +63,25 @@ const validations = checkSchema({
         }
       }
     }
+  },
+  videoUrl: {
+    in: 'body',
+    isLength: {
+      errorMessage: 'You must provide a title for the list',
+      options: {
+        min: 1
+        // TODO: check what is the max lenght of a complete URL
+      },
+      bail: true
+    },
+    isURL: {
+      errorMessage: 'The URL is not valid',
+      options: {
+        require_protocol: true
+      }
+    }
   }
 })
-
-async function validatePayload(req: Request, _res: Response, next: NextFunction) {
-  const payload = <iPayload>req.body
-  const params = req.params
-
-  if (payload.videoUrl.length === 0) {
-    req.flash(
-      'errors',
-      JSON.stringify({
-        videoUrl: 'This field is required'
-      })
-    )
-
-    req.Inertia.redirect(`/list/${params.listId}/video/add`)
-  }
-
-  next()
-}
 
 async function validateUrl(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
@@ -122,7 +122,13 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
     return next()
   }
 
-  req.flash('error', `That doesn't seems to be a TikTok video url.`) /* eslint quotes: 0 */
+  req.flash(
+    'errors',
+    JSON.stringify({
+      videoUrl: `That doesn't seems to be a valid TikTok video url.`
+    })
+  )
+
   return req.Inertia.redirect(`/list/${listId}/video/add`)
 }
 
@@ -249,7 +255,7 @@ function response(req: Request) {
 export default [
   isAuthenticated,
   ...validations,
-  validatePayload,
+  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.listId}/video/add`),
   validateUrl,
   fetchVideoInfo,
   fetchVideoThumbnail,
