@@ -197,7 +197,7 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
   const videoId = httpContext.get('videoId')
   const imageName = httpContext.get('imageName')
 
-  const [video, alreadyExists] = await Video.findOrCreate({
+  const [video] = await Video.findOrCreate({
     where: {
       tiktok_id: videoId
     },
