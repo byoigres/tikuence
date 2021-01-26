@@ -27,7 +27,6 @@ const validations = checkSchema({
   title: {
     in: 'body',
     errorMessage: 'You must provide a title for the list',
-    isAlphanumeric: true,
     isLength: {
       options: {
         min: 1,
