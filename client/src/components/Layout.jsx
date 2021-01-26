@@ -11,12 +11,29 @@ import blue from '@material-ui/core/colors/blue';
 import NavBar from './NavBar';
 
 const useStyles = makeStyles({
+  appBar: ({ isMobile }) => ({
+    alignItems: isMobile ? 'normal' : 'center',
+  }),
+  toolBar: ({ isMobile }) =>
+    isMobile
+      ? {}
+      : {
+          maxWidth: '600px',
+          width: '100%',
+        },
   container: ({ isMobile }) => ({
     display: isMobile ? 'block' : 'flex',
     justifyContent: isMobile ? 'unset' : 'center',
   }),
+  innerContainer: {
+    position: 'relative',
+    maxWidth: '600px',
+    flex: '1 0 auto',
+    backgroundColor: '#fff',
+  },
   content: ({ cleanLayout }) => ({
     marginTop: '4rem',
+    marginBottom: '4rem',
     marginLeft: cleanLayout ? 0 : '1rem',
     marginRight: cleanLayout ? 0 : '1rem',
     // paddingBottom: '4rem',
@@ -90,18 +107,10 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
         )}
       >
         <div className={classes.container}>
-          <div
-            style={{
-              position: 'relative',
-              maxWidth: '600px',
-              flex: '1 0 auto',
-              height: '100vh',
-              backgroundColor: '#fff',
-            }}
-          >
+          <div className={classes.innerContainer}>
             {!cleanLayout && (
-              <AppBar position="fixed">
-                <Toolbar>
+              <AppBar position="fixed" className={classes.appBar}>
+                <Toolbar className={classes.toolBar}>
                   <Typography variant="h6">{title}</Typography>
                 </Toolbar>
               </AppBar>
