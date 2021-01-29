@@ -1,4 +1,7 @@
-import { Sequelize, Table, Column, PrimaryKey, Model, DataType, Default } from 'sequelize-typescript'
+import { Sequelize, Table, Column, PrimaryKey, Model, DataType, Default, BelongsToMany } from 'sequelize-typescript'
+
+import SocialProviders from '../models/socialproviders.model'
+import UsersSocialProviders from '../models/userssocialproviders.model'
 
 @Table({
   timestamps: false,
@@ -28,6 +31,9 @@ class User extends Model<User> {
     allowNull: false
   })
   hash: string
+
+  @BelongsToMany(() => SocialProviders, () => UsersSocialProviders)
+  providers: Array<SocialProviders & { relation: UsersSocialProviders }>
 
   @Default(Sequelize.literal('NOW()'))
   @Column({
