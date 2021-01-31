@@ -6,7 +6,6 @@ import {
   Model,
   DataType,
   Default,
-  BelongsTo,
   BelongsToMany
 } from 'sequelize-typescript'
 
@@ -37,7 +36,7 @@ class SocialProvider extends Model<SocialProvider> {
   name: string
 
   @BelongsToMany(() => User, () => UsersSocialProviders)
-  lists: User[]
+  users: User[]
 
   @Default(Sequelize.literal('NOW()'))
   @Column({

@@ -1,4 +1,4 @@
-import { Table, Column, Model, ForeignKey } from 'sequelize-typescript'
+import { Table, Column, Model, ForeignKey, DataType } from 'sequelize-typescript'
 
 import User from './user.model'
 import SocialProviders from './socialproviders.model'
@@ -20,14 +20,13 @@ class UsersSocialProviders extends Model<UsersSocialProviders> {
   @Column
   // eslint-disable-next-line camelcase
   provider_id: number
-  /*
+
   @Column({
     type: DataType.STRING(256),
     allowNull: false
   })
   // eslint-disable-next-line camelcase
-  identifier: number
-  */
+  identifier: string
 }
 
 export default UsersSocialProviders
