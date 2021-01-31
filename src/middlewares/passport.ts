@@ -3,8 +3,13 @@ import Passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as TwitterStrategy } from 'passport-twitter'
 import { Strategy as LocalStrategy } from 'passport-local'
+import UsersSocialProviders from '../models/userssocialproviders.model'
+import SocialProviders from '../models/socialproviders.model'
+import User from '../models/user.model'
 
 import config from '../config'
+
+// interface iEmail { value: String, verified: Boolean }
 
 Passport.use(
   new TwitterStrategy(
@@ -13,7 +18,22 @@ Passport.use(
       consumerSecret: config.get('/passport/providers/twitter/consumerSecret'),
       callbackURL: config.get('/passport/providers/twitter/callbackURL')
     },
-    function (token, tokenSecret, profile, done) {
+    async function verify(token, tokenSecret, profile, done) {
+      const relation = await UsersSocialProviders.findOne({
+        where: {
+          identifier: profile.id
+        }
+      })
+
+      if (!relation) {
+        // User.create({
+        //   email: '',
+        //   hash: ''
+        // })
+      }
+
+      console.log(relation)
+
       // User.findOrCreate({ twitterId: profile.id }, function (err, user) {
       //   return cb(err, user)
       // })
@@ -33,12 +53,12 @@ Passport.use(
 
 Passport.serializeUser(function (user, done) {
   // console.log('serializeUser', user)
-  done(null, user)
+  done(null, {})
   // if you use Model.id as your idAttribute maybe you'd want
   // done(null, user.id);
 })
 
-Passport.deserializeUser(function (id : Express.User, done) {
+Passport.deserializeUser(function (id: Express.User, done) {
   // User.findById(id, function (err, user) {
   //   done(err, user)
   // })
@@ -53,7 +73,7 @@ Passport.use(
       clientSecret: config.get('/passport/providers/google/clientSecret'),
       callbackURL: config.get('/passport/providers/google/callbackURL')
     },
-    function (accessToken, refreshToken, profile, done) {
+    async function verify(accessToken, refreshToken, profile, done) {
       // console.log('accessToken', accessToken)
       // console.log('refreshToken', refreshToken)
       // console.log('profile', profile)
@@ -61,6 +81,57 @@ Passport.use(
       // User.findOrCreate({ googleId: profile.id }, function (err, user) {
       //   return done(err, user)
       // })
+      if (profile.emails && profile.emails.length > 0) {
+        const {
+          emails: {
+            0: { value: email }
+          }
+        } = profile // profile.emails[0].value
+        const user = await User.findOne({
+          where: {
+            email
+          },
+          include: [
+            {
+              model: SocialProviders,
+              through: {
+                where: {
+                  identifier: profile.id,
+                  provider_id: 1
+                }
+              }
+            }
+          ]
+        })
+
+        if (!user) {
+          const user = await User.create(
+            {
+              email,
+              hash: '',
+              providers: [
+                {
+                  identifier: profile.id
+                }
+              ]
+            },
+            {
+              include: [
+                {
+                  model: SocialProviders
+                }
+              ]
+            }
+          )
+
+          await UsersSocialProviders.create({
+            user_id: user.id,
+            provider_id: 1, // GOOGLE
+            identifier: profile.id
+          })
+        }
+      }
+
       done(undefined, profile)
     }
   )
