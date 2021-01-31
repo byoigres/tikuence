@@ -10,7 +10,7 @@ InertiaProgress.init();
 render(
   <App
     /* eslint no-underscore-dangle: 0 */
-    initialPage={JSON.parse(decodeURIComponent(unescape(window.__page__)))}
+    initialPage={JSON.parse(unescape(window.__page__))}
     resolveComponent={(name) =>
       import(
         /* webpackMode: "lazy" */
