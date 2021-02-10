@@ -53,7 +53,7 @@ Passport.use(
 
 Passport.serializeUser(function (user, done) {
   // console.log('serializeUser', user)
-  done(null, {})
+  done(null, user)
   // if you use Model.id as your idAttribute maybe you'd want
   // done(null, user.id);
 })
@@ -87,7 +87,8 @@ Passport.use(
             0: { value: email }
           }
         } = profile // profile.emails[0].value
-        const user = await User.findOne({
+        let user = await User.findOne({
+          attributes: ['id', 'email'],
           where: {
             email
           },
@@ -105,22 +106,10 @@ Passport.use(
         })
 
         if (!user) {
-          const user = await User.create(
+          user = await User.create(
             {
               email,
-              hash: '',
-              providers: [
-                {
-                  identifier: profile.id
-                }
-              ]
-            },
-            {
-              include: [
-                {
-                  model: SocialProviders
-                }
-              ]
+              hash: ''
             }
           )
 
@@ -130,9 +119,15 @@ Passport.use(
             identifier: profile.id
           })
         }
-      }
 
-      done(undefined, profile)
+        done(undefined, {
+          id: user.id,
+          email: user.email,
+          provider: {
+            google: profile.id
+          }
+        })
+      }
     }
   )
 )
