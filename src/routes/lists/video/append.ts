@@ -12,6 +12,7 @@ import { isAuthenticated } from '../../../middlewares/inertia'
 import { getAllLists } from '../list'
 import Author from '../../../models/author.model'
 import Video from '../../../models/video.model'
+import List from '../../../models/list.model'
 import ListsVideos from '../../../models/listsvideos.model'
 
 interface iPayload {
@@ -83,6 +84,42 @@ const validations = checkSchema({
   }
 })
 
+async function verifyInput(req: Request, _res: Response, next: NextFunction) {
+  const { listId } = req.params
+
+  let list = await List.findOne({
+    attributes: ['id'],
+    where: {
+      id: listId
+    }
+  })
+
+  if (!list) {
+    req.flash('warning', 'The list do not exist')
+
+    return req.Inertia.redirect(`/list/${listId}/video/add`)
+  }
+
+  list = await List.findOne({
+    attributes: ['id'],
+    where: {
+      id: listId,
+      user_id: req.user?.id ?? 0
+    }
+  })
+
+  if (!list) {
+    req.flash('warning', 'The list does not belong to the current user')
+
+    return req.Inertia.redirect(`/list/${listId}/video/add`)
+  }
+
+  next()
+}
+
+/**
+ * TODO: check if list belongs to the current user
+ */
 async function validateUrl(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
   const { listId } = req.params
@@ -228,6 +265,9 @@ async function matchVideoWithList(req: Request, _res: Response, next: NextFuncti
   })
 
   const values = {
+    /**
+     * TODO: verify is list ID belongs to the current user
+     */
     list_id: listId,
     video_id: videoId
   }
@@ -256,6 +296,7 @@ export default [
   isAuthenticated,
   ...validations,
   prepareValidationForErrorMessages((req: Request) => `/list/${req.params.listId}/video/add`),
+  verifyInput,
   validateUrl,
   fetchVideoInfo,
   fetchVideoThumbnail,

@@ -28,7 +28,7 @@ async function createList(req: Request, res: Response, next: NextFunction) {
 
   const list = await List.create({
     title: payload.title,
-    user_id: 1
+    user_id: req.user ? req.user.id : null
   })
 
   httpContext.set('listId', list.id)
