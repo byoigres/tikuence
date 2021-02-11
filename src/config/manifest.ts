@@ -8,20 +8,8 @@ const manifest = {
     }
   },
   db: {
-    host: {
-      $env: 'DB_HOST'
-    },
-    port: {
-      $env: 'DB_PORT'
-    },
-    database: {
-      $env: 'DB_DATABASE'
-    },
-    username: {
-      $env: 'DB_USERNAME'
-    },
-    password: {
-      $env: 'DB_PASSWORD'
+    url: {
+      $env: 'DATABASE_URL'
     },
     dialect: {
       $env: 'DB_DIALECT'

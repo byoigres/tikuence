@@ -5,15 +5,11 @@ import routes from './routes'
 import middlewares from './middlewares'
 
 const host = config.get('/app/host')
-const port = config.get('/app/port')
+const port = config.get('/app/port') || process.env.PORT || 3000
 
 async function start() {
   await db({
-    host: config.get('/db/host'),
-    port: config.get('/db/port'),
-    database: config.get('/db/database'),
-    username: config.get('/db/username'),
-    password: config.get('/db/password'),
+    url: config.get('/db/url'),
     dialect: config.get('/db/dialect')
   })
 

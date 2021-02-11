@@ -3,43 +3,23 @@ import { Sequelize } from 'sequelize-typescript'
 import Path from 'path'
 
 interface iPluginOptions {
-  host: string
-  port: number
-  database: string
-  username: string
-  password: string
+  url: string
   dialect: Dialect
 }
 
 async function DataBase(options: iPluginOptions) {
   try {
-    const sequelize = new Sequelize(options.database, options.username, options.password, {
-      host: options.host,
-      port: options.port,
-      dialect: options.dialect,
+    const sequelize = new Sequelize(options.url, {
       pool: {
         max: 10,
         min: 1,
         idle: 10000
       },
       logging: false, // console.log,
-      models: [Path.join(__dirname, '/**/*.model.ts')]
+      models: [Path.join(__dirname, '/**/*.model.ts'), Path.join(__dirname, '/**/*.model.js')]
     })
 
     await sequelize.authenticate()
-
-    // await sequelize.createSchema("schedule", {});
-    // await sequelize.createSchema("accounts", {});
-    // await sequelize.createSchema("counter", {});
-
-    // sequelize.import(Path.join(__dirname, "./accounts/user.model"));
-    // sequelize.import(Path.join(__dirname, "./models/schedule/event"));
-    // sequelize.import(Path.join(__dirname, "./models/schedule/pattern"));
-    // sequelize.import(Path.join(__dirname, "./models/schedule/category"));
-    // sequelize.import(Path.join(__dirname, "./models/schedule/range"));
-    // sequelize.import(Path.join(__dirname, "./models/counter/history"));
-    // sequelize.import(Path.join(__dirname, "./models/counter/category"));
-    // sequelize.import(Path.join(__dirname, "./models/counter/event"));
 
     await sequelize.sync({ force: false })
   } catch (err) {
