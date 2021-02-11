@@ -9,6 +9,7 @@ interface iPluginOptions {
 
 async function DataBase(options: iPluginOptions) {
   try {
+    console.log(JSON.stringify(options))
     const sequelize = new Sequelize(options.url, {
       pool: {
         max: 10,
