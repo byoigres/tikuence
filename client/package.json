@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development --config webpack/webpack.dev.js",
+    "dev": "./node_modules/.bin/webpack --mode development --config webpack/webpack.dev.js",
     "start": "npm run dev",
-    "build": "webpack --mode production --env NODE_ENV=production --config webpack/webpack.prod.js",
+    "build": "./node_modules/.bin/webpack --mode production --env NODE_ENV=production --config webpack/webpack.prod.js",
     "eslint": "eslint './src/**/*.{js,jsx}' --fix",
     "prettier": "prettier --config .prettierrc.json --write src/**/*.js",
     "test": "echo \"Error: no test specified\" && exit 1"
