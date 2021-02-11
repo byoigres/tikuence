@@ -9,7 +9,6 @@ interface iPluginOptions {
 
 async function DataBase(options: iPluginOptions) {
   try {
-    console.log(JSON.stringify(options))
     const sequelize = new Sequelize(options.url, {
       pool: {
         max: 10,
@@ -17,6 +16,15 @@ async function DataBase(options: iPluginOptions) {
         idle: 10000
       },
       ssl: process.env.NODE_ENV === 'production',
+      dialectOptions: {
+        ssl:
+          process.env.NODE_ENV === 'production'
+            ? {
+                require: true,
+                rejectUnauthorized: false // <<<<<<< YOU NEED THIS
+              }
+            : {}
+      },
       native: false, // process.env.NODE_ENV === 'production',
       logging: false, // console.log,
       models: [Path.join(__dirname, '/**/*.model.ts'), Path.join(__dirname, '/**/*.model.js')]
