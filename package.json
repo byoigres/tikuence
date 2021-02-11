@@ -10,7 +10,7 @@
     "start": "nodemon -e ts --ignore public --exec 'node --inspect=0.0.0.0:9229 --require ts-node/register ./src/index.ts'",
     "debug_start": "nodemon -e ts --ignore public ./src/index.ts",
     "build": "tsc",
-    "postinstall": "npm --prefix ./client install --also=dev && npm --prefix ./client run-script build && npm run build",
+    "heroku-prebuild": "mkdir -p public/assets && mkdir -p public/images && npm --prefix ./client install --also=dev && npm --prefix ./client run-script build && npm run build",
     "prettier": "prettier --config .prettierrc.json --write src/**/*.ts",
     "eslint": "eslint ./src/**/*.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
