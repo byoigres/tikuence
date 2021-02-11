@@ -15,6 +15,8 @@ async function DataBase(options: iPluginOptions) {
         min: 1,
         idle: 10000
       },
+      ssl: process.env.NODE_ENV === 'production',
+      native: process.env.NODE_ENV === 'production',
       logging: false, // console.log,
       models: [Path.join(__dirname, '/**/*.model.ts'), Path.join(__dirname, '/**/*.model.js')]
     })
