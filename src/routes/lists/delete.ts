@@ -25,6 +25,10 @@ const validations = checkSchema({
   }
 })
 
+/**
+ * TODO: check if list belongs to the current user
+ */
+
 async function deleteList(req: Request, res: Response, next: NextFunction) {
   const params = req.params
 

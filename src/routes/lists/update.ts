@@ -36,6 +36,10 @@ const validations = checkSchema({
   }
 })
 
+/**
+ * TODO: check if list belongs to the current user
+ */
+
 async function updateList(req: Request, _res: Response, next: NextFunction) {
   const { listId } = req.params
   const { title } = req.body
