@@ -1,1 +1,1 @@
-web: cd client && npm i && npm run build && cd .. && node build/src/index.js
+web: npm --prefix install && npm --prefix ./client run-script build && node build/src/index.js
