@@ -74,7 +74,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     width: '100%',
   },
-  title: (p) => ({
+  title: {
+    flex: 1,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+  },
+  inlineTitle: (p) => ({
     '&:hover': {
       cursor: p.isMobile ? 'default' : 'pointer',
       color: theme.palette.text.secondary,
@@ -282,7 +288,7 @@ const Edit = ({ list, errors }) => {
             <Typography
               component="h4"
               variant="h4"
-              className={classes.title}
+              className={classes.inlineTitle}
               onClick={handleTitleClick}
             >
               {list.title}

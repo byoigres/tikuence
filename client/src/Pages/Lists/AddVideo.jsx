@@ -133,9 +133,9 @@ const AddVideoPage = ({ listId, errors }) => {
           <p>
             <i>Example:</i>
           </p>
-          <ul>
-            <li>https://www.tiktok.com/@bellapoarch/video/6862153058223197445</li>
-          </ul>
+          <p>https://www.tiktok.com/[user]/video/[video-id]</p>
+          <p>https://m.tiktok.com/v/[video-id].html</p>
+          <p>https://vm.tiktok.com/[video-id]</p>
         </DialogContentText>
       </DialogContent>
     </Dialog>
