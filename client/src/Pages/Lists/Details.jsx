@@ -21,8 +21,10 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
   title: {
-    marginLeft: theme.spacing(2),
     flex: 1,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
   },
   dialog: {
     padding: 0,
