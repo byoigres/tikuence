@@ -15,6 +15,11 @@ router.get('/login', function view(req: Request) {
   })
 })
 
+router.get('/logout', function logout(req: Request) {
+  req.logOut()
+  return req.Inertia.redirect('/login')
+})
+
 router.get('/auth/google', Passport.authenticate('google', { scope: ['email', 'profile'] }))
 
 router.get(
