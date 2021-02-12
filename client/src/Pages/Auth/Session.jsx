@@ -30,7 +30,7 @@ const Session = () => (
       >
         Google
       </Button>
-      <Button
+      {/* <Button
         variant="contained"
         color="secondary"
         startIcon={<TwitterIcon />}
@@ -55,7 +55,7 @@ const Session = () => (
         }}
       >
         Local
-      </Button>
+      </Button> */}
     </Paper>
   </div>
 );

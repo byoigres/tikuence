@@ -6,6 +6,7 @@ import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import url from 'url'
 import { checkSchema } from 'express-validator'
+import config from '../../../config'
 import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
 import { queryVerifyListExistsById } from '../../../queries/list'
 import { isAuthenticated } from '../../../middlewares/inertia'
@@ -189,7 +190,7 @@ async function fetchVideoThumbnail(req: Request, _res: Response, next: NextFunct
   const buffer = await response.buffer()
 
   const imageName = `${uuidv4()}.jpg`
-  const imagePath = path.join(__dirname, '..', '..', '..', '..', 'public', 'images', imageName)
+  const imagePath = path.join(config.get('/images/path'), imageName)
 
   await fs.writeFile(imagePath, buffer)
 

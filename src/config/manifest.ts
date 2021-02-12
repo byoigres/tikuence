@@ -40,6 +40,11 @@ const manifest = {
         }
       }
     }
+  },
+  images: {
+    path: {
+      $env: 'IMAGES_PATH'
+    }
   }
 }
 
