@@ -129,7 +129,13 @@ const AddVideoPage = ({ listId, errors }) => {
           helperText={errors.videoUrl}
         />
         <DialogContentText>
-          After creating the list you would be able to add videos to it.
+          <p>Paste a TikTok video URL</p>
+          <p>
+            <i>Example:</i>
+          </p>
+          <ul>
+            <li>https://www.tiktok.com/@bellapoarch/video/6862153058223197445</li>
+          </ul>
         </DialogContentText>
       </DialogContent>
     </Dialog>
