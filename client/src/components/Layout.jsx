@@ -10,10 +10,17 @@ import blueGrey from '@material-ui/core/colors/blueGrey';
 import blue from '@material-ui/core/colors/blue';
 import NavBar from './NavBar';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   appBar: ({ isMobile }) => ({
     alignItems: isMobile ? 'normal' : 'center',
   }),
+  title: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+  },
   toolBar: ({ isMobile }) =>
     isMobile
       ? {}
@@ -40,7 +47,7 @@ const useStyles = makeStyles({
     // maxWidth: 600,
     // marginTop: '4rem',
   }),
-});
+}));
 
 const theme = createMuiTheme({
   palette: {
@@ -111,7 +118,9 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
             {!cleanLayout && (
               <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar className={classes.toolBar}>
-                  <Typography variant="h6">{title}</Typography>
+                  <Typography variant="h6" className={classes.title}>
+                    {title}
+                  </Typography>
                 </Toolbar>
               </AppBar>
             )}

@@ -15,12 +15,11 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Layout from '../../components/Layout';
 import TikTokVideo from '../../components/TikTokVideo';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   appBar: {
     position: 'relative',
   },
   title: {
-    marginLeft: theme.spacing(2),
     flex: 1,
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
