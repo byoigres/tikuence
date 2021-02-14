@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import Os from 'os'
 import httpContext from 'express-http-context'
 import fetch from 'node-fetch'
 import fs from 'fs/promises'
@@ -6,7 +7,7 @@ import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import url from 'url'
 import { checkSchema } from 'express-validator'
-import config from '../../../config'
+import { upload as uploadImage } from '../../../firebase'
 import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
 import { queryVerifyListExistsById } from '../../../queries/list'
 import { isAuthenticated } from '../../../middlewares/inertia'
@@ -190,9 +191,11 @@ async function fetchVideoThumbnail(req: Request, _res: Response, next: NextFunct
   const buffer = await response.buffer()
 
   const imageName = `${uuidv4()}.jpg`
-  const imagePath = path.join(config.get('/images/path'), imageName)
+  const imagePath = path.join(Os.tmpdir(), imageName)
 
   await fs.writeFile(imagePath, buffer)
+
+  const mediaLink = await uploadImage(imagePath, imageName)
 
   httpContext.set('imageName', imageName)
 

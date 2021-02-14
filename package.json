@@ -33,6 +33,7 @@
     "express-http-context": "^1.2.4",
     "express-session": "^1.17.1",
     "express-validator": "^6.9.2",
+    "firebase-admin": "^9.5.0",
     "inertia-node": "^1.1.2",
     "is-mobile": "^2.2.2",
     "node-fetch": "^2.6.1",

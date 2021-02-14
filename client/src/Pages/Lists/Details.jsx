@@ -16,7 +16,7 @@ import { Waypoint } from 'react-waypoint';
 import Layout from '../../components/Layout';
 import TikTokVideo from '../../components/TikTokVideo';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   appBar: {
     position: 'relative',
   },

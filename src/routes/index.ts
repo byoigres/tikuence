@@ -6,12 +6,12 @@ import home from './lists/list'
 import lists from './lists'
 import profile from './profile'
 import auth from './auth'
+import images from './images'
 
 function bindRoutes(app: Express) {
   app.get('/', home)
   app.use('/', auth)
-  // app.use("/sessions", sessions);
-  // app.use("/events", events);
+  app.get('/images/:image', images)
   app.use('/list', lists)
   app.use('/profile', profile)
 }
