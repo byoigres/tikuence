@@ -41,6 +41,25 @@ const manifest = {
       }
     }
   },
+  firebase: {
+    cert: {
+      projectId: {
+        $env: 'FIREBASE_CERT_PROJECT_ID'
+      },
+      privateKey: {
+        $env: 'FIREBASE_CERT_PRIVATE_KEY'
+      },
+      clientEmail: {
+        $env: 'FIREBASE_CERT_CLIENT_EMAIL'
+      }
+    },
+    bucketUrl: {
+      $env: 'FIREBASE_STORAGE_BUCKET_URL'
+    },
+    bucketFolder: {
+      $env: 'FIREBASE_STORAGE_BUCKET_FOLDER'
+    }
+  },
   images: {
     path: {
       $env: 'IMAGES_PATH'
