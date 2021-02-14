@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     width: theme.spacing(7),
+    minHeight: '100px',
     height: '100%',
   },
   messageNumberOfVideos: {
