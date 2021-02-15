@@ -14,6 +14,7 @@ import Slide from '@material-ui/core/Slide';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Waypoint } from 'react-waypoint';
 import Layout from '../../components/Layout';
+import SEO from '../../components/SEO';
 import TikTokVideo from '../../components/TikTokVideo';
 
 const useStyles = makeStyles(() => ({
@@ -86,88 +87,82 @@ const Details = ({ list }) => {
   }, [videoIndex]);
 
   return (
-    <Dialog
-      style={
-        {
-          // padding: 0,
-          // top: 0,
-          // left: 0,
-          // height: '100%',
-          // width: '100%',
-        }
-      }
-      fullScreen={isMobile}
-      fullWidth
-      maxWidth="sm"
-      open
-      onClose={handleClose}
-      TransitionComponent={Transition}
-      closeAfterTransition
-    >
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {list.title}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <DialogContent className={classes.dialog}>
-        <section
-          id="ancestor"
-          style={
-            {
-              // display: 'flex',
-              // flexDirection: 'column',
-              // justifyContent: 'center',
-              // alignItems: 'center',
-              // alignSelf: 'center',
-              // width: '100%',
+    <>
+      <SEO title={list.title} />
+      <Dialog
+        fullScreen={isMobile}
+        fullWidth
+        maxWidth="sm"
+        open
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        closeAfterTransition
+      >
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              {list.title}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <DialogContent className={classes.dialog}>
+          <section
+            id="ancestor"
+            style={
+              {
+                // display: 'flex',
+                // flexDirection: 'column',
+                // justifyContent: 'center',
+                // alignItems: 'center',
+                // alignSelf: 'center',
+                // width: '100%',
+              }
             }
-          }
-        >
-          {videos.map((item) => (
-            <Paper key={item.id} elevation={5} className={classes.videoContainer}>
-              <TikTokVideo
-                tiktokId={item.video.tiktok_id}
-                html={item.video.html}
-                isReadyCallback={(id) => {
-                  const idx = videos.findIndex((x) => x.video.tiktok_id === id);
+          >
+            {videos.map((item) => (
+              <Paper key={item.id} elevation={5} className={classes.videoContainer}>
+                <TikTokVideo
+                  tiktokId={item.video.tiktok_id}
+                  html={item.video.html}
+                  isReadyCallback={(id) => {
+                    const idx = videos.findIndex((x) => x.video.tiktok_id === id);
 
-                  if (idx >= 0) {
-                    const newVideos = [...videos];
-                    newVideos[idx].isReady = true;
-                    setVideos([...newVideos]);
+                    if (idx >= 0) {
+                      const newVideos = [...videos];
+                      newVideos[idx].isReady = true;
+                      setVideos([...newVideos]);
+                    }
+                    setIsLoading(false);
+                  }}
+                />
+              </Paper>
+            ))}
+            {isLoading && <CircularProgress />}
+            {!isLoading && (
+              <Waypoint
+                data-name="waypoint"
+                onEnter={() => {
+                  const previous = videos[videoIndex];
+                  if (previous.isReady && videoIndex < list.videos.length - 1) {
+                    setIsLoading(true);
+                    setVideoIndex(videoIndex + 1);
                   }
-                  setIsLoading(false);
                 }}
               />
-            </Paper>
-          ))}
-          {isLoading && <CircularProgress />}
-          {!isLoading && (
-            <Waypoint
-              data-name="waypoint"
-              onEnter={() => {
-                const previous = videos[videoIndex];
-                if (previous.isReady && videoIndex < list.videos.length - 1) {
-                  setIsLoading(true);
-                  setVideoIndex(videoIndex + 1);
-                }
-              }}
-            />
-          )}
-          {videos.length === list.videos.length && videos[videos.length - 1].isReady && (
-            <Typography variant="subtitle2" className={classes.endOfTheList}>
-              This is the end of the list
-            </Typography>
-          )}
-          <div style={{ height: 10 }} />
-        </section>
-      </DialogContent>
-    </Dialog>
+            )}
+            {videos.length === list.videos.length && videos[videos.length - 1].isReady && (
+              <Typography variant="subtitle2" className={classes.endOfTheList}>
+                This is the end of the list
+              </Typography>
+            )}
+            <div style={{ height: 10 }} />
+          </section>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
