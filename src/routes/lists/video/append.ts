@@ -207,8 +207,8 @@ async function fetchVideoThumbnail(req: Request, _res: Response, next: NextFunct
   const transformer = Sharp(buffer)
   await transformer.clone().toFile(imagePaths.original)
   await transformer.clone().resize({ height: 100 }).toFile(imagePaths.small)
-  await transformer.clone().resize({ height: 150 }).toFile(imagePaths.medium)
-  await transformer.clone().resize({ height: 300 }).toFile(imagePaths.large)
+  await transformer.clone().resize({ height: 250 }).toFile(imagePaths.medium)
+  await transformer.clone().resize({ height: 400 }).toFile(imagePaths.large)
 
   await uploadImage(imagePaths.small, imageNames.small)
   await uploadImage(imagePaths.medium, imageNames.medium)
