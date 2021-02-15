@@ -45,7 +45,7 @@
     "reflect-metadata": "^0.1.13",
     "sequelize": "^5.22.3",
     "sequelize-typescript": "^1.1.0",
-    "sharp": "^0.27.0",
+    "sharp": "^0.27.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

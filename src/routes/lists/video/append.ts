@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import Os from 'os'
 import httpContext from 'express-http-context'
 import fetch from 'node-fetch'
-import fs from 'fs/promises'
+import Sharp from 'sharp'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import url from 'url'
@@ -190,14 +190,32 @@ async function fetchVideoThumbnail(req: Request, _res: Response, next: NextFunct
 
   const buffer = await response.buffer()
 
-  const imageName = `${uuidv4()}.jpg`
-  const imagePath = path.join(Os.tmpdir(), imageName)
+  const hash = uuidv4()
 
-  await fs.writeFile(imagePath, buffer)
+  const imageNames = {
+    small: `sm-${hash}.jpg`,
+    medium: `md-${hash}.jpg`,
+    large: `lg-${hash}.jpg`,
+    original: `${hash}.jpg`
+  }
 
-  const mediaLink = await uploadImage(imagePath, imageName)
+  const imagePaths = Object.entries(imageNames).reduce((acc, [size, name]) => {
+    acc[size] = path.join(Os.tmpdir(), name)
+    return acc
+  }, {} as Record<string, string>)
 
-  httpContext.set('imageName', imageName)
+  const transformer = Sharp(buffer)
+  await transformer.clone().toFile(imagePaths.original)
+  await transformer.clone().resize({ height: 100 }).toFile(imagePaths.small)
+  await transformer.clone().resize({ height: 150 }).toFile(imagePaths.medium)
+  await transformer.clone().resize({ height: 300 }).toFile(imagePaths.large)
+
+  await uploadImage(imagePaths.small, imageNames.small)
+  await uploadImage(imagePaths.medium, imageNames.medium)
+  await uploadImage(imagePaths.large, imageNames.large)
+  await uploadImage(imagePaths.original, imageNames.original)
+
+  httpContext.set('imageName', imageNames.original)
 
   next()
 }

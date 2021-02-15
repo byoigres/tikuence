@@ -73,7 +73,7 @@ const PageList = (props) => {
                   alt={item.title}
                   className={classes.avatar}
                   variant="square"
-                  src={`/images/${item.videos[0].thumbnail_name}`}
+                  src={`/images/sm-${item.videos[0].thumbnail_name}`}
                 />
               </ListItemAvatar>
               <ListItemText
