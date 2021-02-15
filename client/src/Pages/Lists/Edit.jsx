@@ -346,7 +346,7 @@ const Edit = ({ list, errors }) => {
                             alt={video.title}
                             className={classes.avatar}
                             variant="square"
-                            src={`/images/${video.thumbnail_name}`}
+                            src={`/images/sm-${video.thumbnail_name}`}
                           />
                         </ListItemAvatar>
                         <ListItemText id={video.id} primary={video.title} />
