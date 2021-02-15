@@ -9,6 +9,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
+import SEO from '../../components/SEO';
 import Layout from '../../components/Layout';
 
 const useStyles = makeStyles((theme) => ({
@@ -47,6 +48,7 @@ const PageList = (props) => {
 
   return (
     <>
+      <SEO description="List of TikTok videos" title="Tikuence" />
       <List
         dense={false}
         subheader={
