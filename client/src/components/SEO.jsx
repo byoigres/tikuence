@@ -5,7 +5,7 @@ function SEO({ description, lang = 'en', title, image }) {
   const metaDescription = description || 'List of TikTok videos';
   const metaTitle = `Tikuence | ${title}`;
   const metaUrl = 'https://tikuence.herokuapp.com';
-  const metaImage = image || `${metaUrl}/logo200.png`;
+  const metaImage = image || `${metaUrl}/images/logo200.png`;
 
   return (
     <Helmet
