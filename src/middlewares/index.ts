@@ -1,6 +1,7 @@
 import express, { Express } from 'express'
 import httpContext from 'express-http-context'
 import session from 'express-session'
+import compression from 'compression'
 import flash from 'connect-flash'
 
 import inertia, { populateSharedProps } from './inertia'
@@ -8,6 +9,11 @@ import cookies from './cookies'
 import passport from './passport'
 
 function middlewares(app: Express) {
+  app.use(
+    compression({
+      level: 9
+    })
+  )
   app.use(express.static('public'))
   app.use(express.json())
   app.use(cookies)
