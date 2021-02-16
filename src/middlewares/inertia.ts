@@ -5,22 +5,38 @@ import Url from 'url'
 
 const ASSET_VERSION = '1'
 
+const getDescription = () => 'List of Tik'
+const getTitle = (title: string) => `Tikuence | ${title || getDescription()}`
+const getImage = () => 'https://tikuence.herokuapp.com/images/logo200.png'
+
 const template = (page: object, viewData: ViewData) => `
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    
-    <!-- Custom data -->
-    <title>${viewData.title}</title>
-    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" /> -->
+    <title>${getTitle(viewData.title)}</title>
+
+    <meta name="title" content="${getTitle(viewData.title)}">
+    <meta name="description" content="${getDescription()}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tikuence.herokuapp.com/">
+    <meta property="og:title" content="${getTitle(viewData.title)}">
+    <meta property="og:description" content="${getDescription()}">
+    <meta property="og:image" content="${getImage()}">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://tikuence.herokuapp.com/">
+    <meta property="twitter:title" content="${getTitle(viewData.title)}">
+    <meta property="twitter:description" content="${getDescription()}">
+    <meta property="twitter:image" content="${getImage()}">
+
     <style>
         html, body {
             font-family: Roboto;
         }
     </style>
-    <!-- Your React, Vue or Svelte SPA -->
     <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
     <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
