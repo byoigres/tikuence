@@ -58,7 +58,7 @@ export async function getAllListsWithVideos(req: Request, _res: Response, next: 
 async function response (req: Request) {
   const lists: List[] = httpContext.get('lists')
 
-  req.Inertia.setViewData({ title: 'Lists' }).render({
+  req.Inertia.setViewData({ title: 'Latest lists' }).render({
     component: 'Lists/List',
     props: {
       lists
