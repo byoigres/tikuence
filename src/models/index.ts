@@ -16,13 +16,13 @@ async function DataBase(options: iPluginOptions) {
         idle: 10000
       },
       dialectOptions: {},
-      ssl: process.env.NODE_ENV !== 'production',
+      ssl: process.env.NODE_ENV === 'production',
       native: false,
       logging: false, // console.log,
       models: [Path.join(__dirname, '/**/*.model.ts'), Path.join(__dirname, '/**/*.model.js')]
     }
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'production') {
       sequelizeOptions.dialectOptions = {
         ssl: {
           require: true,
