@@ -61,13 +61,13 @@ const NavBar = ({ isAuthenticated }) => {
       onChange={(_, action) => {
         switch (items[action].id) {
           case 'lists':
-            Inertia.get('/');
+            Inertia.visit('/');
             break;
           case 'add-list':
-            Inertia.get('/list/add');
+            Inertia.visit('/list/add');
             break;
           case 'profile':
-            Inertia.get(isAuthenticated ? '/profile' : '/login');
+            Inertia.visit(isAuthenticated ? '/profile' : '/login');
             break;
           default:
             Inertia.get('/');
