@@ -11,6 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 import SEO from '../../components/SEO';
 import Layout from '../../components/Layout';
+import AddNewList from './Add';
 import Details from './Details';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PageList = ({ lists = [], list }) => {
+const PageList = ({ lists = [], list, displayAddNewList = false }) => {
   const classes = useStyles();
 
   return (
@@ -109,6 +110,7 @@ const PageList = ({ lists = [], list }) => {
           ))}
       </List>
       {list && <Details list={list} />}
+      {displayAddNewList && <AddNewList />}
     </>
   );
 };

@@ -26,6 +26,9 @@ const NavBar = ({ isAuthenticated }) => {
       case '/':
         setSelectedAction(0);
         break;
+      case '/list/add':
+        setSelectedAction(1);
+        break;
       case '/profile':
       case '/login':
         setSelectedAction(2);
@@ -64,7 +67,11 @@ const NavBar = ({ isAuthenticated }) => {
             Inertia.visit('/');
             break;
           case 'add-list':
-            Inertia.visit('/list/add');
+            Inertia.visit('/list/add', {
+              preserveScroll: true,
+              only: ['displayAddNewList'],
+              // only: ['auth', 'errors', 'flash', 'isMobile', 'referer', 'displayAddNewList'],
+            });
             break;
           case 'profile':
             Inertia.visit(isAuthenticated ? '/profile' : '/login');
