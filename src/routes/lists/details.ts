@@ -36,7 +36,7 @@ async function getCounters (req: Request) {
   })
 
   req.Inertia.setViewData({ title: list?.title }).render({
-    component: 'Lists/Details',
+    component: 'Lists/List',
     props: {
       list
     }
