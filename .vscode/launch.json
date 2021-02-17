@@ -4,17 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-      {
-            "name": "Debug Typescript Linux/macOS",
-            "type": "node",
-            "request": "attach",
-            "protocol": "inspector",
-            "address": "localhost",
-            "port": 9229,
-            "restart": true,
-            "sourceMaps": false,
-            "localRoot": "${workspaceRoot}"
-        },
         {
             "type": "node",
             "request": "launch",
@@ -33,6 +22,17 @@
             "cwd": "${workspaceRoot}",
             "localRoot": "${workspaceRoot}",
             "protocol": "inspector"
+        },
+        {
+            "name": "Debug Typescript Linux/macOS",
+            "type": "node",
+            "request": "attach",
+            "protocol": "inspector",
+            "address": "localhost",
+            "port": 9229,
+            "restart": true,
+            "sourceMaps": false,
+            "localRoot": "${workspaceRoot}"
         }
     ]
 }
