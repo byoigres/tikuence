@@ -26,21 +26,17 @@ const useStyles = makeStyles(() => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
   },
-  dialog: {
+  dialog: {},
+  content: {
     padding: 0,
-    top: 0,
-    left: 0,
-    height: '100%',
-    // -- width: '100%',
+    height: '100vh',
   },
   videoContainer: {
-    // minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '1rem',
     maxWidth: 1024,
-    // -- width: '100%',
   },
   endOfTheList: {
     textAlign: 'center',
@@ -96,6 +92,7 @@ const Details = ({ list }) => {
         onClose={handleClose}
         TransitionComponent={Transition}
         closeAfterTransition
+        className={classes.dialog}
       >
         <AppBar className={classes.appBar}>
           <Toolbar>
@@ -107,7 +104,7 @@ const Details = ({ list }) => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <DialogContent className={classes.dialog}>
+        <DialogContent className={classes.content} data-name="mui-dialog-content">
           <section>
             {videos.map((item) => (
               <Paper key={item.id} elevation={5} className={classes.videoContainer}>
