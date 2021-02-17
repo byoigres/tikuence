@@ -1,5 +1,6 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { Waypoint } from 'react-waypoint';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -43,16 +44,40 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(7),
     height: '100%',
   },
+  endOfTheList: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    margin: '1rem',
+    fontStyle: 'italic',
+  },
 }));
 
-const PageList = ({
-  lists = [],
-  list,
-  displayAddNewList = false,
-  displayProfile = false,
-  user,
-}) => {
+const PageList = ({ lists: initialLists = [], list, showModal = false, user }) => {
   const classes = useStyles();
+  const [lists, setLists] = useState(initialLists);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isTheEnd, setIsTheEnd] = useState(false);
+
+  useEffect(() => {
+    if (currentPage > 1) {
+      Inertia.get(
+        '/',
+        { page: currentPage },
+        {
+          only: ['lists'],
+          preserveScroll: true,
+          preserveState: true,
+          onSuccess: ({ props: { lists: newLists } }) => {
+            if (newLists.length > 0) {
+              setLists([...lists, ...newLists]);
+            } else {
+              setIsTheEnd(true);
+            }
+          },
+        }
+      );
+    }
+  }, [currentPage]);
 
   return (
     <>
@@ -68,7 +93,7 @@ const PageList = ({
       >
         {lists &&
           lists.map((item) => (
-            <Fragment key={item.id}>
+            <Fragment key={`list-item-${item.id}`}>
               <ListItem
                 key={item.id}
                 button
@@ -76,7 +101,8 @@ const PageList = ({
                   e.preventDefault();
                   Inertia.visit(`/list/${item.id}`, {
                     preserveScroll: true,
-                    only: ['list', 'referer'],
+                    preserveState: true,
+                    only: ['showModal', 'list', 'referer'],
                   });
                 }}
               >
@@ -115,10 +141,24 @@ const PageList = ({
               <Divider variant="fullWidth" component="li" />
             </Fragment>
           ))}
+        {isTheEnd && (
+          <Typography variant="subtitle2" className={classes.endOfTheList}>
+            You reached the end of the lists
+          </Typography>
+        )}
+        {!isTheEnd && (
+          <Waypoint
+            onEnter={() => {
+              if (lists.length > 0) {
+                setCurrentPage(currentPage + 1);
+              }
+            }}
+          />
+        )}
       </List>
-      {list && <Details list={list} />}
-      {displayAddNewList && <AddNewList />}
-      {displayProfile && <Profile user={user} />}
+      {showModal === 'details' && list && <Details list={list} />}
+      {showModal === 'add-list' && <AddNewList />}
+      {showModal === 'profile' && <Profile user={user} />}
     </>
   );
 };

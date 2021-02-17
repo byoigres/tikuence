@@ -13,7 +13,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-// import Layout from '../../components/Layout';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -31,7 +30,7 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 const AddPage = () => {
   const classes = useStyles();
   const {
-    props: { isMobile, errors },
+    props: { isMobile, referer, errors },
   } = usePage();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
@@ -66,7 +65,7 @@ const AddPage = () => {
   }
 
   const handleClose = () => {
-    Inertia.visit('/', { preserveScroll: true });
+    Inertia.visit('/', { preserveScroll: true, preserveState: referer !== null });
   };
 
   function handleOnKeyPress(ev) {
@@ -136,7 +135,5 @@ const AddPage = () => {
     </Dialog>
   );
 };
-
-// AddPage.layout = (page) => <Layout children={page} cleanLayout />;
 
 export default AddPage;

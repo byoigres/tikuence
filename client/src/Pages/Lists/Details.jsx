@@ -64,7 +64,7 @@ const Details = ({ list }) => {
   const [videos, setVideos] = useState([]);
 
   function handleClose() {
-    Inertia.visit(referer || '/', { preserveScroll: true });
+    Inertia.visit(referer || '/', { preserveScroll: true, preserveState: true });
   }
 
   useEffect(() => {
@@ -110,7 +110,11 @@ const Details = ({ list }) => {
         <DialogContent className={classes.content} data-name="mui-dialog-content">
           <section className={classes.section}>
             {videos.map((item) => (
-              <Paper key={item.id} elevation={5} className={classes.videoContainer}>
+              <Paper
+                key={`list-item-details-${item.id}`}
+                elevation={5}
+                className={classes.videoContainer}
+              >
                 <TikTokVideo
                   tiktokId={item.video.tiktok_id}
                   html={item.video.html}

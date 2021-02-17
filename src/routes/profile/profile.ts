@@ -14,7 +14,7 @@ async function response(req: Request) {
     component: 'Lists/List',
     props: {
       user,
-      displayProfile: true
+      showModal: 'profile'
     }
   })
 }
