@@ -16,10 +16,11 @@ async function response(req: Request) {
   })
 
   req.Inertia.setViewData({ title: 'Profile' }).render({
-    component: 'Profile/Profile',
+    component: 'Lists/List',
     props: {
       user,
-      lists
+      displayProfile: true
+      // lists
     }
   })
 }

@@ -74,7 +74,10 @@ const NavBar = ({ isAuthenticated }) => {
             });
             break;
           case 'profile':
-            Inertia.visit(isAuthenticated ? '/profile' : '/login');
+            Inertia.visit(isAuthenticated ? '/profile' : '/login', {
+              preserveScroll: true,
+              only: ['displayProfile', 'user'],
+            });
             break;
           default:
             Inertia.get('/');

@@ -57,7 +57,7 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ list }) => {
   const {
-    props: { isMobile },
+    props: { isMobile, referer },
   } = usePage();
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +65,7 @@ const Details = ({ list }) => {
   const [videos, setVideos] = useState([]);
 
   function handleClose() {
-    Inertia.visit('/', { preserveScroll: true });
+    Inertia.visit(referer || '/', { preserveScroll: true });
   }
 
   useEffect(() => {

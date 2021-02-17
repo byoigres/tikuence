@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import SEO from '../../components/SEO';
 import Layout from '../../components/Layout';
 import AddNewList from './Add';
+import Profile from '../Profile/Profile';
 import Details from './Details';
 
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +45,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PageList = ({ lists = [], list, displayAddNewList = false }) => {
+const PageList = ({
+  lists = [],
+  list,
+  displayAddNewList = false,
+  displayProfile = false,
+  user,
+}) => {
   const classes = useStyles();
 
   return (
@@ -69,7 +76,7 @@ const PageList = ({ lists = [], list, displayAddNewList = false }) => {
                   e.preventDefault();
                   Inertia.visit(`/list/${item.id}`, {
                     preserveScroll: true,
-                    only: ['list'],
+                    only: ['list', 'referer'],
                   });
                 }}
               >
@@ -111,6 +118,7 @@ const PageList = ({ lists = [], list, displayAddNewList = false }) => {
       </List>
       {list && <Details list={list} />}
       {displayAddNewList && <AddNewList />}
+      {displayProfile && <Profile user={user} />}
     </>
   );
 };
