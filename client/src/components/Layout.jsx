@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { usePage } from '@inertiajs/inertia-react';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -20,6 +20,13 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
+  },
+  mainLink: {
+    color: 'white',
+    textDecoration: 'none',
+    '&:hover': {
+      color: theme.palette.text.secondary,
+    },
   },
   toolBar: ({ isMobile }) =>
     isMobile
@@ -119,7 +126,9 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
               <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar className={classes.toolBar}>
                   <Typography variant="h6" className={classes.title}>
-                    {title}
+                    <InertiaLink href="/" className={classes.mainLink}>
+                      {title}
+                    </InertiaLink>
                   </Typography>
                 </Toolbar>
               </AppBar>
