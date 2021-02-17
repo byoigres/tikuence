@@ -31,6 +31,9 @@ const useStyles = makeStyles(() => ({
     padding: 0,
     height: '100vh',
   },
+  section: {
+    textAlign: 'center',
+  },
   videoContainer: {
     display: 'flex',
     justifyContent: 'center',
@@ -105,7 +108,7 @@ const Details = ({ list }) => {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.content} data-name="mui-dialog-content">
-          <section>
+          <section className={classes.section}>
             {videos.map((item) => (
               <Paper key={item.id} elevation={5} className={classes.videoContainer}>
                 <TikTokVideo
