@@ -3,8 +3,10 @@ import { isAuthenticated } from '../../middlewares/inertia'
 
 function response (req: Request) {
   req.Inertia.setViewData({ title: 'Add new list' }).render({
-    component: 'Lists/Add',
-    props: {}
+    component: 'Lists/List',
+    props: {
+      displayAddNewList: true
+    }
   })
 }
 

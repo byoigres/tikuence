@@ -40,7 +40,49 @@ async function queryAllLists(withVideos = false) {
  * @param next
  */
 export async function getAllLists (req: Request, _res: Response, next: NextFunction) {
-  const lists = await queryAllLists(false)
+  // const lists = await queryAllLists(false)
+  const page = req.query.page
+
+  const pageSize = 10
+  let offset = 0
+
+  if (page && typeof page === 'string') {
+    let parsed = parseInt(page, 10)
+
+    if (parsed <= 0) {
+      parsed = 1
+    }
+
+    offset = (parsed * pageSize) - pageSize
+  }
+
+  const lists = await List.findAll({
+    attributes: ['id', 'title', 'updated_at'],
+    limit: pageSize,
+    offset,
+    order: [['updated_at', 'DESC']],
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'email']
+      },
+      {
+        model: Video,
+        as: 'videos',
+        attributes: ['id', 'title', 'thumbnail_width', 'thumbnail_height', 'thumbnail_name'],
+        // The list must have videos
+        required: true,
+        include: [
+          {
+            model: Author,
+            as: 'author',
+            attributes: ['id', 'username']
+          }
+        ]
+      }
+    ]
+  })
 
   httpContext.set('lists', lists)
 
@@ -66,4 +108,4 @@ async function response (req: Request) {
   })
 }
 
-export default [getAllListsWithVideos, response]
+export default [getAllLists, response]

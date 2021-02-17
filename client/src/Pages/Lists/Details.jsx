@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Waypoint } from 'react-waypoint';
-import Layout from '../../components/Layout';
 import SEO from '../../components/SEO';
 import TikTokVideo from '../../components/TikTokVideo';
 
@@ -66,7 +65,7 @@ const Details = ({ list }) => {
   const [videos, setVideos] = useState([]);
 
   function handleClose() {
-    Inertia.visit(referer || '/');
+    Inertia.visit(referer || '/', { preserveScroll: true });
   }
 
   useEffect(() => {
@@ -109,19 +108,7 @@ const Details = ({ list }) => {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.dialog}>
-          <section
-            id="ancestor"
-            style={
-              {
-                // display: 'flex',
-                // flexDirection: 'column',
-                // justifyContent: 'center',
-                // alignItems: 'center',
-                // alignSelf: 'center',
-                // width: '100%',
-              }
-            }
-          >
+          <section>
             {videos.map((item) => (
               <Paper key={item.id} elevation={5} className={classes.videoContainer}>
                 <TikTokVideo
@@ -165,7 +152,5 @@ const Details = ({ list }) => {
     </>
   );
 };
-
-Details.layout = (page) => <Layout children={page} title={page.props.list.title} cleanLayout />;
 
 export default Details;

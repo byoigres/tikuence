@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import Layout from '../../components/Layout';
+// import Layout from '../../components/Layout';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -28,14 +28,13 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const AddPage = ({ errors }) => {
+const AddPage = () => {
   const classes = useStyles();
   const {
-    props: { isMobile, referer },
+    props: { isMobile, errors },
   } = usePage();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
-  const [returnUrl] = useState(referer);
 
   const listNameRef = useRef(null);
 
@@ -44,6 +43,8 @@ const AddPage = ({ errors }) => {
       '/list',
       { title },
       {
+        preserveScroll: true,
+        only: ['auth', 'errors', 'flash', 'isMobile', 'referer', 'displayAddNewList'],
         onStart() {
           setIsLoading(true);
         },
@@ -65,7 +66,7 @@ const AddPage = ({ errors }) => {
   }
 
   const handleClose = () => {
-    Inertia.get(returnUrl || '/');
+    Inertia.visit('/', { preserveScroll: true });
   };
 
   function handleOnKeyPress(ev) {
@@ -136,6 +137,6 @@ const AddPage = ({ errors }) => {
   );
 };
 
-AddPage.layout = (page) => <Layout children={page} cleanLayout />;
+// AddPage.layout = (page) => <Layout children={page} cleanLayout />;
 
 export default AddPage;

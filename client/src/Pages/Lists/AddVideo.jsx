@@ -128,15 +128,15 @@ const AddVideoPage = ({ listId, errors }) => {
           error={errors.videoUrl !== undefined}
           helperText={errors.videoUrl}
         />
-        <DialogContentText>
-          <p>Paste a TikTok video URL</p>
-          <p>
+        <>
+          <DialogContentText>Paste a TikTok video URL</DialogContentText>
+          <DialogContentText>
             <i>Example:</i>
-          </p>
-          <p>https://www.tiktok.com/[user]/video/[video-id]</p>
-          <p>https://m.tiktok.com/v/[video-id].html</p>
-          <p>https://vm.tiktok.com/[video-id]</p>
-        </DialogContentText>
+          </DialogContentText>
+          <DialogContentText>https://www.tiktok.com/[user]/video/[video-id]</DialogContentText>
+          <DialogContentText>https://m.tiktok.com/v/[video-id].html</DialogContentText>
+          <DialogContentText>https://vm.tiktok.com/[video-id]</DialogContentText>
+        </>
       </DialogContent>
     </Dialog>
   );
