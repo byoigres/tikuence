@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
@@ -15,27 +14,11 @@ import Layout from '../../components/Layout';
 import AddNewList from './Add';
 import Profile from '../Profile/Profile';
 import Details from './Details';
+import Session from '../Auth/Session';
 
 const useStyles = makeStyles((theme) => ({
   list: {
     backgroundColor: '#fff',
-  },
-  card: {
-    marginBottom: '1rem',
-  },
-  actionArea: {
-    // display: "flex",
-    // justifyContent: "flex-start"
-  },
-  cover: {
-    // width: 100
-  },
-  details: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  content: {
-    flex: '1 0 auto',
   },
   listItemAvatar: {
     minWidth: 72,
@@ -82,15 +65,7 @@ const PageList = ({ lists: initialLists = [], list, showModal = false, user }) =
   return (
     <>
       <SEO description="List of TikTok videos" title="Tikuence" />
-      <List
-        dense={false}
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            Lists
-          </ListSubheader>
-        }
-        className={classes.list}
-      >
+      <List dense={false} className={classes.list}>
         {lists &&
           lists.map((item) => (
             <Fragment key={`list-item-${item.id}`}>
@@ -159,6 +134,7 @@ const PageList = ({ lists: initialLists = [], list, showModal = false, user }) =
       {showModal === 'details' && list && <Details list={list} />}
       {showModal === 'add-list' && <AddNewList />}
       {showModal === 'profile' && <Profile user={user} />}
+      {showModal === 'login' && <Session />}
     </>
   );
 };

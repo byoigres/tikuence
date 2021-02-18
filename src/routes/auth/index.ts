@@ -11,7 +11,10 @@ router.get('/login', function view(req: Request) {
   }
 
   req.Inertia.setViewData({ title: 'Log in' }).render({
-    component: 'Auth/Session'
+    component: 'Lists/List',
+    props: {
+      showModal: 'login'
+    }
   })
 })
 

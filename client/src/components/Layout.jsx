@@ -1,21 +1,24 @@
 import React, { useEffect } from 'react';
+import { Inertia } from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import SearchIcon from '@material-ui/icons/Search';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import blue from '@material-ui/core/colors/blue';
-import NavBar from './NavBar';
 
 const useStyles = makeStyles((theme) => ({
   appBar: ({ isMobile }) => ({
     alignItems: isMobile ? 'normal' : 'center',
   }),
   title: {
-    marginLeft: theme.spacing(2),
     flex: 1,
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -47,12 +50,8 @@ const useStyles = makeStyles((theme) => ({
   },
   content: ({ cleanLayout }) => ({
     marginTop: '4rem',
-    marginBottom: '4rem',
     marginLeft: cleanLayout ? 0 : '1rem',
     marginRight: cleanLayout ? 0 : '1rem',
-    // paddingBottom: '4rem',
-    // maxWidth: 600,
-    // marginTop: '4rem',
   }),
 }));
 
@@ -62,7 +61,7 @@ const theme = createMuiTheme({
     secondary: blueGrey,
   },
   typography: {
-    // fontFamily: `"Source Sans Pro", "Helvetica", "Arial", sans-serif`,
+    fontFamily: `Roboto, "Helvetica", "Arial", sans-serif`,
     fontSize: 14,
     fontWeightLight: 300,
     fontWeightRegular: 400,
@@ -130,11 +129,37 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                       {title}
                     </InertiaLink>
                   </Typography>
+                  <Tooltip title="Search">
+                    <IconButton
+                      edge="start"
+                      className={classes.menuButton}
+                      color="inherit"
+                      aria-label="menu"
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={isAuthenticated ? 'Profile' : 'Login'}>
+                    <IconButton
+                      edge="start"
+                      className={classes.menuButton}
+                      color="inherit"
+                      aria-label="menu"
+                      onClick={() => {
+                        Inertia.visit(isAuthenticated ? '/profile' : '/login', {
+                          preserveScroll: true,
+                          preserveState: true,
+                          only: ['showModal'],
+                        });
+                      }}
+                    >
+                      <AccountCircleIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Toolbar>
               </AppBar>
             )}
             <div className={classes.content}>{children}</div>
-            {!cleanLayout && <NavBar isAuthenticated={isAuthenticated} />}
           </div>
         </div>
       </SnackbarProvider>
