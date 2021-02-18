@@ -127,9 +127,11 @@ const PageList = ({ lists: initialLists = [], list, showModal = false, user }) =
         )}
         {!isTheEnd && (
           <>
-            <div className={classes.loader}>
-              <CircularProgress />
-            </div>
+            {!showModal && (
+              <div className={classes.loader}>
+                <CircularProgress />
+              </div>
+            )}
             <Waypoint
               onEnter={() => {
                 if (lists.length > 0) {
