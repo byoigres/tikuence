@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import SearchIcon from '@material-ui/icons/Search';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import blue from '@material-ui/core/colors/blue';
 
@@ -129,16 +128,6 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                       {title}
                     </InertiaLink>
                   </Typography>
-                  <Tooltip title="Search">
-                    <IconButton
-                      edge="start"
-                      className={classes.menuButton}
-                      color="inherit"
-                      aria-label="menu"
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </Tooltip>
                   <Tooltip title={isAuthenticated ? 'Profile' : 'Login'}>
                     <IconButton
                       edge="start"
