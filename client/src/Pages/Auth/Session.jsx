@@ -32,13 +32,14 @@ const Session = () => {
   } = usePage();
 
   function handleClose() {
-    Inertia.visit(referer || '/', { preserveScroll: true, preserveState: true });
+    Inertia.visit(referer || '/', { preserveScroll: true, preserveState: referer !== null });
   }
 
   return (
     <Dialog
       fullScreen={isMobile}
       maxWidth="sm"
+      fullWidth
       open
       onClose={handleClose}
       TransitionComponent={Transition}
@@ -53,6 +54,7 @@ const Session = () => {
       </AppBar>
       <DialogContent>
         <Paper
+          elevation={0}
           style={{
             display: 'flex',
             justifyContent: 'center',
@@ -61,13 +63,13 @@ const Session = () => {
             alignSelf: 'center',
           }}
         >
+          <Typography variant="h5">Tikuence</Typography>
           <Typography variant="h6">Sign in with yout social account</Typography>
           <Button
             variant="contained"
             color="secondary"
             startIcon={<GTranslateIcon />}
             style={{ backgroundColor: '#E04A32' }}
-            fullWidth
             href="/auth/google"
           >
             Google

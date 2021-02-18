@@ -149,7 +149,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                         Inertia.visit(isAuthenticated ? '/profile' : '/login', {
                           preserveScroll: true,
                           preserveState: true,
-                          only: ['showModal'],
+                          only: ['referer', 'showModal'],
                         });
                       }}
                     >
