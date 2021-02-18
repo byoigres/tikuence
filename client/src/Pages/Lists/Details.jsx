@@ -17,9 +17,6 @@ import SEO from '../../components/SEO';
 import TikTokVideo from '../../components/TikTokVideo';
 
 const useStyles = makeStyles(() => ({
-  appBar: {
-    position: 'relative',
-  },
   title: {
     flex: 1,
     textOverflow: 'ellipsis',
@@ -97,7 +94,7 @@ const Details = ({ list }) => {
         closeAfterTransition
         className={classes.dialog}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar position="relative">
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
               <ArrowBackIcon />
@@ -107,7 +104,7 @@ const Details = ({ list }) => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <DialogContent className={classes.content} data-name="mui-dialog-content">
+        <DialogContent className={classes.content}>
           <section className={classes.section}>
             {videos.map((item) => (
               <Paper
