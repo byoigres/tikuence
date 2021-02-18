@@ -6,6 +6,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: theme.spacing(7),
     height: '100%',
+  },
+  loader: {
+    textAlign: 'center',
   },
   endOfTheList: {
     textAlign: 'center',
@@ -122,13 +126,18 @@ const PageList = ({ lists: initialLists = [], list, showModal = false, user }) =
           </Typography>
         )}
         {!isTheEnd && (
-          <Waypoint
-            onEnter={() => {
-              if (lists.length > 0) {
-                setCurrentPage(currentPage + 1);
-              }
-            }}
-          />
+          <>
+            <div className={classes.loader}>
+              <CircularProgress />
+            </div>
+            <Waypoint
+              onEnter={() => {
+                if (lists.length > 0) {
+                  setCurrentPage(currentPage + 1);
+                }
+              }}
+            />
+          </>
         )}
       </List>
       {showModal === 'details' && list && <Details list={list} />}
