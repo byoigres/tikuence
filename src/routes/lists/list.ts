@@ -42,18 +42,24 @@ async function queryAllLists(withVideos = false) {
 export async function getAllLists (req: Request, _res: Response, next: NextFunction) {
   // const lists = await queryAllLists(false)
   const page = req.query.page
-
+  const isInertiaRequest = req.headers['x-inertia']
   const pageSize = 10
   let offset = 0
 
   if (page && typeof page === 'string') {
+    // If a page is provided and is not an Inertia request,
+    // redirect to "/" without the page query param
+    if (isInertiaRequest === undefined) {
+      return req.Inertia.redirect('/')
+    }
+
     let parsed = parseInt(page, 10)
 
     if (parsed <= 0) {
       parsed = 1
     }
 
-    offset = (parsed * pageSize) - pageSize
+    offset = parsed * pageSize - pageSize
   }
 
   const lists = await List.findAll({

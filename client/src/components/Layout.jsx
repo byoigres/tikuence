@@ -1,25 +1,36 @@
 import React, { useEffect } from 'react';
-import { usePage } from '@inertiajs/inertia-react';
+import { Inertia } from '@inertiajs/inertia';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AddIcon from '@material-ui/icons/Add';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import blue from '@material-ui/core/colors/blue';
-import NavBar from './NavBar';
 
 const useStyles = makeStyles((theme) => ({
   appBar: ({ isMobile }) => ({
     alignItems: isMobile ? 'normal' : 'center',
   }),
   title: {
-    marginLeft: theme.spacing(2),
     flex: 1,
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
+  },
+  mainLink: {
+    color: 'white',
+    textDecoration: 'none',
+    '&:hover': {
+      color: theme.palette.text.secondary,
+    },
   },
   toolBar: ({ isMobile }) =>
     isMobile
@@ -40,12 +51,19 @@ const useStyles = makeStyles((theme) => ({
   },
   content: ({ cleanLayout }) => ({
     marginTop: '4rem',
-    marginBottom: '4rem',
     marginLeft: cleanLayout ? 0 : '1rem',
     marginRight: cleanLayout ? 0 : '1rem',
-    // paddingBottom: '4rem',
-    // maxWidth: 600,
-    // marginTop: '4rem',
+  }),
+  fabContainer: ({ isMobile }) => ({
+    position: 'fixed',
+    bottom: '25px',
+    width: isMobile ? '100%' : '600px',
+    textAlign: 'right',
+  }),
+  fab: ({ isMobile }) => ({
+    position: 'absolute',
+    right: isMobile ? '25px' : '-30px',
+    bottom: '0',
   }),
 }));
 
@@ -55,7 +73,7 @@ const theme = createMuiTheme({
     secondary: blueGrey,
   },
   typography: {
-    // fontFamily: `"Source Sans Pro", "Helvetica", "Arial", sans-serif`,
+    fontFamily: `Roboto, "Helvetica", "Arial", sans-serif`,
     fontSize: 14,
     fontWeightLight: 300,
     fontWeightRegular: 400,
@@ -119,13 +137,49 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
               <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar className={classes.toolBar}>
                   <Typography variant="h6" className={classes.title}>
-                    {title}
+                    <InertiaLink href="/" className={classes.mainLink}>
+                      {title}
+                    </InertiaLink>
                   </Typography>
+                  <Tooltip title={isAuthenticated ? 'Profile' : 'Login'}>
+                    <IconButton
+                      edge="start"
+                      className={classes.menuButton}
+                      color="inherit"
+                      aria-label="menu"
+                      onClick={() => {
+                        Inertia.visit(isAuthenticated ? '/profile' : '/login', {
+                          preserveScroll: true,
+                          preserveState: true,
+                          only: ['referer', 'showModal', ...[isAuthenticated ? 'user' : null]],
+                        });
+                      }}
+                    >
+                      <AccountCircleIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Toolbar>
               </AppBar>
             )}
             <div className={classes.content}>{children}</div>
-            {!cleanLayout && <NavBar isAuthenticated={isAuthenticated} />}
+            {!cleanLayout && isAuthenticated && (
+              <div className={classes.fabContainer}>
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  className={classes.fab}
+                  onClick={() => {
+                    Inertia.visit('/list/add', {
+                      preserveScroll: true,
+                      preserveState: true,
+                      only: ['referer', 'showModal'],
+                    });
+                  }}
+                >
+                  <AddIcon />
+                </Fab>
+              </div>
+            )}
           </div>
         </div>
       </SnackbarProvider>

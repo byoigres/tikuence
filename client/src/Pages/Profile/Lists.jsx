@@ -129,7 +129,7 @@ const PageProfileList = ({ lists }) => {
           {lists.map((list) => (
             <Card
               className={classes.card}
-              key={list.id}
+              key={`list-card-item-${list.id}`}
               style={{ flex: '1 45%', margin: '0.3rem' }}
             >
               <CardActionArea

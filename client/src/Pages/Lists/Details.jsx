@@ -17,30 +17,26 @@ import SEO from '../../components/SEO';
 import TikTokVideo from '../../components/TikTokVideo';
 
 const useStyles = makeStyles(() => ({
-  appBar: {
-    position: 'relative',
-  },
   title: {
     flex: 1,
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
   },
-  dialog: {
+  dialog: {},
+  content: {
     padding: 0,
-    top: 0,
-    left: 0,
-    height: '100%',
-    // -- width: '100%',
+    height: '100vh',
+  },
+  section: {
+    textAlign: 'center',
   },
   videoContainer: {
-    // minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '1rem',
     maxWidth: 1024,
-    // -- width: '100%',
   },
   endOfTheList: {
     textAlign: 'center',
@@ -65,7 +61,7 @@ const Details = ({ list }) => {
   const [videos, setVideos] = useState([]);
 
   function handleClose() {
-    Inertia.visit(referer || '/', { preserveScroll: true });
+    Inertia.visit(referer || '/', { preserveScroll: true, preserveState: true });
   }
 
   useEffect(() => {
@@ -96,8 +92,9 @@ const Details = ({ list }) => {
         onClose={handleClose}
         TransitionComponent={Transition}
         closeAfterTransition
+        className={classes.dialog}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar position="relative">
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
               <ArrowBackIcon />
@@ -107,10 +104,14 @@ const Details = ({ list }) => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <DialogContent className={classes.dialog}>
-          <section>
+        <DialogContent className={classes.content}>
+          <section className={classes.section}>
             {videos.map((item) => (
-              <Paper key={item.id} elevation={5} className={classes.videoContainer}>
+              <Paper
+                key={`list-item-details-${item.id}`}
+                elevation={5}
+                className={classes.videoContainer}
+              >
                 <TikTokVideo
                   tiktokId={item.video.tiktok_id}
                   html={item.video.html}

@@ -69,14 +69,14 @@ const NavBar = ({ isAuthenticated }) => {
           case 'add-list':
             Inertia.visit('/list/add', {
               preserveScroll: true,
-              only: ['displayAddNewList'],
-              // only: ['auth', 'errors', 'flash', 'isMobile', 'referer', 'displayAddNewList'],
+              preserveState: true,
+              only: ['referer', 'showModal'],
             });
             break;
           case 'profile':
             Inertia.visit(isAuthenticated ? '/profile' : '/login', {
               preserveScroll: true,
-              only: ['displayProfile', 'user'],
+              only: ['showModal', 'user'],
             });
             break;
           default:
