@@ -6,10 +6,12 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/sty
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
+import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AddIcon from '@material-ui/icons/Add';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import blue from '@material-ui/core/colors/blue';
 
@@ -51,6 +53,17 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '4rem',
     marginLeft: cleanLayout ? 0 : '1rem',
     marginRight: cleanLayout ? 0 : '1rem',
+  }),
+  fabContainer: ({ isMobile }) => ({
+    position: 'fixed',
+    bottom: '25px',
+    width: isMobile ? '100%' : '600px',
+    textAlign: 'right',
+  }),
+  fab: ({ isMobile }) => ({
+    position: 'absolute',
+    right: isMobile ? '25px' : '-30px',
+    bottom: '0',
   }),
 }));
 
@@ -149,6 +162,24 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
               </AppBar>
             )}
             <div className={classes.content}>{children}</div>
+            {!cleanLayout && isAuthenticated && (
+              <div className={classes.fabContainer}>
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  className={classes.fab}
+                  onClick={() => {
+                    Inertia.visit('/list/add', {
+                      preserveScroll: true,
+                      preserveState: true,
+                      only: ['referer', 'showModal'],
+                    });
+                  }}
+                >
+                  <AddIcon />
+                </Fab>
+              </div>
+            )}
           </div>
         </div>
       </SnackbarProvider>
