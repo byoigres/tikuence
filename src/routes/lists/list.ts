@@ -76,16 +76,16 @@ export async function getAllLists (req: Request, _res: Response, next: NextFunct
       {
         model: Video,
         as: 'videos',
-        attributes: ['id', 'title', 'thumbnail_width', 'thumbnail_height', 'thumbnail_name'],
+        attributes: ['id', 'title', 'thumbnail_name'],
         // The list must have videos
         required: true,
-        include: [
-          {
-            model: Author,
-            as: 'author',
-            attributes: ['id', 'username']
+        through: {
+          attributes: ['order_id'],
+          where: {
+            // Get just the first video
+            order_id: 1
           }
-        ]
+        }
       }
     ]
   })

@@ -8,6 +8,7 @@ import Video from './video.model'
   underscored: true,
   freezeTableName: true,
   tableName: 'lists_videos',
+  modelName: 'order',
   schema: 'public'
 })
 class ListsVideos extends Model<ListsVideos> {

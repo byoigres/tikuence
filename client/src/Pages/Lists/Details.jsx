@@ -71,7 +71,7 @@ const Details = ({ list }) => {
 
   useEffect(() => {
     /* eslint no-param-reassign: 0 */
-    list.videos = list.videos.sort((a, b) => a.ListsVideos.order_id - b.ListsVideos.order_id);
+    list.videos = list.videos.sort((a, b) => a.order.order_id - b.order.order_id);
   }, []);
 
   useEffect(() => {
