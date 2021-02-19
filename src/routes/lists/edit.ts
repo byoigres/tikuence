@@ -6,6 +6,7 @@ import Video from '../../models/video.model'
 import List from '../../models/list.model'
 
 async function view (req: Request) {
+  const userId = req.user ? req.user.id : null
   const params = req.params
 
   const list = await List.findOne({
@@ -17,7 +18,10 @@ async function view (req: Request) {
       {
         model: User,
         as: 'user',
-        attributes: ['id', 'email']
+        attributes: ['id', 'email'],
+        where: {
+          id: userId
+        }
       },
       {
         model: Video,
@@ -36,11 +40,17 @@ async function view (req: Request) {
     ]
   })
 
-  req.Inertia.setViewData({ title: 'Edit list' }).render({
-    component: 'Lists/Edit',
-    props: {
-      list
-    }
+  if (list) {
+    return req.Inertia.setViewData({ title: 'Edit list' }).render({
+      component: 'Lists/Edit',
+      props: {
+        list
+      }
+    })
+  }
+
+  req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
+    component: 'Errors/404'
   })
 }
 

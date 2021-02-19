@@ -22,13 +22,11 @@ async function image(req: Request, res: Response) {
   } catch (err) {
     if (err.code === 404) {
       req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
-        component: 'Errors/404',
-        props: {}
+        component: 'Errors/404'
       })
     } else {
       req.Inertia.setStatusCode(500).setViewData({ title: 'Something goes wrong' }).render({
-        component: 'Errors/500',
-        props: {}
+        component: 'Errors/500'
       })
     }
   }

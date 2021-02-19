@@ -14,6 +14,11 @@ function bindRoutes(app: Express) {
   app.get('/images/:image', images)
   app.use('/list', lists)
   app.use('/profile', profile)
+  app.use(function (req, res, next) {
+    req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
+      component: 'Errors/404'
+    })
+  })
 }
 
 export default bindRoutes
