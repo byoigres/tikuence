@@ -7,11 +7,13 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import DialogContent from '@material-ui/core/DialogContent';
 import AppBar from '@material-ui/core/AppBar';
+import Tooltip from '@material-ui/core/Tooltip';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import EditIcon from '@material-ui/icons/Edit';
 import { Waypoint } from 'react-waypoint';
 import SEO from '../../components/SEO';
 import TikTokVideo from '../../components/TikTokVideo';
@@ -22,6 +24,9 @@ const useStyles = makeStyles(() => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
+  },
+  name: {
+    padding: '8px 24px',
   },
   dialog: {},
   content: {
@@ -53,7 +58,7 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ list }) => {
   const {
-    props: { isMobile, referer },
+    props: { isMobile, referer, auth },
   } = usePage();
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true);
@@ -100,11 +105,29 @@ const Details = ({ list }) => {
               <ArrowBackIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
-              {list.title}
+              View list
             </Typography>
+            {auth.isAuthenticated && auth.credentials.id === list.user.id && (
+              <Tooltip title="Edit">
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    Inertia.visit(`/list/${list.id}/edit`);
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.content}>
+          <Typography component="h4" variant="h4" className={classes.name}>
+            {list.title}
+          </Typography>
           <section className={classes.section}>
             {videos.map((item) => (
               <Paper
