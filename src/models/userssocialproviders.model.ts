@@ -4,7 +4,7 @@ import User from './user.model'
 import SocialProviders from './socialproviders.model'
 
 @Table({
-  timestamps: false,
+  timestamps: true,
   underscored: true,
   freezeTableName: true,
   tableName: 'users_social_providers',

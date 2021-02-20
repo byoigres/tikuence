@@ -276,6 +276,23 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
   next()
 }
 
+async function updateLastVideoAdded(req: Request, _res: Response, next: NextFunction) {
+  const { listId } = req.params
+
+  await List.update(
+    {
+      last_added_video_at: new Date()
+    },
+    {
+      where: {
+        id: listId
+      }
+    }
+  )
+
+  next()
+}
+
 async function matchVideoWithList(req: Request, _res: Response, next: NextFunction) {
   const { listId } = req.params
   const videoId = httpContext.get('videoId')
@@ -325,6 +342,7 @@ export default [
   extractAuthorFromUrl,
   createAuthor,
   createVideo,
+  updateLastVideoAdded,
   matchVideoWithList,
   getAllLists,
   response

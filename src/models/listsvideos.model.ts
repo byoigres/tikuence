@@ -4,7 +4,7 @@ import List from './list.model'
 import Video from './video.model'
 
 @Table({
-  timestamps: false,
+  timestamps: true,
   underscored: true,
   freezeTableName: true,
   tableName: 'lists_videos',

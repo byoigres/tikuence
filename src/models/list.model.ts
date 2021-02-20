@@ -34,6 +34,13 @@ class List extends Model<List> {
   })
   title: string
 
+  @Column({
+    type: DataType.DATE,
+    allowNull: true
+  })
+  // eslint-disable-next-line camelcase
+  last_added_video_at: Date
+
   @BelongsTo(() => User, {
     as: 'user',
     foreignKey: 'user_id',

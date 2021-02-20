@@ -1,7 +1,7 @@
-import { Sequelize, Table, Column, PrimaryKey, Model, DataType, Default } from 'sequelize-typescript'
+import { Table, Column, PrimaryKey, Model, DataType } from 'sequelize-typescript'
 
 @Table({
-  timestamps: false,
+  timestamps: true,
   underscored: true,
   freezeTableName: true,
   tableName: 'authors',
@@ -27,22 +27,6 @@ class Author extends Model<Author> {
     allowNull: false
   })
   name: string
-
-  @Default(Sequelize.literal('NOW()'))
-  @Column({
-    type: DataType.DATE,
-    allowNull: false
-  })
-  // eslint-disable-next-line camelcase
-  created_at: Date
-
-  @Default(Sequelize.literal('NOW()'))
-  @Column({
-    type: DataType.DATE,
-    allowNull: false
-  })
-  // eslint-disable-next-line camelcase
-  updated_at: Date
 }
 
 export default Author

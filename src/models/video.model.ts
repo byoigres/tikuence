@@ -1,11 +1,9 @@
 import {
-  Sequelize,
   Table,
   Column,
   PrimaryKey,
   Model,
   DataType,
-  Default,
   BelongsTo,
   BelongsToMany
 } from 'sequelize-typescript'
@@ -15,11 +13,12 @@ import List from './list.model'
 import ListsVideos from './listsvideos.model'
 
 @Table({
-  timestamps: false,
+  timestamps: true,
   underscored: true,
   freezeTableName: true,
   tableName: 'videos',
-  schema: 'public'
+  schema: 'public',
+  createdAt: 'created_at'
 })
 class Video extends Model<Video> {
   @PrimaryKey
@@ -79,22 +78,6 @@ class Video extends Model<Video> {
 
   @BelongsToMany(() => List, () => ListsVideos)
   lists: List[]
-
-  @Default(Sequelize.literal('NOW()'))
-  @Column({
-    type: DataType.DATE,
-    allowNull: false
-  })
-  // eslint-disable-next-line camelcase
-  created_at: Date
-
-  @Default(Sequelize.literal('NOW()'))
-  @Column({
-    type: DataType.DATE,
-    allowNull: false
-  })
-  // eslint-disable-next-line camelcase
-  updated_at: Date
 }
 
 export default Video

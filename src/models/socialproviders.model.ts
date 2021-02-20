@@ -1,20 +1,17 @@
 import {
-  Sequelize,
   Table,
   Column,
   PrimaryKey,
   Model,
   DataType,
-  Default,
   BelongsToMany
 } from 'sequelize-typescript'
 
 import User from './user.model'
-// import List from './list.model'
 import UsersSocialProviders from './userssocialproviders.model'
 
 @Table({
-  timestamps: false,
+  timestamps: true,
   underscored: true,
   freezeTableName: true,
   tableName: 'social_providers',
@@ -37,22 +34,6 @@ class SocialProvider extends Model<SocialProvider> {
 
   @BelongsToMany(() => User, () => UsersSocialProviders)
   users: User[]
-
-  @Default(Sequelize.literal('NOW()'))
-  @Column({
-    type: DataType.DATE,
-    allowNull: false
-  })
-  // eslint-disable-next-line camelcase
-  created_at: Date
-
-  @Default(Sequelize.literal('NOW()'))
-  @Column({
-    type: DataType.DATE,
-    allowNull: false
-  })
-  // eslint-disable-next-line camelcase
-  updated_at: Date
 }
 
 export default SocialProvider
