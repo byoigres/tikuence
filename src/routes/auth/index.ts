@@ -1,4 +1,4 @@
-import { Router, Request } from 'express'
+import { Router, Request, Response } from 'express'
 import Passport from 'passport'
 
 const router = Router({
@@ -18,9 +18,9 @@ router.get('/login', function view(req: Request) {
   })
 })
 
-router.get('/logout', function logout(req: Request) {
+router.get('/logout', function logout(req: Request, res: Response) {
   req.logOut()
-  return req.Inertia.redirect('/login')
+  res.redirect('/login')
 })
 
 router.get('/auth/google', Passport.authenticate('google', { scope: ['email', 'profile'] }))

@@ -28,15 +28,12 @@ const Transition = React.forwardRef((props, ref) => (
 const Session = () => {
   const classes = useStyles();
   const {
-    props: {
-      auth: { isAuthenticated },
-      isMobile,
-      referer,
-    },
+    props: { isMobile, referer },
   } = usePage();
 
   function handleClose() {
-    Inertia.visit(isAuthenticated ? referer : '/', {
+    // Inertia.visit(isAuthenticated ? referer : '/', {
+    Inertia.visit(referer || '/', {
       preserveScroll: true,
       preserveState: referer !== null && referer !== '/profile',
     });

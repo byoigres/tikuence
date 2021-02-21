@@ -49,18 +49,16 @@ const useStyles = makeStyles((theme) => ({
     flex: '1 0 auto',
     backgroundColor: '#fff',
   },
-  content: ({ cleanLayout }) => ({
+  content: {
     marginTop: '4rem',
-    marginLeft: cleanLayout ? 0 : '1rem',
-    marginRight: cleanLayout ? 0 : '1rem',
-  }),
-  fabContainer: ({ isMobile }) => ({
+  },
+  createListContainer: ({ isMobile }) => ({
     position: 'fixed',
     bottom: '25px',
     width: isMobile ? '100%' : '600px',
     textAlign: 'right',
   }),
-  fab: ({ isMobile }) => ({
+  createList: ({ isMobile }) => ({
     position: 'absolute',
     right: isMobile ? '25px' : '-30px',
     bottom: '0',
@@ -163,11 +161,11 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
             )}
             <div className={classes.content}>{children}</div>
             {!cleanLayout && isAuthenticated && (
-              <div className={classes.fabContainer}>
+              <div className={classes.createListContainer}>
                 <Fab
                   color="primary"
                   aria-label="add"
-                  className={classes.fab}
+                  className={classes.createList}
                   onClick={() => {
                     Inertia.visit('/list/add', {
                       preserveScroll: true,

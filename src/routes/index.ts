@@ -2,14 +2,15 @@ import { Express } from 'express'
 // import home from "./home";
 // import sessions from "./sessions";
 // import events from "./events";
-import home from './lists/list'
+import feed from './feed'
 import lists from './lists'
 import profile from './profile'
 import auth from './auth'
 import images from './images'
 
 function bindRoutes(app: Express) {
-  app.get('/', home)
+  app.get('/', feed)
+  app.get('/feed/:category?/:page?', feed)
   app.use('/', auth)
   app.get('/images/:image', images)
   app.use('/list', lists)

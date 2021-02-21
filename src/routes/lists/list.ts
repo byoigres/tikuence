@@ -63,10 +63,11 @@ export async function getAllLists (req: Request, _res: Response, next: NextFunct
   }
 
   const lists = await List.findAll({
-    attributes: ['id', 'title', 'updated_at'],
+    attributes: ['id', 'title'],
     limit: pageSize,
     offset,
-    order: [['updated_at', 'DESC']],
+    // order: [['updated_at', 'DESC']],
+    order: [['videos', 'updated_at', 'DESC']],
     include: [
       {
         model: User,
@@ -76,8 +77,9 @@ export async function getAllLists (req: Request, _res: Response, next: NextFunct
       {
         model: Video,
         as: 'videos',
-        attributes: ['id', 'title', 'thumbnail_name'],
+        attributes: ['id', 'title', 'thumbnail_name', 'updated_at'],
         // The list must have videos
+        order: [['updated_at', 'DESC']],
         required: true,
         through: {
           attributes: ['order_id'],

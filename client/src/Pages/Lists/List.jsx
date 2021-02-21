@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
@@ -7,8 +8,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
+import RestoreIcon from '@material-ui/icons/Restore';
+import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import { makeStyles } from '@material-ui/core/styles';
 import SEO from '../../components/SEO';
 import Layout from '../../components/Layout';
@@ -38,37 +43,66 @@ const useStyles = makeStyles((theme) => ({
     fontStyle: 'italic',
   },
 }));
+// 'recent', 'new', 'popular'
+const categories = [
+  {
+    id: 'recent',
+    label: 'Recent',
+    icon: <RestoreIcon />,
+  },
+  {
+    id: 'new',
+    label: 'New',
+    icon: <WbSunnyIcon />,
+  },
+];
 
-const PageList = ({ lists: initialLists = [], list, showModal = false, user }) => {
+// category = new
+
+const PageList = () => {
+  const {
+    props: { category, lists: initialLists = [], list, showModal = false, user },
+  } = usePage();
   const classes = useStyles();
   const [lists, setLists] = useState(initialLists);
+  const [categoryIndex] = useState(categories.findIndex((x) => x.id === category));
   const [currentPage, setCurrentPage] = useState(1);
   const [isTheEnd, setIsTheEnd] = useState(false);
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.get(
-        '/',
-        { page: currentPage },
-        {
-          only: ['lists'],
-          preserveScroll: true,
-          preserveState: true,
-          onSuccess: ({ props: { lists: newLists } }) => {
-            if (newLists.length > 0) {
-              setLists([...lists, ...newLists]);
-            } else {
-              setIsTheEnd(true);
-            }
-          },
-        }
-      );
+      Inertia.visit(`/feed/${category}/${currentPage}`, {
+        only: ['lists'],
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: ({ props: { lists: newLists } }) => {
+          if (newLists.length > 0) {
+            setLists([...lists, ...newLists]);
+          } else {
+            setIsTheEnd(true);
+          }
+        },
+      });
     }
   }, [currentPage]);
 
   return (
     <>
       <SEO description="List of TikTok videos" title="Tikuence" />
+      <BottomNavigation
+        value={categoryIndex}
+        onChange={(_, selectedCategoryIndex) => {
+          if (selectedCategoryIndex !== categoryIndex) {
+            Inertia.visit(`/feed/${categories[selectedCategoryIndex].id}`);
+          }
+        }}
+        showLabels
+        className={classes.root}
+      >
+        {categories.map((item) => (
+          <BottomNavigationAction key={item.label} label={item.label} icon={item.icon} />
+        ))}
+      </BottomNavigation>
       <List dense={false} className={classes.list}>
         {lists &&
           lists.map((item) => (
