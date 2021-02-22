@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
-import Sequelize from 'sequelize'
-import User from '../models/user.model'
-import Video from '../models/video.model'
-import List from '../models/list.model'
-import ListsVideos from '@models/listsvideos.model'
+import Knex, { iFeedResult } from '../knex'
 
 function verifyParams(req: Request, res: Response, next: NextFunction) {
   const params = req.params
@@ -53,99 +49,31 @@ function verifyParams(req: Request, res: Response, next: NextFunction) {
 
 async function getAllLists(req: Request, _res: Response, next: NextFunction) {
   const category = httpContext.get('category')
-  // const page = httpContext.get('page')
   const offset = httpContext.get('offset')
-  // const orderType = httpContext.get('orderType')
   const pageSize = 10
 
-  function getOrderField(c: string): string {
-    switch (c) {
-      case 'recent':
-        return 'last_added_video_at'
-      default:
-        return 'created_at'
-    }
-  }
+  const knex = Knex()
 
-  const lists = await List.findAll({
-    attributes: ['id', 'title', 'created_at', 'last_added_video_at'],
-    limit: pageSize,
-    offset,
-    order: [[getOrderField(category), 'DESC']],
-    include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'email']
-      },
-      {
-        model: Video,
-        as: 'videos',
-        attributes: ['id', 'title', 'thumbnail_name', 'updated_at'],
-        // The list must have videos
-        order: [['updated_at', 'DESC']],
-        required: true,
-        through: {
-          attributes: ['order_id'],
-          where: {
-            // Get just the first video
-            order_id: 1
-          }
-        }
-      }
-    ]
-    // raw: true,
-    // plain: true,
-    // nest: true
-  })
-
-  const listsVideosCount = await ListsVideos.findAll({
-    // attributes: ['list_id', Sequelize.fn('COUNT', Sequelize.col('Answers.familyId'))]],
-    attributes: [
-      ['list_id', 'id'],
-      [Sequelize.fn('COUNT', Sequelize.col('list_id')), 'videos']
-    ],
-    where: {
-      list_id: lists.map((x) => x.id)
-    },
-    group: 'list_id'
-  })
-
-  const result = lists.map((list) => {
-    const listVideosCount = listsVideosCount.find((lc) => lc.id === list.id)
-    let count = 0
-
-    if (listVideosCount) {
-      const plain: { id?: number; videos?: number } = listVideosCount.get({ plain: true })
-
-      if (plain.videos) {
-        count = plain.videos
-      }
-    }
-
-    return {
-      id: list.id,
-      title: list.title,
-      author: list.user,
-      thumbnail: list.videos[0].thumbnail_name,
-      videos: count
-    }
-  })
-
-  console.log(result)
-
-  // Project.findAll({
-  //   attributes: ['User.username', [sequelize.fn('COUNT', sequelize.col('Project.id')), 'ProjectCount']],
-  //   include: [
-  //     {
-  //       model: User,
-  //       attributes: [],
-  //       include: []
-  //     }
-  //   ],
-  //   group: ['User.username'],
-  //   raw: true
-  // })
+  const lists = await knex<iFeedResult>('public.lists as L')
+    .select('L.id', 'L.title', 'VT.thumbnail_name as thumbnail', 'U.email', 'VT.total as total_videos')
+    .joinRaw(
+      `JOIN LATERAL (${knex
+        .select(
+          'V.id',
+          'V.thumbnail_name',
+          'V.created_at',
+          knex('public.lists_videos AS ILV').count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
+        )
+        .from('public.lists_videos AS LV')
+        .join('public.videos AS V', 'LV.video_id', 'V.id')
+        .whereRaw('"LV"."list_id" = "L"."id"')
+        .orderBy('V.created_at', 'DESC')
+        .limit(1)}) AS "VT" ON TRUE`
+    )
+    .join('public.users AS U', 'L.user_id', 'U.id')
+    .orderBy(category === 'recent' ? 'VT.created_at' : 'L.created_at', 'DESC')
+    .limit(pageSize)
+    .offset(offset)
 
   httpContext.set('lists', lists)
 
@@ -154,7 +82,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
 
 async function response(req: Request) {
   const category = httpContext.get('category')
-  const lists: List[] = httpContext.get('lists')
+  const lists = httpContext.get('lists')
 
   req.Inertia.setViewData({ title: 'Latest lists' }).render({
     component: 'Lists/List',

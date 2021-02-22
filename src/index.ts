@@ -1,18 +1,14 @@
 import app from './app'
 import config from './config'
-import db from './models'
-import routes from './routes'
+// import './postgres'
+import './knex'
 import middlewares from './middlewares'
+import routes from './routes'
 
 const host = config.get('/app/host')
 const port = process.env.PORT || config.get('/app/port') || 3000
 
 async function start() {
-  await db({
-    url: config.get('/db/url'),
-    dialect: config.get('/db/dialect')
-  })
-
   middlewares(app)
 
   routes(app)

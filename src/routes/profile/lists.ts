@@ -1,17 +1,14 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import { isAuthenticated } from '../../middlewares/inertia'
-import List from '../../models/list.model'
-import User from '../../models/user.model'
-import Author from '../../models/author.model'
-import Video from '../../models/video.model'
+import Knex, { iProfileList } from '../../knex'
 
 export async function getAllLists(req: Request, _res: Response, next: NextFunction) {
   const userId = req.user ? req.user.id : null
   const page = req.query.page
   const isInertiaRequest = req.headers['x-inertia']
-  const pageSize = 10
-  let offset = 0
+  // const pageSize = 10
+  // let offset = 0
 
   if (page && typeof page === 'string') {
     // If a page is provided and is not an Inertia request,
@@ -26,39 +23,29 @@ export async function getAllLists(req: Request, _res: Response, next: NextFuncti
       parsed = 1
     }
 
-    offset = parsed * pageSize - pageSize
+    // offset = parsed * pageSize - pageSize
   }
 
-  const lists = await List.findAll({
-    attributes: ['id', 'title', 'updated_at'],
-    limit: pageSize,
-    offset,
-    order: [['updated_at', 'DESC']],
-    include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'email'],
-        where: {
-          id: userId
-        }
-      },
-      {
-        model: Video,
-        as: 'videos',
-        attributes: ['id', 'title', 'thumbnail_width', 'thumbnail_height', 'thumbnail_name'],
-        // The list must have videos
-        required: true,
-        include: [
-          {
-            model: Author,
-            as: 'author',
-            attributes: ['id', 'username']
-          }
-        ]
-      }
-    ]
-  })
+  const knex = Knex()
+
+  const lists = await knex<iProfileList>('public.lists as L')
+    .select('L.id', 'L.title', 'VT.thumbnail_name as thumbnail', 'VT.total as total_videos')
+    .joinRaw(
+      `JOIN LATERAL (${knex
+        .select(
+          'V.id',
+          'V.thumbnail_name',
+          'V.created_at',
+          knex('public.lists_videos AS ILV').count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
+        )
+        .from('public.lists_videos AS LV')
+        .join('public.videos AS V', 'LV.video_id', 'V.id')
+        .whereRaw('"LV"."list_id" = "L"."id"')
+        .orderBy('V.created_at', 'DESC')
+        .limit(1)}) AS "VT" ON TRUE`
+    )
+    .where('L.user_id', userId)
+    .orderBy('L.created_at', 'DESC')
 
   httpContext.set('lists', lists)
 
@@ -66,7 +53,7 @@ export async function getAllLists(req: Request, _res: Response, next: NextFuncti
 }
 
 async function response(req: Request) {
-  const lists: List[] = httpContext.get('lists')
+  const lists: iProfileList[] = httpContext.get('lists')
 
   req.Inertia.setViewData({ title: 'My lists' }).render({
     component: 'Profile/Lists',

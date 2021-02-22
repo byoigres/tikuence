@@ -329,7 +329,8 @@ const Edit = ({ list, errors }) => {
             <List dense className={classes.list}>
               <Container dragHandleSelector=".drag-handle" lockAxis="y" onDrop={onVideoDrop}>
                 {list.videos
-                  .sort((a, b) => a.order.order_id - b.order.order_id)
+                  // TODO: Ensure this is always order the way should be
+                  // .sort((a, b) => a.order_id - b.order_id)
                   .map((video, index) => (
                     <Draggable key={video.id}>
                       <ListItem

@@ -11,8 +11,16 @@ const manifest = {
     url: {
       $env: 'DATABASE_URL'
     },
-    dialect: {
-      $env: 'DB_DIALECT'
+    appName: {
+      $env: 'DATABASE_APP_NAME'
+    },
+    pool: {
+      min: {
+        $env: 'DATABASE_POOL_MIN'
+      },
+      max: {
+        $env: 'DATABASE_POOL_MAX'
+      }
     }
   },
   passport: {

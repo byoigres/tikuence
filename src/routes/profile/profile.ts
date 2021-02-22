@@ -1,14 +1,11 @@
 import { Request } from 'express'
 import { isAuthenticated } from '../../middlewares/inertia'
-import User from '../../models/user.model'
+import Knex from '../../knex'
 
 async function response(req: Request) {
-  const user = await User.findOne({
-    where: {
-      email: 'byoigres@gmail.com'
-    },
-    attributes: ['email']
-  })
+  const knex = Knex()
+
+  const user = await knex('public.users').select('email').first()
 
   req.Inertia.setViewData({ title: 'Profile' }).render({
     component: 'Lists/List',

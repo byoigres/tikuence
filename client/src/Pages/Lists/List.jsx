@@ -124,7 +124,7 @@ const PageList = () => {
                     alt={item.title}
                     className={classes.avatar}
                     variant="square"
-                    src={`/images/sm-${item.videos[0].thumbnail_name}`}
+                    src={`/images/sm-${item.thumbnail}`}
                   />
                 </ListItemAvatar>
                 <ListItemText
@@ -142,10 +142,10 @@ const PageList = () => {
                         color="textPrimary"
                         style={{ display: 'block' }}
                       >
-                        {`${item.videos.length} videos`}
+                        {`${item.total_videos} videos`}
                       </Typography>
                       <Typography component="span" variant="subtitle1" color="textPrimary">
-                        {`List by ${item.user.email}`}
+                        {`List by ${item.email}`}
                       </Typography>
                     </>
                   }
