@@ -19,6 +19,16 @@ export default function Database() {
   return knex
 }
 
+export enum Tables {
+  Authors = 'public.authors',
+  Lists = 'public.lists',
+  ListsVideos = 'public.lists_videos',
+  SocialProviders = 'public.social_providers',
+  Users = 'public.users',
+  UsersSocialProviders = 'public.users_social_providers',
+  Videos = 'public.videos'
+}
+
 export interface iFeedResult {
   id: number
   title: string

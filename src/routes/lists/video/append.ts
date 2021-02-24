@@ -4,7 +4,7 @@ import fetch from 'node-fetch'
 import url from 'url'
 import { v4 as uuidv4 } from 'uuid'
 import { checkSchema } from 'express-validator'
-import Knex from '../../../utils/knex'
+import Knex, { Tables } from '../../../utils/knex'
 import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import { fetchAndCreateVideoThumbnails } from '../../../utils/storage'
@@ -53,7 +53,7 @@ const validations = checkSchema({
       options: async (value) => {
         const knex = Knex()
         try {
-          const list = await knex('public.lists').where('id', value).first()
+          const list = await knex(Tables.Lists).where('id', value).first()
 
           if (!list) {
             /* eslint prefer-promise-reject-errors: 0 */
@@ -89,7 +89,7 @@ async function verifyIfListBelongsToCurrentUser(req: Request, _res: Response, ne
 
   const knex = Knex()
 
-  const list = await knex('public.lists')
+  const list = await knex(Tables.Lists)
     .where({
       id: listId,
       user_id: req.user?.id ?? 0
@@ -182,7 +182,7 @@ async function verifyIfVideoExistinList(req: Request, _res: Response, next: Next
   const tiktokId = httpContext.get('tiktokId')
   const knex = Knex()
   // This is duplicate as line #216
-  const author = await knex('public.authors').select('id').where('username', authorUsername).first()
+  const author = await knex(Tables.Authors).select('id').where('username', authorUsername).first()
 
   // If the author don't exists nether the video, skip validation
   if (!author) {
@@ -190,9 +190,9 @@ async function verifyIfVideoExistinList(req: Request, _res: Response, next: Next
   }
 
   // Verify if the video is in the lists
-  const video = await knex('public.lists_videos AS LV')
+  const video = await knex(`${Tables.ListsVideos} AS LV`)
     .select('V.id')
-    .join('public.videos AS V', 'LV.video_id', 'V.id')
+    .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
     .where({
       'LV.list_id': listId,
       'V.tiktok_id': tiktokId,
@@ -214,10 +214,10 @@ async function createAuthor(req: Request, _res: Response, next: NextFunction) {
   let authorId: number
   const knex = Knex()
   // This is duplicate as line #185
-  const author = await knex('public.authors').select('id').where('username', authorUsername).first()
+  const author = await knex(Tables.Authors).select('id').where('username', authorUsername).first()
 
   if (!author) {
-    authorId = await knex<{ username: string; name: string; created_at: Date; updated_at: Date }>('public.authors')
+    authorId = await knex<{ username: string; name: string; created_at: Date; updated_at: Date }>(Tables.Authors)
       .insert({
         username: authorUsername,
         name: videoInfo.author_name,
@@ -246,7 +246,7 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
     let videoId: number
 
     // Verify if the video exists
-    const videoExists = await knex<{ tiktok_id: string; author_id: number }>('public.videos')
+    const videoExists = await knex<{ tiktok_id: string; author_id: number }>(Tables.Videos)
       .select('id')
       .where({
         tiktok_id: tiktokId,
@@ -267,7 +267,7 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
         author_id: number
         created_at: Date
         updated_at: Date
-      }>('public.videos')
+      }>(Tables.Videos)
         .transacting(transaction)
         .insert({
           tiktok_id: tiktokId,
@@ -290,7 +290,7 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
       videoId = videoExists.id
     }
 
-    const count = await knex<number>('public.lists_videos')
+    const count = await knex<number>(Tables.ListsVideos)
       .transacting(transaction)
       .count('video_id', { as: 'total' })
       .where('list_id', listId)
@@ -302,7 +302,7 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
       order_id: number
       created_at: Date
       updated_at: Date
-    }>('public.lists_videos')
+    }>(Tables.ListsVideos)
       .transacting(transaction)
       .insert({
         list_id: parseInt(listId, 10),

@@ -3,7 +3,7 @@ import Passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as TwitterStrategy } from 'passport-twitter'
 import { Strategy as LocalStrategy } from 'passport-local'
-import Knex, { iSocialProviderUser } from '../utils/knex'
+import Knex, { Tables, iSocialProviderUser } from '../utils/knex'
 import config from '../config'
 
 Passport.use(
@@ -43,10 +43,10 @@ Passport.use(
         } = profile
         const knex = Knex()
 
-        const user = await knex<iSocialProviderUser>('public.users AS U')
+        const user = await knex<iSocialProviderUser>(`${Tables.Users} AS U`)
           .select('U.id', 'U.email')
           .where('U.email', email)
-          .join('public.users_social_providers AS USP', 'USP.user_id', 'U.id')
+          .join(`${Tables.UsersSocialProviders} AS USP`, 'USP.user_id', 'U.id')
           .where({
             'USP.identifier': profile.id,
             'USP.provider_id': 1
@@ -57,14 +57,14 @@ Passport.use(
           const transaction = await knex.transaction()
 
           try {
-            const userId = await knex('public.user').transacting(transaction).insert({
+            const userId = await knex(Tables.Users).transacting(transaction).insert({
               email,
               hash: '',
               created_at: new Date(),
               updated_at: new Date()
             }).returning('id')
 
-            await knex('public.users_social_providers AS USP').transacting(transaction).insert({
+            await knex(`${Tables.UsersSocialProviders} AS USP`).transacting(transaction).insert({
               user_id: userId,
               provider_id: 1,
               identifier: profile.id

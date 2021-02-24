@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import { isAuthenticated } from '../../../middlewares/inertia'
-import Knex, { iListVideo } from '../../../utils/knex'
+import Knex, { Tables, iListVideo } from '../../../utils/knex'
 
 async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next: NextFunction) {
   const { listId, videoId } = req.params
@@ -9,9 +9,9 @@ async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next
   // TODO: Verify separately the video exists and then it belongs to the user
   const knex = Knex()
 
-  const list = await knex<iListVideo>('public.lists AS L')
+  const list = await knex<iListVideo>(`${Tables.Lists} AS L`)
     .select('L.id', 'LV.order_id')
-    .join('public.lists_videos AS LV', 'L.id', 'LV.list_id')
+    .join(`${Tables.ListsVideos} AS LV`, 'L.id', 'LV.list_id')
     .where({
       'L.id': listId,
       'L.user_id': req.user?.id ?? 0,
@@ -37,13 +37,13 @@ async function deleteList(req: Request, _res: Response, next: NextFunction) {
   const knex = Knex()
 
   // Delete the video
-  await knex('public.lists_videos').where({
+  await knex(Tables.ListsVideos).where({
     list_id: listId,
     video_id: videoId
   }).delete()
 
   // Update the order id
-  await knex('public.lists_videos')
+  await knex(Tables.ListsVideos)
     .update({
       order_id: knex.raw('?? - 1', ['order_id'])
     })

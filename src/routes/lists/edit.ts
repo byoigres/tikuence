@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import { isAuthenticated } from '../../middlewares/inertia'
-import Knex, { iProfileListVideos } from '../../utils/knex'
+import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
 
 async function view(req: Request) {
   const userId = req.user ? req.user.id : null
@@ -8,15 +8,15 @@ async function view(req: Request) {
 
   const knex = Knex()
 
-  const list = await knex('public.lists')
+  const list = await knex(Tables.Lists)
     .select('id', 'title')
     .where({ id: params.listId, user_id: userId ? userId.toString() : '0' })
     .first()
 
   if (list) {
-    const videos = await knex<iProfileListVideos>('public.lists_videos AS LV')
+    const videos = await knex<iProfileListVideos>(`${Tables.ListsVideos} AS LV`)
       .select('V.id', 'V.title', 'V.thumbnail_name', 'LV.order_id')
-      .join('public.videos AS V', 'LV.video_id', 'V.id')
+      .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
       .where('LV.list_id', params.listId)
       .orderBy('LV.order_id')
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
-import Knex, { iFeedResult } from '../utils/knex'
+import Knex, { Tables, iFeedResult } from '../utils/knex'
 
 function verifyParams(req: Request, res: Response, next: NextFunction) {
   const params = req.params
@@ -54,7 +54,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
 
   const knex = Knex()
 
-  const lists = await knex<iFeedResult>('public.lists as L')
+  const lists = await knex<iFeedResult>(`${Tables.Lists} as L`)
     .select<iFeedResult>('L.id', 'L.title', 'VT.thumbnail_name as thumbnail', 'U.email', 'VT.total as total_videos')
     .joinRaw(
       `JOIN LATERAL (${knex
@@ -62,15 +62,15 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
           'V.id',
           'V.thumbnail_name',
           'V.created_at',
-          knex('public.lists_videos AS ILV').count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
+          knex(`${Tables.ListsVideos} AS ILV`).count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
         )
-        .from('public.lists_videos AS LV')
-        .join('public.videos AS V', 'LV.video_id', 'V.id')
+        .from(`${Tables.ListsVideos} AS LV`)
+        .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
         .whereRaw('"LV"."list_id" = "L"."id"')
         .orderBy('V.created_at', 'DESC')
         .limit(1)}) AS "VT" ON TRUE`
     )
-    .join('public.users AS U', 'L.user_id', 'U.id')
+    .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
     .orderBy(category === 'recent' ? 'VT.created_at' : 'L.created_at', 'DESC')
     .limit(pageSize)
     .offset(offset)

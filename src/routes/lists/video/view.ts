@@ -1,14 +1,13 @@
 import { Request } from 'express'
 import { isAuthenticated } from '../../../middlewares/inertia'
-import Knex from '../../../utils/knex'
-// import { queryVideoById } from '../../../queries/video'
+import Knex, { Tables } from '../../../utils/knex'
 
 async function response(req: Request) {
   const { listId, videoId } = req.params
 
   const knex = Knex()
 
-  const video = await knex('public.videos')
+  const video = await knex(Tables.Videos)
     .select('id', 'title', 'html')
     .where('id', videoId)
     .first()

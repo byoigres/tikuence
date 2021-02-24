@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import { isAuthenticated } from '../../middlewares/inertia'
-import Knex, { iProfileList } from '../../utils/knex'
+import Knex, { Tables, iProfileList } from '../../utils/knex'
 
 export async function getAllLists(req: Request, _res: Response, next: NextFunction) {
   const userId = req.user ? req.user.id : null
@@ -28,7 +28,7 @@ export async function getAllLists(req: Request, _res: Response, next: NextFuncti
 
   const knex = Knex()
 
-  const lists = await knex<iProfileList>('public.lists as L')
+  const lists = await knex<iProfileList>(`${Tables.Lists} as L`)
     .select(
       'L.id',
       'L.title',
@@ -41,10 +41,10 @@ export async function getAllLists(req: Request, _res: Response, next: NextFuncti
           'V.id',
           'V.thumbnail_name',
           'V.created_at',
-          knex('public.lists_videos AS ILV').count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
+          knex(`${Tables.ListsVideos} AS ILV`).count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
         )
-        .from('public.lists_videos AS LV')
-        .join('public.videos AS V', 'LV.video_id', 'V.id')
+        .from(`${Tables.ListsVideos} AS LV`)
+        .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
         .whereRaw('"LV"."list_id" = "L"."id"')
         .orderBy('V.created_at', 'DESC')
         .limit(1)}) AS "VT" ON TRUE`

@@ -3,7 +3,7 @@ import httpContext from 'express-http-context'
 import { checkSchema } from 'express-validator'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
-import Knex from '../../utils/knex'
+import Knex, { Tables } from '../../utils/knex'
 
 interface iPayload {
   title: string
@@ -27,7 +27,7 @@ async function createList(req: Request, res: Response, next: NextFunction) {
 
   const knex = Knex()
 
-  const listId: Number = await knex('public.lists')
+  const listId: Number = await knex(Tables.Lists)
     .insert({
       title: payload.title,
       user_id: req.user ? req.user.id : null
@@ -39,7 +39,7 @@ async function createList(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
-function response(req: Request, res: Response) {
+function response(req: Request) {
   const listId: Number = httpContext.get('listId')
 
   req.flash('success', 'List created successfully')
