@@ -59,7 +59,9 @@ const AddVideoPage = ({ listId, errors }) => {
         onSuccess() {},
         onFinish() {
           setIsLoading(false);
-          titleRef.current.focus();
+          if (titleRef.current) {
+            titleRef.current.focus();
+          }
         },
       }
     );

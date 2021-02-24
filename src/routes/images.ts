@@ -1,11 +1,12 @@
 import { Request, Response } from 'express'
 import stream from 'stream'
-import { getFile } from '../firebase'
+import { getFile } from '../utils/firebase'
 
 async function image(req: Request, res: Response) {
   const { image } = req.params
   try {
-    const file = await getFile(image)
+    // TODO: Remove .jpg
+    const file = await getFile(`${image}.jpg`)
     const readStream = new stream.PassThrough()
 
     readStream.end(file.buffer)

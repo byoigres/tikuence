@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
 import { prepareValidationForFlashMessage } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
-import { queryVerifyListExistsById, queryDeleteListById } from '../../queries/list'
+import Knex from '../../utils/knex'
 
 const validations = checkSchema({
   listId: {
@@ -15,10 +15,15 @@ const validations = checkSchema({
     custom: {
       errorMessage: 'The id does not exists 1',
       options: async value => {
-        const list = await queryVerifyListExistsById(value)
-        if (!list) {
-          /* eslint prefer-promise-reject-errors: 0 */
-          return Promise.reject('The list does not exists 2')
+        const knex = Knex()
+        try {
+          const list = await knex('public.lists').where('id', value).first()
+          if (!list) {
+            /* eslint prefer-promise-reject-errors: 0 */
+            return Promise.reject('The list does not exists 1')
+          }
+        } catch (err) {
+          return Promise.reject(err)
         }
       }
     }
@@ -32,7 +37,9 @@ const validations = checkSchema({
 async function deleteList(req: Request, res: Response, next: NextFunction) {
   const params = req.params
 
-  await queryDeleteListById(parseInt(params.listId, 10))
+  const knex = Knex()
+
+  await knex('public.lists').where('id', params.listId).delete()
 
   next()
 }

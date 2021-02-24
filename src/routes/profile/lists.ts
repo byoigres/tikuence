@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import { isAuthenticated } from '../../middlewares/inertia'
-import Knex, { iProfileList } from '../../knex'
+import Knex, { iProfileList } from '../../utils/knex'
 
 export async function getAllLists(req: Request, _res: Response, next: NextFunction) {
   const userId = req.user ? req.user.id : null
@@ -29,9 +29,14 @@ export async function getAllLists(req: Request, _res: Response, next: NextFuncti
   const knex = Knex()
 
   const lists = await knex<iProfileList>('public.lists as L')
-    .select('L.id', 'L.title', 'VT.thumbnail_name as thumbnail', 'VT.total as total_videos')
+    .select(
+      'L.id',
+      'L.title',
+      'VT.thumbnail_name as thumbnail',
+      knex.raw('CASE WHEN "VT"."total" IS NULL THEN 0 ELSE "VT"."total" END AS "total_videos"')
+    )
     .joinRaw(
-      `JOIN LATERAL (${knex
+      `LEFT JOIN LATERAL (${knex
         .select(
           'V.id',
           'V.thumbnail_name',

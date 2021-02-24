@@ -3,10 +3,7 @@ import Passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as TwitterStrategy } from 'passport-twitter'
 import { Strategy as LocalStrategy } from 'passport-local'
-// import UsersSocialProviders from '../models/userssocialproviders.model'
-// import SocialProviders from '../models/socialproviders.model'
-// import User from '../models/user.model'
-import Knex, { iSocialProviderUser } from '../knex'
+import Knex, { iSocialProviderUser } from '../utils/knex'
 import config from '../config'
 
 Passport.use(

@@ -265,6 +265,7 @@ const Edit = ({ list, errors }) => {
               <Button
                 className={classes.titleButtons}
                 variant="outlined"
+                disabled={isLoading}
                 onClick={(e) => {
                   e.preventDefault();
                   setIsTitleInEditMode(!isTitleInEditMode);
@@ -279,6 +280,7 @@ const Edit = ({ list, errors }) => {
                 className={classes.titleButtons}
                 variant="outlined"
                 color="primary"
+                disabled={isLoading}
                 onClick={hadleTitleUpdate}
               >
                 Update
@@ -322,6 +324,7 @@ const Edit = ({ list, errors }) => {
             onClick={handleAddVideo}
             type="button"
             className={classes.addVideoButton}
+            disabled={isLoading}
           >
             Add videos
           </Button>

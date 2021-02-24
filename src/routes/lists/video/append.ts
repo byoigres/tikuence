@@ -1,21 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
-import Os from 'os'
 import httpContext from 'express-http-context'
 import fetch from 'node-fetch'
-import Sharp from 'sharp'
-import path from 'path'
-import { v4 as uuidv4 } from 'uuid'
 import url from 'url'
+import { v4 as uuidv4 } from 'uuid'
 import { checkSchema } from 'express-validator'
-import { upload as uploadImage } from '../../../firebase'
+import Knex from '../../../utils/knex'
 import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
-import { queryVerifyListExistsById } from '../../../queries/list'
 import { isAuthenticated } from '../../../middlewares/inertia'
-import { getAllLists } from '../list'
-import Author from '../../../models/author.model'
-import Video from '../../../models/video.model'
-import List from '../../../models/list.model'
-import ListsVideos from '../../../models/listsvideos.model'
+import { fetchAndCreateVideoThumbnails } from '../../../utils/storage'
 
 interface iPayload {
   videoUrl: string
@@ -59,10 +51,16 @@ const validations = checkSchema({
     custom: {
       // errorMessage: 'The id does not exists 1',
       options: async (value) => {
-        const list = await queryVerifyListExistsById(value)
-        if (!list) {
-          /* eslint prefer-promise-reject-errors: 0 */
-          return Promise.reject('The list does not exists 2.')
+        const knex = Knex()
+        try {
+          const list = await knex('public.lists').where('id', value).first()
+
+          if (!list) {
+            /* eslint prefer-promise-reject-errors: 0 */
+            return Promise.reject('The list does not exists')
+          }
+        } catch (err) {
+          return Promise.reject(err)
         }
       }
     }
@@ -86,29 +84,17 @@ const validations = checkSchema({
   }
 })
 
-async function verifyInput(req: Request, _res: Response, next: NextFunction) {
+async function verifyIfListBelongsToCurrentUser(req: Request, _res: Response, next: NextFunction) {
   const { listId } = req.params
 
-  let list = await List.findOne({
-    attributes: ['id'],
-    where: {
-      id: listId
-    }
-  })
+  const knex = Knex()
 
-  if (!list) {
-    req.flash('warning', 'The list do not exist')
-
-    return req.Inertia.redirect(`/list/${listId}/video/add`)
-  }
-
-  list = await List.findOne({
-    attributes: ['id'],
-    where: {
+  const list = await knex('public.lists')
+    .where({
       id: listId,
       user_id: req.user?.id ?? 0
-    }
-  })
+    })
+    .first()
 
   if (!list) {
     req.flash('warning', 'The list does not belong to the current user')
@@ -119,9 +105,6 @@ async function verifyInput(req: Request, _res: Response, next: NextFunction) {
   next()
 }
 
-/**
- * TODO: check if list belongs to the current user
- */
 async function validateUrl(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
   const { listId } = req.params
@@ -154,8 +137,8 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
       return req.Inertia.redirect(`/list/${listId}/video/add`)
     }
 
-    const [, videoId] = parsedPath
-    httpContext.set('videoId', videoId)
+    const [, tiktokId] = parsedPath
+    httpContext.set('tiktokId', tiktokId)
     httpContext.set('tiktokUrl', url.format(parsedUrl))
 
     return next()
@@ -183,141 +166,160 @@ async function fetchVideoInfo(req: Request, _res: Response, next: NextFunction) 
   next()
 }
 
-async function fetchVideoThumbnail(req: Request, _res: Response, next: NextFunction) {
-  const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
-
-  const response = await fetch(videoInfo.thumbnail_url)
-
-  const buffer = await response.buffer()
-
-  const hash = uuidv4()
-
-  const imageNames = {
-    small: `sm-${hash}.jpg`,
-    medium: `md-${hash}.jpg`,
-    large: `lg-${hash}.jpg`,
-    original: `${hash}.jpg`
-  }
-
-  const imagePaths = Object.entries(imageNames).reduce((acc, [size, name]) => {
-    acc[size] = path.join(Os.tmpdir(), name)
-    return acc
-  }, {} as Record<string, string>)
-
-  const transformer = Sharp(buffer)
-  await transformer.clone().toFile(imagePaths.original)
-  await transformer.clone().resize({ height: 100 }).toFile(imagePaths.small)
-  await transformer.clone().resize({ height: 250 }).toFile(imagePaths.medium)
-  await transformer.clone().resize({ height: 400 }).toFile(imagePaths.large)
-
-  await uploadImage(imagePaths.small, imageNames.small)
-  await uploadImage(imagePaths.medium, imageNames.medium)
-  await uploadImage(imagePaths.large, imageNames.large)
-  await uploadImage(imagePaths.original, imageNames.original)
-
-  httpContext.set('imageName', imageNames.original)
-
-  next()
-}
-
 async function extractAuthorFromUrl(req: Request, _res: Response, next: NextFunction) {
   const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
   const parsedUrl = new url.URL(videoInfo.author_url)
 
-  const authroName = parsedUrl.pathname.slice(2)
+  const authorUsername = parsedUrl.pathname.slice(2)
 
-  httpContext.set('authorName', authroName)
+  httpContext.set('authorUsername', authorUsername)
+  next()
+}
+
+async function verifyIfVideoExistinList(req: Request, _res: Response, next: NextFunction) {
+  const { listId } = req.params
+  const authorUsername: string = httpContext.get('authorUsername')
+  const tiktokId = httpContext.get('tiktokId')
+  const knex = Knex()
+  // This is duplicate as line #216
+  const author = await knex('public.authors').select('id').where('username', authorUsername).first()
+
+  // If the author don't exists nether the video, skip validation
+  if (!author) {
+    return next()
+  }
+
+  // Verify if the video is in the lists
+  const video = await knex('public.lists_videos AS LV')
+    .select('V.id')
+    .join('public.videos AS V', 'LV.video_id', 'V.id')
+    .where({
+      'LV.list_id': listId,
+      'V.tiktok_id': tiktokId,
+      'V.author_id': author.id
+    })
+    .first()
+
+  if (video) {
+    req.flash('info', 'The video you are trying to add is already on the list')
+    return req.Inertia.redirect(`/list/${listId}/edit`)
+  }
+
   next()
 }
 
 async function createAuthor(req: Request, _res: Response, next: NextFunction) {
   const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
-  const authorName: string = httpContext.get('authorName')
+  const authorUsername: string = httpContext.get('authorUsername')
+  let authorId: number
+  const knex = Knex()
+  // This is duplicate as line #185
+  const author = await knex('public.authors').select('id').where('username', authorUsername).first()
 
-  const [author] = await Author.findOrCreate({
-    where: {
-      username: authorName
-    },
-    defaults: {
-      username: authorName,
-      name: videoInfo.author_name
-    }
-  })
+  if (!author) {
+    authorId = await knex<{ username: string; name: string; created_at: Date; updated_at: Date }>('public.authors')
+      .insert({
+        username: authorUsername,
+        name: videoInfo.author_name,
+        created_at: new Date(),
+        updated_at: new Date()
+      })
+      .returning<number>('id')
+  } else {
+    authorId = author.id
+  }
 
-  httpContext.set('authorId', author.id)
+  httpContext.set('authorId', authorId)
 
   next()
 }
 
 async function createVideo(req: Request, _res: Response, next: NextFunction) {
-  const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
+  const { listId } = req.params
+  const tiktokId: string = httpContext.get('tiktokId')
   const authorId = httpContext.get('authorId')
+  const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
+  const knex = Knex()
+  const transaction = await knex.transaction()
 
-  const videoId = httpContext.get('videoId')
-  const imageName = httpContext.get('imageName')
+  try {
+    let videoId: number
 
-  const [video] = await Video.findOrCreate({
-    where: {
-      tiktok_id: videoId
-    },
-    defaults: {
-      tiktok_id: videoId,
-      title: videoInfo.title,
-      html: videoInfo.html,
-      thumbnail_width: videoInfo.thumbnail_width,
-      thumbnail_height: videoInfo.thumbnail_height,
-      thumbnail_name: imageName,
-      author_id: authorId
+    // Verify if the video exists
+    const videoExists = await knex<{ tiktok_id: string; author_id: number }>('public.videos')
+      .select('id')
+      .where({
+        tiktok_id: tiktokId,
+        author_id: authorId
+      })
+      .first<{ id: number }>()
+
+    if (!videoExists) {
+      const imageHash = uuidv4()
+
+      const [videoIdResult] = await knex<{
+        tiktok_id: string
+        title: string
+        html: string
+        thumbnail_width: number
+        thumbnail_height: number
+        thumbnail_name: string
+        author_id: number
+        created_at: Date
+        updated_at: Date
+      }>('public.videos')
+        .transacting(transaction)
+        .insert({
+          tiktok_id: tiktokId,
+          title: videoInfo.title,
+          html: videoInfo.html,
+          thumbnail_width: videoInfo.thumbnail_width,
+          thumbnail_height: videoInfo.thumbnail_height,
+          thumbnail_name: imageHash,
+          author_id: authorId,
+          created_at: new Date(),
+          updated_at: new Date()
+        })
+        .returning<[number]>('id')
+
+      videoId = videoIdResult
+      // TODO: get all sizes images names to check if they exist
+      // and if they will, delete them
+      await fetchAndCreateVideoThumbnails(videoInfo.thumbnail_url, imageHash)
+    } else {
+      videoId = videoExists.id
     }
-  })
 
-  httpContext.set('videoId', video.id)
+    const count = await knex<number>('public.lists_videos')
+      .transacting(transaction)
+      .count('video_id', { as: 'total' })
+      .where('list_id', listId)
+      .first<{ total: number }>()
 
-  next()
-}
+    await knex<{
+      list_id: number
+      video_id: number
+      order_id: number
+      created_at: Date
+      updated_at: Date
+    }>('public.lists_videos')
+      .transacting(transaction)
+      .insert({
+        list_id: parseInt(listId, 10),
+        video_id: videoId,
+        order_id: count.total + 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      })
 
-async function updateLastVideoAdded(req: Request, _res: Response, next: NextFunction) {
-  const { listId } = req.params
+    await transaction.commit()
+  } catch (err) {
+    console.log(err)
+    await transaction.rollback()
 
-  await List.update(
-    {
-      last_added_video_at: new Date()
-    },
-    {
-      where: {
-        id: listId
-      }
-    }
-  )
-
-  next()
-}
-
-async function matchVideoWithList(req: Request, _res: Response, next: NextFunction) {
-  const { listId } = req.params
-  const videoId = httpContext.get('videoId')
-
-  const count = await ListsVideos.count({
-    where: {
-      list_id: listId
-    }
-  })
-
-  const values = {
-    /**
-     * TODO: verify is list ID belongs to the current user
-     */
-    list_id: listId,
-    video_id: videoId
-  }
-  const [, relationExists] = await ListsVideos.findOrCreate({
-    where: values,
-    defaults: { ...values, order_id: count + 1 }
-  })
-
-  if (!relationExists) {
-    req.flash('info', 'The video you are trying to add is already on the list')
-    return req.Inertia.redirect(`/list/${listId}/edit`)
+    return req.Inertia.setStatusCode(500).setViewData({ title: 'Something goes wrong' }).render({
+      component: 'Errors/500'
+    })
   }
 
   next()
@@ -335,15 +337,12 @@ export default [
   isAuthenticated,
   ...validations,
   prepareValidationForErrorMessages((req: Request) => `/list/${req.params.listId}/video/add`),
-  verifyInput,
+  verifyIfListBelongsToCurrentUser,
   validateUrl,
   fetchVideoInfo,
-  fetchVideoThumbnail,
   extractAuthorFromUrl,
+  verifyIfVideoExistinList,
   createAuthor,
   createVideo,
-  updateLastVideoAdded,
-  matchVideoWithList,
-  getAllLists,
   response
 ]

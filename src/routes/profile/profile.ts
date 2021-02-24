@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import { isAuthenticated } from '../../middlewares/inertia'
-import Knex from '../../knex'
+import Knex from '../../utils/knex'
 
 async function response(req: Request) {
   const knex = Knex()

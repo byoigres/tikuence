@@ -1,11 +1,17 @@
 import { Request } from 'express'
 import { isAuthenticated } from '../../../middlewares/inertia'
-import { queryVideoById } from '../../../queries/video'
+import Knex from '../../../utils/knex'
+// import { queryVideoById } from '../../../queries/video'
 
 async function response(req: Request) {
   const { listId, videoId } = req.params
 
-  const video = await queryVideoById(parseInt(videoId, 10))
+  const knex = Knex()
+
+  const video = await knex('public.videos')
+    .select('id', 'title', 'html')
+    .where('id', videoId)
+    .first()
 
   if (video) {
     return req.Inertia.setViewData({ title: video.title }).render({

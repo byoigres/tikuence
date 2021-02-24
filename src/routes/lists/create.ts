@@ -3,8 +3,7 @@ import httpContext from 'express-http-context'
 import { checkSchema } from 'express-validator'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
-import { getAllListsWithVideos } from './list'
-import List from '../../models/list.model'
+import Knex from '../../utils/knex'
 
 interface iPayload {
   title: string
@@ -26,18 +25,22 @@ const validations = checkSchema({
 async function createList(req: Request, res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
 
-  const list = await List.create({
-    title: payload.title,
-    user_id: req.user ? req.user.id : null
-  })
+  const knex = Knex()
 
-  httpContext.set('listId', list.id)
+  const listId: Number = await knex('public.lists')
+    .insert({
+      title: payload.title,
+      user_id: req.user ? req.user.id : null
+    })
+    .returning('id')
+
+  httpContext.set('listId', listId)
 
   next()
 }
 
 function response(req: Request, res: Response) {
-  const listId: List = httpContext.get('listId')
+  const listId: Number = httpContext.get('listId')
 
   req.flash('success', 'List created successfully')
 
@@ -49,6 +52,5 @@ export default [
   ...validations,
   prepareValidationForErrorMessages('/list/add'),
   createList,
-  getAllListsWithVideos,
   response
 ]

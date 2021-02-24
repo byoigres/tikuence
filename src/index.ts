@@ -1,7 +1,6 @@
 import app from './app'
 import config from './config'
-// import './postgres'
-import './knex'
+import './utils/knex'
 import middlewares from './middlewares'
 import routes from './routes'
 

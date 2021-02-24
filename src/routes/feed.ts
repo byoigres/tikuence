@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
-import Knex, { iFeedResult } from '../knex'
+import Knex, { iFeedResult } from '../utils/knex'
 
 function verifyParams(req: Request, res: Response, next: NextFunction) {
   const params = req.params
@@ -55,7 +55,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
   const knex = Knex()
 
   const lists = await knex<iFeedResult>('public.lists as L')
-    .select('L.id', 'L.title', 'VT.thumbnail_name as thumbnail', 'U.email', 'VT.total as total_videos')
+    .select<iFeedResult>('L.id', 'L.title', 'VT.thumbnail_name as thumbnail', 'U.email', 'VT.total as total_videos')
     .joinRaw(
       `JOIN LATERAL (${knex
         .select(

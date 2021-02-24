@@ -1,10 +1,6 @@
 import { Request } from 'express'
 import { isAuthenticated } from '../../middlewares/inertia'
-import Knex, { iProfileListVideos } from '../../knex'
-// import User from '../../models/user.model'
-// import Author from '../../models/author.model'
-// import Video from '../../models/video.model'
-// import List from '../../models/list.model'
+import Knex, { iProfileListVideos } from '../../utils/knex'
 
 async function view(req: Request) {
   const userId = req.user ? req.user.id : null

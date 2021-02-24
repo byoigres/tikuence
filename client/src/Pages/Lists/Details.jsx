@@ -70,8 +70,9 @@ const Details = ({ list }) => {
   }
 
   useEffect(() => {
+    // TODO: no need to sort, already sorted SS
     /* eslint no-param-reassign: 0 */
-    list.videos = list.videos.sort((a, b) => a.order.order_id - b.order.order_id);
+    list.videos = list.videos.sort((a, b) => a.order_id - b.order_id);
   }, []);
 
   useEffect(() => {
@@ -107,7 +108,7 @@ const Details = ({ list }) => {
             <Typography variant="h6" className={classes.title}>
               View list
             </Typography>
-            {auth.isAuthenticated && auth.credentials.id === list.user.id && (
+            {auth.isAuthenticated && auth.credentials.id === list.user_id && (
               <Tooltip title="Edit">
                 <IconButton
                   edge="start"

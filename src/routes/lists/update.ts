@@ -2,8 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
-import List from '../../models/list.model'
-import { queryVerifyListExistsById } from '../../queries/list'
+import Knex from '../../utils/knex'
 
 const validations = checkSchema({
   listId: {
@@ -16,10 +15,15 @@ const validations = checkSchema({
     custom: {
       errorMessage: 'The id does not exists 1',
       options: async (value) => {
-        const list = await queryVerifyListExistsById(value)
-        if (!list) {
-          /* eslint prefer-promise-reject-errors: 0 */
-          return Promise.reject('The list does not exists 2')
+        const knex = Knex()
+        try {
+          const list = await knex('public.lists').where('id', value).first()
+          if (!list) {
+            /* eslint prefer-promise-reject-errors: 0 */
+            return Promise.reject('The list does not exists 2')
+          }
+        } catch (err) {
+          return Promise.reject(err)
         }
       }
     }
@@ -44,16 +48,9 @@ async function updateList(req: Request, _res: Response, next: NextFunction) {
   const { listId } = req.params
   const { title } = req.body
 
-  await List.update(
-    {
-      title
-    },
-    {
-      where: {
-        id: listId
-      }
-    }
-  )
+  const knex = Knex()
+
+  await knex('public.lists').update('title', title).where('id', listId)
 
   next()
 }

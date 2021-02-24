@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import list from './list'
+// import list from './list'
 import details from './details'
 import deleteList from './delete'
 import create from './create'
@@ -15,7 +15,7 @@ const router = Router({
 // Route /list
 
 // List all lists view
-router.get('/', list)
+// router.get('/', list)
 
 // Add new list view
 router.get('/add', add)
