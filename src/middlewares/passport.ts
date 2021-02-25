@@ -3,8 +3,13 @@ import Passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as TwitterStrategy } from 'passport-twitter'
 import { Strategy as LocalStrategy } from 'passport-local'
+import { v4 as uuid } from 'uuid'
 import Knex, { Tables, iSocialProviderUser } from '../utils/knex'
 import config from '../config'
+
+enum PROVIDERS {
+  GOOGLE = 1
+}
 
 Passport.use(
   new TwitterStrategy(
@@ -20,11 +25,13 @@ Passport.use(
 )
 
 Passport.serializeUser(function (user, done) {
+  console.log('serializeUser', user)
   done(null, user)
 })
 
-Passport.deserializeUser(function (id: Express.User, done) {
-  done(undefined, id)
+Passport.deserializeUser(function (user: Express.User, done) {
+  console.log('deserializeUser', user)
+  done(undefined, user)
 })
 
 Passport.use(
@@ -49,42 +56,87 @@ Passport.use(
           .join(`${Tables.UsersSocialProviders} AS USP`, 'USP.user_id', 'U.id')
           .where({
             'USP.identifier': profile.id,
-            'USP.provider_id': 1
+            'USP.provider_id': PROVIDERS.GOOGLE
           })
           .first()
 
         if (!user) {
-          const transaction = await knex.transaction()
+          const expires_at = new Date()
+          const token = uuid()
+          expires_at.setTime(expires_at.getTime() + 900000)
 
-          try {
-            const userId = await knex(Tables.Users).transacting(transaction).insert({
-              email,
-              hash: '',
-              created_at: new Date(),
-              updated_at: new Date()
-            }).returning('id')
+          await knex(Tables.PendingUsers)
+            .where('email', email)
+            .del()
 
-            await knex(`${Tables.UsersSocialProviders} AS USP`).transacting(transaction).insert({
-              user_id: userId,
-              provider_id: 1,
-              identifier: profile.id
-            })
+          await knex(Tables.PendingUsers).insert({
+            email,
+            expires_at,
+            token
+          })
 
-            await transaction.commit()
-          } catch (err) {
-            await transaction.rollback()
+          done(undefined, {
+            pendingRegistrationToken: token,
+            id: 0,
+            email,
+            provider: {}
+          })
 
-            return done(err)
-          }
+          // let pendingUser = await knex(Tables.PendingUsers)
+          //   .select('expires_at')
+          //   .where('email', email)
+          //   .first<{ expires_at: Date }>()
+
+          // if (pendingUser) {
+          //   const expires_at = new Date()
+          //   expires_at.setTime(expires_at.getTime() + 900000)
+          //   pendingUser = await knex(Tables.PendingUsers)
+          //     .update({ expires_at })
+          //     .where('email', email)
+          //     .returning<{ expires_at: Date }>('expires_at')
+          // }
+
+          // const transaction = await knex.transaction()
+
+          // try {
+          //   const [userId] = await knex(Tables.Users).transacting(transaction).insert({
+          //     email,
+          //     hash: '',
+          //     created_at: new Date(),
+          //     updated_at: new Date()
+          //   }).returning('id')
+
+          //   await knex(`${Tables.UsersSocialProviders} AS USP`).transacting(transaction).insert({
+          //     user_id: userId,
+          //     provider_id: PROVIDERS.GOOGLE,
+          //     identifier: profile.id
+          //   })
+
+          //   await transaction.commit()
+
+          //   done(undefined, {
+          //     isRegistered: true,
+          //     id: user.id,
+          //     email: user.email,
+          //     provider: {
+          //       google: profile.id
+          //     }
+          //   })
+          // } catch (err) {
+          //   await transaction.rollback()
+
+          //   return done(err)
+          // }
+        } else {
+          done(undefined, {
+            pendingRegistrationToken: undefined,
+            id: user.id,
+            email: user.email,
+            provider: {
+              google: profile.id
+            }
+          })
         }
-
-        done(undefined, {
-          id: user.id,
-          email: user.email,
-          provider: {
-            google: profile.id
-          }
-        })
       }
     }
   )
