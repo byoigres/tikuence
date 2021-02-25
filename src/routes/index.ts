@@ -11,11 +11,11 @@ import images from './images'
 function bindRoutes(app: Express) {
   app.get('/', feed)
   app.get('/feed/:category?/:page?', feed)
-  app.use('/', auth)
+  app.use('/auth', auth)
   app.get('/images/:image', images)
   app.use('/list', lists)
-  app.use('/users/:email', profile)
-  app.use(function (req, res, next) {
+  app.use('/users/:username', profile)
+  app.use(function (req) {
     req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
       component: 'Errors/404'
     })

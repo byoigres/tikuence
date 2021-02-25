@@ -6,6 +6,7 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/sty
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -82,7 +83,7 @@ const theme = createMuiTheme({
 const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
   const {
     props: {
-      auth: { isAuthenticated },
+      auth: { isAuthenticated, credentials },
       flash,
       isMobile,
     },
@@ -139,21 +140,28 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                       {title}
                     </InertiaLink>
                   </Typography>
-                  <Tooltip title={isAuthenticated ? 'Profile' : 'Login'}>
+                  <Tooltip title={isAuthenticated ? credentials.name : 'Login'}>
                     <IconButton
                       edge="start"
                       className={classes.menuButton}
                       color="inherit"
                       aria-label="menu"
                       onClick={() => {
-                        Inertia.visit(isAuthenticated ? '/profile' : '/login', {
-                          preserveScroll: true,
-                          preserveState: true,
-                          only: ['referer', 'showModal', ...[isAuthenticated ? 'user' : null]],
-                        });
+                        Inertia.visit(
+                          isAuthenticated ? `/users/${credentials.username}` : '/auth/login',
+                          {
+                            preserveScroll: true,
+                            preserveState: true,
+                            only: ['referer', 'showModal', ...[isAuthenticated ? 'user' : null]],
+                          }
+                        );
                       }}
                     >
-                      <AccountCircleIcon />
+                      {isAuthenticated ? (
+                        <Avatar>{credentials.username[0].toUpperCase()}</Avatar>
+                      ) : (
+                        <AccountCircleIcon />
+                      )}
                     </IconButton>
                   </Tooltip>
                 </Toolbar>

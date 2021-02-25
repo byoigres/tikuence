@@ -51,7 +51,7 @@ Passport.use(
         const knex = Knex()
 
         const user = await knex<iSocialProviderUser>(`${Tables.Users} AS U`)
-          .select('U.id', 'U.email')
+          .select('U.id', 'U.username', 'U.email', 'U.name')
           .where('U.email', email)
           .join(`${Tables.UsersSocialProviders} AS USP`, 'USP.user_id', 'U.id')
           .where({
@@ -79,6 +79,8 @@ Passport.use(
             pendingRegistrationToken: token,
             id: 0,
             email,
+            username: '',
+            name: '',
             provider: {}
           })
 
@@ -132,6 +134,8 @@ Passport.use(
             pendingRegistrationToken: undefined,
             id: user.id,
             email: user.email,
+            username: user.username,
+            name: user.name,
             provider: {
               google: profile.id
             }

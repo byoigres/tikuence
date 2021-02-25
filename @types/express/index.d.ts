@@ -14,6 +14,8 @@ declare global {
       pendingRegistrationToken: string | undefined;
       id: number;
       email: string;
+      username: string;
+      name: string;
       provider: {
         google?: string;
         twitter?: string;

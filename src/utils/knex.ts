@@ -81,4 +81,6 @@ export interface iProfileListVideos {
 export interface iSocialProviderUser {
   id: number
   email: string
+  username: string
+  name: string
 }

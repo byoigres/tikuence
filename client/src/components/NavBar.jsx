@@ -30,7 +30,7 @@ const NavBar = ({ isAuthenticated }) => {
         setSelectedAction(1);
         break;
       case '/profile':
-      case '/login':
+      case '/auth/login':
         setSelectedAction(2);
         break;
       default:
@@ -74,7 +74,7 @@ const NavBar = ({ isAuthenticated }) => {
             });
             break;
           case 'profile':
-            Inertia.visit(isAuthenticated ? '/profile' : '/login', {
+            Inertia.visit(isAuthenticated ? '/profile' : '/auth/login', {
               preserveScroll: true,
               only: ['showModal', 'user'],
             });

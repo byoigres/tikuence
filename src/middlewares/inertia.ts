@@ -63,7 +63,7 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
 
   req.flash('warning', 'You need to login first to acces this page')
 
-  req.Inertia.redirect('/login')
+  req.Inertia.redirect('/auth/login')
 }
 
 function getReferer(req: Request) {
