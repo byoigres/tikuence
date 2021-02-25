@@ -8,6 +8,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { makeStyles } from '@material-ui/core/styles';
@@ -79,9 +80,19 @@ const ProfilePage = ({ user /* , lists = [] */ }) => {
         </Toolbar>
       </AppBar>
       <DialogContent className={classes.content}>
-        <Typography variant="h5" color="textPrimary" className={classes.email}>
-          {user.email}
-        </Typography>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            background: 'linear-gradient(to bottom, #00b4db, #0083b0)',
+          }}
+        >
+          <Avatar>B</Avatar>
+          <Typography variant="h5" color="textPrimary" className={classes.email}>
+            {user.email}
+          </Typography>
+        </div>
         <div>
           <Button
             variant="contained"
