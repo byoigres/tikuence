@@ -19,6 +19,7 @@ function middlewares(app: Express) {
   app.use(cookies)
   app.use(
     session({
+      name: 'passport-session',
       secret: 'keyboard cat',
       resave: false,
       saveUninitialized: false,
