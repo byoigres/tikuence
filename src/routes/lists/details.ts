@@ -6,9 +6,9 @@ async function getCounters (req: Request) {
 
   const knex = Knex()
 
-  const list = await knex<iDetailsItem>(`${Tables} AS L`)
+  const list = await knex<iDetailsItem>(`${Tables.Lists} AS L`)
     .select('L.id', 'L.title', 'U.id AS user_id')
-    .join(`${Tables} AS U`, 'L.user_id', 'U.id')
+    .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
     .where('L.id', payload.id)
     .first()
 
