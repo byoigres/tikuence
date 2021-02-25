@@ -49,9 +49,9 @@ const useStyles = makeStyles((theme) => ({
     flex: '1 0 auto',
     backgroundColor: '#fff',
   },
-  content: {
-    marginTop: '4rem',
-  },
+  content: ({ cleanLayout }) => ({
+    marginTop: cleanLayout ? 0 : '4rem',
+  }),
   createListContainer: ({ isMobile }) => ({
     position: 'fixed',
     bottom: '25px',
