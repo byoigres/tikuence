@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProfilePage = ({ user, lists = [] }) => {
+const ProfilePage = ({ user, lists = [], isMe }) => {
   const {
     props: { isMobile },
   } = usePage();
@@ -157,33 +157,35 @@ const ProfilePage = ({ user, lists = [] }) => {
                     <Typography variant="subtitle2">{list.total_videos} videos</Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions className={classes.cardActions}>
-                  <Tooltip title="Delete">
-                    <IconButton
-                      aria-label="delete"
-                      size="small"
-                      disabled={isLoading}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // onDeleteButtonClick(list.id);
-                      }}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Edit">
-                    <IconButton
-                      aria-label="edit"
-                      disabled={isLoading}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        Inertia.visit(`/list/${list.id}/edit`);
-                      }}
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </CardActions>
+                {isMe && (
+                  <CardActions className={classes.cardActions}>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        aria-label="delete"
+                        size="small"
+                        disabled={isLoading}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          // onDeleteButtonClick(list.id);
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Edit">
+                      <IconButton
+                        aria-label="edit"
+                        disabled={isLoading}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          Inertia.visit(`/list/${list.id}/edit`);
+                        }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </CardActions>
+                )}
               </Card>
             </Grid>
           ))}
