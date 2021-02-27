@@ -31,8 +31,9 @@ async function view(req: Request) {
   const pending = await knex(Tables.PendingUsers)
     .select<{
       email: string
+      name: string
       expiresAt: Date
-    }>('email', 'expires_at AS expiresAt')
+    }>('email', 'name', 'expires_at AS expiresAt')
     .where('token', req.params.token)
     .first()
 
@@ -42,6 +43,7 @@ async function view(req: Request) {
         component: 'Auth/Register',
         props: {
           email: pending.email,
+          name: pending.name,
           token: req.params.token
         }
       })
