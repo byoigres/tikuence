@@ -12,6 +12,12 @@ async function response(req: Request) {
   }
 
   const user = await knex(Tables.Users).select(...fields).where('username', params.username).first()
+
+  if (!user) {
+    req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
+      component: 'Errors/404'
+    })
+  }
   const isMe = req.isAuthenticated() && req.params.username === req.user.username
 
   const lists = await knex(`${Tables.Lists} as L`)
