@@ -1,4 +1,4 @@
-import Knex from 'knex'
+import Knex, { PgConnectionConfig } from 'knex'
 import Pg from 'pg'
 import config from '../config'
 
@@ -6,14 +6,26 @@ Pg.types.setTypeParser(Pg.types.builtins.INT8, parseInt)
 Pg.types.setTypeParser(Pg.types.builtins.FLOAT8, parseFloat)
 Pg.types.setTypeParser(Pg.types.builtins.NUMERIC, parseFloat)
 
-const knex = Knex({
-  connection: config.get('/db/url'),
+const knexOptions = {
+  connection: <PgConnectionConfig>{
+    connectionString: config.get('/db/url'),
+    ssl:
+      process.env.NODE_ENV === 'production'
+        ? {
+            require: process.env.NODE_ENV === 'production',
+            rejectUnauthorized: false // <<<<<<< YOU NEED THIS
+          }
+        : false,
+    application_name: config.get('/db/appName')
+  },
   dialect: 'postgres',
   client: 'pg',
   version: '13.1',
   debug: false,
   pool: { min: 0, max: 7 }
-})
+}
+
+const knex = Knex(knexOptions)
 
 export default function Database() {
   return knex
