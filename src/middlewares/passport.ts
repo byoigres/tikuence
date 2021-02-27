@@ -46,7 +46,8 @@ Passport.use(
         const {
           emails: {
             0: { value: email }
-          }
+          },
+          name
         } = profile
         const knex = Knex()
 
@@ -71,6 +72,7 @@ Passport.use(
 
           await knex(Tables.PendingUsers).insert({
             email,
+            name: name ? `${name.givenName} ${name.familyName}` : '',
             provider_id: PROVIDERS.GOOGLE,
             identifier: profile.id,
             expires_at,

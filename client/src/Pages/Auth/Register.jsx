@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -37,12 +37,14 @@ const useStyles = makeStyles(() => ({
 
 const Register = () => {
   const {
-    props: { email, token, isExpired = false, isInvalid = false, isMobile, auth, errors },
+    props: { email, name, token, isExpired = false, isInvalid = false, isMobile, auth, errors },
   } = usePage();
   const classes = useStyles({ isMobile });
+  const nameRef = useRef(null);
+  const usernameRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [values, setValues] = useState({
-    name: '',
+    name,
     username: '',
     terms: false,
     token,
@@ -63,7 +65,13 @@ const Register = () => {
       onStart() {
         setIsLoading(true);
       },
-      onSuccess() {},
+      onError(err) {
+        if (err.name && nameRef.current) {
+          nameRef.current.focus();
+        } else if (err.username && usernameRef.current) {
+          usernameRef.current.focus();
+        }
+      },
       onFinish() {
         setIsLoading(false);
       },
@@ -87,6 +95,9 @@ const Register = () => {
             <Typography variant="h4" color="primary" gutterBottom>
               Complete your profile
             </Typography>
+            <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+              You are setting your account using your Google account.
+            </Typography>
             <form className={classes.form} autoComplete="off" autoCorrect="off">
               <TextField
                 name="email"
@@ -105,7 +116,7 @@ const Register = () => {
                 autoComplete="off"
                 disabled={isLoading}
                 onChange={handleChange}
-                inputProps={{ maxLength: 50, autocomplete: 'off' }}
+                inputProps={{ maxLength: 50, autoComplete: 'off', ref: nameRef }}
                 fullWidth
                 autoFocus
                 variant="outlined"
@@ -119,7 +130,7 @@ const Register = () => {
                 autoComplete="off"
                 disabled={isLoading}
                 onChange={handleChange}
-                inputProps={{ maxLength: 24 }}
+                inputProps={{ maxLength: 24, autoComplete: 'off', ref: usernameRef }}
                 fullWidth
                 variant="outlined"
               />
