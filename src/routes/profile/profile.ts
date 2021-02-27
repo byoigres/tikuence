@@ -21,9 +21,15 @@ async function response(req: Request) {
   const isMe = req.isAuthenticated() && req.params.username === req.user.username
 
   const lists = await knex(`${Tables.Lists} as L`)
-    .select('L.id', 'L.title', 'VT.thumbnail_name as thumbnail', 'U.email', 'VT.total as total_videos')
+    .select(
+      'L.id',
+      'L.title',
+      'VT.thumbnail_name as thumbnail',
+      'U.email',
+      knex.raw('COALESCE("VT"."total", 0) as "total_videos"')
+    )
     .joinRaw(
-      `JOIN LATERAL (${knex
+      `LEFT JOIN LATERAL (${knex
         .select(
           'V.id',
           'V.thumbnail_name',
