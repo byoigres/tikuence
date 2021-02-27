@@ -11,16 +11,20 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import RestoreIcon from '@material-ui/icons/Restore';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import { makeStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 import SEO from '../../components/SEO';
 import Layout from '../../components/Layout';
 import AddNewList from './Add';
 import Profile from '../Profile/Profile';
 import Details from './Details';
-import Session from '../Auth/Session';
+import Login from '../Auth/Login';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -42,6 +46,17 @@ const useStyles = makeStyles((theme) => ({
     margin: '1rem',
     fontStyle: 'italic',
   },
+  createListContainer: ({ isMobile }) => ({
+    position: 'fixed',
+    bottom: '10px',
+    width: isMobile ? '100%' : '960px',
+    textAlign: 'right',
+  }),
+  createList: ({ isMobile }) => ({
+    position: 'absolute',
+    right: isMobile ? '10px' : '52px',
+    bottom: '0',
+  }),
 }));
 // 'recent', 'new', 'popular'
 const categories = [
@@ -61,9 +76,17 @@ const categories = [
 
 const PageList = () => {
   const {
-    props: { category, lists: initialLists = [], list, showModal = false, user },
+    props: {
+      auth: { isAuthenticated },
+      isMobile,
+      category,
+      lists: initialLists = [],
+      list,
+      showModal = false,
+      user,
+    },
   } = usePage();
-  const classes = useStyles();
+  const classes = useStyles({ isMobile });
   const [lists, setLists] = useState(initialLists);
   const [categoryIndex] = useState(categories.findIndex((x) => x.id === category));
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,97 +112,122 @@ const PageList = () => {
   return (
     <>
       <SEO description="List of TikTok videos" title="Tikuence" />
-      <BottomNavigation
-        value={categoryIndex}
-        onChange={(_, selectedCategoryIndex) => {
-          if (selectedCategoryIndex !== categoryIndex) {
-            Inertia.visit(`/feed/${categories[selectedCategoryIndex].id}`);
-          }
-        }}
-        showLabels
-        className={classes.root}
+      <Grid
+        container
+        style={{ paddingLeft: '1rem', paddingRight: '1rem', backgroundColor: 'white' }}
       >
-        {categories.map((item) => (
-          <BottomNavigationAction key={item.label} label={item.label} icon={item.icon} />
-        ))}
-      </BottomNavigation>
-      <List dense={false} className={classes.list}>
-        {lists &&
-          lists.map((item) => (
-            <Fragment key={`list-item-${item.id}`}>
-              <ListItem
-                key={item.id}
-                button
-                onClick={(e) => {
-                  e.preventDefault();
-                  Inertia.visit(`/list/${item.id}`, {
-                    preserveScroll: true,
-                    preserveState: true,
-                    only: ['showModal', 'list', 'referer'],
-                  });
-                }}
-              >
-                <ListItemAvatar className={classes.listItemAvatar}>
-                  <Avatar
-                    alt={item.title}
-                    className={classes.avatar}
-                    variant="square"
-                    src={`/images/sm-${item.thumbnail}`}
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  id={item.id}
-                  primary={
-                    <Typography component="strong" variant="h6" color="textPrimary">
-                      {item.title}
-                    </Typography>
-                  }
-                  secondary={
-                    <>
-                      <Typography
-                        component="strong"
-                        variant="subtitle2"
-                        color="textPrimary"
-                        style={{ display: 'block' }}
-                      >
-                        {`${item.total_videos} videos`}
-                      </Typography>
-                      <Typography component="span" variant="subtitle1" color="textPrimary">
-                        {`List by ${item.email}`}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-              <Divider variant="fullWidth" component="li" />
-            </Fragment>
-          ))}
-        {isTheEnd && (
-          <Typography variant="subtitle2" className={classes.endOfTheList}>
-            You reached the end of the lists
-          </Typography>
-        )}
-        {!isTheEnd && (
-          <>
-            {!showModal && (
-              <div className={classes.loader}>
-                <CircularProgress />
-              </div>
+        <Grid item xs={12} md={12}>
+          <BottomNavigation
+            value={categoryIndex}
+            onChange={(_, selectedCategoryIndex) => {
+              if (selectedCategoryIndex !== categoryIndex) {
+                Inertia.visit(`/feed/${categories[selectedCategoryIndex].id}`);
+              }
+            }}
+            showLabels
+            className={classes.root}
+          >
+            {categories.map((item) => (
+              <BottomNavigationAction key={item.label} label={item.label} icon={item.icon} />
+            ))}
+          </BottomNavigation>
+          <List dense={false} className={classes.list}>
+            {lists &&
+              lists.map((item) => (
+                <Fragment key={`list-item-${item.id}`}>
+                  <ListItem
+                    key={item.id}
+                    button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      Inertia.visit(`/list/${item.id}`, {
+                        preserveScroll: true,
+                        preserveState: true,
+                        only: ['showModal', 'list', 'referer'],
+                      });
+                    }}
+                  >
+                    <ListItemAvatar className={classes.listItemAvatar}>
+                      <Avatar
+                        alt={item.title}
+                        className={classes.avatar}
+                        variant="square"
+                        src={`/images/sm-${item.thumbnail}`}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      id={item.id}
+                      primary={
+                        <Typography component="strong" variant="h6" color="textPrimary">
+                          {item.title}
+                        </Typography>
+                      }
+                      secondary={
+                        <>
+                          <Typography
+                            component="strong"
+                            variant="subtitle2"
+                            color="textPrimary"
+                            style={{ display: 'block' }}
+                          >
+                            {`${item.total_videos} videos`}
+                          </Typography>
+                          <Typography component="span" variant="subtitle1" color="textPrimary">
+                            {`List by ${item.email}`}
+                          </Typography>
+                        </>
+                      }
+                    />
+                  </ListItem>
+                  <Divider variant="fullWidth" component="li" />
+                </Fragment>
+              ))}
+            {isTheEnd && (
+              <Typography variant="subtitle2" className={classes.endOfTheList}>
+                You reached the end of the lists
+              </Typography>
             )}
-            <Waypoint
-              onEnter={() => {
-                if (lists.length > 0) {
-                  setCurrentPage(currentPage + 1);
-                }
-              }}
-            />
-          </>
-        )}
-      </List>
+            {!isTheEnd && (
+              <>
+                {!showModal && (
+                  <div className={classes.loader}>
+                    <CircularProgress />
+                  </div>
+                )}
+                <Waypoint
+                  onEnter={() => {
+                    if (lists.length > 0) {
+                      setCurrentPage(currentPage + 1);
+                    }
+                  }}
+                />
+              </>
+            )}
+          </List>
+        </Grid>
+      </Grid>
+      {isAuthenticated && (
+        <div data-name="add-list" className={classes.createListContainer}>
+          <Fab
+            color="primary"
+            aria-label="add"
+            className={classes.createList}
+            onClick={() => {
+              Inertia.visit('/list/add', {
+                preserveScroll: true,
+                preserveState: true,
+                only: ['referer', 'showModal'],
+              });
+            }}
+          >
+            <AddIcon />
+          </Fab>
+        </div>
+      )}
       {showModal === 'details' && list && <Details list={list} />}
       {showModal === 'add-list' && <AddNewList />}
       {showModal === 'profile' && <Profile user={user} />}
-      {showModal === 'login' && <Session />}
+      {showModal === 'login' && <Login />}
     </>
   );
 };

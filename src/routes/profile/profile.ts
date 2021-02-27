@@ -5,11 +5,17 @@ async function response(req: Request) {
   const params = req.params
   const knex = Knex()
 
-  const user = await knex(Tables.Users).select('id', 'username').where('username', params.username).first()
+  const fields: string[] = ['id', 'name', 'username']
+
+  if (req.isAuthenticated()) {
+    fields.push('email')
+  }
+
+  const user = await knex(Tables.Users).select(...fields).where('username', params.username).first()
   const isMe = req.isAuthenticated() && req.params.username === req.user.username
 
   req.Inertia.setViewData({ title: 'Profile' }).render({
-    component: 'Lists/List',
+    component: 'Profile/Profile',
     props: {
       user,
       isMe,

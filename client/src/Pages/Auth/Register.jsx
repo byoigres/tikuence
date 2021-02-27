@@ -3,101 +3,174 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
+import Container from '@material-ui/core/Container';
 import FormGroup from '@material-ui/core/FormGroup';
+import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
-import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import { usePage } from '@inertiajs/inertia-react';
+import { Inertia } from '@inertiajs/inertia';
 import Layout from '../../components/Layout';
 
 const useStyles = makeStyles(() => ({
-  appBar: {
-    position: 'relative',
-  },
-  content: {
-    height: '100vh',
+  container: ({ isMobile }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    alignSelf: 'center',
+    paddingTop: '2rem',
+    paddingBottom: '2rem',
+    paddingLeft: isMobile ? '1rem' : '3rem',
+    paddingRight: isMobile ? '1rem' : '3rem',
+  }),
+  form: {
+    '& .MuiFormControl-root, & .MuiButton-root': {
+      marginTop: '1rem',
+    },
+    marginBottom: '1rem',
   },
 }));
 
-/* eslint react/jsx-props-no-spreading: 0 */
-const Transition = React.forwardRef((props, ref) => (
-  <Slide direction="left" ref={ref} {...props} />
-));
-
 const Register = () => {
-  const classes = useStyles();
   const {
-    props: { email, isExpired = false, isInvalid = false, isMobile, auth },
+    props: { email, token, isExpired = false, isInvalid = false, isMobile, auth, errors },
   } = usePage();
-  const [areTermsAccepted, setAreTermsAccepted] = useState(false);
+  const classes = useStyles({ isMobile });
+  const [isLoading, setIsLoading] = useState(false);
+  const [values, setValues] = useState({
+    name: '',
+    username: '',
+    terms: false,
+    token,
+  });
+
+  function handleChange(e) {
+    const key = e.target.name;
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+
+    setValues((v) => ({
+      ...v,
+      [key]: value,
+    }));
+  }
+
+  const register = () => {
+    Inertia.post('/auth/register', values, {
+      onStart() {
+        setIsLoading(true);
+      },
+      onSuccess() {},
+      onFinish() {
+        setIsLoading(false);
+      },
+    });
+  };
 
   return (
-    <>
-      {!auth.isAuthenticated && isExpired && (
-        <Typography variant="h4">This link has expired</Typography>
-      )}
-      {!auth.isAuthenticated && isInvalid && (
-        <Typography variant="h4">This link is invalid</Typography>
-      )}
-      {auth.isAuthenticated && (
-        <Typography variant="h6">{`You are currently login as ${auth.credentials.email}`}</Typography>
-      )}
-      {!auth.isAuthenticated && !isExpired && !isInvalid && (
-        <Dialog
-          fullScreen={isMobile}
-          maxWidth="sm"
-          fullWidth
-          open
-          disableBackdropClick
-          hideBackdrop
-          TransitionComponent={Transition}
-        >
-          <DialogContent className={classes.content}>
-            <Paper
-              elevation={0}
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                flexDirection: 'column',
-                alignItems: 'center',
-                alignSelf: 'center',
-              }}
-            >
-              <Typography variant="h4">Complete the registration</Typography>
-              <TextField fullWidth label="Email" disabled value={email} />
-              <TextField fullWidth label="Name" inputProps={{ maxLength: 50 }} autoFocus />
-              <TextField fullWidth label="Username" inputProps={{ maxLength: 24 }} />
-              <FormGroup row>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={areTermsAccepted}
-                      onChange={() => {
-                        setAreTermsAccepted(!areTermsAccepted);
-                      }}
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label="Accept the terms of services and privacy policy"
-                />
-              </FormGroup>
-              <Button variant="contained" color="primary" disabled={!areTermsAccepted}>
-                Create account
+    <Container maxWidth="sm" disableGutters={isMobile}>
+      <Paper elevation={0} className={classes.container}>
+        {!auth.isAuthenticated && isExpired && (
+          <Typography variant="h4">This link has expired</Typography>
+        )}
+        {!auth.isAuthenticated && isInvalid && (
+          <Typography variant="h4">This link is invalid</Typography>
+        )}
+        {auth.isAuthenticated && (
+          <Typography variant="h6">{`You are currently login as ${auth.credentials.email}`}</Typography>
+        )}
+        {!auth.isAuthenticated && !isExpired && !isInvalid && (
+          <>
+            <Typography variant="h4" color="primary" gutterBottom>
+              Complete your profile
+            </Typography>
+            <form className={classes.form} autoComplete="off" autoCorrect="off">
+              <TextField
+                name="email"
+                label="Email"
+                value={email}
+                fullWidth
+                disabled
+                variant="outlined"
+              />
+              <TextField
+                name="name"
+                label="Name"
+                value={values.name}
+                error={errors.name !== undefined}
+                helperText={errors.name}
+                autoComplete="off"
+                disabled={isLoading}
+                onChange={handleChange}
+                inputProps={{ maxLength: 50, autocomplete: 'off' }}
+                fullWidth
+                autoFocus
+                variant="outlined"
+              />
+              <TextField
+                name="username"
+                label="Username"
+                value={values.username}
+                error={errors.username !== undefined}
+                helperText={errors.username}
+                autoComplete="off"
+                disabled={isLoading}
+                onChange={handleChange}
+                inputProps={{ maxLength: 24 }}
+                fullWidth
+                variant="outlined"
+              />
+              <FormControl required error component="fieldset" className={classes.formControl}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="terms"
+                        checked={values.terms}
+                        value={values.terms}
+                        disabled={isLoading}
+                        onChange={handleChange}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <>
+                        {`Accept the `}
+                        <Link href="/legal/terms" target="_blank">
+                          terms of service
+                        </Link>
+                        {` and `}
+                        <Link href="/legal/privacy" target="_blank">
+                          privacy policy
+                        </Link>
+                        .
+                      </>
+                    }
+                  />
+                </FormGroup>
+                {errors.terms && <FormHelperText>{errors.terms}</FormHelperText>}
+              </FormControl>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!values.terms || isLoading}
+                onClick={register}
+                fullWidth
+              >
+                Complete profile
               </Button>
-              <Link href="/">Back to the main page</Link>
-            </Paper>
-          </DialogContent>
-        </Dialog>
-      )}
-    </>
+            </form>
+            <Link href="/">Back to the main page</Link>
+          </>
+        )}
+      </Paper>
+    </Container>
   );
 };
 
-Register.layout = (page) => <Layout children={page} cleanLayout />;
+Register.layout = (page) => <Layout children={page} />;
 
 export default Register;

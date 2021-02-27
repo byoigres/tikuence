@@ -41,6 +41,10 @@ const template = (page: object, viewData: ViewData) => `
             font-family: "Source Sans Pro", 'Roboto', sans-serif;
             background-color: #f5f5f5;
             scroll-behavior: smooth;
+        },
+        a {
+          text-decoration: none;
+          color: initial;
         }
     </style>
   </head>

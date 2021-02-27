@@ -1,61 +1,28 @@
-import { Router, Request, Response } from 'express'
-import Passport from 'passport'
-import completeRegistration from './completeRegistration'
+import { Router } from 'express'
+
+import login from './login'
+import register from './register'
+import logout from './logout'
+import google from './google'
+import twitter from './twitter'
+import local from './local'
 
 const router = Router({
   mergeParams: true
 })
 
-router.get('/register/:token', completeRegistration)
+// Route /auth
 
-router.get('/login', function view(req: Request) {
-  if (req.isAuthenticated()) {
-    return req.Inertia.redirect('/')
-  }
+router.use('/login', login)
 
-  req.Inertia.setViewData({ title: 'Log in' }).render({
-    component: 'Lists/List',
-    props: {
-      showModal: 'login'
-    }
-  })
-})
+router.use('/register', register)
 
-router.get('/logout', function logout(req: Request, res: Response) {
-  req.logOut()
-  res.redirect('/auth/login')
-})
+router.use('/logout', logout)
 
-router.get('/google', Passport.authenticate('google', { scope: ['email', 'profile'] }))
+router.use('/google', google)
 
-router.get(
-  '/google/callback',
-  Passport.authenticate('google', { failureRedirect: '/auth/login', session: true }),
-  function (req, res) {
-    if (req.isAuthenticated()) {
-      if (req.user.pendingRegistrationToken && typeof req.user.pendingRegistrationToken === 'string') {
-        const token = req.user.pendingRegistrationToken
-        req.logOut()
-        return res.redirect(`/auth/register/${token}`)
-      }
+router.use('/twitter', twitter)
 
-      return res.redirect('/')
-    }
-
-    res.redirect('/')
-  }
-)
-
-router.get('/twitter', Passport.authenticate('twitter'))
-
-router.get(
-  '/twitter/callback',
-  Passport.authenticate('twitter', { successRedirect: '/', failureRedirect: '/auth/login', session: true }),
-  function (req, res) {
-    res.redirect('/')
-  }
-)
-
-router.post('/local', Passport.authenticate('local', { successRedirect: '/', failureRedirect: '/auth/login' }))
+router.use('/local', local)
 
 export default router

@@ -71,6 +71,8 @@ Passport.use(
 
           await knex(Tables.PendingUsers).insert({
             email,
+            provider_id: PROVIDERS.GOOGLE,
+            identifier: profile.id,
             expires_at,
             token
           })
@@ -83,52 +85,6 @@ Passport.use(
             name: '',
             provider: {}
           })
-
-          // let pendingUser = await knex(Tables.PendingUsers)
-          //   .select('expires_at')
-          //   .where('email', email)
-          //   .first<{ expires_at: Date }>()
-
-          // if (pendingUser) {
-          //   const expires_at = new Date()
-          //   expires_at.setTime(expires_at.getTime() + 900000)
-          //   pendingUser = await knex(Tables.PendingUsers)
-          //     .update({ expires_at })
-          //     .where('email', email)
-          //     .returning<{ expires_at: Date }>('expires_at')
-          // }
-
-          // const transaction = await knex.transaction()
-
-          // try {
-          //   const [userId] = await knex(Tables.Users).transacting(transaction).insert({
-          //     email,
-          //     hash: '',
-          //     created_at: new Date(),
-          //     updated_at: new Date()
-          //   }).returning('id')
-
-          //   await knex(`${Tables.UsersSocialProviders} AS USP`).transacting(transaction).insert({
-          //     user_id: userId,
-          //     provider_id: PROVIDERS.GOOGLE,
-          //     identifier: profile.id
-          //   })
-
-          //   await transaction.commit()
-
-          //   done(undefined, {
-          //     isRegistered: true,
-          //     id: user.id,
-          //     email: user.email,
-          //     provider: {
-          //       google: profile.id
-          //     }
-          //   })
-          // } catch (err) {
-          //   await transaction.rollback()
-
-          //   return done(err)
-          // }
         } else {
           done(undefined, {
             pendingRegistrationToken: undefined,

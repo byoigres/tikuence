@@ -1,16 +1,12 @@
 import React from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Layout from '../../components/Layout';
 
@@ -18,16 +14,13 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
   },
-  email: {
-    margin: '1rem',
-    textAlign: 'center',
-  },
   listItemAvatar: {
     minWidth: 72,
   },
   avatar: {
-    width: theme.spacing(7),
-    height: '100%',
+    width: theme.spacing(16),
+    height: theme.spacing(16),
+    fontSize: '5rem',
   },
   buttons: {
     marginLeft: '1rem',
@@ -44,81 +37,76 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-/* eslint react/jsx-props-no-spreading: 0 */
-const Transition = React.forwardRef((props, ref) => (
-  <Slide direction="left" ref={ref} {...props} />
-));
-
 const ProfilePage = ({ user /* , lists = [] */ }) => {
   const {
     props: { isMobile },
   } = usePage();
   const classes = useStyles();
 
-  function handleClose() {
-    Inertia.visit('/', { preserveScroll: true });
-  }
-
   return (
-    <Dialog
-      fullScreen={isMobile}
-      fullWidth
-      maxWidth="sm"
-      open
-      onClose={handleClose}
-      TransitionComponent={Transition}
-      closeAfterTransition
-    >
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            My profile
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <DialogContent className={classes.content}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            background: 'linear-gradient(to bottom, #00b4db, #0083b0)',
-          }}
+    <Container maxWidth="md" disableGutters={isMobile}>
+      <Paper elevation={1}>
+        <Grid
+          container
+          alignContent="center"
+          alignItems="center"
+          // style={{ outline: '1px solid green' }}
         >
-          <Avatar>B</Avatar>
-          <Typography variant="h5" color="textPrimary" className={classes.email}>
-            {user.email}
-          </Typography>
-        </div>
+          <Grid
+            container
+            alignContent="center"
+            direction="column"
+            item
+            xs={12}
+            sm={12}
+            md={3}
+            lg={3}
+            xl={3}
+            // style={{ outline: '1px solid blue', textAlign: 'center' }}
+          >
+            <Avatar className={classes.avatar}>B</Avatar>
+          </Grid>
+          <Grid
+            // container
+            // alignContent="flex-start"
+            // justify="center"
+            // alignItems="center"
+            // direction="column"
+            item
+            xs={12}
+            sm={12}
+            md={9}
+            lg={9}
+            xl={9}
+            // style={{ outline: '1px solid red' }}
+          >
+            <Typography variant="h4" color="textPrimary" className={classes.email}>
+              {user.name}
+            </Typography>
+            <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+              @{user.username}
+            </Typography>
+            <Typography variant="body1" color="initial">
+              Coder, cofee drinker, pet lover, #zelda FTW Smiling face
+            </Typography>
+          </Grid>
+        </Grid>
         <div>
           <Button
             variant="contained"
             color="primary"
             onClick={() => {
-              Inertia.visit('/profile/lists');
+              Inertia.visit(`/users/${user.username}/lists`);
             }}
           >
             View my lists
           </Button>
-          <Button
-            className={classes.buttons}
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              Inertia.get('/logout');
-            }}
-          >
-            Logout
-          </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </Paper>
+    </Container>
   );
 };
 
-ProfilePage.layout = (page) => <Layout children={page} title="Profile" />;
+ProfilePage.layout = (page) => <Layout children={page} />;
 
 export default ProfilePage;
