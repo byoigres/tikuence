@@ -9,6 +9,7 @@ const router = Router({
 // Route /list
 
 router.get('/', profile)
+router.get('/:page?', profile)
 
 router.get('/lists', list)
 

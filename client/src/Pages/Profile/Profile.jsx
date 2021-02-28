@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { Waypoint } from 'react-waypoint';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
@@ -51,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     paddingLeft: '0.5rem',
     paddingRight: '0.5rem',
-    paddingTop: 0,
+    paddingTop: '1rem',
     paddingBottom: 0,
   },
   actionArea: ({ isMe }) => ({
@@ -60,13 +62,33 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginBottom: isMe ? '0' : '1rem',
+    paddingBottom: isMe ? '0' : '1rem',
   }),
 }));
 
-const ProfilePage = ({ user, lists = [], isMe, isMobile }) => {
+const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
   const classes = useStyles({ isMobile, isMe });
-  const [isLoading, setIsLoading] = useState(false);
+  const [lists, setLists] = useState(initialLists);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isTheEnd, setIsTheEnd] = useState(false);
+  const [isLoading] = useState(false);
+
+  useEffect(() => {
+    if (currentPage > 1) {
+      Inertia.visit(`/users/${user.username}/${currentPage}`, {
+        only: ['lists'],
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: ({ props: { lists: newLists } }) => {
+          if (newLists.length > 0) {
+            setLists([...lists, ...newLists]);
+          } else {
+            setIsTheEnd(true);
+          }
+        },
+      });
+    }
+  }, [currentPage]);
 
   return (
     <Container maxWidth="md" style={{ backgroundColor: 'white' }}>
@@ -124,7 +146,7 @@ const ProfilePage = ({ user, lists = [], isMe, isMobile }) => {
               @{user.username}
             </Typography>
             <Typography variant="body1" color="initial" className={classes.centerText}>
-              Coder, cofee drinker, pet lover, #zelda FTW Smiling face
+              Coder, cofee drinker, pet lover, #zelda FTW 😄
             </Typography>
           </Grid>
         </Grid>
@@ -143,6 +165,7 @@ const ProfilePage = ({ user, lists = [], isMe, isMobile }) => {
               <Grid key={`list-card-item-${list.id}`} item sm={3}>
                 <Card
                   className={classes.card}
+                  data-name="card"
                   // style={{ flex: '1 45%', margin: '0.3rem' }}
                 >
                   <CardActionArea
@@ -168,7 +191,9 @@ const ProfilePage = ({ user, lists = [], isMe, isMobile }) => {
                       title={list.title}
                     />
                     <CardContent className={classes.cardContent}>
-                      <Typography variant="body2">{list.title}</Typography>
+                      <Typography variant="body2" gutterBottom>
+                        {list.title}
+                      </Typography>
                       <Typography variant="subtitle2">{list.total_videos} videos</Typography>
                     </CardContent>
                   </CardActionArea>
@@ -205,6 +230,25 @@ const ProfilePage = ({ user, lists = [], isMe, isMobile }) => {
               </Grid>
             ))}
         </Grid>
+        {isTheEnd && (
+          <Typography variant="subtitle2" className={classes.endOfTheList}>
+            You reached the end of the lists
+          </Typography>
+        )}
+        {!isTheEnd && (
+          <>
+            <div className={classes.loader}>
+              <CircularProgress />
+            </div>
+            <Waypoint
+              onEnter={() => {
+                if (lists.length > 0) {
+                  setCurrentPage(currentPage + 1);
+                }
+              }}
+            />
+          </>
+        )}
       </Paper>
     </Container>
   );
