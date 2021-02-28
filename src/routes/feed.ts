@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../utils/asyncRoutes'
 import Knex, { Tables, iFeedResult } from '../utils/knex'
 
-function verifyParams(req: Request, res: Response, next: NextFunction) {
+async function verifyParams(req: Request, res: Response, next: NextFunction) {
   const params = req.params
   const query = req.query
 
@@ -93,4 +94,4 @@ async function response(req: Request) {
   })
 }
 
-export default [verifyParams, getAllLists, response]
+export default asyncRoutes([verifyParams, getAllLists, response])

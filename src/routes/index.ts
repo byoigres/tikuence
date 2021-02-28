@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Express, Request, Response, NextFunction } from 'express'
 // import home from "./home";
 // import sessions from "./sessions";
 // import events from "./events";
@@ -19,6 +19,24 @@ function bindRoutes(app: Express) {
     req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
       component: 'Errors/404'
     })
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
+    const { message, stack } = err
+
+    return req.Inertia.setStatusCode(500)
+      .setViewData({ title: 'Somthing happened' })
+      .render({
+        component: 'Errors/500',
+        props:
+          process.env.NODE_ENV !== 'production'
+            ? {
+                message,
+                stack
+              }
+            : {}
+      })
   })
 }
 

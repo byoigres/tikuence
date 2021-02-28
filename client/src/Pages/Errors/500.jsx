@@ -14,17 +14,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Page404 = () => {
+const Page500 = ({ message, stack }) => {
   const classes = useStyles({});
   return (
     <Container className={classes.container}>
       <Grid container justify="center">
         <Grid item>
           <Typography variant="h1" color="error">
-            404
+            500
           </Typography>
           <Typography variant="h4" color="primary" gutterBottom>
             The page you are looking for don&apos;t exists
+          </Typography>
+          <Typography variant="caption" color="textPrimary" gutterBottom>
+            {message}
+          </Typography>
+          <Typography variant="caption" color="secondary" gutterBottom>
+            {stack}
           </Typography>
           <Typography variant="body1">
             <InertiaLink href="/">Go to home, you are drunk</InertiaLink>
@@ -35,4 +41,4 @@ const Page404 = () => {
   );
 };
 
-export default Page404;
+export default Page500;
