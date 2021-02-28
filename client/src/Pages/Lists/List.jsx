@@ -12,7 +12,6 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import RestoreIcon from '@material-ui/icons/Restore';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';

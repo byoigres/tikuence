@@ -41,7 +41,6 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
   }
 
   httpContext.set('category', category)
-  httpContext.set('page', page)
   httpContext.set('offset', offset)
   httpContext.set('orderType', orderType)
 
