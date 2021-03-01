@@ -18,6 +18,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import Layout from '../../components/Layout';
+import ConfirmDialog from '../../components/ConfirmDialog';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -69,9 +70,34 @@ const useStyles = makeStyles((theme) => ({
 const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
   const classes = useStyles({ isMobile, isMe });
   const [lists, setLists] = useState(initialLists);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [currentItemToDelete, setCurrentItemToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isTheEnd, setIsTheEnd] = useState(false);
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  function onDeleteDialogClose() {
+    setIsDeleteDialogOpen(false);
+  }
+
+  function onDeleteButtonClick(id) {
+    setIsDeleteDialogOpen(true);
+    setCurrentItemToDelete(id);
+  }
+
+  function onDelete() {
+    Inertia.delete(`/list/${currentItemToDelete}`, {
+      onStart() {
+        setIsLoading(true);
+      },
+      onSuccess() {},
+      onFinish() {
+        setIsLoading(false);
+        setIsDeleteDialogOpen(false);
+        setCurrentItemToDelete(null);
+      },
+    });
+  }
 
   useEffect(() => {
     if (currentPage > 1) {
@@ -206,7 +232,7 @@ const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
                           disabled={isLoading}
                           onClick={(e) => {
                             e.preventDefault();
-                            // onDeleteButtonClick(list.id);
+                            onDeleteButtonClick(list.id);
                           }}
                         >
                           <DeleteIcon fontSize="small" />
@@ -250,6 +276,15 @@ const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
           </>
         )}
       </Paper>
+      <ConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onDialogClose={onDeleteDialogClose}
+        actionHandler={onDelete}
+        title="Confirm"
+        description="Are you sure to delete this?"
+        actionText="Delete"
+        cancelText="Cancel"
+      />
     </Container>
   );
 };

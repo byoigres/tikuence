@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
 import { prepareValidationForFlashMessage } from '../../middlewares/validations'
+import asyncRoutes from '../../utils/asyncRoutes'
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
 
@@ -30,29 +31,48 @@ const validations = checkSchema({
   }
 })
 
-/**
- * TODO: check if list belongs to the current user
- */
+async function verifyIfListBelongsToCurrentUser(req: Request, _res: Response, next: NextFunction) {
+  const { listId } = req.params
+
+  const knex = Knex()
+
+  const list = await knex(Tables.Lists)
+    .where({
+      id: listId,
+      user_id: req.user?.id ?? 0
+    })
+    .first()
+
+  if (!list) {
+    req.flash('warning', 'The list does not belong to the current user')
+
+    return req.Inertia.redirect(`/list/${listId}/video/add`)
+  }
+
+  next()
+}
 
 async function deleteList(req: Request, res: Response, next: NextFunction) {
   const params = req.params
 
   const knex = Knex()
 
-  await knex(Tables.Lists).where('id', params.listId).delete()
+  await knex(Tables.Lists).where('id2', params.listId).delete()
 
   next()
 }
 
 async function response(req: Request) {
   req.flash('success', 'List had been removed')
-  req.Inertia.redirect('/profile/lists')
+
+  req.Inertia.redirect(`/users/${req.user?.username}`)
 }
 
-export default [
+export default asyncRoutes([
   isAuthenticated,
   ...validations,
+  verifyIfListBelongsToCurrentUser,
   prepareValidationForFlashMessage('/profile/lists'),
   deleteList,
   response
-]
+])
