@@ -4,6 +4,7 @@ import fetch from 'node-fetch'
 import url from 'url'
 import { v4 as uuidv4 } from 'uuid'
 import { checkSchema } from 'express-validator'
+import asyncRoutes from '../../../utils/asyncRoutes'
 import Knex, { Tables } from '../../../utils/knex'
 import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
 import { isAuthenticated } from '../../../middlewares/inertia'
@@ -217,14 +218,17 @@ async function createAuthor(req: Request, _res: Response, next: NextFunction) {
   const author = await knex(Tables.Authors).select('id').where('username', authorUsername).first()
 
   if (!author) {
-    authorId = await knex<{ username: string; name: string; created_at: Date; updated_at: Date }>(Tables.Authors)
+    const [newAuthorId] = await knex<{ username: string; name: string; created_at: Date; updated_at: Date }>(
+      Tables.Authors
+    )
       .insert({
         username: authorUsername,
         name: videoInfo.author_name,
         created_at: new Date(),
         updated_at: new Date()
       })
-      .returning<number>('id')
+      .returning<[number]>('id')
+    authorId = newAuthorId
   } else {
     authorId = author.id
   }
@@ -314,18 +318,16 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
 
     await transaction.commit()
   } catch (err) {
-    console.log(err)
+    // console.log(err)
     await transaction.rollback()
 
-    return req.Inertia.setStatusCode(500).setViewData({ title: 'Something goes wrong' }).render({
-      component: 'Errors/500'
-    })
+    throw err
   }
 
   next()
 }
 
-function response(req: Request) {
+async function response(req: Request) {
   const { listId } = req.params
 
   req.flash('success', 'Video added successfully')
@@ -333,7 +335,7 @@ function response(req: Request) {
   req.Inertia.redirect(`/list/${listId}/edit`)
 }
 
-export default [
+export default asyncRoutes([
   isAuthenticated,
   ...validations,
   prepareValidationForErrorMessages((req: Request) => `/list/${req.params.listId}/video/add`),
@@ -345,4 +347,4 @@ export default [
   createAuthor,
   createVideo,
   response
-]
+])

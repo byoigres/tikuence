@@ -60,7 +60,7 @@ const template = (page: object, viewData: ViewData) => `
 </html>
 `
 
-export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+export async function isAuthenticated(req: Request, res: Response, next: NextFunction) {
   if (req.isAuthenticated()) {
     return next()
   }
