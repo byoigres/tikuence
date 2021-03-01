@@ -1,17 +1,9 @@
-const AsyncFunction = (async () => {}).constructor
-const isAsyncFunction = (value: Function) => value instanceof AsyncFunction
-
-const wrap = (fn: Function) => {
-  return (...args: any[]) => {
-    if (isAsyncFunction(fn)) {
-      return fn(...args).catch((err: Error) => {
-        args[2](err)
-      })
-    } else {
-      return fn(...args)
-    }
+const wrap = (fn: Function) =>
+  function asyncUtilWrap(...args: any[]) {
+    const fnReturn = fn(...args)
+    const next = args[args.length - 1]
+    return Promise.resolve(fnReturn).catch(next)
   }
-}
 
 const asyncRoutes = (route: Array<Function> | Function) => {
   const routes: Array<Function> = Array.isArray(route) ? route : [route]
