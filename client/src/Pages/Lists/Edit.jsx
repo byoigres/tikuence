@@ -5,9 +5,8 @@ import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
-import Slide from '@material-ui/core/Slide';
+import Fab from '@material-ui/core/Fab';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -18,6 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
+import AddIcon from '@material-ui/icons/Add';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import EditIcon from '@material-ui/icons/Edit';
@@ -100,12 +100,18 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
   }),
+  addVideoContainer: ({ isMobile }) => ({
+    position: 'fixed',
+    bottom: '10px',
+    width: isMobile ? '100%' : '960px',
+    textAlign: 'right',
+  }),
+  createVideoButton: ({ isMobile }) => ({
+    position: 'absolute',
+    right: isMobile ? '10px' : '52px',
+    bottom: '0',
+  }),
 }));
-
-/* eslint react/jsx-props-no-spreading: 0 */
-const Transition = React.forwardRef((props, ref) => (
-  <Slide direction="left" ref={ref} {...props} />
-));
 
 const Edit = ({ list, errors, referer, isMobile }) => {
   const classes = useStyles({ isMobile });
@@ -127,9 +133,14 @@ const Edit = ({ list, errors, referer, isMobile }) => {
   }
 
   // HTTP handlers
-  function handleAddVideo(e) {
+  function onAddVideoClick(e) {
     e.preventDefault();
     Inertia.get(`/list/${list.id}/video/add`);
+    // Inertia.visit('/list/add', {
+    //   preserveScroll: true,
+    //   preserveState: true,
+    //   only: ['referer', 'showModal'],
+    // });
   }
 
   function handleTitleClick(e) {
@@ -236,15 +247,17 @@ const Edit = ({ list, errors, referer, isMobile }) => {
     setAnchorEl(newArray);
   };
 
-  const animationProp = {};
-
-  if (!window.location.search.includes('an=0')) {
-    animationProp.TransitionComponent = Transition;
-  }
-
   return (
-    <Container maxWidth="md" style={{ backgroundColor: 'white' }}>
-      <Grid container>
+    <>
+      <Grid
+        container
+        style={{
+          paddingTop: '1rem',
+          paddingLeft: '1rem',
+          paddingRight: '1rem',
+          backgroundColor: 'white',
+        }}
+      >
         <Grid item md={12}>
           {isTitleInEditMode && (
             <div className={classes.titleContainer}>
@@ -319,19 +332,6 @@ const Edit = ({ list, errors, referer, isMobile }) => {
               {`There are ${list.videos.length} videos in this list`}
             </Typography>
           )}
-        </Grid>
-        <Grid item md={6}>
-          <Button
-            variant="outlined"
-            color="primary"
-            fullWidth
-            onClick={handleAddVideo}
-            type="button"
-            className={classes.addVideoButton}
-            disabled={isLoading}
-          >
-            Add videos
-          </Button>
         </Grid>
         <Grid container justify="flex-end" item md={12}>
           <FormControlLabel
@@ -446,6 +446,17 @@ const Edit = ({ list, errors, referer, isMobile }) => {
           )}
         </Grid>
       </Grid>
+      <div data-name="add-list" className={classes.addVideoContainer}>
+        <Fab
+          color="primary"
+          aria-label="add"
+          className={classes.createVideoButton}
+          href={`/list/${list.id}/video/add`}
+          onClick={onAddVideoClick}
+        >
+          <AddIcon />
+        </Fab>
+      </div>
       <ConfirmDialog
         isOpen={isRemoveVideoDialogOpen}
         onDialogClose={onRemoveVideoDialogClose}
@@ -455,7 +466,7 @@ const Edit = ({ list, errors, referer, isMobile }) => {
         actionText="Remove"
         cancelText="Cancel"
       />
-    </Container>
+    </>
   );
 };
 
