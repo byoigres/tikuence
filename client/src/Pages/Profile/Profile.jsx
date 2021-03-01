@@ -90,7 +90,9 @@ const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
       onStart() {
         setIsLoading(true);
       },
-      onSuccess() {},
+      onSuccess({ props: { lists: newLists } }) {
+        setLists(newLists);
+      },
       onFinish() {
         setIsLoading(false);
         setIsDeleteDialogOpen(false);
