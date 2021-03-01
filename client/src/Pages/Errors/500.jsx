@@ -24,7 +24,7 @@ const Page500 = ({ message, stack }) => {
             500
           </Typography>
           <Typography variant="h4" color="primary" gutterBottom>
-            The page you are looking for don&apos;t exists
+            Something wrong happened, try again in a couple of minutes
           </Typography>
           <Typography variant="caption" color="textPrimary" gutterBottom>
             {message}
