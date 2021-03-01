@@ -4,25 +4,26 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Slide from '@material-ui/core/Slide';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import EditIcon from '@material-ui/icons/Edit';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { Inertia } from '@inertiajs/inertia';
-import { Container, Draggable } from 'react-smooth-dnd';
+import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
@@ -111,8 +112,10 @@ const Edit = ({ list, errors, referer, isMobile }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTitleInEditMode, setIsTitleInEditMode] = useState(false);
   const [title, setTitle] = useState(list.title);
+  const [isSorting, setIsSorting] = useState(false);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
+  const [anchorEl, setAnchorEl] = useState([]);
 
   function onRemoveVideoDialogClose() {
     setIsRemoveVideoDialogOpen(false);
@@ -216,6 +219,23 @@ const Edit = ({ list, errors, referer, isMobile }) => {
     }
   };
 
+  const onSortigChange = () => {
+    setIsSorting(!isSorting);
+  };
+
+  const handleUserMenuClick = (id) => (event) => {
+    // console.log('target', event.currentTarget);
+    const newArray = [...anchorEl];
+    newArray[id] = event.currentTarget;
+    setAnchorEl(newArray);
+  };
+
+  const handleUserMenuClose = (id) => () => {
+    const newArray = [...anchorEl];
+    newArray[id] = null;
+    setAnchorEl(newArray);
+  };
+
   const animationProp = {};
 
   if (!window.location.search.includes('an=0')) {
@@ -223,25 +243,9 @@ const Edit = ({ list, errors, referer, isMobile }) => {
   }
 
   return (
-    <>
-      <Dialog fullScreen={isMobile} open onClose={handleEditDialogClose} {...animationProp}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleEditDialogClose}
-              aria-label="close"
-              disabled={isLoading}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              {list.title}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <DialogContent className={classes.dialogContent}>
+    <Container maxWidth="md" style={{ backgroundColor: 'white' }}>
+      <Grid container>
+        <Grid item md={12}>
           {isTitleInEditMode && (
             <div className={classes.titleContainer}>
               <TextField
@@ -294,6 +298,8 @@ const Edit = ({ list, errors, referer, isMobile }) => {
               <EditIcon className={classes.editIcon} />
             </Typography>
           )}
+        </Grid>
+        <Grid item md={6}>
           {list.videos.length === 0 && (
             <Typography
               component="h6"
@@ -313,6 +319,8 @@ const Edit = ({ list, errors, referer, isMobile }) => {
               {`There are ${list.videos.length} videos in this list`}
             </Typography>
           )}
+        </Grid>
+        <Grid item md={6}>
           <Button
             variant="outlined"
             color="primary"
@@ -324,9 +332,21 @@ const Edit = ({ list, errors, referer, isMobile }) => {
           >
             Add videos
           </Button>
+        </Grid>
+        <Grid container justify="flex-end" item md={12}>
+          <FormControlLabel
+            control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
+            label="Sort videos"
+          />
+        </Grid>
+        <Grid item md={12}>
           {list.videos.length > 0 && (
             <List dense className={classes.list}>
-              <Container dragHandleSelector=".drag-handle" lockAxis="y" onDrop={onVideoDrop}>
+              <ContainerDraggable
+                dragHandleSelector=".drag-handle"
+                lockAxis="y"
+                onDrop={onVideoDrop}
+              >
                 {list.videos
                   // TODO: Ensure this is always order the way should be
                   // .sort((a, b) => a.order_id - b.order_id)
@@ -351,25 +371,69 @@ const Edit = ({ list, errors, referer, isMobile }) => {
                         </ListItemAvatar>
                         <ListItemText id={video.id} primary={video.title} />
                         <ListItemSecondaryAction className={classes.actionButtons}>
-                          <IconButton
-                            edge="end"
-                            aria-label="remove"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              onRemoveButtonClick(video.id);
-                            }}
-                            disabled={isLoading}
+                          {/* <IconButton
+                            edge="start"
+                            className={classes.menuButton2}
+                            color="inherit"
+                            aria-label="menu"
+                            aria-haspopup="true"
+                            onClick={handleUserMenuClick(video.id)}
                           >
-                            <DeleteIcon />
-                          </IconButton>
-                          <IconButton
-                            edge="end"
-                            aria-label="sort"
-                            disabled={isLoading}
-                            className="drag-handle"
+                            <MoreVertIcon />
+                          </IconButton> */}
+                          {!isSorting && (
+                            <IconButton
+                              edge="end"
+                              aria-label="remove"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                onRemoveButtonClick(video.id);
+                              }}
+                              disabled={isLoading}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                          {isSorting && (
+                            <IconButton
+                              edge="end"
+                              aria-label="sort"
+                              disabled={isLoading}
+                              className="drag-handle"
+                            >
+                              <DragHandleIcon />
+                            </IconButton>
+                          )}
+                          <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl[video.id]}
+                            keepMounted
+                            open={Boolean(anchorEl[video.id])}
+                            onClose={handleUserMenuClose(video.id)}
+                            className={classes.userMenu}
                           >
-                            <DragHandleIcon />
-                          </IconButton>
+                            <MenuItem onClick={handleUserMenuClose}>
+                              <IconButton
+                                edge="end"
+                                aria-label="remove"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  onRemoveButtonClick(video.id);
+                                }}
+                                disabled={isLoading}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                              Delete
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() => {
+                                Inertia.get('/auth/logout');
+                              }}
+                            >
+                              Logout
+                            </MenuItem>
+                          </Menu>
                         </ListItemSecondaryAction>
                       </ListItem>
                       {index !== list.videos.length - 1 && (
@@ -377,11 +441,11 @@ const Edit = ({ list, errors, referer, isMobile }) => {
                       )}
                     </Draggable>
                   ))}
-              </Container>
+              </ContainerDraggable>
             </List>
           )}
-        </DialogContent>
-      </Dialog>
+        </Grid>
+      </Grid>
       <ConfirmDialog
         isOpen={isRemoveVideoDialogOpen}
         onDialogClose={onRemoveVideoDialogClose}
@@ -391,10 +455,10 @@ const Edit = ({ list, errors, referer, isMobile }) => {
         actionText="Remove"
         cancelText="Cancel"
       />
-    </>
+    </Container>
   );
 };
 
-Edit.layout = (page) => <Layout children={page} cleanLayout />;
+Edit.layout = (page) => <Layout children={page} />;
 
 export default Edit;
