@@ -22,7 +22,6 @@ import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Edit';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-react';
 import { Container, Draggable } from 'react-smooth-dnd';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
@@ -107,10 +106,7 @@ const Transition = React.forwardRef((props, ref) => (
   <Slide direction="left" ref={ref} {...props} />
 ));
 
-const Edit = ({ list, errors }) => {
-  const {
-    props: { isMobile },
-  } = usePage();
+const Edit = ({ list, errors, referer, isMobile }) => {
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
   const [isTitleInEditMode, setIsTitleInEditMode] = useState(false);
@@ -192,7 +188,7 @@ const Edit = ({ list, errors }) => {
   }
 
   const handleEditDialogClose = () => {
-    Inertia.get('/profile/lists', { an: 0 });
+    Inertia.get(referer, { an: 0 });
   };
 
   const onItemClick = (videoId) => {
