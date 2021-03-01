@@ -258,9 +258,24 @@ const Edit = ({ list, errors, referer, isMobile }) => {
           backgroundColor: 'white',
         }}
       >
-        <Grid item md={12}>
+        <Grid item md={4}>
+          {!isTitleInEditMode && (
+            <Grid container direction="row" wrap="nowrap" md={12} alignItems="center">
+              <Typography
+                component="h6"
+                variant="h6"
+                className={classes.inlineTitle}
+                style={{ flexGrow: 1 }}
+              >
+                {list.title}
+              </Typography>
+              <IconButton onClick={handleTitleClick}>
+                <EditIcon />
+              </IconButton>
+            </Grid>
+          )}
           {isTitleInEditMode && (
-            <div className={classes.titleContainer}>
+            <Grid container direction="column" wrap="nowrap" alignItems="center">
               <TextField
                 id="title"
                 name="title"
@@ -275,44 +290,31 @@ const Edit = ({ list, errors, referer, isMobile }) => {
                 helperText={errors.title}
                 disabled={isLoading}
               />
-              <Button
-                className={classes.titleButtons}
-                variant="outlined"
-                disabled={isLoading}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsTitleInEditMode(!isTitleInEditMode);
-                  Inertia.reload({
-                    replace: true,
-                  });
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                className={classes.titleButtons}
-                variant="outlined"
-                color="primary"
-                disabled={isLoading}
-                onClick={hadleTitleUpdate}
-              >
-                Update
-              </Button>
-            </div>
+              <Grid container item md={12} justify="flex-end">
+                <Button
+                  className={classes.titleButtons}
+                  disabled={isLoading}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsTitleInEditMode(!isTitleInEditMode);
+                    Inertia.reload({
+                      replace: true,
+                    });
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className={classes.titleButtons}
+                  color="primary"
+                  disabled={isLoading}
+                  onClick={hadleTitleUpdate}
+                >
+                  Update
+                </Button>
+              </Grid>
+            </Grid>
           )}
-          {!isTitleInEditMode && (
-            <Typography
-              component="h4"
-              variant="h4"
-              className={classes.inlineTitle}
-              onClick={handleTitleClick}
-            >
-              {list.title}
-              <EditIcon className={classes.editIcon} />
-            </Typography>
-          )}
-        </Grid>
-        <Grid item md={6}>
           {list.videos.length === 0 && (
             <Typography
               component="h6"
@@ -326,20 +328,23 @@ const Edit = ({ list, errors, referer, isMobile }) => {
           {list.videos.length > 0 && (
             <Typography
               component="span"
-              variant="subtitle1"
+              variant="caption"
               className={classes.messageNumberOfVideos}
             >
               {`There are ${list.videos.length} videos in this list`}
             </Typography>
           )}
+          <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+            <FormControlLabel
+              control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
+              label="Sort videos"
+            />
+          </Grid>
         </Grid>
-        <Grid container justify="flex-end" item md={12}>
-          <FormControlLabel
-            control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
-            label="Sort videos"
-          />
-        </Grid>
-        <Grid item md={12}>
+        <Grid item md={8}>
           {list.videos.length > 0 && (
             <List dense className={classes.list}>
               <ContainerDraggable
@@ -347,31 +352,28 @@ const Edit = ({ list, errors, referer, isMobile }) => {
                 lockAxis="y"
                 onDrop={onVideoDrop}
               >
-                {list.videos
-                  // TODO: Ensure this is always order the way should be
-                  // .sort((a, b) => a.order_id - b.order_id)
-                  .map((video, index) => (
-                    <Draggable key={video.id}>
-                      <ListItem
-                        key={video.id}
-                        button
-                        disabled={isLoading}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onItemClick(video.id);
-                        }}
-                      >
-                        <ListItemAvatar className={classes.listItemAvatar}>
-                          <Avatar
-                            alt={video.title}
-                            className={classes.avatar}
-                            variant="square"
-                            src={`/images/sm-${video.thumbnail_name}`}
-                          />
-                        </ListItemAvatar>
-                        <ListItemText id={video.id} primary={video.title} />
-                        <ListItemSecondaryAction className={classes.actionButtons}>
-                          {/* <IconButton
+                {list.videos.map((video, index) => (
+                  <Draggable key={video.id}>
+                    <ListItem
+                      key={video.id}
+                      button
+                      disabled={isLoading}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onItemClick(video.id);
+                      }}
+                    >
+                      <ListItemAvatar className={classes.listItemAvatar}>
+                        <Avatar
+                          alt={video.title}
+                          className={classes.avatar}
+                          variant="square"
+                          src={`/images/sm-${video.thumbnail_name}`}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText id={video.id} primary={video.title} />
+                      <ListItemSecondaryAction className={classes.actionButtons}>
+                        {/* <IconButton
                             edge="start"
                             className={classes.menuButton2}
                             color="inherit"
@@ -381,7 +383,38 @@ const Edit = ({ list, errors, referer, isMobile }) => {
                           >
                             <MoreVertIcon />
                           </IconButton> */}
-                          {!isSorting && (
+                        {!isSorting && (
+                          <IconButton
+                            edge="end"
+                            aria-label="remove"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onRemoveButtonClick(video.id);
+                            }}
+                            disabled={isLoading}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                        {isSorting && (
+                          <IconButton
+                            edge="end"
+                            aria-label="sort"
+                            disabled={isLoading}
+                            className="drag-handle"
+                          >
+                            <DragHandleIcon />
+                          </IconButton>
+                        )}
+                        <Menu
+                          id="simple-menu"
+                          anchorEl={anchorEl[video.id]}
+                          keepMounted
+                          open={Boolean(anchorEl[video.id])}
+                          onClose={handleUserMenuClose(video.id)}
+                          className={classes.userMenu}
+                        >
+                          <MenuItem onClick={handleUserMenuClose}>
                             <IconButton
                               edge="end"
                               aria-label="remove"
@@ -393,54 +426,23 @@ const Edit = ({ list, errors, referer, isMobile }) => {
                             >
                               <DeleteIcon />
                             </IconButton>
-                          )}
-                          {isSorting && (
-                            <IconButton
-                              edge="end"
-                              aria-label="sort"
-                              disabled={isLoading}
-                              className="drag-handle"
-                            >
-                              <DragHandleIcon />
-                            </IconButton>
-                          )}
-                          <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl[video.id]}
-                            keepMounted
-                            open={Boolean(anchorEl[video.id])}
-                            onClose={handleUserMenuClose(video.id)}
-                            className={classes.userMenu}
+                            Delete
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              Inertia.get('/auth/logout');
+                            }}
                           >
-                            <MenuItem onClick={handleUserMenuClose}>
-                              <IconButton
-                                edge="end"
-                                aria-label="remove"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  onRemoveButtonClick(video.id);
-                                }}
-                                disabled={isLoading}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                              Delete
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => {
-                                Inertia.get('/auth/logout');
-                              }}
-                            >
-                              Logout
-                            </MenuItem>
-                          </Menu>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                      {index !== list.videos.length - 1 && (
-                        <Divider variant="fullWidth" component="li" />
-                      )}
-                    </Draggable>
-                  ))}
+                            Logout
+                          </MenuItem>
+                        </Menu>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                    {index !== list.videos.length - 1 && (
+                      <Divider variant="fullWidth" component="li" />
+                    )}
+                  </Draggable>
+                ))}
               </ContainerDraggable>
             </List>
           )}
