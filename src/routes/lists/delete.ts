@@ -57,7 +57,7 @@ async function deleteList(req: Request, res: Response, next: NextFunction) {
 
   const knex = Knex()
 
-  await knex(Tables.Lists).where('id2', params.listId).delete()
+  await knex(Tables.Lists).where('id', params.listId).delete()
 
   next()
 }
