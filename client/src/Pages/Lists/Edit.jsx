@@ -5,7 +5,6 @@ import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import Fab from '@material-ui/core/Fab';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -14,18 +13,17 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import AddIcon from '@material-ui/icons/Add';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import EditIcon from '@material-ui/icons/Edit';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { Inertia } from '@inertiajs/inertia';
 import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import TitleForUpdate from '../../components/TitleForUpdate';
 
 // NOOP
 const useStyles = makeStyles((theme) => ({
@@ -113,11 +111,10 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const Edit = ({ list, errors, referer, isMobile }) => {
+const Edit = ({ list, isMobile }) => {
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
-  const [isTitleInEditMode, setIsTitleInEditMode] = useState(false);
-  const [title, setTitle] = useState(list.title);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isSorting, setIsSorting] = useState(false);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
@@ -143,50 +140,6 @@ const Edit = ({ list, errors, referer, isMobile }) => {
     // });
   }
 
-  function handleTitleClick(e) {
-    e.preventDefault();
-    setTitle(list.title);
-    setIsTitleInEditMode(!isTitleInEditMode);
-  }
-
-  function handleTitleChange(e) {
-    e.preventDefault();
-    setTitle(e.target.value);
-  }
-
-  function onTitleUpdate() {
-    Inertia.put(
-      `/list/${list.id}`,
-      { title },
-      {
-        onStart() {
-          setIsLoading(true);
-        },
-        onSuccess() {
-          setIsTitleInEditMode(false);
-        },
-        onFinish() {
-          setIsLoading(false);
-          // if (listNameRef.current) {
-          //   listNameRef.current.focus();
-          // }
-        },
-      }
-    );
-  }
-
-  function handleOnKeyPress(ev) {
-    if (ev.key === 'Enter') {
-      ev.preventDefault();
-      onTitleUpdate();
-    }
-  }
-
-  function hadleTitleUpdate(e) {
-    e.preventDefault();
-    onTitleUpdate();
-  }
-
   function onRemove() {
     Inertia.delete(`/list/${list.id}/video/${currentVideoToDelete}`, {
       onStart() {
@@ -201,9 +154,30 @@ const Edit = ({ list, errors, referer, isMobile }) => {
     });
   }
 
-  const handleEditDialogClose = () => {
-    Inertia.get(referer, { an: 0 });
-  };
+  function onDeleteDialogClose() {
+    setIsDeleteDialogOpen(false);
+  }
+
+  function onDeleteButtonClick() {
+    setIsDeleteDialogOpen(true);
+  }
+
+  function onDelete() {
+    Inertia.visit(`/list/${list.id}`, { method: 'delete' });
+    // Inertia.delete(`/list/${list.id}`, {
+    //   onStart() {
+    //     setIsLoading(true);
+    //   },
+    //   onSuccess({ props: { lists: newLists } }) {
+    //     setLists(newLists);
+    //   },
+    //   onFinish() {
+    //     setIsLoading(false);
+    //     setIsDeleteDialogOpen(false);
+    //     setCurrentItemToDelete(null);
+    //   },
+    // });
+  }
 
   const onItemClick = (videoId) => {
     Inertia.visit(`/list/${list.id}/video/${videoId}`);
@@ -234,12 +208,11 @@ const Edit = ({ list, errors, referer, isMobile }) => {
     setIsSorting(!isSorting);
   };
 
-  const handleUserMenuClick = (id) => (event) => {
-    // console.log('target', event.currentTarget);
-    const newArray = [...anchorEl];
-    newArray[id] = event.currentTarget;
-    setAnchorEl(newArray);
-  };
+  // const handleUserMenuClick = (id) => (event) => {
+  //   const newArray = [...anchorEl];
+  //   newArray[id] = event.currentTarget;
+  //   setAnchorEl(newArray);
+  // };
 
   const handleUserMenuClose = (id) => () => {
     const newArray = [...anchorEl];
@@ -259,62 +232,7 @@ const Edit = ({ list, errors, referer, isMobile }) => {
         }}
       >
         <Grid item md={4}>
-          {!isTitleInEditMode && (
-            <Grid container direction="row" wrap="nowrap" md={12} alignItems="center">
-              <Typography
-                component="h6"
-                variant="h6"
-                className={classes.inlineTitle}
-                style={{ flexGrow: 1 }}
-              >
-                {list.title}
-              </Typography>
-              <IconButton onClick={handleTitleClick}>
-                <EditIcon />
-              </IconButton>
-            </Grid>
-          )}
-          {isTitleInEditMode && (
-            <Grid container direction="column" wrap="nowrap" alignItems="center">
-              <TextField
-                id="title"
-                name="title"
-                value={title}
-                autoFocus
-                onChange={handleTitleChange}
-                onKeyPress={handleOnKeyPress}
-                fullWidth
-                autoComplete="off"
-                required
-                error={errors.title !== undefined}
-                helperText={errors.title}
-                disabled={isLoading}
-              />
-              <Grid container item md={12} justify="flex-end">
-                <Button
-                  className={classes.titleButtons}
-                  disabled={isLoading}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsTitleInEditMode(!isTitleInEditMode);
-                    Inertia.reload({
-                      replace: true,
-                    });
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className={classes.titleButtons}
-                  color="primary"
-                  disabled={isLoading}
-                  onClick={hadleTitleUpdate}
-                >
-                  Update
-                </Button>
-              </Grid>
-            </Grid>
-          )}
+          <TitleForUpdate title={list.title} id={list.id} />
           {list.videos.length === 0 && (
             <Typography
               component="h6"
@@ -335,7 +253,7 @@ const Edit = ({ list, errors, referer, isMobile }) => {
             </Typography>
           )}
           <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
-            <IconButton>
+            <IconButton onClick={onDeleteButtonClick}>
               <DeleteIcon />
             </IconButton>
             <FormControlLabel
@@ -466,6 +384,15 @@ const Edit = ({ list, errors, referer, isMobile }) => {
         title="Confirm"
         description="Are you sure to remove this video from the list?"
         actionText="Remove"
+        cancelText="Cancel"
+      />
+      <ConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onDialogClose={onDeleteDialogClose}
+        actionHandler={onDelete}
+        title="Confirm"
+        description="Are you sure to delete this list?"
+        actionText="Delete"
         cancelText="Cancel"
       />
     </>
