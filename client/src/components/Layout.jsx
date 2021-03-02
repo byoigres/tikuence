@@ -186,6 +186,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                     <>
                       {!isMobile && (
                         <Button
+                          style={{ color: 'white', marginRight: '0.5rem' }}
                           href="/auth/login"
                           onClick={(e) => {
                             e.preventDefault();
@@ -196,7 +197,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                         </Button>
                       )}
                       <Button
-                        color="primary"
+                        color="secondary"
                         variant="contained"
                         href="/auth/register"
                         onClick={(e) => {
