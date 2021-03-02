@@ -24,17 +24,9 @@ import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import Layout from '../../components/Layout';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
+import UserAvatar from '../../components/UserAvatar';
 
-// NOOP
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    position: 'relative',
-  },
-  dialogContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   list: {
     backgroundColor: '#fff',
   },
@@ -111,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const Edit = ({ list, isMobile }) => {
+const Edit = ({ list, isMobile, auth: { credentials } }) => {
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -224,6 +216,7 @@ const Edit = ({ list, isMobile }) => {
     <>
       <Grid
         container
+        spacing={2}
         style={{
           paddingTop: '1rem',
           paddingLeft: '1rem',
@@ -252,6 +245,7 @@ const Edit = ({ list, isMobile }) => {
               {`There are ${list.videos.length} videos in this list`}
             </Typography>
           )}
+          <Divider variant="fullWidth" />
           <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
             <IconButton onClick={onDeleteButtonClick}>
               <DeleteIcon />
@@ -260,6 +254,15 @@ const Edit = ({ list, isMobile }) => {
               control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
               label="Sort videos"
             />
+          </Grid>
+          <Divider variant="fullWidth" />
+          <Grid
+            container
+            alignItems="center"
+            style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
+          >
+            <UserAvatar letter={credentials.username[0]} />
+            <Typography>&nbsp;@{credentials.username}</Typography>
           </Grid>
         </Grid>
         <Grid item md={8}>

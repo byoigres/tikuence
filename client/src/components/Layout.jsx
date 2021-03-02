@@ -6,32 +6,20 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/sty
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import Container from '@material-ui/core/Container';
-import blueGrey from '@material-ui/core/colors/blueGrey';
 import blue from '@material-ui/core/colors/blue';
+import red from '@material-ui/core/colors/red';
+import UserAvatar from './UserAvatar';
 
 const theme = createMuiTheme({
   palette: {
-    // primary: blue,
-    // secondary: blueGrey,
-    primary: {
-      light: '#757ce8',
-      main: '#3f50b5',
-      dark: '#002884',
-      contrastText: '#fff',
-    },
-    secondary: {
-      light: '#ff7961',
-      main: '#f44336',
-      dark: '#ba000d',
-      contrastText: '#000',
-    },
+    primary: blue,
+    secondary: red,
   },
   typography: {
     fontFamily: `Roboto, "Helvetica", "Arial", sans-serif`,
@@ -42,10 +30,9 @@ const theme = createMuiTheme({
   },
 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   appBar: ({ isMobile }) => ({
     alignItems: isMobile ? 'normal' : 'center',
-    backgroundColor: 'white',
   }),
   title: {
     flex: 1,
@@ -54,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
   },
   mainLink: {
-    color: 'black',
+    color: 'white',
     textDecoration: 'none',
     '&:hover': {
       color: theme.palette.text.secondary,
@@ -170,15 +157,8 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                           aria-label="menu"
                           aria-haspopup="true"
                           onClick={handleUserMenuClick}
-                          // onClick={() => {
-                          //   Inertia.visit(`/users/${credentials.username}`, {
-                          //     preserveScroll: true,
-                          //     preserveState: true,
-                          //     only: ['referer', 'showModal', 'user'],
-                          //   });
-                          // }}
                         >
-                          <Avatar>{credentials.username[0].toUpperCase()}</Avatar>
+                          <UserAvatar letter={credentials.username[0]} />
                         </IconButton>
                       </Tooltip>
                       <Menu
