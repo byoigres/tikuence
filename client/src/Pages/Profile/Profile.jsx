@@ -202,7 +202,7 @@ const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
                           aria-label="edit"
                           onClick={(e) => {
                             e.preventDefault();
-                            Inertia.visit(`/list/${list.id}/edit`);
+                            Inertia.visit(`/list/${list.id}/details`);
                           }}
                         >
                           <EditIcon fontSize="small" />
