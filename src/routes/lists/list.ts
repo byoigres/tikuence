@@ -37,6 +37,7 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
 async function getListVideos(req: Request) {
   const pageSize = httpContext.get('pageSize')
   const offset = httpContext.get('offset')
+  const query = req.query
   const params = req.params
 
   const knex = Knex()
@@ -53,10 +54,22 @@ async function getListVideos(req: Request) {
     })
   }
 
+  let fromOrderId = 0
+
+  if (query.from && typeof query.from === 'string') {
+    const order = await knex<{ order_id: number }>(`${Tables.ListsVideos} AS LV`)
+      .select('order_id')
+      .where('video_id', parseInt(query.from))
+      .first()
+
+    if (order) fromOrderId = order.order_id
+  }
+
   const videos = await knex(`${Tables.ListsVideos} AS LV`)
     .select('LV.video_id AS id', 'V.tiktok_id', 'V.title', 'V.html')
     .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
     .where('LV.list_id', params.listId)
+    .andWhere('LV.order_id', '>=', fromOrderId)
     .orderBy('LV.order_id', 'ASC')
     .limit(pageSize)
     .offset(offset)
@@ -68,6 +81,7 @@ async function getListVideos(req: Request) {
         ...list,
         videos
       },
+      from: query.from || 0,
       showModal: 'list'
     }
   })

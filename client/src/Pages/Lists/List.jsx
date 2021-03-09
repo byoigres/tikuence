@@ -58,7 +58,7 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ list }) => {
   const {
-    props: { isMobile, referer, auth },
+    props: { isMobile, referer, from },
   } = usePage();
   const classes = useStyles();
   const [videos, setVideos] = useState(list.videos);
@@ -96,7 +96,7 @@ const Details = ({ list }) => {
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.visit(`/list/${list.id}?page=${currentPage}`, {
+      Inertia.visit(`/list/${list.id}?from=${from}&page=${currentPage}`, {
         preserveScroll: true,
         preserveState: true,
         onStart() {
