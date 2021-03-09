@@ -62,13 +62,13 @@ async function getListVideos(req: Request) {
     .offset(offset)
 
   req.Inertia.setViewData({ title: list.title }).render({
-    component: 'Lists/List',
+    component: 'Feed',
     props: {
       list: {
         ...list,
         videos
       },
-      showModal: 'details'
+      showModal: 'list'
     }
   })
 }
