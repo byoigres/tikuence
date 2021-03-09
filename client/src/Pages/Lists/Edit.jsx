@@ -101,6 +101,17 @@ const useStyles = makeStyles((theme) => ({
     right: isMobile ? '10px' : '52px',
     bottom: '0',
   }),
+  mainGrid: {
+    backgroundColor: 'white',
+    // width: calc(100% + 16px);
+    // margin: -8px;
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(2),
+    },
+    [theme.breakpoints.up('md')]: {
+      // margin: theme.spacing(2) * -1,
+    },
+  },
 }));
 
 const Edit = ({ list, isMobile, auth: { credentials } }) => {
@@ -214,16 +225,7 @@ const Edit = ({ list, isMobile, auth: { credentials } }) => {
 
   return (
     <>
-      <Grid
-        container
-        spacing={2}
-        style={{
-          paddingTop: '1rem',
-          paddingLeft: '1rem',
-          paddingRight: '1rem',
-          backgroundColor: 'white',
-        }}
-      >
+      <Grid container className={classes.mainGrid}>
         <Grid item md={4}>
           <TitleForUpdate title={list.title} id={list.id} />
           {list.videos.length === 0 && (
@@ -369,7 +371,7 @@ const Edit = ({ list, isMobile, auth: { credentials } }) => {
           )}
         </Grid>
       </Grid>
-      <div data-name="add-list" className={classes.addVideoContainer}>
+      <div className={classes.addVideoContainer}>
         <Fab
           color="primary"
           aria-label="add"
