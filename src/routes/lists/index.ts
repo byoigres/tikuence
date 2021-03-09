@@ -27,7 +27,7 @@ router.post('/', create)
 router.get('/:listId/edit', edit)
 
 // Display lists videos view
-router.get('/:id', details)
+router.get('/:listId', details)
 
 router.put('/:listId', update)
 
