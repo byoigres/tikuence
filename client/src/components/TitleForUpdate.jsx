@@ -12,7 +12,7 @@ import { usePage } from '@inertiajs/inertia-react';
 
 const useStyles = makeStyles(() => ({}));
 
-const TitleForUpdate = ({ id, title: initialTitle }) => {
+const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
   const {
     props: { errors },
   } = usePage();
@@ -73,9 +73,11 @@ const TitleForUpdate = ({ id, title: initialTitle }) => {
           >
             {title}
           </Typography>
-          <IconButton onClick={changeEditMode}>
-            <EditIcon />
-          </IconButton>
+          {canEdit && (
+            <IconButton onClick={changeEditMode}>
+              <EditIcon />
+            </IconButton>
+          )}
         </Grid>
       )}
       {isEditMode && (
