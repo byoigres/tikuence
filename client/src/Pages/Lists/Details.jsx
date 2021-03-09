@@ -61,31 +61,54 @@ const Details = ({ list }) => {
     props: { isMobile, referer, auth },
   } = usePage();
   const classes = useStyles();
-  const [isLoading, setIsLoading] = useState(true);
-  const [videoIndex, setVideoIndex] = useState(0);
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState(list.videos);
+  const [items, setItems] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loadingCount, setLoadingCount] = useState(list.videos.length);
 
   function handleClose() {
     Inertia.visit(referer || '/', { preserveScroll: true, preserveState: true });
   }
 
   useEffect(() => {
-    // TODO: no need to sort, already sorted SS
-    /* eslint no-param-reassign: 0 */
-    list.videos = list.videos.sort((a, b) => a.order_id - b.order_id);
-  }, []);
+    if (videos.length > 0) {
+      const newVideos = videos.map((video) => (
+        <Paper
+          key={`list-item-details-${video.id}`}
+          elevation={0}
+          className={classes.videoContainer}
+        >
+          <TikTokVideo
+            tiktokId={video.tiktok_id}
+            html={video.html}
+            isReadyCallback={() => {
+              setLoadingCount((val) => val - 1);
+            }}
+          />
+        </Paper>
+      ));
+      setItems([...items, ...newVideos]);
+    } else {
+      setHasMore(false);
+    }
+  }, [videos]);
 
   useEffect(() => {
-    const newVideo = [
-      {
-        id: list.videos[videoIndex].id,
-        isVisible: true,
-        isReady: false,
-        video: list.videos[videoIndex],
-      },
-    ];
-    setVideos([...videos, ...newVideo]);
-  }, [videoIndex]);
+    if (currentPage > 1) {
+      Inertia.visit(`/list/${list.id}?page=${currentPage}`, {
+        preserveScroll: true,
+        preserveState: true,
+        onStart() {
+          setLoadingCount(100);
+        },
+        onSuccess({ props }) {
+          setLoadingCount(props.list.videos.length);
+          setVideos(props.list.videos);
+        },
+      });
+    }
+  }, [currentPage]);
 
   return (
     <>
@@ -130,42 +153,17 @@ const Details = ({ list }) => {
             {list.title}
           </Typography>
           <section className={classes.section}>
-            {videos.map((item) => (
-              <Paper
-                key={`list-item-details-${item.id}`}
-                elevation={5}
-                className={classes.videoContainer}
-              >
-                <TikTokVideo
-                  tiktokId={item.video.tiktok_id}
-                  html={item.video.html}
-                  isReadyCallback={(id) => {
-                    const idx = videos.findIndex((x) => x.video.tiktok_id === id);
-
-                    if (idx >= 0) {
-                      const newVideos = [...videos];
-                      newVideos[idx].isReady = true;
-                      setVideos([...newVideos]);
-                    }
-                    setIsLoading(false);
-                  }}
-                />
-              </Paper>
-            ))}
-            {isLoading && <CircularProgress />}
-            {!isLoading && (
+            {items}
+            {hasMore && <CircularProgress />}
+            {loadingCount === 0 && hasMore && (
               <Waypoint
                 data-name="waypoint"
                 onEnter={() => {
-                  const previous = videos[videoIndex];
-                  if (previous.isReady && videoIndex < list.videos.length - 1) {
-                    setIsLoading(true);
-                    setVideoIndex(videoIndex + 1);
-                  }
+                  setCurrentPage(currentPage + 1);
                 }}
               />
             )}
-            {videos.length === list.videos.length && videos[videos.length - 1].isReady && (
+            {!hasMore && (
               <Typography variant="subtitle2" className={classes.endOfTheList}>
                 This is the end of the list
               </Typography>
