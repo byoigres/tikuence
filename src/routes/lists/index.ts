@@ -3,7 +3,7 @@ import { Router } from 'express'
 import list from './list'
 import deleteList from './delete'
 import create from './create'
-import edit from './edit'
+import details from './details'
 import update from './update'
 import add from './add'
 import video from './video'
@@ -23,8 +23,8 @@ router.get('/add', add)
 // Create new list endpoint
 router.post('/', create)
 
-// Edit list view
-router.get('/:listId/edit', edit)
+// List details view
+router.get('/:listId/details', details)
 
 // Display lists videos view
 router.get('/:listId', list)

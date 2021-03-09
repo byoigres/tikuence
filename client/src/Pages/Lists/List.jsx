@@ -1,43 +1,47 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
-import { Waypoint } from 'react-waypoint';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
-import RestoreIcon from '@material-ui/icons/Restore';
-import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import Dialog from '@material-ui/core/Dialog';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
+import DialogContent from '@material-ui/core/DialogContent';
+import AppBar from '@material-ui/core/AppBar';
+import Tooltip from '@material-ui/core/Tooltip';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import Slide from '@material-ui/core/Slide';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ListIcon from '@material-ui/icons/List';
+import { Waypoint } from 'react-waypoint';
 import SEO from '../../components/SEO';
-import Layout from '../../components/Layout';
-import AddNewList from './Add';
-import Profile from '../Profile/Profile';
-import Details from './Details';
-import Login from '../Auth/Login';
+import TikTokVideo from '../../components/TikTokVideo';
 
-const useStyles = makeStyles((theme) => ({
-  list: {
-    backgroundColor: '#fff',
+const useStyles = makeStyles(() => ({
+  title: {
+    flex: 1,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
   },
-  listItemAvatar: {
-    minWidth: 72,
+  name: {
+    padding: '8px 24px',
   },
-  avatar: {
-    width: theme.spacing(7),
-    height: '100%',
+  dialog: {},
+  content: {
+    padding: 0,
+    height: '100vh',
   },
-  loader: {
+  section: {
     textAlign: 'center',
+  },
+  videoContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '1rem',
+    maxWidth: 1024,
   },
   endOfTheList: {
     textAlign: 'center',
@@ -45,64 +49,62 @@ const useStyles = makeStyles((theme) => ({
     margin: '1rem',
     fontStyle: 'italic',
   },
-  createListContainer: ({ isMobile }) => ({
-    position: 'fixed',
-    bottom: '10px',
-    width: isMobile ? '100%' : '960px',
-    textAlign: 'right',
-  }),
-  createList: ({ isMobile }) => ({
-    position: 'absolute',
-    right: isMobile ? '10px' : '52px',
-    bottom: '0',
-  }),
 }));
-// 'recent', 'new', 'popular'
-const categories = [
-  {
-    id: 'recent',
-    label: 'Recent',
-    icon: <RestoreIcon />,
-  },
-  {
-    id: 'new',
-    label: 'New',
-    icon: <WbSunnyIcon />,
-  },
-];
 
-// category = new
+/* eslint react/jsx-props-no-spreading: 0 */
+const Transition = React.forwardRef((props, ref) => (
+  <Slide direction="left" ref={ref} {...props} />
+));
 
-const PageList = () => {
+const Details = ({ list }) => {
   const {
-    props: {
-      auth: { isAuthenticated },
-      isMobile,
-      category,
-      lists: initialLists = [],
-      list,
-      showModal = false,
-      user,
-    },
+    props: { isMobile, referer, auth },
   } = usePage();
-  const classes = useStyles({ isMobile });
-  const [lists, setLists] = useState(initialLists);
-  const [categoryIndex] = useState(categories.findIndex((x) => x.id === category));
+  const classes = useStyles();
+  const [videos, setVideos] = useState(list.videos);
+  const [items, setItems] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isTheEnd, setIsTheEnd] = useState(false);
+  const [loadingCount, setLoadingCount] = useState(list.videos.length);
+
+  function handleClose() {
+    Inertia.visit(referer || '/', { preserveScroll: true, preserveState: true });
+  }
+
+  useEffect(() => {
+    if (videos.length > 0) {
+      const newVideos = videos.map((video) => (
+        <Paper
+          key={`list-item-details-${video.id}`}
+          elevation={0}
+          className={classes.videoContainer}
+        >
+          <TikTokVideo
+            tiktokId={video.tiktok_id}
+            html={video.html}
+            isReadyCallback={() => {
+              setLoadingCount((val) => val - 1);
+            }}
+          />
+        </Paper>
+      ));
+      setItems([...items, ...newVideos]);
+    } else {
+      setHasMore(false);
+    }
+  }, [videos]);
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.visit(`/feed/${category}/${currentPage}`, {
-        only: ['lists'],
+      Inertia.visit(`/list/${list.id}?page=${currentPage}`, {
         preserveScroll: true,
         preserveState: true,
-        onSuccess: ({ props: { lists: newLists } }) => {
-          if (newLists.length > 0) {
-            setLists([...lists, ...newLists]);
-          } else {
-            setIsTheEnd(true);
-          }
+        onStart() {
+          setLoadingCount(100);
+        },
+        onSuccess({ props }) {
+          setLoadingCount(props.list.videos.length);
+          setVideos(props.list.videos);
         },
       });
     }
@@ -110,127 +112,66 @@ const PageList = () => {
 
   return (
     <>
-      <SEO description="List of TikTok videos" title="Tikuence" />
-      <Grid
-        container
-        style={{ paddingLeft: '1rem', paddingRight: '1rem', backgroundColor: 'white' }}
+      <SEO title={list.title} />
+      <Dialog
+        fullScreen={isMobile}
+        fullWidth
+        maxWidth="sm"
+        open
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        closeAfterTransition
+        className={classes.dialog}
       >
-        <Grid item xs={12} md={12}>
-          <BottomNavigation
-            value={categoryIndex}
-            onChange={(_, selectedCategoryIndex) => {
-              if (selectedCategoryIndex !== categoryIndex) {
-                Inertia.visit(`/feed/${categories[selectedCategoryIndex].id}`);
-              }
-            }}
-            showLabels
-            className={classes.root}
-          >
-            {categories.map((item) => (
-              <BottomNavigationAction key={item.label} label={item.label} icon={item.icon} />
-            ))}
-          </BottomNavigation>
-          <List dense={false} className={classes.list}>
-            {lists &&
-              lists.map((item) => (
-                <Fragment key={`list-item-${item.id}`}>
-                  <ListItem
-                    key={item.id}
-                    button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      Inertia.visit(`/list/${item.id}`, {
-                        preserveScroll: true,
-                        preserveState: true,
-                        only: ['showModal', 'list', 'referer'],
-                      });
-                    }}
-                  >
-                    <ListItemAvatar className={classes.listItemAvatar}>
-                      <Avatar
-                        alt={item.title}
-                        className={classes.avatar}
-                        variant="square"
-                        src={`/images/sm-${item.thumbnail}`}
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      id={item.id}
-                      primary={
-                        <Typography component="strong" variant="h6" color="textPrimary">
-                          {item.title}
-                        </Typography>
-                      }
-                      secondary={
-                        <>
-                          <Typography
-                            component="strong"
-                            variant="subtitle2"
-                            color="textPrimary"
-                            style={{ display: 'block' }}
-                          >
-                            {`${item.total_videos} videos`}
-                          </Typography>
-                          <Typography component="span" variant="subtitle1" color="textPrimary">
-                            {`List by ${item.email}`}
-                          </Typography>
-                        </>
-                      }
-                    />
-                  </ListItem>
-                  <Divider variant="fullWidth" component="li" />
-                </Fragment>
-              ))}
-            {isTheEnd && (
+        <AppBar position="relative">
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              View list
+            </Typography>
+            <Tooltip title="View list">
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={(e) => {
+                  e.preventDefault();
+                  Inertia.visit(`/list/${list.id}/details`);
+                }}
+              >
+                <ListIcon />
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+        </AppBar>
+        <DialogContent className={classes.content}>
+          <Typography component="h4" variant="h4" className={classes.name}>
+            {list.title}
+          </Typography>
+          <section className={classes.section}>
+            {items}
+            {hasMore && <CircularProgress />}
+            {loadingCount === 0 && hasMore && (
+              <Waypoint
+                data-name="waypoint"
+                onEnter={() => {
+                  setCurrentPage(currentPage + 1);
+                }}
+              />
+            )}
+            {!hasMore && (
               <Typography variant="subtitle2" className={classes.endOfTheList}>
-                You reached the end of the lists
+                This is the end of the list
               </Typography>
             )}
-            {!isTheEnd && (
-              <>
-                {!showModal && (
-                  <div className={classes.loader}>
-                    <CircularProgress />
-                  </div>
-                )}
-                <Waypoint
-                  onEnter={() => {
-                    if (lists.length > 0) {
-                      setCurrentPage(currentPage + 1);
-                    }
-                  }}
-                />
-              </>
-            )}
-          </List>
-        </Grid>
-      </Grid>
-      {isAuthenticated && (
-        <div data-name="add-list" className={classes.createListContainer}>
-          <Fab
-            color="primary"
-            aria-label="add"
-            className={classes.createList}
-            onClick={() => {
-              Inertia.visit('/list/add', {
-                preserveScroll: true,
-                preserveState: true,
-                only: ['referer', 'showModal'],
-              });
-            }}
-          >
-            <AddIcon />
-          </Fab>
-        </div>
-      )}
-      {showModal === 'details' && list && <Details list={list} />}
-      {showModal === 'add-list' && <AddNewList />}
-      {showModal === 'profile' && <Profile user={user} />}
-      {showModal === 'login' && <Login />}
+            <div style={{ height: 10 }} />
+          </section>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
 
-PageList.layout = (page) => <Layout children={page} title="Tikuence" />;
-
-export default PageList;
+export default Details;
