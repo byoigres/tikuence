@@ -1,16 +1,14 @@
 import { Request } from 'express'
-import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
 
 async function view(req: Request) {
-  const userId = req.user ? req.user.id : null
   const params = req.params
 
   const knex = Knex()
 
   const list = await knex(Tables.Lists)
     .select('id', 'title')
-    .where({ id: params.listId, user_id: userId ? userId.toString() : '0' })
+    .where({ id: params.listId })
     .first()
 
   if (list) {
@@ -37,4 +35,4 @@ async function view(req: Request) {
   })
 }
 
-export default [isAuthenticated, view]
+export default [view]
