@@ -32,6 +32,7 @@ const AddPage = () => {
   const {
     props: { isMobile, referer, errors },
   } = usePage();
+  const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
 
@@ -65,6 +66,7 @@ const AddPage = () => {
   }
 
   const handleClose = () => {
+    setIsOpen(false);
     Inertia.visit('/', { preserveScroll: true, preserveState: referer !== null });
   };
 
@@ -87,7 +89,7 @@ const AddPage = () => {
       fullScreen={isMobile}
       fullWidth
       maxWidth="sm"
-      open
+      open={isOpen}
       onClose={handleClose}
       TransitionComponent={Transition}
     >

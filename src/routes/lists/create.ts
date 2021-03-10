@@ -44,7 +44,7 @@ function response(req: Request) {
 
   req.flash('success', 'List created successfully')
 
-  req.Inertia.redirect(`/list/${listId}/edit`)
+  req.Inertia.redirect(`/list/${listId}/details`)
 }
 
 export default [
