@@ -184,7 +184,7 @@ const Edit = ({ list, isMobile, isMe }) => {
   }
 
   const onItemClick = (videoId) => {
-    Inertia.visit(`/list/${list.id}/video/${videoId}`);
+    Inertia.visit(`/list/${list.id}?from=${videoId}`);
   };
 
   const onVideoDrop = ({ removedIndex, addedIndex }) => {
@@ -288,6 +288,7 @@ const Edit = ({ list, isMobile, isMe }) => {
                       key={video.id}
                       button
                       disabled={isLoading}
+                      href={`/list/${list.id}?from=${video.id}`}
                       onClick={(e) => {
                         e.preventDefault();
                         onItemClick(video.id);
