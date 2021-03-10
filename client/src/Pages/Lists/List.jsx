@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-react';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -11,6 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import MuiAlert from '@material-ui/lab/Alert';
 import Slide from '@material-ui/core/Slide';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ListIcon from '@material-ui/icons/List';
@@ -152,9 +153,10 @@ const Details = ({ list }) => {
             {list.title}
           </Typography>
           {initialVideoOrderId > 1 && (
-            <Typography component="h4" variant="h6" color="primary">
-              Viewing list from video #{initialVideoOrderId}
-            </Typography>
+            <MuiAlert severity="info">
+              Viewing list from video #{initialVideoOrderId}.&nbsp;
+              <InertiaLink href={`/list/${list.id}`} >View from beginning</InertiaLink>
+            </MuiAlert>
           )}
           <section className={classes.section}>
             {items}
