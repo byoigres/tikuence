@@ -22,6 +22,7 @@ import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { Inertia } from '@inertiajs/inertia';
 import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import Layout from '../../components/Layout';
+import AddVideo from './AddVideo';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
 import UserAvatar from '../../components/UserAvatar';
@@ -29,24 +30,7 @@ import { InertiaLink } from '@inertiajs/inertia-react';
 
 const useStyles = makeStyles((theme) => ({
   list: {
-    backgroundColor: '#fff',
-  },
-  card: {
-    marginBottom: '1rem',
-  },
-  actionArea: {
-    // display: "flex",
-    // justifyContent: "flex-start"
-  },
-  cover: {
-    // width: 100
-  },
-  details: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  content: {
-    flex: '1 0 auto',
+    // backgroundColor: '#fff',
   },
   listItemAvatar: {
     minWidth: 72,
@@ -56,11 +40,8 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100px',
     height: '100%',
   },
-  messageNumberOfVideos: {
-    margin: '1rem 0',
-  },
   messageNoVideos: {
-    margin: '1rem 0',
+    /// margin: '1rem 0',
   },
   titleContainer: {
     display: 'flex',
@@ -72,15 +53,6 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
   },
-  inlineTitle: (p) => ({
-    '&:hover': {
-      cursor: p.isMobile ? 'default' : 'pointer',
-      color: theme.palette.text.secondary,
-    },
-  }),
-  titleButtons: (p) => ({
-    marginLeft: p.isMobile ? '0.5rem' : '1rem',
-  }),
   addVideoButton: {
     marginBottom: '1rem',
   },
@@ -110,12 +82,12 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(2),
     },
     [theme.breakpoints.up('md')]: {
-      // margin: theme.spacing(2) * -1,
+      padding: theme.spacing(2),
     },
   },
 }));
 
-const Edit = ({ list, isMobile, isMe }) => {
+const Edit = ({ list, isMobile, isMe, showModal = false }) => {
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -123,6 +95,8 @@ const Edit = ({ list, isMobile, isMe }) => {
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
   const [anchorEl, setAnchorEl] = useState([]);
+
+  console.log({ details: { list }});
 
   function onRemoveVideoDialogClose() {
     setIsRemoveVideoDialogOpen(false);
@@ -136,7 +110,11 @@ const Edit = ({ list, isMobile, isMe }) => {
   // HTTP handlers
   function onAddVideoClick(e) {
     e.preventDefault();
-    Inertia.get(`/list/${list.id}/video/add`);
+    Inertia.visit(`/list/${list.id}/video/add`, {
+      only: ['listId', 'showModal', 'errors', 'referer'],
+      preserveScroll: true,
+      preserveState: true
+    });
     // Inertia.visit('/list/add', {
     //   preserveScroll: true,
     //   preserveState: true,
@@ -226,127 +204,96 @@ const Edit = ({ list, isMobile, isMe }) => {
 
   return (
     <>
-      <Grid container className={classes.mainGrid}>
-        <Grid item md={4}>
-          <TitleForUpdate title={list.title} id={list.id} canEdit={isMe} />
-          {list.videos.length === 0 && (
-            <Typography
-              component="h6"
-              variant="h6"
-              color="secondary"
-              className={classes.messageNoVideos}
-            >
-              Your list is not visible to others because doesn&apos;t have any videos.
-            </Typography>
-          )}
-          {list.videos.length > 0 && (
-            <Typography
-              component="span"
-              variant="caption"
-              className={classes.messageNumberOfVideos}
-            >
-              {`There are ${list.videos.length} videos in this list`}
-            </Typography>
-          )}
-          {isMe && (
-            <>
-              <Divider variant="fullWidth" />
-              <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
-                <IconButton onClick={onDeleteButtonClick}>
-                  <DeleteIcon />
-                </IconButton>
-                <FormControlLabel
-                  control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
-                  label="Sort videos"
-                />
-              </Grid>
-            </>
-          )}
-          <InertiaLink href={`/users/${list.user.username}`}>
-            <Grid
-              container
-              alignItems="center"
-              style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
-            >
-              <UserAvatar letter={list.user.username[0]} />
-              <Typography>&nbsp;@{list.user.username}</Typography>
-            </Grid>
-          </InertiaLink>
-          <Divider variant="fullWidth" />
-        </Grid>
-        <Grid item md={8}>
-          {list.videos.length > 0 && (
-            <List dense className={classes.list}>
-              <ContainerDraggable
-                dragHandleSelector=".drag-handle"
-                lockAxis="y"
-                onDrop={onVideoDrop}
+      {list && (
+        <Grid container className={classes.mainGrid}>
+          <Grid item md={4}>
+            <TitleForUpdate title={list.title} id={list.id} canEdit={isMe} />
+            {list.videos.length === 0 && (
+              <Typography
+                component="h6"
+                variant="h6"
+                color="secondary"
+                className={classes.messageNoVideos}
               >
-                {list.videos.map((video, index) => (
-                  <Draggable key={video.id}>
-                    <ListItem
-                      key={video.id}
-                      button
-                      disabled={isLoading}
-                      href={`/list/${list.id}?from=${video.id}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onItemClick(video.id);
-                      }}
-                    >
-                      <ListItemAvatar className={classes.listItemAvatar}>
-                        <Avatar
-                          alt={video.title}
-                          className={classes.avatar}
-                          variant="square"
-                          src={`/images/sm-${video.thumbnail_name}`}
-                        />
-                      </ListItemAvatar>
-                      <ListItemText id={video.id} primary={video.title} />
-                      {isMe && (
-                        <ListItemSecondaryAction className={classes.actionButtons}>
-                          {/* <IconButton
-                              edge="start"
-                              className={classes.menuButton2}
-                              color="inherit"
-                              aria-label="menu"
-                              aria-haspopup="true"
-                              onClick={handleUserMenuClick(video.id)}
-                            >
-                              <MoreVertIcon />
-                            </IconButton> */}
-                          {!isSorting && (
-                            <IconButton
-                              edge="end"
-                              aria-label="remove"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                onRemoveButtonClick(video.id);
-                              }}
-                              disabled={isLoading}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          )}
-                          {isSorting && (
-                            <IconButton
-                              edge="end"
-                              aria-label="sort"
-                              disabled={isLoading}
-                              className="drag-handle"
-                            >
-                              <DragHandleIcon />
-                            </IconButton>
-                          )}
-                          <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl[video.id]}
-                            keepMounted
-                            open={Boolean(anchorEl[video.id])}
-                            onClose={handleUserMenuClose(video.id)}
-                            className={classes.userMenu}
-                          >
-                            <MenuItem onClick={handleUserMenuClose}>
+                Your list is not visible to others because doesn&apos;t have any videos.
+              </Typography>
+            )}
+            {list.videos.length > 0 && (
+              <Typography
+                component="span"
+                variant="caption"
+              >
+                {`There ${list.videos.length > 1 ? 'are' : 'is'} ${list.videos.length} video${list.videos.length > 1 ? 's' : ''} in this list`}
+              </Typography>
+            )}
+            {isMe && (
+              <>
+                <Divider variant="fullWidth" />
+                <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
+                  <IconButton onClick={onDeleteButtonClick}>
+                    <DeleteIcon />
+                  </IconButton>
+                  <FormControlLabel
+                    control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
+                    label="Sort videos"
+                  />
+                </Grid>
+              </>
+            )}
+            <InertiaLink href={`/users/${list.user.username}`}>
+              <Grid
+                container
+                alignItems="center"
+                style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
+              >
+                <UserAvatar letter={list.user.username[0]} />
+                <Typography>&nbsp;@{list.user.username}</Typography>
+              </Grid>
+            </InertiaLink>
+            <Divider variant="fullWidth" />
+          </Grid>
+          <Grid item md={8}>
+            {list.videos.length > 0 && (
+              <List dense className={classes.list}>
+                <ContainerDraggable
+                  dragHandleSelector=".drag-handle"
+                  lockAxis="y"
+                  onDrop={onVideoDrop}
+                >
+                  {list.videos.map((video, index) => (
+                    <Draggable key={video.id}>
+                      <ListItem
+                        key={video.id}
+                        button
+                        disabled={isLoading}
+                        href={`/list/${list.id}?from=${video.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onItemClick(video.id);
+                        }}
+                      >
+                        <ListItemAvatar className={classes.listItemAvatar}>
+                          <Avatar
+                            alt={video.title}
+                            className={classes.avatar}
+                            variant="square"
+                            src={`/images/sm-${video.thumbnail_name}`}
+                          />
+                        </ListItemAvatar>
+                        <ListItemText id={video.id} primary={video.title} />
+                        {isMe && (
+                          <ListItemSecondaryAction className={classes.actionButtons}>
+                            {/* <IconButton
+                                edge="start"
+                                className={classes.menuButton2}
+                                color="inherit"
+                                aria-label="menu"
+                                aria-haspopup="true"
+                                onClick={handleUserMenuClick(video.id)}
+                              >
+                                <MoreVertIcon />
+                              </IconButton> */}
+                            {!isSorting && (
                               <IconButton
                                 edge="end"
                                 aria-label="remove"
@@ -358,29 +305,61 @@ const Edit = ({ list, isMobile, isMe }) => {
                               >
                                 <DeleteIcon />
                               </IconButton>
-                              Delete
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => {
-                                Inertia.get('/auth/logout');
-                              }}
+                            )}
+                            {isSorting && (
+                              <IconButton
+                                edge="end"
+                                aria-label="sort"
+                                disabled={isLoading}
+                                className="drag-handle"
+                              >
+                                <DragHandleIcon />
+                              </IconButton>
+                            )}
+                            <Menu
+                              id="simple-menu"
+                              anchorEl={anchorEl[video.id]}
+                              keepMounted
+                              open={Boolean(anchorEl[video.id])}
+                              onClose={handleUserMenuClose(video.id)}
+                              className={classes.userMenu}
                             >
-                              Logout
-                            </MenuItem>
-                          </Menu>
-                        </ListItemSecondaryAction>
+                              <MenuItem onClick={handleUserMenuClose}>
+                                <IconButton
+                                  edge="end"
+                                  aria-label="remove"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    onRemoveButtonClick(video.id);
+                                  }}
+                                  disabled={isLoading}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                                Delete
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  Inertia.get('/auth/logout');
+                                }}
+                              >
+                                Logout
+                              </MenuItem>
+                            </Menu>
+                          </ListItemSecondaryAction>
+                        )}
+                      </ListItem>
+                      {index !== list.videos.length - 1 && (
+                        <Divider variant="fullWidth" component="li" />
                       )}
-                    </ListItem>
-                    {index !== list.videos.length - 1 && (
-                      <Divider variant="fullWidth" component="li" />
-                    )}
-                  </Draggable>
-                ))}
-              </ContainerDraggable>
-            </List>
-          )}
+                    </Draggable>
+                  ))}
+                </ContainerDraggable>
+              </List>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       {isMe && (
         <>
           <div className={classes.addVideoContainer}>
@@ -414,6 +393,7 @@ const Edit = ({ list, isMobile, isMe }) => {
           />
         </>
       )}
+      {showModal === 'add-video' && <AddVideo />}
     </>
   );
 };

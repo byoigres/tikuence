@@ -31,7 +31,8 @@ async function view(req: Request) {
           },
           videos: videos
         },
-        isMe: req.user ? req.user.id === list.user_id : false
+        isMe: req.user ? req.user.id === list.user_id : false,
+        showModal: ''
       }
     })
   }

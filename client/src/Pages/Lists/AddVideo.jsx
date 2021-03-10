@@ -28,13 +28,16 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const AddVideoPage = ({ listId, errors }) => {
+const AddVideoPage = () => {
   const classes = useStyles();
   const {
-    props: { isMobile },
+    props: { listId, errors, referer, isMobile },
   } = usePage();
+  const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
+
+  console.log({ listId, errors });
 
   const titleRef = useRef(null);
 
@@ -45,7 +48,16 @@ const AddVideoPage = ({ listId, errors }) => {
   }
 
   const handleClose = () => {
-    Inertia.visit(`/list/${listId}/edit?an=0`);
+    const visitOptions = {
+      preserveScroll: true,
+    };
+
+    if (referer) {
+      visitOptions.only = ['showModal'];
+    }
+
+    setIsOpen(false);
+    Inertia.visit(`/list/${listId}/details`, visitOptions);
   };
 
   function onCreate() {
@@ -86,7 +98,7 @@ const AddVideoPage = ({ listId, errors }) => {
       fullScreen={isMobile}
       fullWidth
       maxWidth="sm"
-      open
+      open={isOpen}
       onClose={handleClose}
       TransitionComponent={Transition}
     >
