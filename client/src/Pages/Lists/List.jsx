@@ -63,12 +63,13 @@ const Details = ({ list }) => {
   const classes = useStyles();
   const [videos, setVideos] = useState(list.videos);
   const [items, setItems] = useState([]);
+  const [initialVideoOrderId] = useState(list.videos.length > 0 ? list.videos[0].order_id : 0);
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingCount, setLoadingCount] = useState(list.videos.length);
 
   function handleClose() {
-    Inertia.visit(referer || '/', { preserveScroll: true, preserveState: true });
+    Inertia.visit(referer || '/', referer === '/' ? { preserveScroll: true, preserveState: true } : {});
   }
 
   useEffect(() => {
@@ -109,7 +110,7 @@ const Details = ({ list }) => {
       });
     }
   }, [currentPage]);
-
+  console.log({ listVideos: list.videos, initialVideoOrderId });
   return (
     <>
       <SEO title={list.title} />
@@ -150,6 +151,11 @@ const Details = ({ list }) => {
           <Typography component="h4" variant="h4" className={classes.name}>
             {list.title}
           </Typography>
+          {initialVideoOrderId > 1 && (
+            <Typography component="h4" variant="h6" color="primary">
+              Viewing list from video #{initialVideoOrderId}
+            </Typography>
+          )}
           <section className={classes.section}>
             {items}
             {hasMore && <CircularProgress />}

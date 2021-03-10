@@ -66,7 +66,7 @@ async function getListVideos(req: Request) {
   }
 
   const videos = await knex(`${Tables.ListsVideos} AS LV`)
-    .select('LV.video_id AS id', 'V.tiktok_id', 'V.title', 'V.html')
+    .select('LV.video_id AS id', 'V.tiktok_id', 'V.title', 'V.html', 'LV.order_id')
     .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
     .where('LV.list_id', params.listId)
     .andWhere('LV.order_id', '>=', fromOrderId)
