@@ -16,7 +16,7 @@ import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red';
 import UserAvatar from './UserAvatar';
 
-const theme = createMuiTheme({
+const mainTheme = createMuiTheme({
   palette: {
     primary: blue,
     secondary: red,
@@ -30,10 +30,22 @@ const theme = createMuiTheme({
   },
 });
 
-const useStyles = makeStyles(() => ({
-  appBar: ({ isMobile }) => ({
-    alignItems: isMobile ? 'normal' : 'center',
-  }),
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    [theme.breakpoints.down('md')]: {
+      alignItems: 'normal',
+    },
+    [theme.breakpoints.up('md')]: {
+      alignItems: 'center',
+    },
+  },
+  loginLink: {
+    color: 'white',
+    marginRight: '0.5rem',
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
   title: {
     flex: 1,
     textOverflow: 'ellipsis',
@@ -47,35 +59,34 @@ const useStyles = makeStyles(() => ({
       color: theme.palette.text.secondary,
     },
   },
-  toolBar: ({ isMobile }) =>
-    isMobile
-      ? {}
-      : {
-          // maxWidth: '600px',
-          // width: '100%',
-        },
   userMenu: {
     '& a': {
       color: 'initial',
       textDecoration: 'none',
     },
   },
-  container: ({ isMobile }) => ({
-    marginTop: isMobile ? '4rem' : '5rem',
-  }),
-  innerContainer: {
-    position: 'relative',
-    maxWidth: '600px',
-    marginTop: '5rem',
-    flex: '1 0 auto',
-    backgroundColor: '#fff',
+  container: {
+    [theme.breakpoints.down('md')]: {
+      marginTop: '4rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      marginTop: '5rem',
+    },
   },
-  content: ({ cleanLayout, isMobile }) => ({
-    marginTop: cleanLayout ? 0 : '1rem',
-    marginLeft: cleanLayout || isMobile ? 0 : '1rem',
-    marginRight: cleanLayout || isMobile ? 0 : '1rem',
-    marginBottom: cleanLayout ? 0 : '1rem',
-  }),
+  content: {
+    [theme.breakpoints.down('md')]: {
+      marginTop: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      marginBottom: 0,
+    },
+    [theme.breakpoints.up('md')]: {
+      marginTop: '1rem',
+      marginLeft: '1rem',
+      marginRight: '1rem',
+      marginBottom: '1rem',
+    },
+  },
 }));
 
 const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
@@ -83,10 +94,9 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
     props: {
       auth: { isAuthenticated, credentials },
       flash,
-      isMobile,
     },
   } = usePage();
-  const classes = useStyles({ cleanLayout, isMobile });
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const notistackRef = React.createRef();
 
@@ -126,7 +136,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
   }, [flash]);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={mainTheme}>
       <SnackbarProvider
         ref={notistackRef}
         anchorOrigin={{
@@ -137,10 +147,10 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
           <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
         )}
       >
-        <Container maxWidth="md" className={classes.container} disableGutters={isMobile}>
+        <Container maxWidth="md" className={classes.container} disableGutters>
           {!cleanLayout && (
             <AppBar position="fixed" className={classes.appBar}>
-              <Container maxWidth="md" disableGutters={isMobile}>
+              <Container maxWidth="md" disableGutters data-name="container">
                 <Toolbar className={classes.toolBar}>
                   <Typography variant="h6" className={classes.title}>
                     <InertiaLink href="/" className={classes.mainLink}>
@@ -184,18 +194,17 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                   )}
                   {!isAuthenticated && (
                     <>
-                      {!isMobile && (
-                        <Button
-                          style={{ color: 'white', marginRight: '0.5rem' }}
-                          href="/auth/login"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            Inertia.visit('/auth/login');
-                          }}
-                        >
-                          Sing In
-                        </Button>
-                      )}
+                      {/* Hide in small screens */}
+                      <Button
+                        className={classes.loginLink}
+                        href="/auth/login"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          Inertia.visit('/auth/login');
+                        }}
+                      >
+                        Sing In
+                      </Button>
                       <Button
                         color="secondary"
                         variant="contained"
