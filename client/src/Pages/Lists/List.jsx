@@ -111,7 +111,7 @@ const Details = ({ list }) => {
       });
     }
   }, [currentPage]);
-  console.log({ listVideos: list.videos, initialVideoOrderId });
+
   return (
     <>
       <SEO title={list.title} />
@@ -155,7 +155,7 @@ const Details = ({ list }) => {
           {initialVideoOrderId > 1 && (
             <MuiAlert severity="info">
               Viewing list from video #{initialVideoOrderId}.&nbsp;
-              <InertiaLink href={`/list/${list.id}`} >View from beginning</InertiaLink>
+              <InertiaLink href={`/list/${list.id}`} >Click here to view from beginning</InertiaLink> or return to the lists to select a specific video.
             </MuiAlert>
           )}
           <section className={classes.section}>
