@@ -40,28 +40,9 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100px',
     height: '100%',
   },
-  messageNoVideos: {
-    /// margin: '1rem 0',
-  },
-  titleContainer: {
-    display: 'flex',
-    width: '100%',
-  },
-  title: {
-    flex: 1,
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-  },
-  addVideoButton: {
-    marginBottom: '1rem',
-  },
-  editIcon: {
-    marginLeft: '0.5rem',
-  },
   actionButtons: () => ({
-    display: 'flex',
-    flexDirection: 'column',
+    // display: 'flex',
+    // flexDirection: 'column',
   }),
   addVideoContainer: ({ isMobile }) => ({
     position: 'fixed',
@@ -76,14 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }),
   mainGrid: {
     backgroundColor: 'white',
-    // width: calc(100% + 16px);
-    // margin: -8px;
-    [theme.breakpoints.down('md')]: {
-      padding: theme.spacing(2),
-    },
-    [theme.breakpoints.up('md')]: {
-      padding: theme.spacing(2),
-    },
+    padding: theme.spacing(2),
   },
 }));
 
@@ -208,16 +182,6 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
         <Grid container className={classes.mainGrid}>
           <Grid item md={4}>
             <TitleForUpdate title={list.title} id={list.id} canEdit={isMe} />
-            {list.videos.length === 0 && (
-              <Typography
-                component="h6"
-                variant="h6"
-                color="secondary"
-                className={classes.messageNoVideos}
-              >
-                Your list is not visible to others because doesn&apos;t have any videos.
-              </Typography>
-            )}
             {list.videos.length > 0 && (
               <Typography
                 component="span"
@@ -253,6 +217,16 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
             <Divider variant="fullWidth" />
           </Grid>
           <Grid item md={8}>
+            {list.videos.length === 0 && (
+              <Typography
+                component="h6"
+                variant="h6"
+                color="secondary"
+              >
+                {isMe && `Your list is not visible to others because doesn't have any videos.`}
+                {!isMe && `This is an empty list, the creator hasn't added any videos yet.`}
+              </Typography>
+            )}
             {list.videos.length > 0 && (
               <List dense className={classes.list}>
                 <ContainerDraggable
