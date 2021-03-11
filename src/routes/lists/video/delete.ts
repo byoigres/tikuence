@@ -22,7 +22,7 @@ async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next
   if (!list) {
     req.flash('warning', 'The video can not be deleted')
 
-    req.Inertia.redirect(`/list/${listId}/edit`)
+    req.Inertia.redirect(`/list/${listId}/details`)
   }
 
   httpContext.set('order_id', list.order_id)
@@ -57,7 +57,7 @@ async function response(req: Request) {
   const { listId } = req.params
 
   req.flash('success', 'Video removed successfully')
-  req.Inertia.redirect(`/list/${listId}/edit`)
+  req.Inertia.redirect(`/list/${listId}/details`)
 }
 
 export default [isAuthenticated, verifyListBelongsToCurrentUser, deleteList, response]

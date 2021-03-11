@@ -25,7 +25,7 @@ async function response(req: Request) {
   const { listId } = req.params
 
   req.flash('success', 'List updated')
-  req.Inertia.redirect(`/list/${listId}/edit`)
+  req.Inertia.redirect(`/list/${listId}/details`)
 }
 
 export default [isAuthenticated, updateList, response]

@@ -203,7 +203,7 @@ async function verifyIfVideoExistinList(req: Request, _res: Response, next: Next
 
   if (video) {
     req.flash('info', 'The video you are trying to add is already on the list')
-    return req.Inertia.redirect(`/list/${listId}/edit`)
+    return req.Inertia.redirect(`/list/${listId}/details`)
   }
 
   next()
@@ -332,7 +332,7 @@ async function response(req: Request) {
 
   req.flash('success', 'Video added successfully')
 
-  req.Inertia.redirect(`/list/${listId}/edit`)
+  req.Inertia.redirect(`/list/${listId}/details`)
 }
 
 export default asyncRoutes([
