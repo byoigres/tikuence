@@ -106,7 +106,7 @@ async function response(req: Request) {
   const user = httpContext.get('user')
   const isMe = httpContext.get('isMe')
 
-  req.Inertia.setViewData({ title: 'Profile' }).render({
+  req.Inertia.setViewData({ title: 'My Profile' }).render({
     component: 'Profile/Profile',
     props: {
       user,

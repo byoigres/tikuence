@@ -6,7 +6,7 @@ import Url from 'url'
 const ASSET_VERSION = '1'
 
 const getDescription = () => 'Watch the popular list of TikTok videos'
-const getTitle = (title: string) => `Tikuence | ${title || getDescription()}`
+const getTitle = (title: string) => `${title || getDescription()} • Tikuence`
 const getImage = () => 'https://tikuence.herokuapp.com/images/logo200.png'
 
 const template = (page: object, viewData: ViewData) => `

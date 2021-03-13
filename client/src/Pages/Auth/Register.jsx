@@ -14,6 +14,7 @@ import Link from '@material-ui/core/Link';
 import { usePage } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
 import Layout from '../../components/Layout';
+import SEO from '../../components/SEO';
 
 const useStyles = makeStyles(() => ({
   container: ({ isMobile }) => ({
@@ -79,106 +80,109 @@ const Register = () => {
   };
 
   return (
-    <Container maxWidth="sm" disableGutters={isMobile}>
-      <Paper elevation={0} className={classes.container}>
-        {!auth.isAuthenticated && isExpired && (
-          <Typography variant="h4">This link has expired</Typography>
-        )}
-        {!auth.isAuthenticated && isInvalid && (
-          <Typography variant="h4">This link is invalid</Typography>
-        )}
-        {auth.isAuthenticated && (
-          <Typography variant="h6">{`You are currently login as ${auth.credentials.email}`}</Typography>
-        )}
-        {!auth.isAuthenticated && !isExpired && !isInvalid && (
-          <>
-            <Typography variant="h4" color="primary" gutterBottom>
-              Complete your profile
-            </Typography>
-            <Typography variant="subtitle2" color="textSecondary" gutterBottom>
-              You are setting your account using your Google account.
-            </Typography>
-            <form className={classes.form} autoComplete="off" autoCorrect="off">
-              <TextField
-                name="email"
-                label="Email"
-                value={email}
-                fullWidth
-                disabled
-                variant="outlined"
-              />
-              <TextField
-                name="name"
-                label="Name"
-                value={values.name}
-                error={errors.name !== undefined}
-                helperText={errors.name}
-                autoComplete="off"
-                disabled={isLoading}
-                onChange={handleChange}
-                inputProps={{ maxLength: 50, autoComplete: 'off', ref: nameRef }}
-                fullWidth
-                autoFocus
-                variant="outlined"
-              />
-              <TextField
-                name="username"
-                label="Username"
-                value={values.username}
-                error={errors.username !== undefined}
-                helperText={errors.username}
-                autoComplete="off"
-                disabled={isLoading}
-                onChange={handleChange}
-                inputProps={{ maxLength: 24, autoComplete: 'off', ref: usernameRef }}
-                fullWidth
-                variant="outlined"
-              />
-              <FormControl required error component="fieldset" className={classes.formControl}>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="terms"
-                        checked={values.terms}
-                        value={values.terms}
-                        disabled={isLoading}
-                        onChange={handleChange}
-                        color="primary"
-                      />
-                    }
-                    label={
-                      <>
-                        {`Accept the `}
-                        <Link href="/legal/terms" target="_blank">
-                          terms of service
-                        </Link>
-                        {` and `}
-                        <Link href="/legal/privacy" target="_blank">
-                          privacy policy
-                        </Link>
-                        .
-                      </>
-                    }
-                  />
-                </FormGroup>
-                {errors.terms && <FormHelperText>{errors.terms}</FormHelperText>}
-              </FormControl>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={!values.terms || isLoading}
-                onClick={register}
-                fullWidth
-              >
-                Complete profile
-              </Button>
-            </form>
-            <Link href="/">Back to the main page</Link>
-          </>
-        )}
-      </Paper>
-    </Container>
+    <>
+      <SEO title="Complete your profile" />
+      <Container maxWidth="sm" disableGutters={isMobile}>
+        <Paper elevation={0} className={classes.container}>
+          {!auth.isAuthenticated && isExpired && (
+            <Typography variant="h4">This link has expired</Typography>
+          )}
+          {!auth.isAuthenticated && isInvalid && (
+            <Typography variant="h4">This link is invalid</Typography>
+          )}
+          {auth.isAuthenticated && (
+            <Typography variant="h6">{`You are currently login as ${auth.credentials.email}`}</Typography>
+          )}
+          {!auth.isAuthenticated && !isExpired && !isInvalid && (
+            <>
+              <Typography variant="h4" color="primary" gutterBottom>
+                Complete your profile
+              </Typography>
+              <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+                You are setting your account using your Google account.
+              </Typography>
+              <form className={classes.form} autoComplete="off" autoCorrect="off">
+                <TextField
+                  name="email"
+                  label="Email"
+                  value={email}
+                  fullWidth
+                  disabled
+                  variant="outlined"
+                />
+                <TextField
+                  name="name"
+                  label="Name"
+                  value={values.name}
+                  error={errors.name !== undefined}
+                  helperText={errors.name}
+                  autoComplete="off"
+                  disabled={isLoading}
+                  onChange={handleChange}
+                  inputProps={{ maxLength: 50, autoComplete: 'off', ref: nameRef }}
+                  fullWidth
+                  autoFocus
+                  variant="outlined"
+                />
+                <TextField
+                  name="username"
+                  label="Username"
+                  value={values.username}
+                  error={errors.username !== undefined}
+                  helperText={errors.username}
+                  autoComplete="off"
+                  disabled={isLoading}
+                  onChange={handleChange}
+                  inputProps={{ maxLength: 24, autoComplete: 'off', ref: usernameRef }}
+                  fullWidth
+                  variant="outlined"
+                />
+                <FormControl required error component="fieldset" className={classes.formControl}>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="terms"
+                          checked={values.terms}
+                          value={values.terms}
+                          disabled={isLoading}
+                          onChange={handleChange}
+                          color="primary"
+                        />
+                      }
+                      label={
+                        <>
+                          {`Accept the `}
+                          <Link href="/legal/terms" target="_blank">
+                            terms of service
+                          </Link>
+                          {` and `}
+                          <Link href="/legal/privacy" target="_blank">
+                            privacy policy
+                          </Link>
+                          .
+                        </>
+                      }
+                    />
+                  </FormGroup>
+                  {errors.terms && <FormHelperText>{errors.terms}</FormHelperText>}
+                </FormControl>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!values.terms || isLoading}
+                  onClick={register}
+                  fullWidth
+                >
+                  Complete profile
+                </Button>
+              </form>
+              <Link href="/">Back to the main page</Link>
+            </>
+          )}
+        </Paper>
+      </Container>
+    </>
   );
 };
 
