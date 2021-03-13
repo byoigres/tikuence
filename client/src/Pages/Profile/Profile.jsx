@@ -69,7 +69,14 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfilePage = () => {
   const {
-    props: { user, lists: initialLists = [], isMe, isMobile, showModal = false },
+    props: {
+      user,
+      lists: initialLists = [],
+      isMe,
+      isMobile,
+      showModal = false,
+      auth: { isAuthenticated },
+    },
   } = usePage();
   const classes = useStyles({ isMobile, isMe });
   const [lists, setLists] = useState(initialLists);
@@ -221,15 +228,17 @@ const ProfilePage = () => {
           </>
         )}
       </Grid>
-      <FabFloatingLink
-        onClick={() => {
-          Inertia.visit('/list/add', {
-            preserveScroll: true,
-            preserveState: true,
-            only: ['referer', 'showModal'],
-          });
-        }}
-      />
+      {isAuthenticated && (
+        <FabFloatingLink
+          onClick={() => {
+            Inertia.visit('/list/add', {
+              preserveScroll: true,
+              preserveState: true,
+              only: ['referer', 'showModal'],
+            });
+          }}
+        />
+      )}
       {showModal === 'add-list' && <AddNewList />}
     </>
   );
