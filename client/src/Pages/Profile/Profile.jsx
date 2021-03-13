@@ -19,6 +19,7 @@ import Layout from '../../components/Layout';
 import AddNewList from '../Lists/Add';
 import SEO from '../../components/SEO';
 import FabFloatingLink from '../../components/FabFloatingLink';
+import EndOfList from '../../components/EndOfList';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -243,11 +244,12 @@ const ProfilePage = () => {
               ))}
           </Grid>
         </Grid>
-        {isTheEnd && (
+        {/* {isTheEnd && (
           <Typography variant="subtitle2" className={classes.endOfTheList}>
             You reached the end of the lists
           </Typography>
-        )}
+        )} */}
+        {isTheEnd && <EndOfList />}
         {!isTheEnd && (
           <>
             <div className={classes.loader}>

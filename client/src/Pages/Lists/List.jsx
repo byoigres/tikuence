@@ -18,6 +18,7 @@ import ListIcon from '@material-ui/icons/List';
 import { Waypoint } from 'react-waypoint';
 import SEO from '../../components/SEO';
 import TikTokVideo from '../../components/TikTokVideo';
+import EndOfList from '../../components/EndOfList';
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -59,7 +60,7 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ list }) => {
   const {
-    props: { isMobile, referer, from },
+    props: { isMobile, referer, from = 0 },
   } = usePage();
   const classes = useStyles();
   const [videos, setVideos] = useState(list.videos);
@@ -175,11 +176,12 @@ const Details = ({ list }) => {
                 }}
               />
             )}
-            {!hasMore && (
+            {!hasMore && <EndOfList text="This is the end of the list" />}
+            {/* {!hasMore && (
               <Typography variant="subtitle2" className={classes.endOfTheList}>
                 This is the end of the list
               </Typography>
-            )}
+            )} */}
             <div style={{ height: 10 }} />
           </section>
         </DialogContent>

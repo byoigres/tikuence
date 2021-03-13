@@ -23,6 +23,7 @@ import AddNewList from './Lists/Add';
 import Profile from './Profile/Profile';
 import List from './Lists/List';
 import Login from './Auth/Login';
+import EndOfList from '../components/EndOfList';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -169,11 +170,12 @@ const PageFeed = () => {
                   <Divider variant="fullWidth" component="li" />
                 </Fragment>
               ))}
-            {isTheEnd && (
+            {isTheEnd && <EndOfList />}
+            {/* {isTheEnd && (
               <Typography variant="subtitle2" className={classes.endOfTheList}>
                 You reached the end of the lists
               </Typography>
-            )}
+            )} */}
             {!isTheEnd && (
               <>
                 {!showModal && (
