@@ -21,12 +21,12 @@ import Switch from '@material-ui/core/Switch';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { Inertia } from '@inertiajs/inertia';
 import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
+import { InertiaLink } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
 import AddVideo from './AddVideo';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
 import UserAvatar from '../../components/UserAvatar';
-import { InertiaLink } from '@inertiajs/inertia-react';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -70,8 +70,6 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
   const [anchorEl, setAnchorEl] = useState([]);
 
-  console.log({ details: { list }});
-
   function onRemoveVideoDialogClose() {
     setIsRemoveVideoDialogOpen(false);
   }
@@ -87,7 +85,7 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
     Inertia.visit(`/list/${list.id}/video/add`, {
       only: ['listId', 'showModal', 'errors', 'referer'],
       preserveScroll: true,
-      preserveState: true
+      preserveState: true,
     });
     // Inertia.visit('/list/add', {
     //   preserveScroll: true,
@@ -183,11 +181,10 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
           <Grid item md={4}>
             <TitleForUpdate title={list.title} id={list.id} canEdit={isMe} />
             {list.videos.length > 0 && (
-              <Typography
-                component="span"
-                variant="caption"
-              >
-                {`There ${list.videos.length > 1 ? 'are' : 'is'} ${list.videos.length} video${list.videos.length > 1 ? 's' : ''} in this list`}
+              <Typography component="span" variant="caption">
+                {`There ${list.videos.length > 1 ? 'are' : 'is'} ${list.videos.length} video${
+                  list.videos.length > 1 ? 's' : ''
+                } in this list`}
               </Typography>
             )}
             {isMe && (
@@ -198,7 +195,9 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
                     <DeleteIcon />
                   </IconButton>
                   <FormControlLabel
-                    control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
+                    control={
+                      <Switch checked={isSorting} onChange={onSortigChange} name="sorting" />
+                    }
                     label="Sort videos"
                   />
                 </Grid>
@@ -218,11 +217,7 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
           </Grid>
           <Grid item md={8}>
             {list.videos.length === 0 && (
-              <Typography
-                component="h6"
-                variant="h6"
-                color="secondary"
-              >
+              <Typography component="h6" variant="h6" color="secondary">
                 {isMe && `Your list is not visible to others because doesn't have any videos.`}
                 {!isMe && `This is an empty list, the creator hasn't added any videos yet.`}
               </Typography>
