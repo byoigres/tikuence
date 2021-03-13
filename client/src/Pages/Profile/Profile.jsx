@@ -126,11 +126,7 @@ const ProfilePage = () => {
               <Avatar className={classes.avatar}>B</Avatar>
             </Grid>
             <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
-              <Typography
-                variant={isMobile ? 'h5' : 'h4'}
-                color="textPrimary"
-                className={classes.centerText}
-              >
+              <Typography variant="h4" color="textPrimary" className={classes.centerText}>
                 {user.name}
               </Typography>
               <Typography
@@ -151,13 +147,7 @@ const ProfilePage = () => {
           My Lists
         </Typography>
         <Grid item>
-          <Grid
-            container
-            wrap="wrap"
-            direction={isMobile ? 'column' : 'row'}
-            spacing={2}
-            data-name="grid-list"
-          >
+          <Grid container wrap="wrap" spacing={2}>
             {lists.length !== 0 &&
               lists.map((list) => (
                 <Grid key={`list-card-item-${list.id}`} item xs={12} sm={3}>
