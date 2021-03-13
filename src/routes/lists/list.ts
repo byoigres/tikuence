@@ -77,10 +77,8 @@ async function getListVideos(req: Request) {
   req.Inertia.setViewData({ title: list.title }).render({
     component: 'Feed',
     props: {
-      list: {
-        ...list,
-        videos
-      },
+      list,
+      videos,
       from: query.from || 0,
       showModal: 'list'
     }

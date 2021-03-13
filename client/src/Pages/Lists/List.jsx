@@ -58,17 +58,17 @@ const Transition = React.forwardRef((props, ref) => (
   <Slide direction="left" ref={ref} {...props} />
 ));
 
-const Details = ({ list }) => {
+const Details = () => {
   const {
-    props: { isMobile, referer, from = 0 },
+    props: { list, videos: initialVideos, isMobile, referer, from = 0 },
   } = usePage();
   const classes = useStyles();
-  const [videos, setVideos] = useState(list.videos);
+  const [videos, setVideos] = useState(initialVideos);
   const [items, setItems] = useState([]);
-  const [initialVideoOrderId] = useState(list.videos.length > 0 ? list.videos[0].order_id : 0);
+  const [initialVideoOrderId] = useState(initialVideos.length > 0 ? initialVideos[0].order_id : 0);
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loadingCount, setLoadingCount] = useState(list.videos.length);
+  const [loadingCount, setLoadingCount] = useState(initialVideos.length);
 
   function handleClose() {
     Inertia.visit(
@@ -103,14 +103,15 @@ const Details = ({ list }) => {
   useEffect(() => {
     if (currentPage > 1) {
       Inertia.visit(`/list/${list.id}?from=${from}&page=${currentPage}`, {
+        only: ['from', 'videos', 'errors'],
         preserveScroll: true,
         preserveState: true,
         onStart() {
           setLoadingCount(100);
         },
         onSuccess({ props }) {
-          setLoadingCount(props.list.videos.length);
-          setVideos(props.list.videos);
+          setLoadingCount(props.videos.length);
+          setVideos(props.videos);
         },
       });
     }

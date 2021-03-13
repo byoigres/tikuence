@@ -131,7 +131,7 @@ const PageFeed = () => {
                       Inertia.visit(`/list/${item.id}`, {
                         preserveScroll: true,
                         preserveState: true,
-                        only: ['showModal', 'list', 'referer'],
+                        only: ['showModal', 'list', 'videos', 'referer'],
                       });
                     }}
                   >
