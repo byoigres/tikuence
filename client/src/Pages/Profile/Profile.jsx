@@ -244,11 +244,6 @@ const ProfilePage = () => {
               ))}
           </Grid>
         </Grid>
-        {/* {isTheEnd && (
-          <Typography variant="subtitle2" className={classes.endOfTheList}>
-            You reached the end of the lists
-          </Typography>
-        )} */}
         {isTheEnd && <EndOfList />}
         {!isTheEnd && (
           <>

@@ -177,11 +177,6 @@ const Details = ({ list }) => {
               />
             )}
             {!hasMore && <EndOfList text="This is the end of the list" />}
-            {/* {!hasMore && (
-              <Typography variant="subtitle2" className={classes.endOfTheList}>
-                This is the end of the list
-              </Typography>
-            )} */}
             <div style={{ height: 10 }} />
           </section>
         </DialogContent>
