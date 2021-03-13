@@ -98,7 +98,7 @@ const PageFeed = () => {
 
   return (
     <>
-      <SEO description="List of TikTok videos" title="Tikuence" />
+      <SEO title="Latest lists" />
       <Grid
         container
         style={{ paddingLeft: '1rem', paddingRight: '1rem', backgroundColor: 'white' }}
@@ -194,13 +194,15 @@ const PageFeed = () => {
         </Grid>
       </Grid>
       {isAuthenticated && (
-        <FabFloatingLink onClick={() => {
-          Inertia.visit('/list/add', {
-            preserveScroll: true,
-            preserveState: true,
-            only: ['referer', 'showModal'],
-          });
-        }} />
+        <FabFloatingLink
+          onClick={() => {
+            Inertia.visit('/list/add', {
+              preserveScroll: true,
+              preserveState: true,
+              only: ['referer', 'showModal'],
+            });
+          }}
+        />
       )}
       {showModal === 'list' && list && <List list={list} />}
       {showModal === 'add-list' && <AddNewList />}

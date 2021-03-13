@@ -70,7 +70,10 @@ const Details = ({ list }) => {
   const [loadingCount, setLoadingCount] = useState(list.videos.length);
 
   function handleClose() {
-    Inertia.visit(referer || '/', referer === '/' ? { preserveScroll: true, preserveState: true } : {});
+    Inertia.visit(
+      referer || '/',
+      referer === '/' ? { preserveScroll: true, preserveState: true } : {}
+    );
   }
 
   useEffect(() => {
@@ -155,7 +158,10 @@ const Details = ({ list }) => {
           {initialVideoOrderId > 1 && (
             <MuiAlert severity="info">
               Viewing list from video #{initialVideoOrderId}.&nbsp;
-              <InertiaLink href={`/list/${list.id}`} >Click here to view from beginning</InertiaLink> or return to the lists to select a specific video.
+              <InertiaLink href={`/list/${list.id}`}>
+                Click here to view from beginning
+              </InertiaLink>{' '}
+              or return to the lists to select a specific video.
             </MuiAlert>
           )}
           <section className={classes.section}>

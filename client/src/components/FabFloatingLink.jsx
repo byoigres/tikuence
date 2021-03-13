@@ -8,12 +8,14 @@ const useStyles = makeStyles((theme) => ({
     position: 'fixed',
     bottom: theme.spacing(1),
     textAlign: 'right',
+    // height: 100,
+    // backgroundColor: 'red',
     [theme.breakpoints.up('sm')]: {
       width: theme.breakpoints.values.md,
     },
     [theme.breakpoints.between('xs', 'sm')]: {
       width: '100%',
-    }
+    },
   },
   fab: {
     position: 'absolute',
@@ -24,20 +26,15 @@ const useStyles = makeStyles((theme) => ({
       right: theme.spacing(1),
     },
     bottom: '0',
-  },  
+  },
 }));
 
 const FabFloatingLink = ({ onClick }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
-      <Fab
-        color="primary"
-        aria-label="add"
-        className={classes.fab}
-        onClick={onClick}
-      >
+    <div className={classes.container} data-name="Fab-X">
+      <Fab color="primary" aria-label="add" className={classes.fab} onClick={onClick}>
         <AddIcon />
       </Fab>
     </div>

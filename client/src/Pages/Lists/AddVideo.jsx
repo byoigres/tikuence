@@ -37,8 +37,6 @@ const AddVideoPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
 
-  console.log({ listId, errors });
-
   const titleRef = useRef(null);
 
   function handleChange(e) {
