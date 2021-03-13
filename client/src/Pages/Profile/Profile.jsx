@@ -27,14 +27,47 @@ const useStyles = makeStyles((theme) => ({
   listItemAvatar: {
     minWidth: 72,
   },
-  avatar: ({ isMobile }) => ({
-    width: theme.spacing(isMobile ? 12 : 16),
-    height: theme.spacing(isMobile ? 12 : 16),
-    fontSize: isMobile ? '4rem' : '5rem',
-  }),
-  centerText: ({ isMobile }) => ({
-    textAlign: isMobile ? 'center' : 'left',
-  }),
+  avatar: {
+    [theme.breakpoints.down('sm')]: {
+      width: theme.spacing(10),
+      height: theme.spacing(10),
+      fontSize: '3rem',
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: theme.spacing(12),
+      height: theme.spacing(12),
+      fontSize: '4rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+      fontSize: '5rem',
+    },
+  },
+  name: {
+    display: 'flex',
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center',
+      fontSize: theme.typography.h5.fontSize,
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      justifyContent: 'center',
+      fontSize: theme.typography.h4.fontSize,
+    },
+    [theme.breakpoints.up('md')]: {
+      justifyContent: 'flex-start',
+      fontSize: theme.typography.h3.fontSize,
+    },
+  },
+  typography: {
+    display: 'flex',
+    [theme.breakpoints.up('sm')]: {
+      justifyContent: 'flex-start',
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      justifyContent: 'center',
+    },
+  },
   buttons: {
     marginLeft: '1rem',
   },
@@ -133,26 +166,28 @@ const ProfilePage = () => {
               <Avatar className={classes.avatar}>B</Avatar>
             </Grid>
             <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
-              <Typography variant="h4" color="textPrimary" className={classes.centerText}>
+              <Typography
+                variant="h3"
+                component="span"
+                color="textPrimary"
+                className={classes.name}
+              >
                 {user.name}
               </Typography>
               <Typography
                 variant="subtitle2"
                 color="textSecondary"
                 gutterBottom
-                className={classes.centerText}
+                className={classes.typography}
               >
                 @{user.username}
               </Typography>
-              <Typography variant="body1" color="initial" className={classes.centerText}>
+              <Typography variant="body1" color="initial" className={classes.typography}>
                 Coder, cofee drinker, pet lover, #zelda FTW 😄
               </Typography>
             </Grid>
           </Grid>
         </Grid>
-        <Typography variant="body1" color="initial">
-          My Lists
-        </Typography>
         <Grid item>
           <Grid container wrap="wrap" spacing={2}>
             {lists.length !== 0 &&
