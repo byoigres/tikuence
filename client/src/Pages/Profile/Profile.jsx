@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -15,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import Layout from '../../components/Layout';
+import AddNewList from '../Lists/Add';
 import SEO from '../../components/SEO';
 import FabFloatingLink from '../../components/FabFloatingLink';
 
@@ -65,7 +67,10 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
+const ProfilePage = () => {
+  const {
+    props: { user, lists: initialLists = [], isMe, isMobile, showModal = false },
+  } = usePage();
   const classes = useStyles({ isMobile, isMe });
   const [lists, setLists] = useState(initialLists);
   const [currentPage, setCurrentPage] = useState(1);
@@ -239,6 +244,7 @@ const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
           });
         }}
       />
+      {showModal === 'add-list' && <AddNewList />}
     </>
   );
 };

@@ -67,7 +67,7 @@ const AddPage = () => {
 
   const handleClose = () => {
     setIsOpen(false);
-    Inertia.visit('/', { preserveScroll: true, preserveState: referer !== null });
+    Inertia.visit(referer || '/', { preserveScroll: true, preserveState: referer !== null });
   };
 
   function handleOnKeyPress(ev) {
