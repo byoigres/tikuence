@@ -16,10 +16,9 @@ import Divider from '@material-ui/core/Divider';
 import RestoreIcon from '@material-ui/icons/Restore';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
+import FabFloatingLink from '../components/FabFloatingLink';
 import AddNewList from './Lists/Add';
 import Profile from './Profile/Profile';
 import List from './Lists/List';
@@ -45,19 +44,8 @@ const useStyles = makeStyles((theme) => ({
     margin: '1rem',
     fontStyle: 'italic',
   },
-  createListContainer: ({ isMobile }) => ({
-    position: 'fixed',
-    bottom: '10px',
-    width: isMobile ? '100%' : '960px',
-    textAlign: 'right',
-  }),
-  createList: ({ isMobile }) => ({
-    position: 'absolute',
-    right: isMobile ? '10px' : '52px',
-    bottom: '0',
-  }),
 }));
-// 'recent', 'new', 'popular'
+
 const categories = [
   {
     id: 'recent',
@@ -206,22 +194,13 @@ const PageFeed = () => {
         </Grid>
       </Grid>
       {isAuthenticated && (
-        <div data-name="add-list" className={classes.createListContainer}>
-          <Fab
-            color="primary"
-            aria-label="add"
-            className={classes.createList}
-            onClick={() => {
-              Inertia.visit('/list/add', {
-                preserveScroll: true,
-                preserveState: true,
-                only: ['referer', 'showModal'],
-              });
-            }}
-          >
-            <AddIcon />
-          </Fab>
-        </div>
+        <FabFloatingLink onClick={() => {
+          Inertia.visit('/list/add', {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['referer', 'showModal'],
+          });
+        }} />
       )}
       {showModal === 'list' && list && <List list={list} />}
       {showModal === 'add-list' && <AddNewList />}

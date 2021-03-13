@@ -17,6 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import Layout from '../../components/Layout';
+import FabFloatingLink from '../../components/FabFloatingLink';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -233,6 +234,13 @@ const ProfilePage = ({ user, lists: initialLists = [], isMe, isMobile }) => {
             />
           </>
         )}
+        <FabFloatingLink onClick={() => {
+          Inertia.visit('/list/add', {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['referer', 'showModal'],
+          });
+        }} />
       </Paper>
     </Container>
   );
