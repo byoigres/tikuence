@@ -70,7 +70,7 @@ export async function isAuthenticated(req: Request, res: Response, next: NextFun
   req.Inertia.redirect('/auth/login')
 }
 
-function getReferer(req: Request) {
+export function getReferer(req: Request) {
   const { referer } = req.headers
 
   if (referer && req.method === 'GET') {
