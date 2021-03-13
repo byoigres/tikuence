@@ -160,12 +160,8 @@ const ProfilePage = () => {
           >
             {lists.length !== 0 &&
               lists.map((list) => (
-                <Grid key={`list-card-item-${list.id}`} item sm={3}>
-                  <Card
-                    className={classes.card}
-                    data-name="card"
-                    // style={{ flex: '1 45%', margin: '0.3rem' }}
-                  >
+                <Grid key={`list-card-item-${list.id}`} item xs={12} sm={3}>
+                  <Card className={classes.card}>
                     <CardActionArea
                       className={classes.actionArea}
                       href={`/list/${list.id}`}
