@@ -194,12 +194,14 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
                   <IconButton onClick={onDeleteButtonClick}>
                     <DeleteIcon />
                   </IconButton>
-                  <FormControlLabel
-                    control={
-                      <Switch checked={isSorting} onChange={onSortigChange} name="sorting" />
-                    }
-                    label="Sort videos"
-                  />
+                  {list.videos.length > 1 && (
+                    <FormControlLabel
+                      control={
+                        <Switch checked={isSorting} onChange={onSortigChange} name="sorting" />
+                      }
+                      label="Sort videos"
+                    />
+                  )}
                 </Grid>
               </>
             )}
