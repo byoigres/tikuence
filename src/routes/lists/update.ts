@@ -59,13 +59,13 @@ async function response(req: Request) {
   const { listId } = req.params
 
   req.flash('success', 'Title updated successfully')
-  req.Inertia.redirect(`/list/${listId}/edit`)
+  req.Inertia.redirect(`/list/${listId}/details`)
 }
 
 export default [
   isAuthenticated,
   ...validations,
-  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.listId}/edit`),
+  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.listId}/details`),
   updateList,
   response
 ]
