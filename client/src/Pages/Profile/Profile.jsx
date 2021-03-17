@@ -120,10 +120,13 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.visit(`/users/${user.username}/${currentPage}`, {
+      Inertia.visit(`/users/${user.username}`, {
         only: ['lists'],
         preserveScroll: true,
         preserveState: true,
+        headers: {
+          'X-Profile-Page': currentPage,
+        },
         onSuccess: ({ props: { lists: newLists } }) => {
           if (newLists.length > 0) {
             setLists([...lists, ...newLists]);

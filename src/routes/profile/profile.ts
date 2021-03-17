@@ -4,21 +4,13 @@ import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables } from '../../utils/knex'
 
 async function verifyParams(req: Request, res: Response, next: NextFunction) {
-  const params = req.params
-  const isInertiaRequest = req.headers['x-inertia']
   const pageSize = 16
   let offset = 0
   let page = 1
 
-  if (params.page && typeof params.page === 'string') {
-    // If a page is provided and is not an Inertia request,
-    // redirect to "/" without the page query param
-    if (isInertiaRequest === undefined) {
-      return req.Inertia.redirect(`/users/${params.username}`)
-    }
-
+  if (req.headers['x-profile-page'] && typeof req.headers['x-profile-page'] === 'string') {
     // TODO: try-catch when `page` is not a number
-    page = parseInt(params.page, 10)
+    page = parseInt(req.headers['x-profile-page'], 10)
 
     if (page <= 0) {
       page = 1
