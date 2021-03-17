@@ -79,10 +79,14 @@ const PageFeed = () => {
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.visit(`/feed/${category}/${currentPage}`, {
+      Inertia.visit('/', {
         only: ['lists'],
         preserveScroll: true,
         preserveState: true,
+        headers: {
+          'X-Feed-Category': category,
+          'X-Feed-Page': currentPage,
+        },
         onSuccess: ({ props: { lists: newLists } }) => {
           if (newLists.length > 0) {
             setLists([...lists, ...newLists]);
@@ -106,7 +110,11 @@ const PageFeed = () => {
             value={categoryIndex}
             onChange={(_, selectedCategoryIndex) => {
               if (selectedCategoryIndex !== categoryIndex) {
-                Inertia.visit(`/feed/${categories[selectedCategoryIndex].id}`);
+                Inertia.visit('/', {
+                  headers: {
+                    'X-Feed-Category': categories[selectedCategoryIndex].id,
+                  },
+                });
               }
             }}
             showLabels

@@ -3,35 +3,27 @@ import httpContext from 'express-http-context'
 import asyncRoutes from '../utils/asyncRoutes'
 import Knex, { Tables, iFeedResult } from '../utils/knex'
 
-async function verifyParams(req: Request, res: Response, next: NextFunction) {
-  const params = req.params
-  const query = req.query
+// TODO: validate headers
 
-  let category = params.category
-  let orderType = 'week'
-  const isInertiaRequest = req.headers['x-inertia']
+async function verifyParams(req: Request, res: Response, next: NextFunction) {
+  let category = req.headers['x-feed-category']
   const pageSize = 10
   let offset = 0
   let page = 1
+  const pageHeader = req.headers['x-feed-page']
+
+  console.log({
+    'X-Feed-Category': req.headers['x-feed-category'],
+    'X-Feed-Page': req.headers['x-feed-page']
+  })
 
   if (typeof category !== 'string') {
     category = 'recent'
   }
 
-  if (params.page && typeof params.page === 'string') {
-    // If a page is provided and is not an Inertia request,
-    // redirect to "/" without the page query param
-    if (isInertiaRequest === undefined) {
-      return req.Inertia.redirect(`/feed/${category}`)
-    }
-
-    if (typeof query.t === 'string') {
-      // TODO: try-catch when `t` is not a number
-      orderType = query.t
-    }
-
+  if (pageHeader && typeof pageHeader === 'string') {
     // TODO: try-catch when `page` is not a number
-    page = parseInt(params.page, 10)
+    page = parseInt(pageHeader, 10)
 
     if (page <= 0) {
       page = 1
@@ -42,7 +34,7 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
 
   httpContext.set('category', category)
   httpContext.set('offset', offset)
-  httpContext.set('orderType', orderType)
+  // httpContext.set('orderType', orderType)
 
   next()
 }

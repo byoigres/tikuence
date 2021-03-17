@@ -10,7 +10,6 @@ import images from './images'
 
 function bindRoutes(app: Express) {
   app.get('/', feed)
-  app.get('/feed/:category?/:page?', feed)
   app.use('/auth', auth)
   app.get('/images/:image', images)
   app.use('/list', lists)
