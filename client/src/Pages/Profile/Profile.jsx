@@ -15,6 +15,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
+import List from '../Lists/List';
 import Layout from '../../components/Layout';
 import AddNewList from '../Lists/Add';
 import SEO from '../../components/SEO';
@@ -200,9 +201,15 @@ const ProfilePage = () => {
                       href={`/list/${list.id}`}
                       onClick={(e) => {
                         e.preventDefault();
-                        Inertia.visit(`/list/${list.id}`, {
-                          preserveScroll: false,
-                        });
+                        Inertia.visit(
+                          // `/list/${list.id}?ref=${encodeURIComponent(window.location.pathname)}`,
+                          `/list/${list.id}?ref=profile`,
+                          {
+                            preserveScroll: true,
+                            preserveState: true,
+                            only: ['showModal', 'list', 'videos', 'referer'],
+                          }
+                        );
                       }}
                     >
                       <CardMedia
@@ -224,7 +231,7 @@ const ProfilePage = () => {
                         <Typography variant="subtitle2">{list.total_videos} videos</Typography>
                       </CardContent>
                     </CardActionArea>
-                    {isMe && (
+                    {isMe && false && (
                       <CardActions className={classes.cardActions}>
                         <Tooltip title="Edit">
                           <IconButton
@@ -271,6 +278,7 @@ const ProfilePage = () => {
           }}
         />
       )}
+      {showModal === 'list' && <List />}
       {showModal === 'add-list' && <AddNewList />}
     </>
   );

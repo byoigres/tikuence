@@ -60,8 +60,6 @@ const categories = [
   },
 ];
 
-// category = new
-
 const PageFeed = () => {
   const {
     props: {
@@ -69,7 +67,6 @@ const PageFeed = () => {
       isMobile,
       category,
       lists: initialLists = [],
-      list,
       showModal = false,
       user,
     },
@@ -124,6 +121,8 @@ const PageFeed = () => {
               lists.map((item) => (
                 <Fragment key={`list-item-${item.id}`}>
                   <ListItem
+                    component="a"
+                    href={`/list/${item.id}`}
                     key={item.id}
                     button
                     onClick={(e) => {
@@ -201,7 +200,7 @@ const PageFeed = () => {
           }}
         />
       )}
-      {showModal === 'list' && list && <List list={list} />}
+      {showModal === 'list' && <List />}
       {showModal === 'add-list' && <AddNewList />}
       {showModal === 'profile' && <Profile user={user} />}
       {showModal === 'login' && <Login />}

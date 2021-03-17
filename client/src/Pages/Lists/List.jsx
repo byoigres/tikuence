@@ -71,10 +71,7 @@ const Details = () => {
   const [loadingCount, setLoadingCount] = useState(initialVideos.length);
 
   function handleClose() {
-    Inertia.visit(
-      referer || '/',
-      referer === '/' ? { preserveScroll: true, preserveState: true } : {}
-    );
+    Inertia.visit(referer || '/', referer ? { preserveScroll: true, preserveState: true } : {});
   }
 
   useEffect(() => {
@@ -102,18 +99,21 @@ const Details = () => {
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.visit(`/list/${list.id}?from=${from}&page=${currentPage}`, {
-        only: ['from', 'videos', 'errors'],
-        preserveScroll: true,
-        preserveState: true,
-        onStart() {
-          setLoadingCount(100);
-        },
-        onSuccess({ props }) {
-          setLoadingCount(props.videos.length);
-          setVideos(props.videos);
-        },
-      });
+      Inertia.visit(
+        `/list/${list.id}?from=${from}&page=${currentPage}&ref=${encodeURIComponent(referer)}`,
+        {
+          only: ['from', 'videos', 'errors'],
+          preserveScroll: true,
+          preserveState: true,
+          onStart() {
+            setLoadingCount(100);
+          },
+          onSuccess({ props }) {
+            setLoadingCount(props.videos.length);
+            setVideos(props.videos);
+          },
+        }
+      );
     }
   }, [currentPage]);
 

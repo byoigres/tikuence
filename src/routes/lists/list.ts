@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import Knex, { Tables, iDetailsItem } from '../../utils/knex'
 
-async function verifyParams(req: Request, res: Response, next: NextFunction) {
+async function verifyParams(req: Request, _res: Response, next: NextFunction) {
   const query = req.query
   const params = req.params
   const isInertiaRequest = req.headers['x-inertia']
@@ -34,7 +34,7 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
-async function getListVideos(req: Request) {
+async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   const pageSize = httpContext.get('pageSize')
   const offset = httpContext.get('offset')
   const query = req.query
@@ -74,15 +74,45 @@ async function getListVideos(req: Request) {
     .limit(pageSize)
     .offset(offset)
 
+  httpContext.set('list', list)
+  httpContext.set('videos', videos)
+
+  next()
+}
+
+async function response(req: Request) {
+  const list = httpContext.get('list')
+  const videos = httpContext.get('videos')
+  const referer = req.query.ref
+  const isInertiaRequest = req.headers['x-inertia']
+  let component = 'Feed'
+
+  console.log(`>>>\nReferer to show: ${referer}\n<<<`)
+
+  /**
+   * By now only two pages load the Add New List component,
+   * if there are new pages to load this component validate
+   * the else from the following validation.
+   */
+  if (!!isInertiaRequest && referer && typeof referer === 'string') {
+    if (referer.startsWith('/users/')) {
+      component = 'Profile/Profile'
+    }
+
+    if (referer === 'profile') {
+      component = 'Lists/Details'
+    }
+  }
+
   req.Inertia.setViewData({ title: list.title }).render({
-    component: 'Feed',
+    component,
     props: {
       list,
       videos,
-      from: query.from || 0,
+      from: req.query.from || 0,
       showModal: 'list'
     }
   })
 }
 
-export default [verifyParams, getListVideos]
+export default [verifyParams, getListVideos, response]

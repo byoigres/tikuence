@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
-import List from '@material-ui/core/List';
+import MuiList from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -21,9 +21,10 @@ import Switch from '@material-ui/core/Switch';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { Inertia } from '@inertiajs/inertia';
 import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
-import { InertiaLink } from '@inertiajs/inertia-react';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
 import AddVideo from './AddVideo';
+import List from './List';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
 import UserAvatar from '../../components/UserAvatar';
@@ -61,7 +62,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Edit = ({ list, isMobile, isMe, showModal = false }) => {
+const Edit = () => {
+  const {
+    props: { details, isMobile, isMe, showModal = false },
+  } = usePage();
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -82,7 +86,7 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
   // HTTP handlers
   function onAddVideoClick(e) {
     e.preventDefault();
-    Inertia.visit(`/list/${list.id}/video/add`, {
+    Inertia.visit(`/list/${details.id}/video/add`, {
       only: ['listId', 'showModal', 'errors', 'referer'],
       preserveScroll: true,
       preserveState: true,
@@ -95,7 +99,7 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
   }
 
   function onRemove() {
-    Inertia.delete(`/list/${list.id}/video/${currentVideoToDelete}`, {
+    Inertia.delete(`/list/${details.id}/video/${currentVideoToDelete}`, {
       onStart() {
         setIsLoading(true);
       },
@@ -117,8 +121,8 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
   }
 
   function onDelete() {
-    Inertia.visit(`/list/${list.id}`, { method: 'delete' });
-    // Inertia.delete(`/list/${list.id}`, {
+    Inertia.visit(`/list/${details.id}`, { method: 'delete' });
+    // Inertia.delete(`/list/${details.id}`, {
     //   onStart() {
     //     setIsLoading(true);
     //   },
@@ -133,14 +137,10 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
     // });
   }
 
-  const onItemClick = (videoId) => {
-    Inertia.visit(`/list/${list.id}?from=${videoId}`);
-  };
-
   const onVideoDrop = ({ removedIndex, addedIndex }) => {
     if (removedIndex !== addedIndex) {
       Inertia.post(
-        `/list/${list.id}/video/${list.videos[removedIndex].id}`,
+        `/list/${details.id}/video/${details.videos[removedIndex].id}`,
         {
           oldOrderIndex: removedIndex + 1,
           newOrderIndex: addedIndex + 1,
@@ -176,14 +176,14 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
 
   return (
     <>
-      {list && (
+      {details && (
         <Grid container className={classes.mainGrid}>
           <Grid item md={4}>
-            <TitleForUpdate title={list.title} id={list.id} canEdit={isMe} />
-            {list.videos.length > 0 && (
+            <TitleForUpdate title={details.title} id={details.id} canEdit={isMe} />
+            {details && details.videos && details.videos.length > 0 && (
               <Typography component="span" variant="caption">
-                {`There ${list.videos.length > 1 ? 'are' : 'is'} ${list.videos.length} video${
-                  list.videos.length > 1 ? 's' : ''
+                {`There ${details.videos.length > 1 ? 'are' : 'is'} ${details.videos.length} video${
+                  details.videos.length > 1 ? 's' : ''
                 } in this list`}
               </Typography>
             )}
@@ -194,7 +194,7 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
                   <IconButton onClick={onDeleteButtonClick}>
                     <DeleteIcon />
                   </IconButton>
-                  {list.videos.length > 1 && (
+                  {details && details.videos && details.videos.length > 1 && (
                     <FormControlLabel
                       control={
                         <Switch checked={isSorting} onChange={onSortigChange} name="sorting" />
@@ -205,43 +205,43 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
                 </Grid>
               </>
             )}
-            <InertiaLink href={`/users/${list.user.username}`}>
+            <InertiaLink href={`/users/${details.user.username}`}>
               <Grid
                 container
                 alignItems="center"
                 style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
               >
-                <UserAvatar letter={list.user.username[0]} />
-                <Typography>&nbsp;@{list.user.username}</Typography>
+                <UserAvatar letter={details.user.username[0]} />
+                <Typography>&nbsp;@{details.user.username}</Typography>
               </Grid>
             </InertiaLink>
             <Divider variant="fullWidth" />
           </Grid>
           <Grid item md={8}>
-            {list.videos.length === 0 && (
+            {details.videos.length === 0 && (
               <Typography component="h6" variant="h6" color="secondary">
                 {isMe && `Your list is not visible to others because doesn't have any videos.`}
                 {!isMe && `This is an empty list, the creator hasn't added any videos yet.`}
               </Typography>
             )}
-            {list.videos.length > 0 && (
-              <List dense className={classes.list}>
+            {details.videos.length > 0 && (
+              <MuiList dense className={classes.list}>
                 <ContainerDraggable
                   dragHandleSelector=".drag-handle"
                   lockAxis="y"
                   onDrop={onVideoDrop}
                 >
-                  {list.videos.map((video, index) => (
+                  {details.videos.map((video, index) => (
                     <Draggable key={video.id}>
                       <ListItem
                         key={video.id}
+                        component={InertiaLink}
                         button
                         disabled={isLoading}
-                        href={`/list/${list.id}?from=${video.id}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onItemClick(video.id);
-                        }}
+                        href={`/list/${details.id}?ref=profile&from=${video.id}`}
+                        preserveScroll
+                        preserveState
+                        only={['showModal', 'list', 'videos', 'referer']}
                       >
                         <ListItemAvatar className={classes.listItemAvatar}>
                           <Avatar
@@ -320,13 +320,13 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
                           </ListItemSecondaryAction>
                         )}
                       </ListItem>
-                      {index !== list.videos.length - 1 && (
+                      {index !== details.videos.length - 1 && (
                         <Divider variant="fullWidth" component="li" />
                       )}
                     </Draggable>
                   ))}
                 </ContainerDraggable>
-              </List>
+              </MuiList>
             )}
           </Grid>
         </Grid>
@@ -338,7 +338,7 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
               color="primary"
               aria-label="add"
               className={classes.createVideoButton}
-              href={`/list/${list.id}/video/add`}
+              href={`/list/${details.id}/video/add`}
               onClick={onAddVideoClick}
             >
               <AddIcon />
@@ -364,6 +364,7 @@ const Edit = ({ list, isMobile, isMe, showModal = false }) => {
           />
         </>
       )}
+      {showModal === 'list' && <List />}
       {showModal === 'add-video' && <AddVideo />}
     </>
   );

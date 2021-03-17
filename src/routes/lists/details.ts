@@ -22,7 +22,7 @@ async function view(req: Request) {
     return req.Inertia.setViewData({ title: 'Edit list' }).render({
       component: 'Lists/Details',
       props: {
-        list: {
+        details: {
           id: list.id,
           title: list.title,
           user: {
