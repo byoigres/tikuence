@@ -3,22 +3,13 @@ import httpContext from 'express-http-context'
 import Knex, { Tables, iDetailsItem } from '../../utils/knex'
 
 async function verifyParams(req: Request, _res: Response, next: NextFunction) {
-  const query = req.query
-  const params = req.params
-  const isInertiaRequest = req.headers['x-inertia']
   const pageSize = 3
   let offset = 0
   let page = 1
 
-  if (query.page && typeof query.page === 'string') {
-    // If a page is provided and is not an Inertia request,
-    // redirect to "/" without the page query param
-    if (isInertiaRequest === undefined) {
-      return req.Inertia.redirect(`/list/${params.listId}`)
-    }
-
+  if (req.headers['x-list-page'] && typeof req.headers['x-list-page'] === 'string') {
     // TODO: try-catch when `page` is not a number
-    page = parseInt(query.page, 10)
+    page = parseInt(req.headers['x-list-page'], 10)
 
     if (page <= 0) {
       page = 1
@@ -37,7 +28,6 @@ async function verifyParams(req: Request, _res: Response, next: NextFunction) {
 async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   const pageSize = httpContext.get('pageSize')
   const offset = httpContext.get('offset')
-  const query = req.query
   const params = req.params
 
   const knex = Knex()
@@ -56,10 +46,10 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
 
   let fromOrderId = 0
 
-  if (query.from && typeof query.from === 'string') {
+  if (req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string') {
     const order = await knex<{ order_id: number }>(`${Tables.ListsVideos} AS LV`)
       .select('order_id')
-      .where('video_id', parseInt(query.from))
+      .where('video_id', parseInt(req.headers['x-list-from'], 10))
       .first()
 
     if (order) fromOrderId = order.order_id
@@ -83,34 +73,34 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
 async function response(req: Request) {
   const list = httpContext.get('list')
   const videos = httpContext.get('videos')
-  const referer = req.query.ref
+  const referer = req.headers['x-page-referer']
   const isInertiaRequest = req.headers['x-inertia']
   let component = 'Feed'
-
-  console.log(`>>>\nReferer to show: ${referer}\n<<<`)
-
-  /**
-   * By now only two pages load the Add New List component,
-   * if there are new pages to load this component validate
-   * the else from the following validation.
-   */
+  console.log('referer', referer)
   if (!!isInertiaRequest && referer && typeof referer === 'string') {
-    if (referer.startsWith('/users/')) {
-      component = 'Profile/Profile'
-    }
-
-    if (referer === 'profile') {
-      component = 'Lists/Details'
+    switch (referer) {
+      case 'details':
+        component = 'Lists/Details'
+        break
+      case 'profile':
+        component = 'Profile/Profile'
+        break
+      default:
+        component = 'Feed'
+        break
     }
   }
+
+  console.log('component', component)
 
   req.Inertia.setViewData({ title: list.title }).render({
     component,
     props: {
       list,
       videos,
-      from: req.query.from || 0,
+      from: req.headers['x-list-from'] || 0,
       showModal: 'list'
+      // pageReferer: referer || null
     }
   })
 }

@@ -58,7 +58,7 @@ const Transition = React.forwardRef((props, ref) => (
   <Slide direction="left" ref={ref} {...props} />
 ));
 
-const Details = () => {
+const Details = ({ pageReferer }) => {
   const {
     props: { list, videos: initialVideos, isMobile, referer, from = 0 },
   } = usePage();
@@ -99,21 +99,23 @@ const Details = () => {
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.visit(
-        `/list/${list.id}?from=${from}&page=${currentPage}&ref=${encodeURIComponent(referer)}`,
-        {
-          only: ['from', 'videos', 'errors'],
-          preserveScroll: true,
-          preserveState: true,
-          onStart() {
-            setLoadingCount(100);
-          },
-          onSuccess({ props }) {
-            setLoadingCount(props.videos.length);
-            setVideos(props.videos);
-          },
-        }
-      );
+      Inertia.visit(`/list/${list.id}`, {
+        only: ['from', 'videos', 'errors'],
+        preserveScroll: true,
+        preserveState: true,
+        headers: {
+          'X-List-From': from,
+          'X-List-Page': currentPage,
+          'X-Page-Referer': pageReferer,
+        },
+        onStart() {
+          setLoadingCount(100);
+        },
+        onSuccess({ props }) {
+          setLoadingCount(props.videos.length);
+          setVideos(props.videos);
+        },
+      });
     }
   }, [currentPage]);
 
