@@ -206,11 +206,14 @@ const ProfilePage = () => {
                         e.preventDefault();
                         Inertia.visit(
                           // `/list/${list.id}?ref=${encodeURIComponent(window.location.pathname)}`,
-                          `/list/${list.id}?ref=profile`,
+                          `/list/${list.id}`,
                           {
                             preserveScroll: true,
                             preserveState: true,
                             only: ['showModal', 'list', 'videos', 'referer'],
+                            headers: {
+                              'X-Page-Referer': 'profile',
+                            },
                           }
                         );
                       }}
@@ -281,7 +284,7 @@ const ProfilePage = () => {
           }}
         />
       )}
-      {showModal === 'list' && <List />}
+      {showModal === 'list' && <List pageReferer="profile" />}
       {showModal === 'add-list' && <AddNewList />}
     </>
   );

@@ -139,6 +139,9 @@ const PageFeed = () => {
                         preserveScroll: true,
                         preserveState: true,
                         only: ['showModal', 'list', 'videos', 'referer'],
+                        headers: {
+                          'X-Page-Referer': 'feed',
+                        },
                       });
                     }}
                   >
@@ -208,7 +211,7 @@ const PageFeed = () => {
           }}
         />
       )}
-      {showModal === 'list' && <List />}
+      {showModal === 'list' && <List pageReferer="feed" />}
       {showModal === 'add-list' && <AddNewList />}
       {showModal === 'profile' && <Profile user={user} />}
       {showModal === 'login' && <Login />}
