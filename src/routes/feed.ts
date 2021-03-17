@@ -11,11 +11,6 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
   let offset = 0
   let page = 1
 
-  console.log({
-    'X-Feed-Category': req.headers['x-feed-category'],
-    'X-Feed-Page': req.headers['x-feed-page']
-  })
-
   if (typeof category !== 'string') {
     category = 'recent'
   }

@@ -76,7 +76,7 @@ async function response(req: Request) {
   const referer = req.headers['x-page-referer']
   const isInertiaRequest = req.headers['x-inertia']
   let component = 'Feed'
-  console.log('referer', referer)
+
   if (!!isInertiaRequest && referer && typeof referer === 'string') {
     switch (referer) {
       case 'details':
@@ -90,8 +90,6 @@ async function response(req: Request) {
         break
     }
   }
-
-  console.log('component', component)
 
   req.Inertia.setViewData({ title: list.title }).render({
     component,
