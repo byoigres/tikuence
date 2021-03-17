@@ -10,7 +10,6 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
   const pageSize = 10
   let offset = 0
   let page = 1
-  const pageHeader = req.headers['x-feed-page']
 
   console.log({
     'X-Feed-Category': req.headers['x-feed-category'],
@@ -21,9 +20,9 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
     category = 'recent'
   }
 
-  if (pageHeader && typeof pageHeader === 'string') {
+  if (req.headers['x-feed-page'] && typeof req.headers['x-feed-page'] === 'string') {
     // TODO: try-catch when `page` is not a number
-    page = parseInt(pageHeader, 10)
+    page = parseInt(req.headers['x-feed-page'], 10)
 
     if (page <= 0) {
       page = 1
