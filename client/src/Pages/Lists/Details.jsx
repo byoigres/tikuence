@@ -237,7 +237,7 @@ const Edit = () => {
                         preserveScroll
                         preserveState
                         headers={{ 'X-List-From': video.id, 'X-Page-Referer': 'details' }}
-                        only={['showModal', 'list', 'videos', 'referer']}
+                        only={['showModal', 'list', 'videos', 'referer', 'from']}
                       >
                         <ListItemAvatar className={classes.listItemAvatar}>
                           <Avatar

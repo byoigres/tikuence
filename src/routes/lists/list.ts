@@ -96,9 +96,8 @@ async function response(req: Request) {
     props: {
       list,
       videos,
-      from: req.headers['x-list-from'] || 0,
+      from: req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string' ? parseInt(req.headers['x-list-from'], 10) : 0,
       showModal: 'list'
-      // pageReferer: referer || null
     }
   })
 }
