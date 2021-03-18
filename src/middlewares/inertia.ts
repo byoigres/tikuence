@@ -76,7 +76,7 @@ export function getReferer(req: Request) {
   if (referer && req.method === 'GET') {
     const refererUrl = new Url.URL(referer)
 
-    if (refererUrl.host === req.headers.host && refererUrl.pathname !== req.url) {
+    if (refererUrl.hostname === req.headers.host && refererUrl.pathname !== req.url) {
       return refererUrl.pathname
     }
   }
