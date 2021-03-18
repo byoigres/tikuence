@@ -58,7 +58,8 @@ const useStyles = makeStyles((theme) => ({
   }),
   mainGrid: {
     backgroundColor: 'white',
-    padding: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
 }));
 

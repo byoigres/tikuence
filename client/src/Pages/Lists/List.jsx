@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 import DialogContent from '@material-ui/core/DialogContent';
 import AppBar from '@material-ui/core/AppBar';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -20,15 +21,12 @@ import SEO from '../../components/SEO';
 import TikTokVideo from '../../components/TikTokVideo';
 import EndOfList from '../../components/EndOfList';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     flex: 1,
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-  },
-  name: {
-    padding: '8px 24px',
   },
   dialog: {},
   content: {
@@ -50,6 +48,12 @@ const useStyles = makeStyles(() => ({
     fontWeight: 'bold',
     margin: '1rem',
     fontStyle: 'italic',
+  },
+  mainGrid: {
+    backgroundColor: 'white',
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
 }));
 
@@ -147,25 +151,38 @@ const Details = ({ pageReferer }) => {
             <Typography variant="h6" className={classes.title}>
               View list
             </Typography>
-            <Tooltip title="View list">
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                onClick={(e) => {
-                  e.preventDefault();
-                  Inertia.visit(`/list/${list.id}/details`);
-                }}
-              >
-                <ListIcon />
-              </IconButton>
-            </Tooltip>
+            {pageReferer !== 'details' && (
+              <Tooltip title="View list details">
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    Inertia.visit(`/list/${list.id}/details`);
+                  }}
+                >
+                  <ListIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.content}>
-          <Typography component="h4" variant="h4" className={classes.name}>
-            {list.title}
-          </Typography>
+          <Grid container className={classes.mainGrid}>
+            <Grid item md={12}>
+              <Grid container direction="row" wrap="nowrap" alignItems="center">
+                <Typography
+                  component="h6"
+                  variant="h6"
+                  className={classes.inlineTitle}
+                  style={{ flexGrow: 1 }}
+                >
+                  {list.title}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
           {initialVideoOrderId > 1 && (
             <MuiAlert severity="info">
               Viewing list from video #{initialVideoOrderId}.&nbsp;
@@ -173,10 +190,7 @@ const Details = ({ pageReferer }) => {
                 href={`/list/${list.id}`}
                 only={['from', 'videos', 'errors']}
                 preserveScroll
-                // preserveState
                 headers={{
-                  // 'X-List-From': from,
-                  // 'X-List-Page': currentPage,
                   'X-Page-Referer': pageReferer,
                 }}
               >
