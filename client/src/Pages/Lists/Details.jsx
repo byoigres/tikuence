@@ -91,11 +91,6 @@ const Edit = () => {
       preserveScroll: true,
       preserveState: true,
     });
-    // Inertia.visit('/list/add', {
-    //   preserveScroll: true,
-    //   preserveState: true,
-    //   only: ['referer', 'showModal'],
-    // });
   }
 
   function onRemove() {
@@ -238,9 +233,10 @@ const Edit = () => {
                         component={InertiaLink}
                         button
                         disabled={isLoading}
-                        href={`/list/${details.id}?ref=profile&from=${video.id}`}
+                        href={`/list/${details.id}`}
                         preserveScroll
                         preserveState
+                        headers={{ 'X-List-From': video.id, 'X-Page-Referer': 'details' }}
                         only={['showModal', 'list', 'videos', 'referer']}
                       >
                         <ListItemAvatar className={classes.listItemAvatar}>
@@ -364,7 +360,7 @@ const Edit = () => {
           />
         </>
       )}
-      {showModal === 'list' && <List />}
+      {showModal === 'list' && <List pageReferer="details" />}
       {showModal === 'add-video' && <AddVideo />}
     </>
   );
