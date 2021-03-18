@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-react';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import Typography from '@material-ui/core/Typography';
 import MaterialList from '@material-ui/core/List';
@@ -129,21 +129,14 @@ const PageFeed = () => {
               lists.map((item) => (
                 <Fragment key={`list-item-${item.id}`}>
                   <ListItem
-                    component="a"
-                    href={`/list/${item.id}`}
                     key={item.id}
+                    component={InertiaLink}
                     button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      Inertia.visit(`/list/${item.id}`, {
-                        preserveScroll: true,
-                        preserveState: true,
-                        only: ['showModal', 'list', 'videos', 'referer'],
-                        headers: {
-                          'X-Page-Referer': 'feed',
-                        },
-                      });
-                    }}
+                    href={`/list/${item.id}`}
+                    preserveScroll
+                    preserveState
+                    headers={{ 'X-Page-Referer': 'feed' }}
+                    only={['showModal', 'list', 'videos', 'referer']}
                   >
                     <ListItemAvatar className={classes.listItemAvatar}>
                       <Avatar
