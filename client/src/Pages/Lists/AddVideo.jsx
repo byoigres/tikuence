@@ -46,16 +46,7 @@ const AddVideoPage = () => {
   }
 
   const handleClose = () => {
-    const visitOptions = {
-      preserveScroll: true,
-    };
-
-    if (referer) {
-      visitOptions.only = ['showModal'];
-    }
-
     setIsOpen(false);
-    Inertia.visit(`/list/${listId}/details`, visitOptions);
   };
 
   function onCreate() {
@@ -98,6 +89,17 @@ const AddVideoPage = () => {
       maxWidth="sm"
       open={isOpen}
       onClose={handleClose}
+      onExited={() => {
+        const visitOptions = {
+          preserveScroll: true,
+        };
+
+        if (referer) {
+          visitOptions.only = ['showModal'];
+        }
+
+        Inertia.visit(`/list/${listId}/details`, visitOptions);
+      }}
       TransitionComponent={Transition}
     >
       <AppBar className={classes.appBar}>
