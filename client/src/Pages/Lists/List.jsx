@@ -169,7 +169,17 @@ const Details = ({ pageReferer }) => {
           {initialVideoOrderId > 1 && (
             <MuiAlert severity="info">
               Viewing list from video #{initialVideoOrderId}.&nbsp;
-              <InertiaLink href={`/list/${list.id}`}>
+              <InertiaLink
+                href={`/list/${list.id}`}
+                only={['from', 'videos', 'errors']}
+                preserveScroll
+                // preserveState
+                headers={{
+                  // 'X-List-From': from,
+                  // 'X-List-Page': currentPage,
+                  'X-Page-Referer': pageReferer,
+                }}
+              >
                 Click here to view from beginning
               </InertiaLink>{' '}
               or return to the lists to select a specific video.
