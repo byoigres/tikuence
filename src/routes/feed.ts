@@ -70,7 +70,7 @@ async function response(req: Request) {
   const category = httpContext.get('category')
   const lists = httpContext.get('lists')
 
-  req.Inertia.setViewData({ title: 'Latest lists' }).render({
+  req.Inertia.setViewData({ title: 'Recent lists' }).render({
     component: 'Feed',
     props: {
       category,

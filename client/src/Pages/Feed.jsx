@@ -51,11 +51,13 @@ const categories = [
   {
     id: 'recent',
     label: 'Recent',
+    pageTitle: 'Recent lists',
     icon: <RestoreIcon />,
   },
   {
     id: 'new',
     label: 'New',
+    pageTitle: 'New lists',
     icon: <WbSunnyIcon />,
   },
 ];
@@ -100,7 +102,7 @@ const PageFeed = () => {
 
   return (
     <>
-      <SEO title="Latest lists" />
+      <SEO title={categories[categoryIndex].pageTitle} />
       <Grid
         container
         style={{ paddingLeft: '1rem', paddingRight: '1rem', backgroundColor: 'white' }}
