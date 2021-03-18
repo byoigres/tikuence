@@ -74,7 +74,8 @@ async function response(req: Request) {
     component: 'Feed',
     props: {
       category,
-      lists
+      lists,
+      showModal: false
     }
   })
 }

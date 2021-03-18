@@ -67,7 +67,6 @@ const AddPage = () => {
 
   const handleClose = () => {
     setIsOpen(false);
-    Inertia.visit(referer || '/', { preserveScroll: true, preserveState: referer !== null });
   };
 
   function handleOnKeyPress(ev) {
@@ -91,7 +90,11 @@ const AddPage = () => {
       maxWidth="sm"
       open={isOpen}
       onClose={handleClose}
+      onExited={() => {
+        Inertia.visit(referer || '/', { preserveScroll: true, preserveState: referer !== null });
+      }}
       TransitionComponent={Transition}
+      closeAfterTransition
     >
       <AppBar className={classes.appBar}>
         <Toolbar>

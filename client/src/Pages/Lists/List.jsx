@@ -63,6 +63,7 @@ const Details = ({ pageReferer }) => {
     props: { list, videos: initialVideos, isMobile, referer, from = 0 },
   } = usePage();
   const classes = useStyles();
+  const [isModalOpen, setIsModalOpen] = useState(true);
   const [videos, setVideos] = useState(initialVideos);
   const [items, setItems] = useState([]);
   const [initialVideoOrderId] = useState(initialVideos.length > 0 ? initialVideos[0].order_id : 0);
@@ -70,8 +71,8 @@ const Details = ({ pageReferer }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingCount, setLoadingCount] = useState(initialVideos.length);
 
-  function handleClose() {
-    Inertia.visit(referer || '/', referer ? { preserveScroll: true, preserveState: true } : {});
+  async function handleClose() {
+    setIsModalOpen(false);
   }
 
   useEffect(() => {
@@ -126,8 +127,14 @@ const Details = ({ pageReferer }) => {
         fullScreen={isMobile}
         fullWidth
         maxWidth="sm"
-        open
+        open={isModalOpen}
         onClose={handleClose}
+        onExited={() => {
+          Inertia.visit(
+            referer || '/',
+            referer ? { preserveScroll: true, preserveState: true, only: ['showModal'] } : {}
+          );
+        }}
         TransitionComponent={Transition}
         closeAfterTransition
         className={classes.dialog}
