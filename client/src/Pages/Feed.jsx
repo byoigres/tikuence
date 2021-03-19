@@ -67,7 +67,7 @@ const PageFeed = () => {
     props: {
       auth: { isAuthenticated },
       isMobile,
-      category,
+      category = 'recent',
       lists: initialLists = [],
       showModal = false,
       user,
