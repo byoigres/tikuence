@@ -54,6 +54,9 @@ const AddVideoPage = () => {
       `/list/${listId}/video`,
       { videoUrl },
       {
+        only: ['listId', 'showModal', 'errors', 'referer'],
+        preserveScroll: true,
+        preserveState: true,
         onStart() {
           setIsLoading(true);
         },
