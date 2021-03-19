@@ -205,6 +205,11 @@ const Register = () => {
                   autoComplete="off"
                   disabled={isLoading}
                   onChange={handleChange}
+                  onKeyPress={(e) => {
+                    if (!/^([A-Za-z0-9_.])$/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   inputProps={{
                     maxLength: 24,
                     autoComplete: 'off',
