@@ -10,6 +10,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import HelpIcon from '@material-ui/icons/Help';
 import Link from '@material-ui/core/Link';
 import { usePage } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
@@ -36,6 +40,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const HelpAdornment = ({ title = '', position = 'end' }) => (
+  <InputAdornment position={position}>
+    <Tooltip title={title} enterTouchDelay={50} leaveTouchDelay={4000}>
+      <HelpIcon />
+    </Tooltip>
+  </InputAdornment>
+);
+
 const Register = () => {
   const {
     props: { email, name, token, isExpired = false, isInvalid = false, isMobile, auth, errors },
@@ -43,6 +55,7 @@ const Register = () => {
   const classes = useStyles({ isMobile });
   const nameRef = useRef(null);
   const usernameRef = useRef(null);
+  const bioRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [values, setValues] = useState({
     name,
@@ -85,10 +98,12 @@ const Register = () => {
       <Container maxWidth="sm" disableGutters={isMobile}>
         <Paper elevation={0} className={classes.container}>
           {!auth.isAuthenticated && isExpired && (
-            <Typography variant="h4">This link has expired</Typography>
+            <Typography variant="h6">
+              This link has expired, try creating the account once again.
+            </Typography>
           )}
           {!auth.isAuthenticated && isInvalid && (
-            <Typography variant="h4">This link is invalid</Typography>
+            <Typography variant="h6">This link is invalid</Typography>
           )}
           {auth.isAuthenticated && (
             <Typography variant="h6">{`You are currently login as ${auth.credentials.email}`}</Typography>
@@ -119,7 +134,14 @@ const Register = () => {
                   autoComplete="off"
                   disabled={isLoading}
                   onChange={handleChange}
-                  inputProps={{ maxLength: 50, autoComplete: 'off', ref: nameRef }}
+                  InputProps={{
+                    maxLength: 50,
+                    autoComplete: 'off',
+                    ref: nameRef,
+                    endAdornment: (
+                      <HelpAdornment title="This is the name that will appears in your profile." />
+                    ),
+                  }}
                   fullWidth
                   autoFocus
                   variant="outlined"
@@ -133,7 +155,35 @@ const Register = () => {
                   autoComplete="off"
                   disabled={isLoading}
                   onChange={handleChange}
-                  inputProps={{ maxLength: 24, autoComplete: 'off', ref: usernameRef }}
+                  InputProps={{
+                    maxLength: 24,
+                    autoComplete: 'off',
+                    ref: usernameRef,
+                    endAdornment: (
+                      <HelpAdornment title="This is a unique identifier for your account, this will be part of your profile URL." />
+                    ),
+                  }}
+                  fullWidth
+                  variant="outlined"
+                />
+                <TextField
+                  name="bio"
+                  label="Bio"
+                  placeholder="Write a little bit of yourself (optional)"
+                  value={values.bio}
+                  error={errors.bio !== undefined}
+                  helperText={errors.bio}
+                  autoComplete="off"
+                  disabled={isLoading}
+                  onChange={handleChange}
+                  InputProps={{
+                    maxLength: 160,
+                    autoComplete: 'off',
+                    ref: bioRef,
+                    endAdornment: (
+                      <HelpAdornment title="This description will appears in your profile, be creative." />
+                    ),
+                  }}
                   fullWidth
                   variant="outlined"
                 />
@@ -177,6 +227,7 @@ const Register = () => {
                   Complete profile
                 </Button>
               </form>
+              {`Not interested in creating an account? `}
               <Link href="/">Back to the main page</Link>
             </>
           )}
