@@ -145,7 +145,12 @@ const ProfilePage = () => {
       <SEO title="My Profile" />
       <Grid
         container
-        style={{ paddingLeft: '1rem', paddingRight: '1rem', backgroundColor: 'white' }}
+        style={{
+          paddingLeft: '1rem',
+          paddingRight: '1rem',
+          paddingBottom: '1rem',
+          backgroundColor: 'white',
+        }}
       >
         <Grid item xs={12} md={12}>
           <Grid
@@ -272,8 +277,13 @@ const ProfilePage = () => {
               ))}
           </Grid>
         </Grid>
-        {isTheEnd && <EndOfList />}
-        {!isTheEnd && (
+        {lists.length === 0 && (
+          <EndOfList text={`@${user.username} hasn't created any lists yet`} />
+        )}
+        {isTheEnd && currentPage > 2 && (
+          <EndOfList text={`You reached the end of @${user.username}'s lists`} />
+        )}
+        {!isTheEnd && lists.length > 0 && (
           <>
             <div className={classes.loader}>
               <CircularProgress />
