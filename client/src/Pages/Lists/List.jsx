@@ -74,6 +74,7 @@ const Details = ({ pageReferer }) => {
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingCount, setLoadingCount] = useState(initialVideos.length);
+  const transtitionProps = {};
 
   async function handleClose() {
     setIsModalOpen(false);
@@ -124,6 +125,13 @@ const Details = ({ pageReferer }) => {
     }
   }, [currentPage]);
 
+  useEffect(() => {
+    if (referer) {
+      transtitionProps.TransitionComponent = Transition;
+      transtitionProps.closeAfterTransition = true;
+    }
+  }, []);
+
   return (
     <>
       <SEO title={list.title} />
@@ -139,8 +147,7 @@ const Details = ({ pageReferer }) => {
             referer ? { preserveScroll: true, preserveState: true, only: ['showModal'] } : {}
           );
         }}
-        TransitionComponent={Transition}
-        closeAfterTransition
+        {...transtitionProps}
         className={classes.dialog}
       >
         <AppBar position="relative">
