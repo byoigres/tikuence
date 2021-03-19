@@ -175,7 +175,7 @@ const PageFeed = () => {
                   <Divider variant="fullWidth" component="li" />
                 </Fragment>
               ))}
-            {isTheEnd && <EndOfList />}
+            {isTheEnd && <EndOfList text="You reached the end of the lists" />}
             {!isTheEnd && (
               <>
                 {!showModal && (
