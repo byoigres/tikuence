@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const EndOfList = ({ text = 'You reached the end of the lists' }) => {
+const EndOfList = ({ text }) => {
   const classes = useStyles();
 
   return (
