@@ -35,6 +35,7 @@ const validations = checkSchema({
   username: {
     in: 'body',
     // TODO: also check for A-Z-a-z0-9\s or valid characteres
+    // TODO: validate tiktok username for valid pattern
     isAlphanumeric: {
       errorMessage: 'Username must contains characters from A-Z, 0-1 numbers and underscores.'
     },
@@ -48,6 +49,7 @@ const validations = checkSchema({
     }
   },
   // TODO: validate new fields bio and tiktokUsername
+  // TODO: validate tiktok username for valid characters
   terms: {
     in: 'body',
     isBoolean: {
