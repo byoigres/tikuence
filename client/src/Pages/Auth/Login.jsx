@@ -60,7 +60,7 @@ const Login = ({ isLogin, isMobile }) => {
           </div>
           {!isLogin && (
             <Typography variant="body2">
-              {`By singing up you accept the `}
+              {`You will be asked to accept the `}
               <Link href="/legal/terms" target="_blank">
                 terms of service
               </Link>
@@ -68,7 +68,7 @@ const Login = ({ isLogin, isMobile }) => {
               <Link href="/legal/privacy" target="_blank">
                 privacy policy
               </Link>
-              .
+              {' in a later step.'}
             </Typography>
           )}
           <Divider flexItem style={{ height: 1, marginTop: '1rem', marginBottom: '1rem' }} />
