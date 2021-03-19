@@ -188,12 +188,12 @@ const ProfilePage = () => {
                 @{user.username}
               </Typography>
               <Typography variant="body1" color="initial" className={classes.typography}>
-                Coder, cofee drinker, pet lover, #zelda FTW 😄
+                {user.biography ? user.biography : 'No bio yet'}
               </Typography>
             </Grid>
           </Grid>
         </Grid>
-        <Grid item>
+        <Grid item xs={12}>
           <Grid container wrap="wrap" spacing={2}>
             {lists.length !== 0 &&
               lists.map((list) => (
