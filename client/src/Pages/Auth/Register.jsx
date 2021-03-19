@@ -12,7 +12,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 import HelpIcon from '@material-ui/icons/Help';
 import Link from '@material-ui/core/Link';
 import { usePage } from '@inertiajs/inertia-react';
@@ -56,10 +55,13 @@ const Register = () => {
   const nameRef = useRef(null);
   const usernameRef = useRef(null);
   const bioRef = useRef(null);
+  const tiktokUsernameRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [values, setValues] = useState({
     name,
     username: '',
+    bio: '',
+    tiktokUsername: '',
     terms: false,
     token,
   });
@@ -174,14 +176,45 @@ const Register = () => {
                   error={errors.bio !== undefined}
                   helperText={errors.bio}
                   autoComplete="off"
+                  multiline
+                  rows={4}
                   disabled={isLoading}
                   onChange={handleChange}
-                  InputProps={{
+                  inputProps={{
+                    'data-gramm_editor': 'false',
                     maxLength: 160,
                     autoComplete: 'off',
                     ref: bioRef,
+                  }}
+                  // eslint-disable-next-line react/jsx-no-duplicate-props
+                  InputProps={{
                     endAdornment: (
                       <HelpAdornment title="This description will appears in your profile, be creative." />
+                    ),
+                  }}
+                  fullWidth
+                  variant="outlined"
+                />
+                <TextField
+                  name="tiktokUsername"
+                  label="TikTok username"
+                  placeholder="(Optional)"
+                  value={values.tiktokUsername}
+                  error={errors.tiktokUsername !== undefined}
+                  helperText={errors.tiktokUsername}
+                  autoComplete="off"
+                  disabled={isLoading}
+                  onChange={handleChange}
+                  inputProps={{
+                    maxLength: 24,
+                    autoComplete: 'off',
+                    ref: tiktokUsernameRef,
+                  }}
+                  // eslint-disable-next-line react/jsx-no-duplicate-props
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">@</InputAdornment>,
+                    endAdornment: (
+                      <HelpAdornment title="This will create a link in your profile to your TikTok account." />
                     ),
                   }}
                   fullWidth

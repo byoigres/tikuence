@@ -30,7 +30,7 @@ async function verifyUser(req: Request, res: Response, next: NextFunction) {
   const params = req.params
   const knex = Knex()
 
-  const fields: string[] = ['id', 'name', 'username', 'biography']
+  const fields: string[] = ['id', 'name', 'username', 'biography', 'tiktok_username']
 
   if (req.isAuthenticated()) {
     fields.push('email')
@@ -47,7 +47,7 @@ async function verifyUser(req: Request, res: Response, next: NextFunction) {
     })
   }
 
-  httpContext.set('user', user)
+  httpContext.set('user', { ...user, tiktok_url: `https://www.tiktok.com/@${user.tiktok_username}` })
 
   next()
 }

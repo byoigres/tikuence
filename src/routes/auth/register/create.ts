@@ -9,6 +9,8 @@ interface iPayload {
   terms: boolean
   token: string
   username: string
+  bio?: string,
+  tiktokUsername?: string
 }
 
 const validations = checkSchema({
@@ -45,6 +47,7 @@ const validations = checkSchema({
       bail: true
     }
   },
+  // TODO: validate new fields bio and tiktokUsername
   terms: {
     in: 'body',
     isBoolean: {
@@ -131,6 +134,8 @@ async function create(req: Request, _res: Response, next: NextFunction) {
         hash: '',
         name: body.name,
         username: body.username,
+        biography: body.bio ? body.bio.replace(/\n/g, ' ') : null,
+        tiktok_username: body.tiktokUsername,
         created_at: new Date(),
         updated_at: new Date()
       })

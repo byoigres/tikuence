@@ -12,6 +12,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,6 +22,7 @@ import AddNewList from '../Lists/Add';
 import SEO from '../../components/SEO';
 import FabFloatingLink from '../../components/FabFloatingLink';
 import EndOfList from '../../components/EndOfList';
+import TikTokIcon from '../../components/TikTokIcon';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -190,6 +192,19 @@ const ProfilePage = () => {
               <Typography variant="body1" color="initial" className={classes.typography}>
                 {user.biography ? user.biography : 'No bio yet'}
               </Typography>
+              {user.tiktok_username && (
+                <div className={classes.typography}>
+                  <Button
+                    className={classes.button}
+                    startIcon={<TikTokIcon />}
+                    href={user.tiktok_url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
+                    {user.tiktok_username}
+                  </Button>
+                </div>
+              )}
             </Grid>
           </Grid>
         </Grid>
