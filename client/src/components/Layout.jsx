@@ -187,7 +187,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                             Inertia.get('/auth/logout');
                           }}
                         >
-                          Logout
+                          <Typography color="secondary">Logout</Typography>
                         </MenuItem>
                       </Menu>
                     </>
