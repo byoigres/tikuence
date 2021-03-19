@@ -30,7 +30,7 @@ async function verifyUser(req: Request, res: Response, next: NextFunction) {
   const params = req.params
   const knex = Knex()
 
-  const fields: string[] = ['id', 'name', 'username']
+  const fields: string[] = ['id', 'name', 'username', 'biography']
 
   if (req.isAuthenticated()) {
     fields.push('email')
