@@ -12,6 +12,9 @@ module.exports = {
       "@inertiajs/inertia-react",
       "styled-components",
       "@inertiajs/progress/src",
+      "@material-ui/core",
+      "@material-ui/icons",
+      "@material-ui/lab",
     ],
   },
   resolve: {
