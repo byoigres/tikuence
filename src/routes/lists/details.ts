@@ -1,7 +1,10 @@
 import { Request } from 'express'
+import httpContext from 'express-http-context'
 import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
+import { getIsFavorites } from '../lists/list'
 
 async function view(req: Request) {
+  const isFavorited: Boolean = httpContext.get('isFavorited')
   const params = req.params
 
   const knex = Knex()
@@ -25,6 +28,7 @@ async function view(req: Request) {
         details: {
           id: list.id,
           title: list.title,
+          is_favorited: isFavorited,
           user: {
             id: list.user_id,
             username: list.username
@@ -42,4 +46,4 @@ async function view(req: Request) {
   })
 }
 
-export default [view]
+export default [getIsFavorites, view]

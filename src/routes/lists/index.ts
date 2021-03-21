@@ -3,6 +3,7 @@ import { Router } from 'express'
 import list from './list'
 import deleteList from './delete'
 import create from './create'
+import favorite from './favorite'
 import details from './details'
 import update from './update'
 import add from './add'
@@ -22,6 +23,9 @@ router.get('/add', add)
 
 // Create new list endpoint
 router.post('/', create)
+
+// Create new list endpoint
+router.post('/:listId/favorite', favorite)
 
 // List details view
 router.get('/:listId/details', details)

@@ -52,7 +52,9 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
       .where('video_id', parseInt(req.headers['x-list-from'], 10))
       .first()
 
-    if (order) fromOrderId = order.order_id
+    if (order) {
+      fromOrderId = order.order_id
+    }
   }
 
   const videos = await knex(`${Tables.ListsVideos} AS LV`)
@@ -70,14 +72,40 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   next()
 }
 
+export async function getIsFavorites(req: Request, _res: Response, next: NextFunction) {
+  if (req.isAuthenticated()) {
+    const knex = Knex()
+
+    const isListFavorite = await knex(Tables.UsersFavorites)
+      .select(knex.raw('1 AS result'))
+      .where('list_id', req.params.listId)
+      .andWhere('user_id', req.user ? req.user.id : 0)
+      .first()
+
+    httpContext.set('isFavorited', !!isListFavorite)
+
+    return next()
+  }
+
+  httpContext.set('isFavorited', false)
+
+  next()
+}
+
 async function response(req: Request) {
   const list = httpContext.get('list')
   const videos = httpContext.get('videos')
-  const referer = req.headers['x-page-referer']
-  const isInertiaRequest = req.headers['x-inertia']
+  const isFavorited : Boolean = httpContext.get('isFavorited')
+  let referer = req.headers['x-page-referer']
+  const flashReferer = req.flash('x-page-referer')
+
+  if (flashReferer && flashReferer.length > 0) {
+    referer = flashReferer[0]
+  }
+
   let component = 'Feed'
 
-  if (!!isInertiaRequest && referer && typeof referer === 'string') {
+  if (referer && typeof referer === 'string') {
     switch (referer) {
       case 'details':
         component = 'Lists/Details'
@@ -94,12 +122,15 @@ async function response(req: Request) {
   req.Inertia.setViewData({ title: list.title }).render({
     component,
     props: {
-      list,
+      list: { ...list, is_favorited: isFavorited },
       videos,
-      from: req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string' ? parseInt(req.headers['x-list-from'], 10) : 0,
+      from:
+        req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string'
+          ? parseInt(req.headers['x-list-from'], 10)
+          : 0,
       showModal: 'list'
     }
   })
 }
 
-export default [verifyParams, getListVideos, response]
+export default [verifyParams, getListVideos, getIsFavorites, response]

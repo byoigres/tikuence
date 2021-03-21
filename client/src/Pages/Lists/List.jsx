@@ -20,6 +20,7 @@ import { Waypoint } from 'react-waypoint';
 import SEO from '../../components/SEO';
 import TikTokVideo from '../../components/TikTokVideo';
 import EndOfList from '../../components/EndOfList';
+import FavoriteButton from '../../components/FavoriteButton';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -64,7 +65,14 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ pageReferer }) => {
   const {
-    props: { list, videos: initialVideos, isMobile, referer, from = 0 },
+    props: {
+      auth: { isAuthenticated },
+      list,
+      videos: initialVideos,
+      isMobile,
+      referer,
+      from = 0,
+    },
   } = usePage();
   const classes = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -131,7 +139,7 @@ const Details = ({ pageReferer }) => {
       transtitionProps.closeAfterTransition = true;
     }
   }, []);
-
+  console.log({ pageReferer });
   return (
     <>
       <SEO title={list.title} />
@@ -144,7 +152,9 @@ const Details = ({ pageReferer }) => {
         onExited={() => {
           Inertia.visit(
             referer || '/',
-            referer ? { preserveScroll: true, preserveState: true, only: ['showModal'] } : {}
+            referer
+              ? { preserveScroll: true, preserveState: true, only: ['flash', 'showModal'] }
+              : {}
           );
         }}
         {...transtitionProps}
@@ -158,6 +168,46 @@ const Details = ({ pageReferer }) => {
             <Typography variant="h6" className={classes.title}>
               View list
             </Typography>
+            {isAuthenticated && (
+              <FavoriteButton
+                isFavorited={list.is_favorited}
+                onClick={() => {
+                  Inertia.post(
+                    `/list/${list.id}/favorite`,
+                    {},
+                    {
+                      headers: { 'X-Page-Referer': pageReferer },
+                      preserveScroll: true,
+                      preserveState: true,
+                      only: ['list', 'flash'],
+                    }
+                  );
+                }}
+              />
+            )}
+            {/* {isAuthenticated && (
+              <Tooltip title="Add to favorites">
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    Inertia.post(
+                      `/list/${list.id}/favorite`,
+                      {},
+                      {
+                        preserveScroll: true,
+                        preserveState: true,
+                        only: [],
+                      }
+                    );
+                  }}
+                >
+                  {list.is_favorited ? <StarIcon /> : <StarBorderIcon />}
+                </IconButton>
+              </Tooltip>
+            )} */}
             {pageReferer !== 'details' && (
               <Tooltip title="View list details">
                 <IconButton

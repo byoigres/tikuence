@@ -28,6 +28,7 @@ import List from './List';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
 import UserAvatar from '../../components/UserAvatar';
+import FavoriteButton from '../../components/FavoriteButton';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -65,7 +66,13 @@ const useStyles = makeStyles((theme) => ({
 
 const Edit = () => {
   const {
-    props: { details, isMobile, isMe, showModal = false },
+    props: {
+      auth: { isAuthenticated },
+      details,
+      isMobile,
+      isMe,
+      showModal = false,
+    },
   } = usePage();
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
@@ -183,24 +190,37 @@ const Edit = () => {
                 } in this list`}
               </Typography>
             )}
-            {isMe && (
-              <>
-                <Divider variant="fullWidth" />
-                <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
-                  <IconButton onClick={onDeleteButtonClick}>
-                    <DeleteIcon />
-                  </IconButton>
-                  {details && details.videos && details.videos.length > 1 && (
-                    <FormControlLabel
-                      control={
-                        <Switch checked={isSorting} onChange={onSortigChange} name="sorting" />
+            <Divider variant="fullWidth" />
+            <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
+              {isAuthenticated && (
+                <FavoriteButton
+                  isFavorited={details.is_favorited}
+                  onClick={() => {
+                    Inertia.post(
+                      `/list/${details.id}/favorite`,
+                      {},
+                      {
+                        headers: { 'X-Page-Referer': 'details' },
+                        preserveScroll: true,
+                        preserveState: true,
+                        only: ['details', 'flash'],
                       }
-                      label="Sort videos"
-                    />
-                  )}
-                </Grid>
-              </>
-            )}
+                    );
+                  }}
+                />
+              )}
+              {isMe && (
+                <IconButton onClick={onDeleteButtonClick}>
+                  <DeleteIcon />
+                </IconButton>
+              )}
+              {isMe && details && details.videos && details.videos.length > 1 && (
+                <FormControlLabel
+                  control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
+                  label="Sort videos"
+                />
+              )}
+            </Grid>
             <InertiaLink href={`/users/${details.user.username}`}>
               <Grid
                 container
