@@ -65,14 +65,7 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ pageReferer }) => {
   const {
-    props: {
-      auth: { isAuthenticated },
-      list,
-      videos: initialVideos,
-      isMobile,
-      referer,
-      from = 0,
-    },
+    props: { auth, list, videos: initialVideos, isMobile, referer, from = 0 },
   } = usePage();
   const classes = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -139,7 +132,7 @@ const Details = ({ pageReferer }) => {
       transtitionProps.closeAfterTransition = true;
     }
   }, []);
-  console.log({ pageReferer });
+
   return (
     <>
       <SEO title={list.title} />
@@ -168,7 +161,7 @@ const Details = ({ pageReferer }) => {
             <Typography variant="h6" className={classes.title}>
               View list
             </Typography>
-            {isAuthenticated && (
+            {auth.isAuthenticated && list.user_id !== auth.credentials.id && (
               <FavoriteButton
                 isFavorited={list.is_favorited}
                 onClick={() => {
@@ -185,29 +178,6 @@ const Details = ({ pageReferer }) => {
                 }}
               />
             )}
-            {/* {isAuthenticated && (
-              <Tooltip title="Add to favorites">
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    Inertia.post(
-                      `/list/${list.id}/favorite`,
-                      {},
-                      {
-                        preserveScroll: true,
-                        preserveState: true,
-                        only: [],
-                      }
-                    );
-                  }}
-                >
-                  {list.is_favorited ? <StarIcon /> : <StarBorderIcon />}
-                </IconButton>
-              </Tooltip>
-            )} */}
             {pageReferer !== 'details' && (
               <Tooltip title="View list details">
                 <IconButton

@@ -66,13 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Edit = () => {
   const {
-    props: {
-      auth: { isAuthenticated },
-      details,
-      isMobile,
-      isMe,
-      showModal = false,
-    },
+    props: { auth, details, isMobile, isMe, showModal = false },
   } = usePage();
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
@@ -165,12 +159,6 @@ const Edit = () => {
     setIsSorting(!isSorting);
   };
 
-  // const handleUserMenuClick = (id) => (event) => {
-  //   const newArray = [...anchorEl];
-  //   newArray[id] = event.currentTarget;
-  //   setAnchorEl(newArray);
-  // };
-
   const handleUserMenuClose = (id) => () => {
     const newArray = [...anchorEl];
     newArray[id] = null;
@@ -192,7 +180,7 @@ const Edit = () => {
             )}
             <Divider variant="fullWidth" />
             <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
-              {isAuthenticated && (
+              {auth.isAuthenticated && !isMe && (
                 <FavoriteButton
                   isFavorited={details.is_favorited}
                   onClick={() => {
