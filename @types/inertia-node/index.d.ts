@@ -10,7 +10,7 @@ declare module "inertia-node" {
     setViewData(viewData: object): this;
     shareProps(sharedProps: object): this;
     setStatusCode(statusCode: number): this;
-    setHeaders(headers: Array<object>): Function;
+    setHeaders(headers: object): this;
     render(args: IRenderData): void;
     redirect(url: string): void;
   }
