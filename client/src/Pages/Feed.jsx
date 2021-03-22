@@ -82,7 +82,7 @@ const PageFeed = () => {
   useEffect(() => {
     if (currentPage > 1) {
       Inertia.visit('/', {
-        only: ['lists'],
+        only: ['auth', 'flash', 'errors', 'lists'],
         preserveScroll: true,
         preserveState: true,
         headers: {
@@ -138,7 +138,7 @@ const PageFeed = () => {
                     preserveScroll
                     preserveState
                     headers={{ 'X-Page-Referer': 'feed' }}
-                    only={['showModal', 'list', 'videos', 'referer']}
+                    only={['auth', 'flash', 'errors', 'showModal', 'list', 'videos', 'referer']}
                   >
                     <ListItemAvatar className={classes.listItemAvatar}>
                       <Avatar
@@ -201,7 +201,7 @@ const PageFeed = () => {
             Inertia.visit('/list/add', {
               preserveScroll: true,
               preserveState: true,
-              only: ['referer', 'showModal'],
+              only: ['auth', 'flash', 'errors', 'referer', 'showModal'],
             });
           }}
         />

@@ -21,7 +21,7 @@ const knexOptions = {
   dialect: 'postgres',
   client: 'pg',
   version: '13.1',
-  debug: false,
+  debug: true,
   pool: { min: 0, max: 7 }
 }
 
@@ -38,6 +38,7 @@ export enum Tables {
   SocialProviders = 'public.social_providers',
   Users = 'public.users',
   UsersSocialProviders = 'public.users_social_providers',
+  UsersFavorites = 'public.users_favorites',
   Videos = 'public.videos',
   PendingUsers = 'public.pending_users'
 }

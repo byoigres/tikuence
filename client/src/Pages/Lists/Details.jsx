@@ -89,7 +89,7 @@ const Edit = () => {
   function onAddVideoClick(e) {
     e.preventDefault();
     Inertia.visit(`/list/${details.id}/video/add`, {
-      only: ['listId', 'showModal', 'errors', 'referer'],
+      only: ['auth', 'flash', 'errors', 'listId', 'showModal', 'referer'],
       preserveScroll: true,
       preserveState: true,
     });
@@ -178,11 +178,16 @@ const Edit = () => {
                 } in this list`}
               </Typography>
             )}
-            <Divider variant="fullWidth" />
+            <Divider
+              variant="fullWidth"
+              style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
+              data-name="abc"
+            />
             <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
               {auth.isAuthenticated && !isMe && (
                 <FavoriteButton
                   isFavorited={details.is_favorited}
+                  text="a"
                   onClick={() => {
                     Inertia.post(
                       `/list/${details.id}/favorite`,
@@ -191,7 +196,7 @@ const Edit = () => {
                         headers: { 'X-Page-Referer': 'details' },
                         preserveScroll: true,
                         preserveState: true,
-                        only: ['details', 'flash'],
+                        only: ['auth', 'flash', 'errors', 'details'],
                       }
                     );
                   }}
@@ -246,7 +251,16 @@ const Edit = () => {
                         preserveScroll
                         preserveState
                         headers={{ 'X-List-From': video.id, 'X-Page-Referer': 'details' }}
-                        only={['showModal', 'list', 'videos', 'referer', 'from']}
+                        only={[
+                          'auth',
+                          'flash',
+                          'errors',
+                          'showModal',
+                          'list',
+                          'videos',
+                          'referer',
+                          'from',
+                        ]}
                       >
                         <ListItemAvatar className={classes.listItemAvatar}>
                           <Avatar

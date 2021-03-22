@@ -19,7 +19,7 @@ export function prepareValidationForFlashMessage(redirectURL: string) {
   }
 }
 
-export function prepareValidationForErrorMessages(redirectURL : string | Function) {
+export function prepareValidationForErrorMessages(redirectURL: string | Function) {
   return async (req: Request, _res: Response, next: NextFunction) => {
     const result = validationResult(req)
 

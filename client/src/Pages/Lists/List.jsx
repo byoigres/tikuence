@@ -107,7 +107,7 @@ const Details = ({ pageReferer }) => {
   useEffect(() => {
     if (currentPage > 1) {
       Inertia.visit(`/list/${list.id}`, {
-        only: ['from', 'videos', 'errors'],
+        only: ['auth', 'flash', 'errors', 'from', 'videos'],
         preserveScroll: true,
         preserveState: true,
         headers: {
@@ -146,7 +146,11 @@ const Details = ({ pageReferer }) => {
           Inertia.visit(
             referer || '/',
             referer
-              ? { preserveScroll: true, preserveState: true, only: ['flash', 'showModal'] }
+              ? {
+                  preserveScroll: true,
+                  preserveState: true,
+                  only: ['auth', 'flash', 'errors', 'showModal'],
+                }
               : {}
           );
         }}
@@ -172,7 +176,7 @@ const Details = ({ pageReferer }) => {
                       headers: { 'X-Page-Referer': pageReferer },
                       preserveScroll: true,
                       preserveState: true,
-                      only: ['list', 'flash'],
+                      only: ['auth', 'flash', 'errors', 'list'],
                     }
                   );
                 }}
@@ -213,7 +217,7 @@ const Details = ({ pageReferer }) => {
           {initialVideoOrderId > 1 && (
             <InertiaLink
               href={`/list/${list.id}`}
-              only={['from', 'videos', 'errors']}
+              only={['auth', 'flash', 'errors', 'from', 'videos']}
               preserveScroll
               headers={{
                 'X-Page-Referer': pageReferer,

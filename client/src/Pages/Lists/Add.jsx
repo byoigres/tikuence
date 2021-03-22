@@ -44,7 +44,7 @@ const AddPage = () => {
       { title },
       {
         preserveScroll: true,
-        only: ['auth', 'errors', 'flash', 'isMobile', 'referer', 'displayAddNewList'],
+        only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'displayAddNewList'],
         onStart() {
           setIsLoading(true);
         },

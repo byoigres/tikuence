@@ -54,7 +54,7 @@ const AddVideoPage = () => {
       `/list/${listId}/video`,
       { videoUrl },
       {
-        only: ['listId', 'showModal', 'errors', 'referer'],
+        only: ['auth', 'flash', 'errors', 'listId', 'showModal', 'referer'],
         preserveScroll: true,
         preserveState: true,
         onStart() {
@@ -98,7 +98,7 @@ const AddVideoPage = () => {
         };
 
         if (referer) {
-          visitOptions.only = ['showModal'];
+          visitOptions.only = ['auth', 'flash', 'errors', 'showModal'];
         }
 
         Inertia.visit(`/list/${listId}/details`, visitOptions);

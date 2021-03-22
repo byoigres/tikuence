@@ -123,7 +123,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (currentPage > 1) {
       Inertia.visit(`/users/${user.username}`, {
-        only: ['lists'],
+        only: ['auth', 'flash', 'errors', 'lists'],
         preserveScroll: true,
         preserveState: true,
         headers: {
@@ -230,7 +230,15 @@ const ProfilePage = () => {
                           {
                             preserveScroll: true,
                             preserveState: true,
-                            only: ['showModal', 'list', 'videos', 'referer'],
+                            only: [
+                              'auth',
+                              'flash',
+                              'errors',
+                              'showModal',
+                              'list',
+                              'videos',
+                              'referer',
+                            ],
                             headers: {
                               'X-Page-Referer': 'profile',
                             },
@@ -304,7 +312,7 @@ const ProfilePage = () => {
             Inertia.visit('/list/add', {
               preserveScroll: true,
               preserveState: true,
-              only: ['referer', 'showModal'],
+              only: ['auth', 'flash', 'errors', 'referer', 'showModal'],
             });
           }}
         />
