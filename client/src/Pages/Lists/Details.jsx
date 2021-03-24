@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Edit = () => {
+const Details = () => {
   const {
     props: { auth, details, isMobile, isMe, showModal = false },
   } = usePage();
@@ -178,11 +178,7 @@ const Edit = () => {
                 } in this list`}
               </Typography>
             )}
-            <Divider
-              variant="fullWidth"
-              style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
-              data-name="abc"
-            />
+            <Divider variant="fullWidth" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }} />
             <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
               {auth.isAuthenticated && !isMe && (
                 <FavoriteButton
@@ -193,7 +189,7 @@ const Edit = () => {
                       `/list/${details.id}/favorite`,
                       {},
                       {
-                        headers: { 'X-Page-Referer': 'details' },
+                        headers: { 'X-Page-Referer': 'details-page' },
                         preserveScroll: true,
                         preserveState: true,
                         only: ['auth', 'flash', 'errors', 'details'],
@@ -389,6 +385,6 @@ const Edit = () => {
   );
 };
 
-Edit.layout = (page) => <Layout children={page} />;
+Details.layout = (page) => <Layout children={page} />;
 
-export default Edit;
+export default Details;

@@ -42,11 +42,13 @@ async function response(req: Request) {
   const { listId } = req.params
   const referer = req.headers['x-page-referer'] || ''
 
-  if (referer && referer === 'details') {
-    return req.Inertia.setHeaders({ 'X-Page-Referer': referer }).redirect(`/list/${listId}/details`)
+  if (referer && referer === 'details-page') {
+    // return req.Inertia.setHeaders({ 'X-Page-Referer': referer }).redirect(`/list/${listId}/details`)
+    return req.Inertia.redirect(`/list/${listId}/details`)
   } else {
     req.flash('x-page-referer', referer)
-    return req.Inertia.setHeaders({ 'X-Page-Referer': referer, 'X-Test-Header': 'test' }).redirect(`/list/${listId}`)
+    // return req.Inertia.setHeaders({ 'X-Page-Referer': referer, 'X-Test-Header': 'test' }).redirect(`/list/${listId}`)
+    return req.Inertia.redirect(`/list/${listId}`)
   }
 }
 

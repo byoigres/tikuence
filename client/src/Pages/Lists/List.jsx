@@ -176,7 +176,7 @@ const Details = ({ pageReferer }) => {
                       headers: { 'X-Page-Referer': pageReferer },
                       preserveScroll: true,
                       preserveState: true,
-                      only: ['auth', 'flash', 'errors', 'list'],
+                      only: ['auth', 'flash', 'errors', 'list', 'details'],
                     }
                   );
                 }}

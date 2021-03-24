@@ -66,9 +66,7 @@ Passport.use(
           const token = uuid()
           expires_at.setTime(expires_at.getTime() + 900000)
 
-          await knex(Tables.PendingUsers)
-            .where('email', email)
-            .del()
+          await knex(Tables.PendingUsers).where('email', email).del()
 
           await knex(Tables.PendingUsers).insert({
             email,
@@ -105,8 +103,22 @@ Passport.use(
 )
 
 Passport.use(
-  new LocalStrategy(function (username, password, done) {
-    return done(null, { username, password })
+  new LocalStrategy(async function (email, _password, done) {
+    const knex = Knex()
+
+    const user = await knex<iSocialProviderUser>(`${Tables.Users} AS U`)
+      .select('U.id', 'U.username', 'U.email', 'U.name')
+      .where('U.email', email)
+      .first()
+
+    return done(undefined, {
+      pendingRegistrationToken: undefined,
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      name: user.name,
+      provider: {}
+    })
   })
 )
 
