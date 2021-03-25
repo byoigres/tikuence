@@ -69,7 +69,7 @@ const PageFeed = () => {
       isMobile,
       category = 'recent',
       lists: initialLists = [],
-      showModal = false,
+      modal = false,
       user,
     },
   } = usePage();
@@ -138,7 +138,7 @@ const PageFeed = () => {
                     preserveScroll
                     preserveState
                     headers={{ 'X-Page-Referer': 'feed' }}
-                    only={['auth', 'flash', 'errors', 'showModal', 'list', 'videos', 'referer']}
+                    only={['auth', 'flash', 'errors', 'modal', 'list', 'videos', 'referer']}
                   >
                     <ListItemAvatar className={classes.listItemAvatar}>
                       <Avatar
@@ -178,7 +178,7 @@ const PageFeed = () => {
             {isTheEnd && <EndOfList text="You reached the end of the lists" />}
             {!isTheEnd && (
               <>
-                {!showModal && (
+                {!modal && (
                   <div className={classes.loader}>
                     <CircularProgress />
                   </div>
@@ -201,15 +201,18 @@ const PageFeed = () => {
             Inertia.visit('/list/add', {
               preserveScroll: true,
               preserveState: true,
-              only: ['auth', 'flash', 'errors', 'referer', 'showModal'],
+              headers: {
+                'X-Page-Referer': 'feed',
+              },
+              only: ['auth', 'flash', 'errors', 'referer', 'modal'],
             });
           }}
         />
       )}
-      {showModal === 'list' && <List pageReferer="feed" />}
-      {showModal === 'add-list' && <AddNewList />}
-      {showModal === 'profile' && <Profile user={user} />}
-      {showModal === 'login' && <Login />}
+      {modal && modal.modalName === 'list' && <List pageReferer="feed" />}
+      {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="feed" />}
+      {modal && modal.modalName === 'profile' && <Profile user={user} />}
+      {modal && modal.modalName === 'login' && <Login />}
     </>
   );
 };

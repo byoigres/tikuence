@@ -1,23 +1,22 @@
 import { Request } from 'express'
-import { isAuthenticated, getReferer } from '../../middlewares/inertia'
+import { isAuthenticated } from '../../middlewares/inertia'
 
 function response (req: Request) {
-  const referer = getReferer(req)
+  const referer = req.headers['x-page-referer']
   let component = 'Feed'
 
-  /**
-   * By now only two pages load the Add New List component,
-   * if there are new pages to load this component validate
-   * the else from the following validation.
-   */
-  if (referer && referer.startsWith('/users/')) {
-    component = 'Profile/Profile'
+  if (referer && typeof referer === 'string') {
+    if (referer === 'profile') {
+      component = 'Profile/Profile'
+    }
   }
 
   req.Inertia.setViewData({ title: 'Add new list' }).render({
     component,
     props: {
-      showModal: 'add-list'
+      modal: {
+        modalName: 'add-list'
+      }
     }
   })
 }

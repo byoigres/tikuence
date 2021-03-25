@@ -7,8 +7,10 @@ function response (req: Request) {
   req.Inertia.setViewData({ title: 'Add new video' }).render({
     component: 'Lists/Details',
     props: {
-      showModal: 'add-video',
-      listId: params.listId
+      modal: {
+        modalName: 'add-video',
+        listId: params.listId
+      }
     }
   })
 }

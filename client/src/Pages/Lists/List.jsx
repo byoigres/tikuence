@@ -65,7 +65,12 @@ const Transition = React.forwardRef((props, ref) => (
 
 const Details = ({ pageReferer }) => {
   const {
-    props: { auth, list, videos: initialVideos, isMobile, referer, from = 0 },
+    props: {
+      auth,
+      modal: { list, videos: initialVideos, from = 0 },
+      isMobile,
+      referer,
+    },
   } = usePage();
   const classes = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -107,7 +112,7 @@ const Details = ({ pageReferer }) => {
   useEffect(() => {
     if (currentPage > 1) {
       Inertia.visit(`/list/${list.id}`, {
-        only: ['auth', 'flash', 'errors', 'from', 'videos'],
+        only: ['auth', 'flash', 'errors', 'from', 'modal'],
         preserveScroll: true,
         preserveState: true,
         headers: {
@@ -119,19 +124,17 @@ const Details = ({ pageReferer }) => {
           setLoadingCount(100);
         },
         onSuccess({ props }) {
-          setLoadingCount(props.videos.length);
-          setVideos(props.videos);
+          setLoadingCount(props.modal.videos.length);
+          setVideos(props.modal.videos);
         },
       });
     }
   }, [currentPage]);
 
-  useEffect(() => {
-    if (referer) {
-      transtitionProps.TransitionComponent = Transition;
-      transtitionProps.closeAfterTransition = true;
-    }
-  }, []);
+  if (referer) {
+    transtitionProps.TransitionComponent = Transition;
+    transtitionProps.closeAfterTransition = true;
+  }
 
   return (
     <>
@@ -149,7 +152,7 @@ const Details = ({ pageReferer }) => {
               ? {
                   preserveScroll: true,
                   preserveState: true,
-                  only: ['auth', 'flash', 'errors', 'showModal'],
+                  only: ['auth', 'flash', 'errors', 'modal', 'isFavorited'],
                 }
               : {}
           );
@@ -176,7 +179,7 @@ const Details = ({ pageReferer }) => {
                       headers: { 'X-Page-Referer': pageReferer },
                       preserveScroll: true,
                       preserveState: true,
-                      only: ['auth', 'flash', 'errors', 'list', 'details'],
+                      only: ['auth', 'flash', 'errors', 'isFavorited', 'modal'],
                     }
                   );
                 }}

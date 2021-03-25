@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Details = () => {
   const {
-    props: { auth, details, isMobile, isMe, showModal = false },
+    props: { auth, details, id, title, isFavorited, user, videos, isMobile, isMe, modal = false },
   } = usePage();
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
@@ -80,23 +80,23 @@ const Details = () => {
     setIsRemoveVideoDialogOpen(false);
   }
 
-  function onRemoveButtonClick(id) {
+  function onRemoveButtonClick(identifier) {
     setIsRemoveVideoDialogOpen(true);
-    setCurrentVideoToDelete(id);
+    setCurrentVideoToDelete(identifier);
   }
 
   // HTTP handlers
   function onAddVideoClick(e) {
     e.preventDefault();
-    Inertia.visit(`/list/${details.id}/video/add`, {
-      only: ['auth', 'flash', 'errors', 'listId', 'showModal', 'referer'],
+    Inertia.visit(`/list/${id}/video/add`, {
+      only: ['auth', 'flash', 'errors', 'listId', 'modal', 'referer'],
       preserveScroll: true,
       preserveState: true,
     });
   }
 
   function onRemove() {
-    Inertia.delete(`/list/${details.id}/video/${currentVideoToDelete}`, {
+    Inertia.delete(`/list/${id}/video/${currentVideoToDelete}`, {
       onStart() {
         setIsLoading(true);
       },
@@ -118,8 +118,8 @@ const Details = () => {
   }
 
   function onDelete() {
-    Inertia.visit(`/list/${details.id}`, { method: 'delete' });
-    // Inertia.delete(`/list/${details.id}`, {
+    Inertia.visit(`/list/${id}`, { method: 'delete' });
+    // Inertia.delete(`/list/${id}`, {
     //   onStart() {
     //     setIsLoading(true);
     //   },
@@ -137,7 +137,7 @@ const Details = () => {
   const onVideoDrop = ({ removedIndex, addedIndex }) => {
     if (removedIndex !== addedIndex) {
       Inertia.post(
-        `/list/${details.id}/video/${details.videos[removedIndex].id}`,
+        `/list/${id}/video/${videos[removedIndex].id}`,
         {
           oldOrderIndex: removedIndex + 1,
           newOrderIndex: addedIndex + 1,
@@ -159,22 +159,22 @@ const Details = () => {
     setIsSorting(!isSorting);
   };
 
-  const handleUserMenuClose = (id) => () => {
+  const handleUserMenuClose = (identifier) => () => {
     const newArray = [...anchorEl];
-    newArray[id] = null;
+    newArray[identifier] = null;
     setAnchorEl(newArray);
   };
 
   return (
     <>
-      {details && (
+      {id && (
         <Grid container className={classes.mainGrid}>
           <Grid item md={4}>
-            <TitleForUpdate title={details.title} id={details.id} canEdit={isMe} />
-            {details && details.videos && details.videos.length > 0 && (
+            <TitleForUpdate title={title} id={id} canEdit={isMe} />
+            {videos && videos.length > 0 && (
               <Typography component="span" variant="caption">
-                {`There ${details.videos.length > 1 ? 'are' : 'is'} ${details.videos.length} video${
-                  details.videos.length > 1 ? 's' : ''
+                {`There ${videos.length > 1 ? 'are' : 'is'} ${videos.length} video${
+                  videos.length > 1 ? 's' : ''
                 } in this list`}
               </Typography>
             )}
@@ -182,11 +182,11 @@ const Details = () => {
             <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
               {auth.isAuthenticated && !isMe && (
                 <FavoriteButton
-                  isFavorited={details.is_favorited}
+                  isFavorited={isFavorited}
                   text="a"
                   onClick={() => {
                     Inertia.post(
-                      `/list/${details.id}/favorite`,
+                      `/list/${id}/favorite`,
                       {},
                       {
                         headers: { 'X-Page-Referer': 'details-page' },
@@ -203,47 +203,47 @@ const Details = () => {
                   <DeleteIcon />
                 </IconButton>
               )}
-              {isMe && details && details.videos && details.videos.length > 1 && (
+              {isMe && details && videos && videos.length > 1 && (
                 <FormControlLabel
                   control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
                   label="Sort videos"
                 />
               )}
             </Grid>
-            <InertiaLink href={`/users/${details.user.username}`}>
+            <InertiaLink href={`/users/${user.username}`}>
               <Grid
                 container
                 alignItems="center"
                 style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
               >
-                <UserAvatar letter={details.user.username[0]} />
-                <Typography>&nbsp;@{details.user.username}</Typography>
+                <UserAvatar letter={user.username[0]} />
+                <Typography>&nbsp;@{user.username}</Typography>
               </Grid>
             </InertiaLink>
             <Divider variant="fullWidth" />
           </Grid>
           <Grid item md={8}>
-            {details.videos.length === 0 && (
+            {videos.length === 0 && (
               <Typography component="h6" variant="h6" color="secondary">
                 {isMe && `Your list is not visible to others because doesn't have any videos.`}
                 {!isMe && `This is an empty list, the creator hasn't added any videos yet.`}
               </Typography>
             )}
-            {details.videos.length > 0 && (
+            {videos.length > 0 && (
               <MuiList dense className={classes.list}>
                 <ContainerDraggable
                   dragHandleSelector=".drag-handle"
                   lockAxis="y"
                   onDrop={onVideoDrop}
                 >
-                  {details.videos.map((video, index) => (
+                  {videos.map((video, index) => (
                     <Draggable key={video.id}>
                       <ListItem
                         key={video.id}
                         component={InertiaLink}
                         button
                         disabled={isLoading}
-                        href={`/list/${details.id}`}
+                        href={`/list/${id}`}
                         preserveScroll
                         preserveState
                         headers={{ 'X-List-From': video.id, 'X-Page-Referer': 'details' }}
@@ -251,7 +251,7 @@ const Details = () => {
                           'auth',
                           'flash',
                           'errors',
-                          'showModal',
+                          'modal',
                           'list',
                           'videos',
                           'referer',
@@ -335,7 +335,7 @@ const Details = () => {
                           </ListItemSecondaryAction>
                         )}
                       </ListItem>
-                      {index !== details.videos.length - 1 && (
+                      {index !== videos.length - 1 && (
                         <Divider variant="fullWidth" component="li" />
                       )}
                     </Draggable>
@@ -353,7 +353,7 @@ const Details = () => {
               color="primary"
               aria-label="add"
               className={classes.createVideoButton}
-              href={`/list/${details.id}/video/add`}
+              href={`/list/${id}/video/add`}
               onClick={onAddVideoClick}
             >
               <AddIcon />
@@ -379,8 +379,8 @@ const Details = () => {
           />
         </>
       )}
-      {showModal === 'list' && <List pageReferer="details" />}
-      {showModal === 'add-video' && <AddVideo />}
+      {modal && modal.modalName === 'list' && <List pageReferer="details" />}
+      {modal && modal.modalName === 'add-video' && <AddVideo />}
     </>
   );
 };

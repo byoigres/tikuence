@@ -111,7 +111,7 @@ const ProfilePage = () => {
       lists: initialLists = [],
       isMe,
       isMobile,
-      showModal = false,
+      modal = false,
       auth: { isAuthenticated },
     },
   } = usePage();
@@ -230,15 +230,7 @@ const ProfilePage = () => {
                           {
                             preserveScroll: true,
                             preserveState: true,
-                            only: [
-                              'auth',
-                              'flash',
-                              'errors',
-                              'showModal',
-                              'list',
-                              'videos',
-                              'referer',
-                            ],
+                            only: ['auth', 'flash', 'errors', 'modal', 'list', 'videos', 'referer'],
                             headers: {
                               'X-Page-Referer': 'profile',
                             },
@@ -312,13 +304,16 @@ const ProfilePage = () => {
             Inertia.visit('/list/add', {
               preserveScroll: true,
               preserveState: true,
-              only: ['auth', 'flash', 'errors', 'referer', 'showModal'],
+              headers: {
+                'X-Page-Referer': 'profile',
+              },
+              only: ['auth', 'flash', 'errors', 'referer', 'modal'],
             });
           }}
         />
       )}
-      {showModal === 'list' && <List pageReferer="profile" />}
-      {showModal === 'add-list' && <AddNewList />}
+      {modal && modal.modalName === 'list' && <List pageReferer="profile" />}
+      {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="profile" />}
     </>
   );
 };

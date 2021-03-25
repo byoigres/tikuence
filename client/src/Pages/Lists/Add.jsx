@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const AddPage = () => {
+const AddPage = ({ pageReferer }) => {
   const classes = useStyles();
   const {
     props: { isMobile, referer, errors },
@@ -44,7 +44,10 @@ const AddPage = () => {
       { title },
       {
         preserveScroll: true,
-        only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'displayAddNewList'],
+        only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'modal'],
+        headers: {
+          'X-Page-Referer': pageReferer,
+        },
         onStart() {
           setIsLoading(true);
         },
@@ -91,7 +94,11 @@ const AddPage = () => {
       open={isOpen}
       onClose={handleClose}
       onExited={() => {
-        Inertia.visit(referer || '/', { preserveScroll: true, preserveState: referer !== null });
+        Inertia.visit(referer || '/', {
+          preserveScroll: true,
+          preserveState: referer !== null,
+          only: ['auth', 'flash', 'errors', 'modal'],
+        });
       }}
       TransitionComponent={Transition}
       closeAfterTransition

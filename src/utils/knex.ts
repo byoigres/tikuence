@@ -21,7 +21,7 @@ const knexOptions = {
   dialect: 'postgres',
   client: 'pg',
   version: '13.1',
-  debug: true,
+  debug: false,
   pool: { min: 0, max: 7 }
 }
 

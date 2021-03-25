@@ -104,7 +104,9 @@ async function response(req: Request) {
       user,
       isMe,
       lists,
-      showModal: 'profile'
+      modal: {
+        modalName: false
+      }
     }
   })
 }

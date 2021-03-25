@@ -75,7 +75,7 @@ async function response(req: Request) {
     props: {
       category,
       lists,
-      showModal: false
+      modal: false
     }
   })
 }

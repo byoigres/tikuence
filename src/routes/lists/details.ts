@@ -25,18 +25,16 @@ async function view(req: Request) {
     return req.Inertia.setViewData({ title: 'Edit list' }).render({
       component: 'Lists/Details',
       props: {
-        details: {
-          id: list.id,
-          title: list.title,
-          is_favorited: isFavorited,
-          user: {
-            id: list.user_id,
-            username: list.username
-          },
-          videos: videos
+        id: list.id,
+        title: list.title,
+        isFavorited,
+        user: {
+          id: list.user_id,
+          username: list.username
         },
+        videos: videos,
         isMe: req.user ? req.user.id === list.user_id : false,
-        showModal: ''
+        modal: false
       }
     })
   }

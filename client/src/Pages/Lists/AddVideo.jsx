@@ -31,7 +31,12 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 const AddVideoPage = () => {
   const classes = useStyles();
   const {
-    props: { listId, errors, referer, isMobile },
+    props: {
+      modal: { listId },
+      errors,
+      referer,
+      isMobile,
+    },
   } = usePage();
   const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +59,7 @@ const AddVideoPage = () => {
       `/list/${listId}/video`,
       { videoUrl },
       {
-        only: ['auth', 'flash', 'errors', 'listId', 'showModal', 'referer'],
+        only: ['auth', 'flash', 'errors', 'listId', 'modal', 'referer'],
         preserveScroll: true,
         preserveState: true,
         onStart() {
@@ -98,7 +103,7 @@ const AddVideoPage = () => {
         };
 
         if (referer) {
-          visitOptions.only = ['auth', 'flash', 'errors', 'showModal'];
+          visitOptions.only = ['auth', 'flash', 'errors', 'modal'];
         }
 
         Inertia.visit(`/list/${listId}/details`, visitOptions);

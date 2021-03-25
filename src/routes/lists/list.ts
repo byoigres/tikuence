@@ -122,13 +122,15 @@ async function response(req: Request) {
   req.Inertia.setViewData({ title: list.title }).render({
     component,
     props: {
-      list: { ...list, is_favorited: isFavorited },
-      videos,
-      from:
-        req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string'
-          ? parseInt(req.headers['x-list-from'], 10)
-          : 0,
-      showModal: 'list'
+      modal: {
+        modalName: 'list',
+        list: { ...list, is_favorited: isFavorited },
+        videos,
+        from:
+          req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string'
+            ? parseInt(req.headers['x-list-from'], 10)
+            : 0
+      }
     }
   })
 }
