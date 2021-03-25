@@ -27,6 +27,7 @@
     "compression": "^1.7.4",
     "confidence": "^5.0.0",
     "connect-flash": "^0.1.1",
+    "connect-session-knex": "^2.0.0",
     "cookie-parser": "^1.4.5",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
