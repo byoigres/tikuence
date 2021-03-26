@@ -4,7 +4,8 @@ const manifest = {
       $env: 'APP_HOST'
     },
     port: {
-      $env: 'APP_PORT'
+      $env: 'APP_PORT',
+      $coerce: 'number'
     }
   },
   db: {
@@ -16,10 +17,12 @@ const manifest = {
     },
     pool: {
       min: {
-        $env: 'DATABASE_POOL_MIN'
+        $env: 'DATABASE_POOL_MIN',
+        $coerce: 'number'
       },
       max: {
-        $env: 'DATABASE_POOL_MAX'
+        $env: 'DATABASE_POOL_MAX',
+        $coerce: 'number'
       }
     }
   },
@@ -66,6 +69,27 @@ const manifest = {
     },
     bucketFolder: {
       $env: 'FIREBASE_STORAGE_BUCKET_FOLDER'
+    }
+  },
+  session: {
+    name: {
+      $env: 'SESION_COOKIE_NAME'
+    },
+    secret: {
+      $env: 'SESION_COOKIE_SECRET'
+    },
+    resave: {
+      $env: 'SESION_COOKIE_RESAVE'
+    },
+    saveUninitialized: {
+      $env: 'SESION_COOKIE_SAVE_UNINITIALIZED'
+    },
+    secure: {
+      $env: 'SESION_COOKIE_SECURE'
+    },
+    maxAge: {
+      $env: 'SESION_COOKIE_MAX_AGE',
+      $coerce: 'number'
     }
   },
   images: {
