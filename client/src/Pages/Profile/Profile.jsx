@@ -221,21 +221,21 @@ const ProfilePage = () => {
                   <Card className={classes.card}>
                     <CardActionArea
                       className={classes.actionArea}
-                      href={`/list/${list.id}`}
+                      href={`/list/${list.id}${list.total_videos > 0 ? '/' : '/details'}`}
                       onClick={(e) => {
                         e.preventDefault();
-                        Inertia.visit(
-                          // `/list/${list.id}?ref=${encodeURIComponent(window.location.pathname)}`,
-                          `/list/${list.id}`,
-                          {
+                        if (list.total_videos > 0) {
+                          Inertia.visit(`/list/${list.id}`, {
                             preserveScroll: true,
                             preserveState: true,
                             only: ['auth', 'flash', 'errors', 'modal', 'list', 'videos', 'referer'],
                             headers: {
                               'X-Page-Referer': 'profile',
                             },
-                          }
-                        );
+                          });
+                        } else {
+                          Inertia.visit(`/list/${list.id}/details`);
+                        }
                       }}
                     >
                       <CardMedia
