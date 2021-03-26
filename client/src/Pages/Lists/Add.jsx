@@ -94,11 +94,16 @@ const AddPage = ({ pageReferer }) => {
       open={isOpen}
       onClose={handleClose}
       onExited={() => {
-        Inertia.visit(referer || '/', {
-          preserveScroll: true,
-          preserveState: referer !== null,
-          only: ['auth', 'flash', 'errors', 'modal'],
-        });
+        Inertia.visit(
+          referer || '/',
+          referer
+            ? {
+                preserveScroll: true,
+                preserveState: referer !== null,
+                only: ['auth', 'flash', 'errors', 'modal'],
+              }
+            : {}
+        );
       }}
       TransitionComponent={Transition}
       closeAfterTransition
