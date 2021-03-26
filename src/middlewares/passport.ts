@@ -47,8 +47,15 @@ Passport.use(
           emails: {
             0: { value: email }
           },
+          photos,
           name
         } = profile
+        let picture = null
+
+        if (photos && photos.length > 0) {
+          picture = photos[0].value
+        }
+
         const knex = Knex()
 
         const user = await knex<iSocialProviderUser>(`${Tables.Users} AS U`)
@@ -83,6 +90,7 @@ Passport.use(
             email,
             username: '',
             name: '',
+            picture,
             provider: {}
           })
         } else {
@@ -92,6 +100,7 @@ Passport.use(
             email: user.email,
             username: user.username,
             name: user.name,
+            picture,
             provider: {
               google: profile.id
             }

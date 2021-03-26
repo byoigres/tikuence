@@ -16,6 +16,7 @@ declare global {
       email: string;
       username: string;
       name: string;
+      picture: string | null;
       provider: {
         google?: string;
         twitter?: string;

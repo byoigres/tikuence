@@ -168,7 +168,10 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                           aria-haspopup="true"
                           onClick={handleUserMenuClick}
                         >
-                          <UserAvatar letter={credentials.username[0]} />
+                          <UserAvatar
+                            image={credentials.picture}
+                            letter={credentials.username[0]}
+                          />
                         </IconButton>
                       </Tooltip>
                       <Menu
