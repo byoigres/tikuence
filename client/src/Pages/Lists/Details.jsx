@@ -192,7 +192,7 @@ const Details = () => {
                         headers: { 'X-Page-Referer': 'details-page' },
                         preserveScroll: true,
                         preserveState: true,
-                        only: ['auth', 'flash', 'errors', 'details'],
+                        only: ['auth', 'flash', 'errors', 'details', 'isFavorited'],
                       }
                     );
                   }}
