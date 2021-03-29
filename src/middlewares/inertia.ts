@@ -77,7 +77,12 @@ export function getReferer(req: Request) {
     const refererUrl = new Url.URL(referer)
 
     if (refererUrl.hostname === req.headers.host && refererUrl.pathname !== req.url) {
-      return refererUrl.pathname
+      const url = refererUrl.pathname
+      if (refererUrl.search) {
+        return url + refererUrl.search
+      }
+
+      return url
     }
   }
 
