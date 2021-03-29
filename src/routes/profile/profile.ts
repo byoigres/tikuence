@@ -4,9 +4,14 @@ import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables } from '../../utils/knex'
 
 async function verifyParams(req: Request, res: Response, next: NextFunction) {
+  let category = req.headers['x-profile-category'] || req.query.tab
   const pageSize = 16
   let offset = 0
   let page = 1
+
+  if (typeof category !== 'string') {
+    category = 'lists'
+  }
 
   if (req.headers['x-profile-page'] && typeof req.headers['x-profile-page'] === 'string') {
     // TODO: try-catch when `page` is not a number
@@ -19,6 +24,7 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
     offset = page * pageSize - pageSize
   }
 
+  httpContext.set('category', category)
   httpContext.set('page', page)
   httpContext.set('pageSize', pageSize)
   httpContext.set('offset', offset)
@@ -53,13 +59,14 @@ async function verifyUser(req: Request, res: Response, next: NextFunction) {
 }
 
 async function getAllListsFromUser(req: Request, res: Response, next: NextFunction) {
+  const category = httpContext.get('category')
   const pageSize = httpContext.get('pageSize')
   const offset = httpContext.get('offset')
   const knex = Knex()
   const user = httpContext.get('user')
   const isMe = req.isAuthenticated() && req.params.username === req.user.username
 
-  const lists = await knex(`${Tables.Lists} as L`)
+  let query = knex(`${Tables.Lists} as L`)
     .select(
       'L.id',
       'L.title',
@@ -81,11 +88,16 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
         .orderBy('V.created_at', 'DESC')
         .limit(1)}) AS "VT" ON TRUE`
     )
-    .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
-    .where('U.id', user.id)
-    .orderBy('VT.created_at', 'DESC')
-    .limit(pageSize)
-    .offset(offset)
+
+  if (category === 'lists') {
+    query = query.join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
+  } else { // favorites
+    query = query
+      .join(`${Tables.UsersFavorites} AS UF`, 'L.id', 'UF.list_id')
+      .join(`${Tables.Users} AS U`, 'UF.user_id', 'U.id')
+  }
+
+  const lists = await query.where('U.id', user.id).orderBy('VT.created_at', 'DESC').limit(pageSize).offset(offset)
 
   httpContext.set('lists', lists)
   httpContext.set('isMe', isMe)
@@ -94,6 +106,7 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
 }
 
 async function response(req: Request) {
+  const category = httpContext.get('category')
   const lists = httpContext.get('lists')
   const user = httpContext.get('user')
   const isMe = httpContext.get('isMe')
@@ -104,6 +117,7 @@ async function response(req: Request) {
       user,
       isMe,
       lists,
+      category,
       modal: {
         modalName: false
       }

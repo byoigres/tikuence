@@ -12,9 +12,14 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Tooltip from '@material-ui/core/Tooltip';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import ListIcon from '@material-ui/icons/List';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '../Lists/List';
 import Layout from '../../components/Layout';
@@ -118,16 +123,20 @@ const ProfilePage = () => {
   const classes = useStyles({ isMobile, isMe });
   const [lists, setLists] = useState(initialLists);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentTab, setCurrentTab] = useState(
+    new URLSearchParams(window.location.search).get('tab') || 'lists'
+  );
   const [isTheEnd, setIsTheEnd] = useState(false);
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.visit(`/users/${user.username}`, {
-        only: ['auth', 'flash', 'errors', 'lists'],
+      Inertia.visit(`/users/${user.username}?tab=${currentTab}`, {
+        only: ['auth', 'flash', 'errors', 'lists', 'category'],
         preserveScroll: true,
         preserveState: true,
         headers: {
           'X-Profile-Page': currentPage,
+          'X-Profile-Category': currentTab,
         },
         onSuccess: ({ props: { lists: newLists } }) => {
           if (newLists.length > 0) {
@@ -139,7 +148,7 @@ const ProfilePage = () => {
       });
     }
   }, [currentPage]);
-
+  console.log('lists', lists.length);
   return (
     <>
       <SEO title="My Profile" />
@@ -212,6 +221,33 @@ const ProfilePage = () => {
               )}
             </Grid>
           </Grid>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Paper square>
+            <Tabs
+              value={currentTab === 'lists' ? 0 : 1}
+              indicatorColor="primary"
+              variant="fullWidth"
+              textColor="primary"
+              onChange={(_e, id) => {
+                const tab = id === 0 ? 'lists' : 'favorited';
+                /// setCategoryIndex(id);
+                setCurrentTab(tab);
+                Inertia.visit(`/users/${user.username}?tab=${tab}`, {
+                  only: ['auth', 'flash', 'errors', 'lists', 'category'],
+                  headers: {
+                    'X-Profile-Category': id === 0 ? 'lists' : 'favorited',
+                  },
+                });
+              }}
+              aria-label="disabled tabs example"
+              style={{ marginBottom: '1rem' }}
+            >
+              <Tab icon={<ListIcon />} label="LISTS" />
+              <Tab icon={<FavoriteIcon />} label="FAVORITED" />
+            </Tabs>
+          </Paper>
         </Grid>
         <Grid item xs={12}>
           <Grid container wrap="wrap" spacing={2}>

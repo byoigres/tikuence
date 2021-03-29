@@ -151,8 +151,8 @@ const Details = ({ pageReferer }) => {
             referer
               ? {
                   preserveScroll: true,
-                  preserveState: true,
-                  only: ['auth', 'flash', 'errors', 'modal', 'isFavorited'],
+                  preserveState: !referer.includes('?tab=favorited'),
+                  only: ['auth', 'flash', 'errors', 'modal', 'isFavorited', 'lists'],
                 }
               : {}
           );
