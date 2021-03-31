@@ -75,8 +75,9 @@ async function verifyTokenExpiration(req: Request, res: Response, next: NextFunc
       email: string
       providerId: string
       identifier: string
+      picture: string
       expiresAt: Date
-    }>('email', 'provider_id AS providerId', 'identifier', 'expires_at AS expiresAt')
+    }>('email', 'provider_id AS providerId', 'identifier', 'profile_picture_url AS picture', 'expires_at AS expiresAt')
     .where('token', req.body.token)
     .first()
 
@@ -121,6 +122,7 @@ async function create(req: Request, _res: Response, next: NextFunction) {
       email: string
       providerId: string
       identifier: string
+      picture: string
       expiresAt: Date
     }
   >httpContext.get('pending')
@@ -138,6 +140,7 @@ async function create(req: Request, _res: Response, next: NextFunction) {
         username: body.username,
         biography: body.bio ? body.bio.replace(/\n/g, ' ') : null,
         tiktok_username: body.tiktokUsername,
+        profile_picture_url: pending.picture,
         created_at: new Date(),
         updated_at: new Date()
       })
@@ -161,7 +164,8 @@ async function create(req: Request, _res: Response, next: NextFunction) {
       name: body.name,
       provider: {
         google: pending.providerId
-      }
+      },
+      picture: pending.picture
     })
     return next()
   } catch (err) {

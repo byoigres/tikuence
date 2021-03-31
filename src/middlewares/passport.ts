@@ -80,6 +80,7 @@ Passport.use(
             name: name ? `${name.givenName} ${name.familyName}` : '',
             provider_id: PROVIDERS.GOOGLE,
             identifier: profile.id,
+            profile_picture_url: picture,
             expires_at,
             token
           })
