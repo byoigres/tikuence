@@ -316,7 +316,14 @@ const ProfilePage = () => {
           </Grid>
         </Grid>
         {lists.length === 0 && (
-          <EndOfList text={`@${user.username} hasn't created any lists yet`} />
+          <>
+            {currentTab === 'lists' && (
+              <EndOfList text={`@${user.username} hasn't created any lists yet`} />
+            )}
+            {currentTab === 'favorited' && (
+              <EndOfList text={`@${user.username} hasn't liked any lists yet`} />
+            )}
+          </>
         )}
         {isTheEnd && currentPage > 2 && (
           <>
