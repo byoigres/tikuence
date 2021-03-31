@@ -216,7 +216,7 @@ const Details = () => {
                 alignItems="center"
                 style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
               >
-                <UserAvatar letter={user.username[0]} />
+                <UserAvatar image={user.picture} letter={user.username[0]} />
                 <Typography>&nbsp;@{user.username}</Typography>
               </Grid>
             </InertiaLink>

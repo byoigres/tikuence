@@ -10,7 +10,7 @@ async function view(req: Request) {
   const knex = Knex()
 
   const list = await knex(`${Tables.Lists} AS L`)
-    .select('L.id', 'L.title', 'L.user_id', 'U.username')
+    .select('L.id', 'L.title', 'L.user_id', 'U.username', 'U.profile_picture_url AS picture')
     .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
     .where({ 'L.id': params.listId })
     .first()
@@ -30,7 +30,8 @@ async function view(req: Request) {
         isFavorited,
         user: {
           id: list.user_id,
-          username: list.username
+          username: list.username,
+          picture: list.picture
         },
         videos: videos,
         isMe: req.user ? req.user.id === list.user_id : false,

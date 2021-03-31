@@ -148,7 +148,7 @@ const ProfilePage = () => {
       });
     }
   }, [currentPage]);
-  console.log('lists', lists.length);
+
   return (
     <>
       <SEO title="My Profile" />
@@ -184,7 +184,9 @@ const ProfilePage = () => {
               xl={3}
               // style={{ outline: '1px solid blue', textAlign: 'center' }}
             >
-              <Avatar className={classes.avatar}>B</Avatar>
+              <Avatar src={user.picture} className={classes.avatar}>
+                {user.username[0].toUpperCase()}
+              </Avatar>
             </Grid>
             <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
               <Typography
@@ -317,7 +319,14 @@ const ProfilePage = () => {
           <EndOfList text={`@${user.username} hasn't created any lists yet`} />
         )}
         {isTheEnd && currentPage > 2 && (
-          <EndOfList text={`You reached the end of @${user.username}'s lists`} />
+          <>
+            {currentTab === 'lists' && (
+              <EndOfList text={`You reached the end of @${user.username}'s lists`} />
+            )}
+            {currentTab === 'favorited' && (
+              <EndOfList text={`You reached the end of @${user.username}'s favorite lists`} />
+            )}
+          </>
         )}
         {!isTheEnd && lists.length > 0 && (
           <>
