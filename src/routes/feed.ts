@@ -41,7 +41,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
   const knex = Knex()
 
   const lists = await knex<iFeedResult>(`${Tables.Lists} as L`)
-    .select<iFeedResult>('L.id', 'L.title', 'VT.thumbnail_name as thumbnail', 'U.email', 'VT.total as total_videos')
+    .select<iFeedResult>('L.url_hash AS id', 'L.title', 'VT.thumbnail_name as thumbnail', 'U.email', 'VT.total as total_videos')
     .joinRaw(
       `JOIN LATERAL (${knex
         .select(

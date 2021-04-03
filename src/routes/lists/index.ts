@@ -25,20 +25,20 @@ router.get('/add', add)
 router.post('/', create)
 
 // Create new list endpoint
-router.post('/:listId/favorite', favorite)
+router.post('/:hash/favorite', favorite)
 
 // List details view
-router.get('/:listId/details', details)
+router.get('/:hash/details', details)
 
 // Display lists videos view
-router.get('/:listId', list)
+router.get('/:hash', list)
 
-router.put('/:listId', update)
+router.put('/:hash', update)
 
 // Delete a list endpoint
-router.delete('/:listId', deleteList)
+router.delete('/:hash', deleteList)
 
 // list/:listId/video endpoints
-router.use('/:listId/video', video)
+router.use('/:hash/video', video)
 
 export default router

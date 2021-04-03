@@ -2,9 +2,11 @@ import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import Knex, { Tables, iListVideo } from '../../../utils/knex'
+import { setListIdAndHashToContext } from '../../../middlewares/utils'
 
 async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next: NextFunction) {
-  const { listId, videoId } = req.params
+  const listId = httpContext.get('listId')
+  const { videoId } = req.params
 
   // TODO: Verify separately the video exists and then it belongs to the user
   const knex = Knex()
@@ -22,7 +24,7 @@ async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next
   if (!list) {
     req.flash('warning', 'The video can not be deleted')
 
-    req.Inertia.redirect(`/list/${listId}/details`)
+    req.Inertia.redirect(`/list/${req.params.hash}/details`)
   }
 
   httpContext.set('order_id', list.order_id)
@@ -31,16 +33,19 @@ async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next
 }
 
 async function deleteList(req: Request, _res: Response, next: NextFunction) {
-  const { listId, videoId } = req.params
+  const listId = httpContext.get('listId')
+  const { videoId } = req.params
   const orderId = httpContext.get('order_id')
 
   const knex = Knex()
 
   // Delete the video
-  await knex(Tables.ListsVideos).where({
-    list_id: listId,
-    video_id: videoId
-  }).delete()
+  await knex(Tables.ListsVideos)
+    .where({
+      list_id: listId,
+      video_id: videoId
+    })
+    .delete()
 
   // Update the order id
   await knex(Tables.ListsVideos)
@@ -54,10 +59,8 @@ async function deleteList(req: Request, _res: Response, next: NextFunction) {
 }
 
 async function response(req: Request) {
-  const { listId } = req.params
-
   req.flash('success', 'Video removed successfully')
-  req.Inertia.redirect(`/list/${listId}/details`)
+  req.Inertia.redirect(`/list/${req.params.hash}/details`)
 }
 
-export default [isAuthenticated, verifyListBelongsToCurrentUser, deleteList, response]
+export default [isAuthenticated, setListIdAndHashToContext, verifyListBelongsToCurrentUser, deleteList, response]

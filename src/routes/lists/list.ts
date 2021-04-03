@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import Knex, { Tables, iDetailsItem } from '../../utils/knex'
+import { setListIdAndHashToContext } from '../../middlewares/utils'
 
 async function verifyParams(req: Request, _res: Response, next: NextFunction) {
   const pageSize = 3
@@ -28,14 +29,13 @@ async function verifyParams(req: Request, _res: Response, next: NextFunction) {
 async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   const pageSize = httpContext.get('pageSize')
   const offset = httpContext.get('offset')
-  const params = req.params
-
+  const listId = httpContext.get('listId')
   const knex = Knex()
 
   const list = await knex<iDetailsItem>(`${Tables.Lists} AS L`)
-    .select('L.id', 'L.title', 'U.id AS user_id')
+    .select('L.url_hash AS id', 'L.title', 'U.id AS user_id')
     .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
-    .where('L.id', params.listId)
+    .where('L.id', listId)
     .first()
 
   if (!list) {
@@ -50,6 +50,7 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
     const order = await knex<{ order_id: number }>(`${Tables.ListsVideos} AS LV`)
       .select('order_id')
       .where('video_id', parseInt(req.headers['x-list-from'], 10))
+      .andWhere('list_id', listId)
       .first()
 
     if (order) {
@@ -60,7 +61,7 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   const videos = await knex(`${Tables.ListsVideos} AS LV`)
     .select('LV.video_id AS id', 'V.tiktok_id', 'V.title', 'V.html', 'LV.order_id')
     .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
-    .where('LV.list_id', params.listId)
+    .where('LV.list_id', listId)
     .andWhere('LV.order_id', '>=', fromOrderId)
     .orderBy('LV.order_id', 'ASC')
     .limit(pageSize)
@@ -74,11 +75,12 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
 
 export async function getIsFavorites(req: Request, _res: Response, next: NextFunction) {
   if (req.isAuthenticated()) {
+    const listId = httpContext.get('listId')
     const knex = Knex()
 
     const isListFavorite = await knex(Tables.UsersFavorites)
       .select(knex.raw('1 AS result'))
-      .where('list_id', req.params.listId)
+      .where('list_id', listId)
       .andWhere('user_id', req.user ? req.user.id : 0)
       .first()
 
@@ -135,4 +137,4 @@ async function response(req: Request) {
   })
 }
 
-export default [verifyParams, getListVideos, getIsFavorites, response]
+export default [setListIdAndHashToContext, verifyParams, getListVideos, getIsFavorites, response]

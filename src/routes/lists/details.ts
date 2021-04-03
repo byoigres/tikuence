@@ -1,25 +1,26 @@
 import { Request } from 'express'
 import httpContext from 'express-http-context'
 import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
+import { setListIdAndHashToContext } from '../../middlewares/utils'
 import { getIsFavorites } from '../lists/list'
 
 async function view(req: Request) {
+  const listId = httpContext.get('listId')
   const isFavorited: Boolean = httpContext.get('isFavorited')
-  const params = req.params
 
   const knex = Knex()
 
   const list = await knex(`${Tables.Lists} AS L`)
-    .select('L.id', 'L.title', 'L.user_id', 'U.username', 'U.profile_picture_url AS picture')
+    .select('L.url_hash AS id', 'L.title', 'L.user_id', 'U.username', 'U.profile_picture_url AS picture')
     .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
-    .where({ 'L.id': params.listId })
+    .where({ 'L.id': listId })
     .first()
 
   if (list) {
     const videos = await knex<iProfileListVideos>(`${Tables.ListsVideos} AS LV`)
       .select('V.id', 'V.title', 'V.thumbnail_name', 'LV.order_id')
       .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
-      .where('LV.list_id', params.listId)
+      .where('LV.list_id', listId)
       .orderBy('LV.order_id')
 
     return req.Inertia.setViewData({ title: 'Edit list' }).render({
@@ -45,4 +46,4 @@ async function view(req: Request) {
   })
 }
 
-export default [getIsFavorites, view]
+export default [setListIdAndHashToContext, getIsFavorites, view]

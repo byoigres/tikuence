@@ -68,7 +68,7 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
 
   let query = knex(`${Tables.Lists} as L`)
     .select(
-      'L.id',
+      'L.url_hash AS id',
       'L.title',
       'VT.thumbnail_name as thumbnail',
       'U.email',

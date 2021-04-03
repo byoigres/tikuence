@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import profile from './profile'
-import list from './lists'
+// import list from './_lists'
 
 const router = Router({
   mergeParams: true
@@ -10,6 +10,6 @@ const router = Router({
 
 router.get('/', profile)
 
-router.get('/lists', list)
+// router.get('/lists', list)
 
 export default router

@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import Knex, { Tables } from '../../../utils/knex'
+import httpContext from 'express-http-context'
+import { setListIdAndHashToContext } from '../../../middlewares/utils'
 
 async function updateList(req: Request, _res: Response, next: NextFunction) {
-  const { listId, videoId } = req.params
+  const listId = httpContext.get('listId')
+  const { videoId } = req.params
   const { oldOrderIndex, newOrderIndex } = req.body
 
   const knex = Knex()
@@ -22,10 +25,8 @@ async function updateList(req: Request, _res: Response, next: NextFunction) {
 }
 
 async function response(req: Request) {
-  const { listId } = req.params
-
   req.flash('success', 'List updated')
-  req.Inertia.redirect(`/list/${listId}/details`)
+  req.Inertia.redirect(`/list/${req.params.hash}/details`)
 }
 
-export default [isAuthenticated, updateList, response]
+export default [isAuthenticated, setListIdAndHashToContext, updateList, response]

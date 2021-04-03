@@ -9,10 +9,11 @@ import Knex, { Tables } from '../../../utils/knex'
 import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import { fetchAndCreateVideoThumbnails } from '../../../utils/storage'
+import { setListIdAndHashToContext, getListIdFromHash } from '../../../middlewares/utils'
 
 interface iPayload {
   videoUrl: string
-  listId: number
+  hash: string
 }
 
 interface iTikTokOembed {
@@ -42,19 +43,19 @@ const regExpPathForWeb = /^\/@[A-Za-z0-9_.]+\/video\/([0-9]+)/
 const regExpPathForMobile = /^\/v\/([0-9]+).html/
 
 const validations = checkSchema({
-  listId: {
+  hash: {
     in: 'params',
-    isNumeric: {
-      errorMessage: 'The provided id of the list is not valid',
-      bail: true
+    matches: {
+      errorMessage: 'The provided hash of the list is not valid',
+      options: /[A-Za-z0-9_]{8,15}/
     },
-    toInt: true,
     custom: {
       // errorMessage: 'The id does not exists 1',
       options: async (value) => {
         const knex = Knex()
         try {
-          const list = await knex(Tables.Lists).where('id', value).first()
+          const listId = getListIdFromHash(value)
+          const list = await knex(Tables.Lists).where('id', listId).first()
 
           if (!list) {
             /* eslint prefer-promise-reject-errors: 0 */
@@ -86,7 +87,7 @@ const validations = checkSchema({
 })
 
 async function verifyIfListBelongsToCurrentUser(req: Request, _res: Response, next: NextFunction) {
-  const { listId } = req.params
+  const listId = httpContext.get('listId')
 
   const knex = Knex()
 
@@ -100,7 +101,7 @@ async function verifyIfListBelongsToCurrentUser(req: Request, _res: Response, ne
   if (!list) {
     req.flash('warning', 'The list does not belong to the current user')
 
-    return req.Inertia.redirect(`/list/${listId}/video/add`)
+    return req.Inertia.redirect(`/list/${req.params.hash}/video/add`)
   }
 
   next()
@@ -108,15 +109,13 @@ async function verifyIfListBelongsToCurrentUser(req: Request, _res: Response, ne
 
 async function validateUrl(req: Request, _res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
-  const { listId } = req.params
-
   let parsedUrl: url.URL
 
   try {
     parsedUrl = new url.URL(payload.videoUrl)
   } catch (err) {
     req.flash('error', `That doesn't seems to be a valid url.`) /* eslint quotes: 0 */
-    return req.Inertia.redirect(`/list/${listId}/video/add`)
+    return req.Inertia.redirect(`/list/${req.params.hash}/video/add`)
   }
 
   // If the url.URL is a shorturl, get the "real" url by following the redirection
@@ -135,7 +134,7 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
 
     if (!parsedPath) {
       req.flash('error', `That doesn't seems to be a TikTok video url.URL`) /* eslint quotes: 0 */
-      return req.Inertia.redirect(`/list/${listId}/video/add`)
+      return req.Inertia.redirect(`/list/${req.params.hash}/video/add`)
     }
 
     const [, tiktokId] = parsedPath
@@ -152,7 +151,7 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
     })
   )
 
-  return req.Inertia.redirect(`/list/${listId}/video/add`)
+  return req.Inertia.redirect(`/list/${req.params.hash}/video/add`)
 }
 
 async function fetchVideoInfo(req: Request, _res: Response, next: NextFunction) {
@@ -178,7 +177,7 @@ async function extractAuthorFromUrl(req: Request, _res: Response, next: NextFunc
 }
 
 async function verifyIfVideoExistinList(req: Request, _res: Response, next: NextFunction) {
-  const { listId } = req.params
+  const listId = httpContext.get('listId')
   const authorUsername: string = httpContext.get('authorUsername')
   const tiktokId = httpContext.get('tiktokId')
   const knex = Knex()
@@ -203,7 +202,7 @@ async function verifyIfVideoExistinList(req: Request, _res: Response, next: Next
 
   if (video) {
     req.flash('info', 'The video you are trying to add is already on the list')
-    return req.Inertia.redirect(`/list/${listId}/details`)
+    return req.Inertia.redirect(`/list/${req.params.hash}/details`)
   }
 
   next()
@@ -239,7 +238,7 @@ async function createAuthor(req: Request, _res: Response, next: NextFunction) {
 }
 
 async function createVideo(req: Request, _res: Response, next: NextFunction) {
-  const { listId } = req.params
+  const listId = httpContext.get('listId')
   const tiktokId: string = httpContext.get('tiktokId')
   const authorId = httpContext.get('authorId')
   const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
@@ -328,17 +327,16 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
 }
 
 async function response(req: Request) {
-  const { listId } = req.params
-
   req.flash('success', 'Video added successfully')
 
-  req.Inertia.redirect(`/list/${listId}/details`)
+  req.Inertia.redirect(`/list/${req.params.hash}/details`)
 }
 
 export default asyncRoutes([
   isAuthenticated,
+  setListIdAndHashToContext,
   ...validations,
-  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.listId}/video/add`),
+  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.hash}/video/add`),
   verifyIfListBelongsToCurrentUser,
   validateUrl,
   fetchVideoInfo,

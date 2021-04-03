@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Details = () => {
   const {
-    props: { auth, details, id, title, isFavorited, user, videos, isMobile, isMe, modal = false },
+    props: { auth, id, title, isFavorited, user, videos, isMobile, isMe, modal = false },
   } = usePage();
   const classes = useStyles({ isMobile });
   const [isLoading, setIsLoading] = useState(false);
@@ -203,7 +203,7 @@ const Details = () => {
                   <DeleteIcon />
                 </IconButton>
               )}
-              {isMe && details && videos && videos.length > 1 && (
+              {isMe && videos && videos.length > 1 && (
                 <FormControlLabel
                   control={<Switch checked={isSorting} onChange={onSortigChange} name="sorting" />}
                   label="Sort videos"

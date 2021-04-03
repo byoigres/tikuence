@@ -1,24 +1,26 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
+import httpContext from 'express-http-context'
 import { prepareValidationForFlashMessage } from '../../middlewares/validations'
 import asyncRoutes from '../../utils/asyncRoutes'
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
+import { setListIdAndHashToContext, getListIdFromHash } from '../../middlewares/utils'
 
 const validations = checkSchema({
-  listId: {
+  hash: {
     in: 'params',
-    isNumeric: {
-      errorMessage: 'The provided id of the list is not valid',
-      bail: true
+    matches: {
+      errorMessage: 'The provided hash of the list is not valid',
+      options: /[A-Za-z0-9_]{8,15}/
     },
-    toInt: true,
     custom: {
       errorMessage: 'The id does not exists 1',
-      options: async value => {
+      options: async (value) => {
         const knex = Knex()
         try {
-          const list = await knex(Tables.Lists).where('id', value).first()
+          const listId = getListIdFromHash(value)
+          const list = await knex(Tables.Lists).where('id', listId).first()
           if (!list) {
             /* eslint prefer-promise-reject-errors: 0 */
             return Promise.reject('The list does not exists 1')
@@ -32,7 +34,8 @@ const validations = checkSchema({
 })
 
 async function verifyIfListBelongsToCurrentUser(req: Request, _res: Response, next: NextFunction) {
-  const { listId } = req.params
+  const listId = httpContext.get('listId')
+  const hash = httpContext.get('hash')
 
   const knex = Knex()
 
@@ -46,18 +49,18 @@ async function verifyIfListBelongsToCurrentUser(req: Request, _res: Response, ne
   if (!list) {
     req.flash('warning', 'The list does not belong to the current user')
 
-    return req.Inertia.redirect(`/list/${listId}/video/add`)
+    return req.Inertia.redirect(`/list/${hash}/details`)
   }
 
   next()
 }
 
 async function deleteList(req: Request, res: Response, next: NextFunction) {
-  const params = req.params
+  const listId = httpContext.get('listId')
 
   const knex = Knex()
 
-  await knex(Tables.Lists).where('id', params.listId).delete()
+  await knex(Tables.Lists).where('id', listId).delete()
 
   next()
 }
@@ -70,9 +73,10 @@ async function response(req: Request) {
 
 export default asyncRoutes([
   isAuthenticated,
+  setListIdAndHashToContext,
   ...validations,
   verifyIfListBelongsToCurrentUser,
-  prepareValidationForFlashMessage('/profile/lists'),
+  prepareValidationForFlashMessage((req: Request) => `/list/${req.params.hash}/details`),
   deleteList,
   response
 ])

@@ -92,6 +92,18 @@ const manifest = {
       $coerce: 'number'
     }
   },
+  url: {
+    salt: {
+      $env: 'URL_HASH_SALT'
+    },
+    minLength: {
+      $env: 'URL_HASH_MIN_LENGTH',
+      $coerce: 'number'
+    },
+    alphabet: {
+      $env: 'URL_HASH_ALPHABET'
+    }
+  },
   images: {
     path: {
       $env: 'IMAGES_PATH'

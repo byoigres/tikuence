@@ -4,6 +4,7 @@ import { checkSchema } from 'express-validator'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
+import UrlHash from '../../utils/urlHash'
 
 interface iPayload {
   title: string
@@ -25,32 +26,47 @@ const validations = checkSchema({
 async function createList(req: Request, res: Response, next: NextFunction) {
   const payload = <iPayload>req.body
 
+  // const hashids = new Hashids(config.get('/url/salt'), config.get('/url/minLength'), config.get('/url/alphabet'))
+
   const knex = Knex()
 
-  const listId: Number = await knex(Tables.Lists)
-    .insert({
-      title: payload.title,
-      user_id: req.user ? req.user.id : null
-    })
-    .returning('id')
+  const transaction = await knex.transaction()
 
-  httpContext.set('listId', listId)
+  try {
+    const [listId] = await knex(Tables.Lists)
+      .transacting(transaction)
+      .insert({
+        title: payload.title,
+        user_id: req.user ? req.user.id : null
+      })
+      .returning<[number]>('id')
+
+    const urlHash = UrlHash.encode(listId)
+
+    await knex(Tables.Lists).transacting(transaction).update({
+      url_hash: urlHash
+    }).where({
+      id: listId
+    })
+
+    await transaction.commit()
+
+    httpContext.set('urlHash', urlHash)
+  } catch (err) {
+    await transaction.rollback()
+    req.flash('error', 'Something went wrong... try again')
+    return req.Inertia.redirect(`/auth/register/${req.body.token}`)
+  }
 
   next()
 }
 
 function response(req: Request) {
-  const listId: Number = httpContext.get('listId')
+  const urlHash: Number = httpContext.get('urlHash')
 
   req.flash('success', 'List created successfully')
 
-  req.Inertia.redirect(`/list/${listId}/details`)
+  req.Inertia.redirect(`/list/${urlHash}/details`)
 }
 
-export default [
-  isAuthenticated,
-  ...validations,
-  prepareValidationForErrorMessages('/list/add'),
-  createList,
-  response
-]
+export default [isAuthenticated, ...validations, prepareValidationForErrorMessages('/list/add'), createList, response]

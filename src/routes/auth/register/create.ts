@@ -157,6 +157,7 @@ async function create(req: Request, _res: Response, next: NextFunction) {
     await knex(Tables.PendingUsers).transacting(transaction).where('token', req.body.token).del()
 
     await transaction.commit()
+
     httpContext.set('user', {
       id: userId,
       email: pending.email,

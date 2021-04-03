@@ -26,6 +26,7 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
       `/list/${id}`,
       { title },
       {
+        only: ['auth', 'flash', 'errors', 'referer', 'showModal', 'title'],
         onStart() {
           setIsLoading(true);
         },
@@ -103,7 +104,9 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
               onClick={(e) => {
                 e.preventDefault();
                 setIsEditMode(!isEditMode);
+                setTitle(initialTitle);
                 Inertia.reload({
+                  only: ['auth', 'flash', 'errors', 'referer', 'showModal', 'title'],
                   replace: true,
                 });
               }}

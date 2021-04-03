@@ -1,23 +1,25 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
+import httpContext from 'express-http-context'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
+import { setListIdAndHashToContext, getListIdFromHash } from '../../middlewares/utils'
 
 const validations = checkSchema({
-  listId: {
+  hash: {
     in: 'params',
-    isNumeric: {
-      errorMessage: 'The provided id of the list is not valid',
-      bail: true
+    matches: {
+      errorMessage: 'The provided hash of the list is not valid',
+      options: /[A-Za-z0-9_]{8,15}/
     },
-    toInt: true,
     custom: {
       errorMessage: 'The id does not exists 1',
       options: async (value) => {
         const knex = Knex()
         try {
-          const list = await knex(Tables.Lists).where('id', value).first()
+          const listId = getListIdFromHash(value)
+          const list = await knex(Tables.Lists).where('id', listId).first()
           if (!list) {
             /* eslint prefer-promise-reject-errors: 0 */
             return Promise.reject('The list does not exists 2')
@@ -45,7 +47,7 @@ const validations = checkSchema({
  */
 
 async function updateList(req: Request, _res: Response, next: NextFunction) {
-  const { listId } = req.params
+  const listId = httpContext.get('listId')
   const { title } = req.body
 
   const knex = Knex()
@@ -56,16 +58,17 @@ async function updateList(req: Request, _res: Response, next: NextFunction) {
 }
 
 async function response(req: Request) {
-  const { listId } = req.params
+  const hash = httpContext.get('hash')
 
   req.flash('success', 'Title updated successfully')
-  req.Inertia.redirect(`/list/${listId}/details`)
+  req.Inertia.redirect(`/list/${hash}/details`)
 }
 
 export default [
   isAuthenticated,
+  setListIdAndHashToContext,
   ...validations,
-  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.listId}/details`),
+  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.hash}/details`),
   updateList,
   response
 ]
