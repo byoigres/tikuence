@@ -108,6 +108,12 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
     setAnchorEl(null);
   };
 
+  const handleProfileClick = (e) => {
+    e.preventDefault();
+    setAnchorEl(null);
+    Inertia.visit(`/users/${credentials.username}`);
+  };
+
   useEffect(() => {
     if (flash) {
       let message = null;
@@ -182,7 +188,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                         onClose={handleUserMenuClose}
                         className={classes.userMenu}
                       >
-                        <MenuItem onClick={handleUserMenuClose}>
+                        <MenuItem onClick={handleProfileClick}>
                           <InertiaLink href={`/users/${credentials.username}`}>Profile</InertiaLink>
                         </MenuItem>
                         <MenuItem
