@@ -32,7 +32,7 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
-async function verifyUser(req: Request, res: Response, next: NextFunction) {
+export async function setUser(req: Request, res: Response, next: NextFunction) {
   const params = req.params
   const knex = Knex()
 
@@ -58,13 +58,21 @@ async function verifyUser(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
+export async function setIsMe(req: Request, res: Response, next: NextFunction) {
+  const isMe = req.isAuthenticated() && req.params.username === req.user.username
+
+  httpContext.set('isMe', isMe)
+
+  next()
+}
+
 async function getAllListsFromUser(req: Request, res: Response, next: NextFunction) {
   const category = httpContext.get('category')
   const pageSize = httpContext.get('pageSize')
   const offset = httpContext.get('offset')
   const knex = Knex()
   const user = httpContext.get('user')
-  const isMe = req.isAuthenticated() && req.params.username === req.user.username
+  const isMe = httpContext.get('isMe')
 
   let query = knex(`${Tables.Lists} as L`)
     .select(
@@ -100,7 +108,6 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
   const lists = await query.where('U.id', user.id).orderBy('VT.created_at', 'DESC').limit(pageSize).offset(offset)
 
   httpContext.set('lists', lists)
-  httpContext.set('isMe', isMe)
 
   next()
 }
@@ -125,4 +132,4 @@ async function response(req: Request) {
   })
 }
 
-export default asyncRoutes([verifyParams, verifyUser, getAllListsFromUser, response])
+export default asyncRoutes([verifyParams, setUser, setIsMe, getAllListsFromUser, response])

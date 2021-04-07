@@ -24,6 +24,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import List from '../Lists/List';
 import Layout from '../../components/Layout';
 import AddNewList from '../Lists/Add';
+import EditProfile from './Edit';
 import SEO from '../../components/SEO';
 import FabFloatingLink from '../../components/FabFloatingLink';
 import EndOfList from '../../components/EndOfList';
@@ -114,7 +115,7 @@ const ProfilePage = () => {
     props: {
       user,
       lists: initialLists = [],
-      isMe,
+      isMe = false,
       isMobile,
       modal = false,
       auth: { isAuthenticated },
@@ -204,6 +205,21 @@ const ProfilePage = () => {
                 className={classes.typography}
               >
                 @{user.username}
+                <Button
+                  style={{ display: 'none' }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  href={`/users/${user.username}/edit`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    Inertia.visit(`/users/${user.username}/edit`, {
+                      only: ['auth', 'flash', 'errors', 'isMobile', 'modal', 'user', 'isMe'],
+                    });
+                  }}
+                >
+                  Edit profile
+                </Button>
               </Typography>
               <Typography variant="body1" color="initial" className={classes.typography}>
                 {user.biography ? user.biography : 'No bio yet'}
@@ -366,6 +382,7 @@ const ProfilePage = () => {
       )}
       {modal && modal.modalName === 'list' && <List pageReferer="profile" />}
       {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="profile" />}
+      {modal && modal.modalName === 'edit-profile' && <EditProfile />}
     </>
   );
 };
