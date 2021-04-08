@@ -9,7 +9,7 @@ function response (req: Request) {
     props: {
       modal: {
         modalName: 'add-video',
-        listId: params.listId
+        listId: params.hash
       }
     }
   })

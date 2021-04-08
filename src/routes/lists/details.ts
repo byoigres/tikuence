@@ -18,7 +18,7 @@ async function view(req: Request) {
 
   if (list) {
     const videos = await knex<iProfileListVideos>(`${Tables.ListsVideos} AS LV`)
-      .select('V.id', 'V.title', 'V.thumbnail_name', 'LV.order_id')
+      .select('V.url_hash AS id', 'V.title', 'V.thumbnail_name', 'LV.order_id')
       .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
       .where('LV.list_id', listId)
       .orderBy('LV.order_id')

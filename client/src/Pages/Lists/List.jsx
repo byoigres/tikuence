@@ -67,7 +67,7 @@ const Details = ({ pageReferer }) => {
   const {
     props: {
       auth,
-      modal: { list, videos: initialVideos, from = 0 },
+      modal: { list, videos: initialVideos, from = '' },
       isMobile,
       referer,
     },

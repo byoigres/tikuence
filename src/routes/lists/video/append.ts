@@ -10,6 +10,7 @@ import { prepareValidationForErrorMessages } from '../../../middlewares/validati
 import { isAuthenticated } from '../../../middlewares/inertia'
 import { fetchAndCreateVideoThumbnails } from '../../../utils/storage'
 import { setListIdAndHashToContext, getListIdFromHash } from '../../../middlewares/utils'
+import UrlHash, { VIDEO_MODIFIER } from '../../../utils/urlHash'
 
 interface iPayload {
   videoUrl: string
@@ -55,6 +56,11 @@ const validations = checkSchema({
         const knex = Knex()
         try {
           const listId = getListIdFromHash(value)
+
+          if (!listId) {
+            return Promise.reject(`The list don't exists`)
+          }
+
           const list = await knex(Tables.Lists).where('id', listId).first()
 
           if (!list) {
@@ -286,6 +292,17 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
         .returning<[number]>('id')
 
       videoId = videoIdResult
+
+      const videoHash = UrlHash.encode(videoIdResult, VIDEO_MODIFIER)
+
+      await knex(Tables.Videos)
+        .transacting(transaction)
+        .update({
+          url_hash: videoHash
+        })
+        .where({
+          id: videoId
+        })
       // TODO: get all sizes images names to check if they exist
       // and if they will, delete them
       await fetchAndCreateVideoThumbnails(videoInfo.thumbnail_url, imageHash)

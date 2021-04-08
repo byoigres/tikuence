@@ -48,10 +48,11 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
 
   if (req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string') {
     const order = await knex<{ order_id: number }>(`${Tables.ListsVideos} AS LV`)
-      .select('order_id')
-      .where('video_id', parseInt(req.headers['x-list-from'], 10))
-      .andWhere('list_id', listId)
-      .first()
+      .select('LV.order_id')
+      .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
+      .where('V.url_hash', req.headers['x-list-from'])
+      .andWhere('LV.list_id', listId)
+      .first('order_id')
 
     if (order) {
       fromOrderId = order.order_id
@@ -59,7 +60,7 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   }
 
   const videos = await knex(`${Tables.ListsVideos} AS LV`)
-    .select('LV.video_id AS id', 'V.tiktok_id', 'V.title', 'V.html', 'LV.order_id')
+    .select('V.url_hash AS id', 'V.tiktok_id', 'V.title', 'V.html', 'LV.order_id')
     .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
     .where('LV.list_id', listId)
     .andWhere('LV.order_id', '>=', fromOrderId)
@@ -129,9 +130,7 @@ async function response(req: Request) {
         list: { ...list, is_favorited: isFavorited },
         videos,
         from:
-          req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string'
-            ? parseInt(req.headers['x-list-from'], 10)
-            : 0
+          req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string' ? req.headers['x-list-from'] : ''
       }
     }
   })
