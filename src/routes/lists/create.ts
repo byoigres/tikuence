@@ -4,7 +4,7 @@ import { checkSchema } from 'express-validator'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
-import UrlHash from '../../utils/urlHash'
+import UrlHash, { LIST_MODIFIER } from '../../utils/urlHash'
 
 interface iPayload {
   title: string
@@ -41,7 +41,7 @@ async function createList(req: Request, res: Response, next: NextFunction) {
       })
       .returning<[number]>('id')
 
-    const urlHash = UrlHash.encode(listId)
+    const urlHash = UrlHash.encode(listId, LIST_MODIFIER)
 
     await knex(Tables.Lists).transacting(transaction).update({
       url_hash: urlHash

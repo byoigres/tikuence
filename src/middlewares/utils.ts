@@ -3,7 +3,7 @@ import httpContext from 'express-http-context'
 import UrlHash from '../utils/urlHash'
 
 export function getListIdFromHash(hash: string) {
-  const [listId] = UrlHash.decode(hash)
+  const listId = UrlHash.decode(hash)
 
   return listId
 }

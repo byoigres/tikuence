@@ -102,6 +102,16 @@ const manifest = {
     },
     alphabet: {
       $env: 'URL_HASH_ALPHABET'
+    },
+    modifiers: {
+      lists: {
+        $env: 'URL_HASH_LIST_SALT',
+        $coerce: 'number'
+      },
+      videos: {
+        $env: 'URL_HASH_VIDEO_SALT',
+        $coerce: 'number'
+      }
     }
   },
   images: {
