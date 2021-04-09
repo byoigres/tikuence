@@ -90,6 +90,9 @@ const manifest = {
     maxAge: {
       $env: 'SESION_COOKIE_MAX_AGE',
       $coerce: 'number'
+    },
+    domain: {
+      $env: 'SESION_COOKIE_DOMAIN'
     }
   },
   url: {
