@@ -334,7 +334,7 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
 
     await transaction.commit()
   } catch (err) {
-    // console.log(err)
+    console.log(err)
     await transaction.rollback()
 
     throw err

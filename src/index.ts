@@ -13,7 +13,7 @@ async function start() {
   routes(app)
 
   app.listen(port, host, () => {
-    console.log(`Example app listening at http://${host}:${port}`)
+    console.log(`Tikuence App listening at http://${host}:${port}`)
   })
 }
 
