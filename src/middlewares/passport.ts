@@ -25,10 +25,12 @@ Passport.use(
 )
 
 Passport.serializeUser(function (user, done) {
+  console.log('serializeUser', user)
   done(null, user)
 })
 
 Passport.deserializeUser(function (user: Express.User, done) {
+  console.log('deserializeUser', user)
   done(undefined, user)
 })
 
@@ -40,6 +42,7 @@ Passport.use(
       callbackURL: config.get('/passport/providers/google/callbackURL')
     },
     async function verify(_accessToken, _refreshToken, profile, done) {
+      console.log('profile found', profile)
       if (profile.emails && profile.emails.length > 0) {
         const {
           emails: {
@@ -65,6 +68,8 @@ Passport.use(
             'USP.provider_id': PROVIDERS.GOOGLE
           })
           .first()
+
+        console.log('user', user)
 
         if (!user) {
           const expires_at = new Date()
