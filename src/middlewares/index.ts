@@ -36,7 +36,7 @@ function middlewares(app: Express) {
       resave: !!config.get('/session/resave'),
       saveUninitialized: !!config.get('/session/saveUninitialized'),
       cookie: {
-        domain: 'dev.tikuence.com',
+        domain: config.get('/session/domain'),
         httpOnly: true,
         sameSite: true,
         secure: !!config.get('/session/secure'),
