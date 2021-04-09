@@ -2,10 +2,21 @@ import { Request } from 'express'
 import { isAuthenticated } from '../../middlewares/inertia'
 
 function response (req: Request) {
+  const referer = req.headers['x-page-referer']
+  let component = 'Feed'
+
+  if (referer && typeof referer === 'string') {
+    if (referer === 'profile') {
+      component = 'Profile/Profile'
+    }
+  }
+
   req.Inertia.setViewData({ title: 'Add new list' }).render({
-    component: 'Lists/List',
+    component,
     props: {
-      showModal: 'add-list'
+      modal: {
+        modalName: 'add-list'
+      }
     }
   })
 }

@@ -1,47 +1,32 @@
 import { Request, Response, NextFunction } from 'express'
-import { Op } from 'sequelize'
 import { isAuthenticated } from '../../../middlewares/inertia'
-import ListsVideos from '../../../models/listsvideos.model'
+import Knex, { Tables } from '../../../utils/knex'
+import httpContext from 'express-http-context'
+import { setListIdAndHashToContext } from '../../../middlewares/utils'
 
 async function updateList(req: Request, _res: Response, next: NextFunction) {
-  const { listId, videoId } = req.params
+  const listId = httpContext.get('listId')
+  const { videoId } = req.params
   const { oldOrderIndex, newOrderIndex } = req.body
 
-  await ListsVideos.update(
-    {
-      order_id: newOrderIndex
-    },
-    {
-      where: {
-        list_id: listId,
-        order_id: oldOrderIndex
-      }
-    }
-  )
+  const knex = Knex()
 
-  await ListsVideos.update(
-    {
-      order_id: oldOrderIndex
-    },
-    {
-      where: {
-        list_id: listId,
-        video_id: {
-          [Op.not]: videoId
-        },
-        order_id: newOrderIndex
-      }
-    }
-  )
+  await knex(Tables.ListsVideos).update('order_id', newOrderIndex).where({
+    list_id: listId,
+    order_id: oldOrderIndex
+  })
+
+  await knex(Tables.ListsVideos).update('order_id', oldOrderIndex).whereNot('video_id', videoId).andWhere({
+    list_id: listId,
+    order_id: newOrderIndex
+  })
 
   next()
 }
 
 async function response(req: Request) {
-  const { listId } = req.params
-
   req.flash('success', 'List updated')
-  req.Inertia.redirect(`/list/${listId}/edit`)
+  req.Inertia.redirect(`/list/${req.params.hash}/details`)
 }
 
-export default [isAuthenticated, updateList, response]
+export default [isAuthenticated, setListIdAndHashToContext, updateList, response]

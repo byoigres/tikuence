@@ -1,9 +1,10 @@
 import { Router } from 'express'
+// import list from './list'
 import list from './list'
-import details from './details'
 import deleteList from './delete'
 import create from './create'
-import edit from './edit'
+import favorite from './favorite'
+import details from './details'
 import update from './update'
 import add from './add'
 import video from './video'
@@ -15,7 +16,7 @@ const router = Router({
 // Route /list
 
 // List all lists view
-router.get('/', list)
+// router.get('/', list)
 
 // Add new list view
 router.get('/add', add)
@@ -23,18 +24,21 @@ router.get('/add', add)
 // Create new list endpoint
 router.post('/', create)
 
-// Edit list view
-router.get('/:listId/edit', edit)
+// Create new list endpoint
+router.post('/:hash/favorite', favorite)
+
+// List details view
+router.get('/:hash/details', details)
 
 // Display lists videos view
-router.get('/:id', details)
+router.get('/:hash', list)
 
-router.put('/:listId', update)
+router.put('/:hash', update)
 
 // Delete a list endpoint
-router.delete('/:listId', deleteList)
+router.delete('/:hash', deleteList)
 
 // list/:listId/video endpoints
-router.use('/:listId/video', video)
+router.use('/:hash/video', video)
 
 export default router

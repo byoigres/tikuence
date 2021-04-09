@@ -5,8 +5,20 @@ import compression from 'compression'
 import flash from 'connect-flash'
 
 import inertia, { populateSharedProps } from './inertia'
-import cookies from './cookies'
+// import cookies from './cookies'
 import passport from './passport'
+import Knex from '../utils/knex'
+import config from '../config'
+
+const KnexSessionStore = require('connect-session-knex')(session)
+
+const store = new KnexSessionStore({
+  tablename: 'sessions',
+  sidfieldname: 'sid',
+  knex: Knex(),
+  createtable: false,
+  clearInterval: 60000 // Milliseconds
+})
 
 function middlewares(app: Express) {
   app.use(
@@ -16,16 +28,21 @@ function middlewares(app: Express) {
   )
   app.use(express.static('public'))
   app.use(express.json())
-  app.use(cookies)
+  // app.use(cookies)
   app.use(
     session({
-      secret: 'keyboard cat',
-      resave: false,
-      saveUninitialized: false,
+      name: config.get('/session/name'),
+      secret: config.get('/session/secret').toString().split(','),
+      resave: !!config.get('/session/resave'),
+      saveUninitialized: !!config.get('/session/saveUninitialized'),
       cookie: {
-        secure: false,
-        maxAge: 60000 * 60
-      }
+        domain: 'dev.tikuence.com',
+        httpOnly: true,
+        sameSite: true,
+        secure: !!config.get('/session/secure'),
+        maxAge: config.get('/session/maxAge')
+      },
+      store
     })
   )
   app.use(passport.initialize())

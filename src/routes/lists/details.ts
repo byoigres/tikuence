@@ -1,47 +1,49 @@
 import { Request } from 'express'
-import User from '../../models/user.model'
-import Author from '../../models/author.model'
-import Video from '../../models/video.model'
-import List from '../../models/list.model'
+import httpContext from 'express-http-context'
+import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
+import { setListIdAndHashToContext } from '../../middlewares/utils'
+import { getIsFavorites } from '../lists/list'
 
-async function getCounters (req: Request) {
-  const payload = req.params
+async function view(req: Request) {
+  const listId = httpContext.get('listId')
+  const isFavorited: Boolean = httpContext.get('isFavorited')
 
-  const list = await List.findOne({
-    attributes: ['id', 'title'],
-    where: {
-      id: payload.id
-    },
-    include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'email']
-      },
-      {
-        model: Video,
-        as: 'videos',
-        attributes: ['id', 'tiktok_id', 'title', 'html', 'thumbnail_width', 'thumbnail_height', 'thumbnail_name'],
-        // The list must have videos
-        required: true,
-        include: [
-          {
-            model: Author,
-            as: 'author',
-            attributes: ['id', 'username']
-          }
-        ]
+  const knex = Knex()
+
+  const list = await knex(`${Tables.Lists} AS L`)
+    .select('L.url_hash AS id', 'L.title', 'L.user_id', 'U.username', 'U.profile_picture_url AS picture')
+    .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
+    .where({ 'L.id': listId })
+    .first()
+
+  if (list) {
+    const videos = await knex<iProfileListVideos>(`${Tables.ListsVideos} AS LV`)
+      .select('V.url_hash AS id', 'V.title', 'V.thumbnail_name', 'LV.order_id')
+      .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
+      .where('LV.list_id', listId)
+      .orderBy('LV.order_id')
+
+    return req.Inertia.setViewData({ title: 'Edit list' }).render({
+      component: 'Lists/Details',
+      props: {
+        id: list.id,
+        title: list.title,
+        isFavorited,
+        user: {
+          id: list.user_id,
+          username: list.username,
+          picture: list.picture
+        },
+        videos: videos,
+        isMe: req.user ? req.user.id === list.user_id : false,
+        modal: false
       }
-    ]
-  })
+    })
+  }
 
-  req.Inertia.setViewData({ title: list?.title }).render({
-    component: 'Lists/List',
-    props: {
-      list,
-      showModal: 'details'
-    }
+  req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
+    component: 'Errors/404'
   })
 }
 
-export default [getCounters]
+export default [setListIdAndHashToContext, getIsFavorites, view]

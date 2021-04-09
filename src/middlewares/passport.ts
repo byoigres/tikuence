@@ -3,13 +3,13 @@ import Passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as TwitterStrategy } from 'passport-twitter'
 import { Strategy as LocalStrategy } from 'passport-local'
-import UsersSocialProviders from '../models/userssocialproviders.model'
-import SocialProviders from '../models/socialproviders.model'
-import User from '../models/user.model'
-
+import { v4 as uuid } from 'uuid'
+import Knex, { Tables, iSocialProviderUser } from '../utils/knex'
 import config from '../config'
 
-// interface iEmail { value: String, verified: Boolean }
+enum PROVIDERS {
+  GOOGLE = 1
+}
 
 Passport.use(
   new TwitterStrategy(
@@ -19,51 +19,17 @@ Passport.use(
       callbackURL: config.get('/passport/providers/twitter/callbackURL')
     },
     async function verify(token, tokenSecret, profile, done) {
-      const relation = await UsersSocialProviders.findOne({
-        where: {
-          identifier: profile.id
-        }
-      })
-
-      if (!relation) {
-        // User.create({
-        //   email: '',
-        //   hash: ''
-        // })
-      }
-
-      console.log(relation)
-
-      // User.findOrCreate({ twitterId: profile.id }, function (err, user) {
-      //   return cb(err, user)
-      // })
-
-      // console.log('twitter')
-      // console.log('token', token)
-      // console.log('refreshToken', tokenSecret)
-      // console.log('profile', profile)
-
-      // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      //   return done(err, user)
-      // })
       done(undefined, profile)
     }
   )
 )
 
 Passport.serializeUser(function (user, done) {
-  // console.log('serializeUser', user)
   done(null, user)
-  // if you use Model.id as your idAttribute maybe you'd want
-  // done(null, user.id);
 })
 
-Passport.deserializeUser(function (id: Express.User, done) {
-  // User.findById(id, function (err, user) {
-  //   done(err, user)
-  // })
-  // console.log('deserializeUser', id)
-  done(undefined, id)
+Passport.deserializeUser(function (user: Express.User, done) {
+  done(undefined, user)
 })
 
 Passport.use(
@@ -73,68 +39,94 @@ Passport.use(
       clientSecret: config.get('/passport/providers/google/clientSecret'),
       callbackURL: config.get('/passport/providers/google/callbackURL')
     },
-    async function verify(accessToken, refreshToken, profile, done) {
-      // console.log('accessToken', accessToken)
-      // console.log('refreshToken', refreshToken)
-      // console.log('profile', profile)
-
-      // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      //   return done(err, user)
-      // })
+    async function verify(_accessToken, _refreshToken, profile, done) {
       if (profile.emails && profile.emails.length > 0) {
         const {
           emails: {
             0: { value: email }
-          }
-        } = profile // profile.emails[0].value
-        let user = await User.findOne({
-          attributes: ['id', 'email'],
-          where: {
-            email
           },
-          include: [
-            {
-              model: SocialProviders,
-              through: {
-                where: {
-                  identifier: profile.id,
-                  provider_id: 1
-                }
-              }
-            }
-          ]
-        })
+          photos,
+          name
+        } = profile
+        let picture = null
 
-        if (!user) {
-          user = await User.create(
-            {
-              email,
-              hash: ''
-            }
-          )
-
-          await UsersSocialProviders.create({
-            user_id: user.id,
-            provider_id: 1, // GOOGLE
-            identifier: profile.id
-          })
+        if (photos && photos.length > 0) {
+          picture = photos[0].value
         }
 
-        done(undefined, {
-          id: user.id,
-          email: user.email,
-          provider: {
-            google: profile.id
-          }
-        })
+        const knex = Knex()
+
+        const user = await knex<iSocialProviderUser>(`${Tables.Users} AS U`)
+          .select('U.id', 'U.username', 'U.email', 'U.name')
+          .where('U.email', email)
+          .join(`${Tables.UsersSocialProviders} AS USP`, 'USP.user_id', 'U.id')
+          .where({
+            'USP.identifier': profile.id,
+            'USP.provider_id': PROVIDERS.GOOGLE
+          })
+          .first()
+
+        if (!user) {
+          const expires_at = new Date()
+          const token = uuid()
+          expires_at.setTime(expires_at.getTime() + 900000)
+
+          await knex(Tables.PendingUsers).where('email', email).del()
+
+          await knex(Tables.PendingUsers).insert({
+            email,
+            name: name ? `${name.givenName} ${name.familyName}` : '',
+            provider_id: PROVIDERS.GOOGLE,
+            identifier: profile.id,
+            profile_picture_url: picture,
+            expires_at,
+            token
+          })
+
+          done(undefined, {
+            pendingRegistrationToken: token,
+            id: 0,
+            email,
+            username: '',
+            name: '',
+            picture,
+            provider: {}
+          })
+        } else {
+          done(undefined, {
+            pendingRegistrationToken: undefined,
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            name: user.name,
+            picture,
+            provider: {
+              google: profile.id
+            }
+          })
+        }
       }
     }
   )
 )
 
 Passport.use(
-  new LocalStrategy(function (username, password, done) {
-    return done(null, { username, password })
+  new LocalStrategy(async function (email, _password, done) {
+    const knex = Knex()
+
+    const user = await knex<iSocialProviderUser>(`${Tables.Users} AS U`)
+      .select('U.id', 'U.username', 'U.email', 'U.name')
+      .where('U.email', email)
+      .first()
+
+    return done(undefined, {
+      pendingRegistrationToken: undefined,
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      name: user.name,
+      provider: {}
+    })
   })
 )
 

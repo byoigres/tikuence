@@ -1,35 +1,48 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { Waypoint } from 'react-waypoint';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import DialogContent from '@material-ui/core/DialogContent';
+import AppBar from '@material-ui/core/AppBar';
+import Tooltip from '@material-ui/core/Tooltip';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import MuiAlert from '@material-ui/lab/Alert';
+import Slide from '@material-ui/core/Slide';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ListIcon from '@material-ui/icons/List';
+import { Waypoint } from 'react-waypoint';
 import SEO from '../../components/SEO';
-import Layout from '../../components/Layout';
-import AddNewList from './Add';
-import Profile from '../Profile/Profile';
-import Details from './Details';
-import Session from '../Auth/Session';
+import TikTokVideo from '../../components/TikTokVideo';
+import EndOfList from '../../components/EndOfList';
+import FavoriteButton from '../../components/FavoriteButton';
 
 const useStyles = makeStyles((theme) => ({
-  list: {
-    backgroundColor: '#fff',
+  title: {
+    flex: 1,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
   },
-  listItemAvatar: {
-    minWidth: 72,
+  dialog: {},
+  content: {
+    padding: 0,
+    height: '100vh',
   },
-  avatar: {
-    width: theme.spacing(7),
-    height: '100%',
-  },
-  loader: {
+  section: {
     textAlign: 'center',
+  },
+  videoContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '1rem',
+    maxWidth: 1024,
   },
   endOfTheList: {
     textAlign: 'center',
@@ -37,119 +50,206 @@ const useStyles = makeStyles((theme) => ({
     margin: '1rem',
     fontStyle: 'italic',
   },
+  mainGrid: {
+    backgroundColor: 'white',
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
 }));
 
-const PageList = ({ lists: initialLists = [], list, showModal = false, user }) => {
+/* eslint react/jsx-props-no-spreading: 0 */
+const Transition = React.forwardRef((props, ref) => (
+  <Slide direction="left" ref={ref} {...props} />
+));
+
+const Details = ({ pageReferer }) => {
+  const {
+    props: {
+      auth,
+      modal: { list, videos: initialVideos, from = '' },
+      isMobile,
+      referer,
+    },
+  } = usePage();
   const classes = useStyles();
-  const [lists, setLists] = useState(initialLists);
+  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [videos, setVideos] = useState(initialVideos);
+  const [items, setItems] = useState([]);
+  const [initialVideoOrderId] = useState(initialVideos.length > 0 ? initialVideos[0].order_id : 0);
+  const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isTheEnd, setIsTheEnd] = useState(false);
+  const [loadingCount, setLoadingCount] = useState(initialVideos.length);
+  const transtitionProps = {};
+
+  async function handleClose() {
+    setIsModalOpen(false);
+  }
+
+  useEffect(() => {
+    if (videos.length > 0) {
+      const newVideos = videos.map((video) => (
+        <Paper
+          key={`list-item-details-${video.id}`}
+          elevation={0}
+          className={classes.videoContainer}
+        >
+          <TikTokVideo
+            tiktokId={video.tiktok_id}
+            html={video.html}
+            isReadyCallback={() => {
+              setLoadingCount((val) => val - 1);
+            }}
+          />
+        </Paper>
+      ));
+      setItems([...items, ...newVideos]);
+    } else {
+      setHasMore(false);
+    }
+  }, [videos]);
 
   useEffect(() => {
     if (currentPage > 1) {
-      Inertia.get(
-        '/',
-        { page: currentPage },
-        {
-          only: ['lists'],
-          preserveScroll: true,
-          preserveState: true,
-          onSuccess: ({ props: { lists: newLists } }) => {
-            if (newLists.length > 0) {
-              setLists([...lists, ...newLists]);
-            } else {
-              setIsTheEnd(true);
-            }
-          },
-        }
-      );
+      Inertia.visit(`/list/${list.id}`, {
+        only: ['auth', 'flash', 'errors', 'from', 'modal'],
+        preserveScroll: true,
+        preserveState: true,
+        headers: {
+          'X-List-From': from,
+          'X-List-Page': currentPage,
+          'X-Page-Referer': pageReferer,
+        },
+        onStart() {
+          setLoadingCount(100);
+        },
+        onSuccess({ props }) {
+          setLoadingCount(props.modal.videos.length);
+          setVideos(props.modal.videos);
+        },
+      });
     }
   }, [currentPage]);
 
+  if (referer) {
+    transtitionProps.TransitionComponent = Transition;
+    transtitionProps.closeAfterTransition = true;
+  }
+
   return (
     <>
-      <SEO description="List of TikTok videos" title="Tikuence" />
-      <List dense={false} className={classes.list}>
-        {lists &&
-          lists.map((item) => (
-            <Fragment key={`list-item-${item.id}`}>
-              <ListItem
-                key={item.id}
-                button
-                onClick={(e) => {
-                  e.preventDefault();
-                  Inertia.visit(`/list/${item.id}`, {
-                    preserveScroll: true,
-                    preserveState: true,
-                    only: ['showModal', 'list', 'referer'],
-                  });
-                }}
-              >
-                <ListItemAvatar className={classes.listItemAvatar}>
-                  <Avatar
-                    alt={item.title}
-                    className={classes.avatar}
-                    variant="square"
-                    src={`/images/sm-${item.videos[0].thumbnail_name}`}
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  id={item.id}
-                  primary={
-                    <Typography component="strong" variant="h6" color="textPrimary">
-                      {item.title}
-                    </Typography>
-                  }
-                  secondary={
-                    <>
-                      <Typography
-                        component="strong"
-                        variant="subtitle2"
-                        color="textPrimary"
-                        style={{ display: 'block' }}
-                      >
-                        {`${item.videos.length} videos`}
-                      </Typography>
-                      <Typography component="span" variant="subtitle1" color="textPrimary">
-                        {`List by ${item.user.email}`}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-              <Divider variant="fullWidth" component="li" />
-            </Fragment>
-          ))}
-        {isTheEnd && (
-          <Typography variant="subtitle2" className={classes.endOfTheList}>
-            You reached the end of the lists
-          </Typography>
-        )}
-        {!isTheEnd && (
-          <>
-            {!showModal && (
-              <div className={classes.loader}>
-                <CircularProgress />
-              </div>
-            )}
-            <Waypoint
-              onEnter={() => {
-                if (lists.length > 0) {
-                  setCurrentPage(currentPage + 1);
+      <SEO title={list.title} />
+      <Dialog
+        fullScreen={isMobile}
+        fullWidth
+        maxWidth="sm"
+        open={isModalOpen}
+        onClose={handleClose}
+        onExited={() => {
+          Inertia.visit(
+            referer || '/',
+            referer
+              ? {
+                  preserveScroll: true,
+                  preserveState: !referer.includes('?tab=favorited'),
+                  only: ['auth', 'flash', 'errors', 'modal', 'isFavorited', 'lists'],
                 }
+              : {}
+          );
+        }}
+        {...transtitionProps}
+        className={classes.dialog}
+      >
+        <AppBar position="relative">
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              View list
+            </Typography>
+            {auth.isAuthenticated && list.user_id !== auth.credentials.id && (
+              <FavoriteButton
+                isFavorited={list.is_favorited}
+                onClick={() => {
+                  Inertia.post(
+                    `/list/${list.id}/favorite`,
+                    {},
+                    {
+                      headers: { 'X-Page-Referer': pageReferer },
+                      preserveScroll: true,
+                      preserveState: true,
+                      only: ['auth', 'flash', 'errors', 'isFavorited', 'modal'],
+                    }
+                  );
+                }}
+              />
+            )}
+            {pageReferer !== 'details' && (
+              <Tooltip title="View list details">
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    Inertia.visit(`/list/${list.id}/details`);
+                  }}
+                >
+                  <ListIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Toolbar>
+        </AppBar>
+        <DialogContent className={classes.content}>
+          <Grid container className={classes.mainGrid}>
+            <Grid item md={12}>
+              <Grid container direction="row" wrap="nowrap" alignItems="center">
+                <Typography
+                  component="h6"
+                  variant="h6"
+                  className={classes.inlineTitle}
+                  style={{ flexGrow: 1 }}
+                >
+                  {list.title}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+          {initialVideoOrderId > 1 && (
+            <InertiaLink
+              href={`/list/${list.id}`}
+              only={['auth', 'flash', 'errors', 'from', 'videos']}
+              preserveScroll
+              headers={{
+                'X-Page-Referer': pageReferer,
               }}
-            />
-          </>
-        )}
-      </List>
-      {showModal === 'details' && list && <Details list={list} />}
-      {showModal === 'add-list' && <AddNewList />}
-      {showModal === 'profile' && <Profile user={user} />}
-      {showModal === 'login' && <Session />}
+            >
+              <MuiAlert severity="info">
+                Viewing list from video #{initialVideoOrderId}.&nbsp; Click here to view from
+                beginning or return to the lists to select a specific video.
+              </MuiAlert>
+            </InertiaLink>
+          )}
+          <section className={classes.section}>
+            {items}
+            {hasMore && <CircularProgress />}
+            {loadingCount === 0 && hasMore && (
+              <Waypoint
+                data-name="waypoint"
+                onEnter={() => {
+                  setCurrentPage(currentPage + 1);
+                }}
+              />
+            )}
+            {!hasMore && <EndOfList text="This is the end of the list" />}
+            <div style={{ height: 10 }} />
+          </section>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
 
-PageList.layout = (page) => <Layout children={page} title="Tikuence" />;
-
-export default PageList;
+export default Details;

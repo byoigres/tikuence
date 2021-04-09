@@ -28,11 +28,17 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const AddVideoPage = ({ listId, errors }) => {
+const AddVideoPage = () => {
   const classes = useStyles();
   const {
-    props: { isMobile },
+    props: {
+      modal: { listId },
+      errors,
+      referer,
+      isMobile,
+    },
   } = usePage();
+  const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
 
@@ -45,7 +51,7 @@ const AddVideoPage = ({ listId, errors }) => {
   }
 
   const handleClose = () => {
-    Inertia.visit(`/list/${listId}/edit?an=0`);
+    setIsOpen(false);
   };
 
   function onCreate() {
@@ -53,13 +59,18 @@ const AddVideoPage = ({ listId, errors }) => {
       `/list/${listId}/video`,
       { videoUrl },
       {
+        only: ['auth', 'flash', 'errors', 'listId', 'modal', 'referer'],
+        preserveScroll: true,
+        preserveState: true,
         onStart() {
           setIsLoading(true);
         },
         onSuccess() {},
         onFinish() {
           setIsLoading(false);
-          titleRef.current.focus();
+          if (titleRef.current) {
+            titleRef.current.focus();
+          }
         },
       }
     );
@@ -84,8 +95,19 @@ const AddVideoPage = ({ listId, errors }) => {
       fullScreen={isMobile}
       fullWidth
       maxWidth="sm"
-      open
+      open={isOpen}
       onClose={handleClose}
+      onExited={() => {
+        const visitOptions = {
+          preserveScroll: true,
+        };
+
+        if (referer) {
+          visitOptions.only = ['auth', 'flash', 'errors', 'modal'];
+        }
+
+        Inertia.visit(`/list/${listId}/details`, visitOptions);
+      }}
       TransitionComponent={Transition}
     >
       <AppBar className={classes.appBar}>

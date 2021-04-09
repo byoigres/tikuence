@@ -13,8 +13,8 @@
     "paths": {
       "*": ["node_modules/@types/*", "@types/*"],
       "@middlewares/*":["src/middlewares/*"],
-      "@models/*":["src/models/*"],
       "@routes/*":["src/routes/*"],
+      "@utils/*":["src/utils/*"],
     },
     "typeRoots": [
       "@types/",

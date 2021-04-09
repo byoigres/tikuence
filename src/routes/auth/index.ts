@@ -1,48 +1,28 @@
-import { Router, Request } from 'express'
-import Passport from 'passport'
+import { Router } from 'express'
+
+import login from './login'
+import register from './register'
+import logout from './logout'
+import google from './google'
+import twitter from './twitter'
+import local from './local'
 
 const router = Router({
   mergeParams: true
 })
 
-router.get('/login', function view(req: Request) {
-  if (req.isAuthenticated()) {
-    return req.Inertia.redirect('/')
-  }
+// Route /auth
 
-  req.Inertia.setViewData({ title: 'Log in' }).render({
-    component: 'Lists/List',
-    props: {
-      showModal: 'login'
-    }
-  })
-})
+router.use('/login', login)
 
-router.get('/logout', function logout(req: Request) {
-  req.logOut()
-  return req.Inertia.redirect('/login')
-})
+router.use('/register', register)
 
-router.get('/auth/google', Passport.authenticate('google', { scope: ['email', 'profile'] }))
+router.use('/logout', logout)
 
-router.get(
-  '/auth/google/callback',
-  Passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login', session: true }),
-  function (req, res) {
-    res.redirect('/')
-  }
-)
+router.use('/google', google)
 
-router.get('/auth/twitter', Passport.authenticate('twitter'))
+router.use('/twitter', twitter)
 
-router.get(
-  '/auth/twitter/callback',
-  Passport.authenticate('twitter', { successRedirect: '/', failureRedirect: '/login', session: true }),
-  function (req, res) {
-    res.redirect('/')
-  }
-)
-
-router.post('/auth/local', Passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }))
+router.use('/local', local)
 
 export default router

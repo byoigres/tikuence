@@ -1,117 +1,139 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
-import User from '../../models/user.model'
-import Author from '../../models/author.model'
-import Video from '../../models/video.model'
-import List from '../../models/list.model'
+import Knex, { Tables, iDetailsItem } from '../../utils/knex'
+import { setListIdAndHashToContext } from '../../middlewares/utils'
 
-async function queryAllLists(withVideos = false) {
-  return await List.findAll({
-    attributes: ['id', 'title'],
-    include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'email']
-      },
-      {
-        model: Video,
-        as: 'videos',
-        attributes: ['id', 'title', 'thumbnail_width', 'thumbnail_height', 'thumbnail_name'],
-        // The list must have videos
-        required: withVideos,
-        include: [
-          {
-            model: Author,
-            as: 'author',
-            attributes: ['id', 'username']
-          }
-        ]
-      }
-    ]
-  })
-}
-
-/**
- * Return all lists that include at least one video
- * [httpContext = lists]
- * @param req
- * @param _res
- * @param next
- */
-export async function getAllLists (req: Request, _res: Response, next: NextFunction) {
-  // const lists = await queryAllLists(false)
-  const page = req.query.page
-  const isInertiaRequest = req.headers['x-inertia']
-  const pageSize = 10
+async function verifyParams(req: Request, _res: Response, next: NextFunction) {
+  const pageSize = 3
   let offset = 0
+  let page = 1
 
-  if (page && typeof page === 'string') {
-    // If a page is provided and is not an Inertia request,
-    // redirect to "/" without the page query param
-    if (isInertiaRequest === undefined) {
-      return req.Inertia.redirect('/')
+  if (req.headers['x-list-page'] && typeof req.headers['x-list-page'] === 'string') {
+    // TODO: try-catch when `page` is not a number
+    page = parseInt(req.headers['x-list-page'], 10)
+
+    if (page <= 0) {
+      page = 1
     }
 
-    let parsed = parseInt(page, 10)
-
-    if (parsed <= 0) {
-      parsed = 1
-    }
-
-    offset = parsed * pageSize - pageSize
+    offset = page * pageSize - pageSize
   }
 
-  const lists = await List.findAll({
-    attributes: ['id', 'title', 'updated_at'],
-    limit: pageSize,
-    offset,
-    order: [['updated_at', 'DESC']],
-    include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'email']
-      },
-      {
-        model: Video,
-        as: 'videos',
-        attributes: ['id', 'title', 'thumbnail_width', 'thumbnail_height', 'thumbnail_name'],
-        // The list must have videos
-        required: true,
-        include: [
-          {
-            model: Author,
-            as: 'author',
-            attributes: ['id', 'username']
-          }
-        ]
-      }
-    ]
-  })
-
-  httpContext.set('lists', lists)
+  httpContext.set('page', page)
+  httpContext.set('pageSize', pageSize)
+  httpContext.set('offset', offset)
 
   next()
 }
 
-export async function getAllListsWithVideos(req: Request, _res: Response, next: NextFunction) {
-  const lists = await queryAllLists(true)
+async function getListVideos(req: Request, _res: Response, next: NextFunction) {
+  const pageSize = httpContext.get('pageSize')
+  const offset = httpContext.get('offset')
+  const listId = httpContext.get('listId')
+  const knex = Knex()
 
-  httpContext.set('lists', lists)
+  const list = await knex<iDetailsItem>(`${Tables.Lists} AS L`)
+    .select('L.url_hash AS id', 'L.title', 'U.id AS user_id')
+    .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
+    .where('L.id', listId)
+    .first()
+
+  if (!list) {
+    return req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
+      component: 'Errors/404'
+    })
+  }
+
+  let fromOrderId = 0
+
+  if (req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string') {
+    const order = await knex<{ order_id: number }>(`${Tables.ListsVideos} AS LV`)
+      .select('LV.order_id')
+      .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
+      .where('V.url_hash', req.headers['x-list-from'])
+      .andWhere('LV.list_id', listId)
+      .first('order_id')
+
+    if (order) {
+      fromOrderId = order.order_id
+    }
+  }
+
+  const videos = await knex(`${Tables.ListsVideos} AS LV`)
+    .select('V.url_hash AS id', 'V.tiktok_id', 'V.title', 'V.html', 'LV.order_id')
+    .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
+    .where('LV.list_id', listId)
+    .andWhere('LV.order_id', '>=', fromOrderId)
+    .orderBy('LV.order_id', 'ASC')
+    .limit(pageSize)
+    .offset(offset)
+
+  httpContext.set('list', list)
+  httpContext.set('videos', videos)
 
   next()
 }
 
-async function response (req: Request) {
-  const lists: List[] = httpContext.get('lists')
+export async function getIsFavorites(req: Request, _res: Response, next: NextFunction) {
+  if (req.isAuthenticated()) {
+    const listId = httpContext.get('listId')
+    const knex = Knex()
 
-  req.Inertia.setViewData({ title: 'Latest lists' }).render({
-    component: 'Lists/List',
+    const isListFavorite = await knex(Tables.UsersFavorites)
+      .select(knex.raw('1 AS result'))
+      .where('list_id', listId)
+      .andWhere('user_id', req.user ? req.user.id : 0)
+      .first()
+
+    httpContext.set('isFavorited', !!isListFavorite)
+
+    return next()
+  }
+
+  httpContext.set('isFavorited', false)
+
+  next()
+}
+
+async function response(req: Request) {
+  const list = httpContext.get('list')
+  const videos = httpContext.get('videos')
+  const isFavorited : Boolean = httpContext.get('isFavorited')
+  let referer = req.headers['x-page-referer']
+  const flashReferer = req.flash('x-page-referer')
+
+  if (flashReferer && flashReferer.length > 0) {
+    referer = flashReferer[0]
+  }
+
+  let component = 'Feed'
+
+  if (referer && typeof referer === 'string') {
+    switch (referer) {
+      case 'details':
+        component = 'Lists/Details'
+        break
+      case 'profile':
+        component = 'Profile/Profile'
+        break
+      default:
+        component = 'Feed'
+        break
+    }
+  }
+
+  req.Inertia.setViewData({ title: list.title }).render({
+    component,
     props: {
-      lists
+      modal: {
+        modalName: 'list',
+        list: { ...list, is_favorited: isFavorited },
+        videos,
+        from:
+          req.headers['x-list-from'] && typeof req.headers['x-list-from'] === 'string' ? req.headers['x-list-from'] : ''
+      }
     }
   })
 }
 
-export default [getAllLists, response]
+export default [setListIdAndHashToContext, verifyParams, getListVideos, getIsFavorites, response]

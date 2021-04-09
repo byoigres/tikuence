@@ -1,11 +1,12 @@
 import { Request, Response } from 'express'
 import stream from 'stream'
-import { getFile } from '../firebase'
+import { getFile } from '../utils/firebase'
 
 async function image(req: Request, res: Response) {
   const { image } = req.params
   try {
-    const file = await getFile(image)
+    // TODO: Remove .jpg
+    const file = await getFile(`${image}.jpg`)
     const readStream = new stream.PassThrough()
 
     readStream.end(file.buffer)
@@ -22,13 +23,11 @@ async function image(req: Request, res: Response) {
   } catch (err) {
     if (err.code === 404) {
       req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
-        component: 'Errors/404',
-        props: {}
+        component: 'Errors/404'
       })
     } else {
       req.Inertia.setStatusCode(500).setViewData({ title: 'Something goes wrong' }).render({
-        component: 'Errors/500',
-        props: {}
+        component: 'Errors/500'
       })
     }
   }

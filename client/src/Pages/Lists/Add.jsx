@@ -27,11 +27,12 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const AddPage = () => {
+const AddPage = ({ pageReferer }) => {
   const classes = useStyles();
   const {
     props: { isMobile, referer, errors },
   } = usePage();
+  const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
 
@@ -43,7 +44,10 @@ const AddPage = () => {
       { title },
       {
         preserveScroll: true,
-        only: ['auth', 'errors', 'flash', 'isMobile', 'referer', 'displayAddNewList'],
+        only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'modal'],
+        headers: {
+          'X-Page-Referer': pageReferer,
+        },
         onStart() {
           setIsLoading(true);
         },
@@ -65,7 +69,7 @@ const AddPage = () => {
   }
 
   const handleClose = () => {
-    Inertia.visit('/', { preserveScroll: true, preserveState: referer !== null });
+    setIsOpen(false);
   };
 
   function handleOnKeyPress(ev) {
@@ -87,9 +91,22 @@ const AddPage = () => {
       fullScreen={isMobile}
       fullWidth
       maxWidth="sm"
-      open
+      open={isOpen}
       onClose={handleClose}
+      onExited={() => {
+        Inertia.visit(
+          referer || '/',
+          referer
+            ? {
+                preserveScroll: true,
+                preserveState: referer !== null,
+                only: ['auth', 'flash', 'errors', 'modal'],
+              }
+            : {}
+        );
+      }}
       TransitionComponent={Transition}
+      closeAfterTransition
     >
       <AppBar className={classes.appBar}>
         <Toolbar>

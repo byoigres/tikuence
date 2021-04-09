@@ -6,7 +6,7 @@ import Url from 'url'
 const ASSET_VERSION = '1'
 
 const getDescription = () => 'Watch the popular list of TikTok videos'
-const getTitle = (title: string) => `Tikuence | ${title || getDescription()}`
+const getTitle = (title: string) => `${title || getDescription()} • Tikuence`
 const getImage = () => 'https://tikuence.herokuapp.com/images/logo200.png'
 
 const template = (page: object, viewData: ViewData) => `
@@ -40,6 +40,11 @@ const template = (page: object, viewData: ViewData) => `
         html, body {
             font-family: "Source Sans Pro", 'Roboto', sans-serif;
             background-color: #f5f5f5;
+            scroll-behavior: smooth;
+        }
+        a {
+          text-decoration: none;
+          color: #1e1e1e;
         }
     </style>
   </head>
@@ -55,24 +60,29 @@ const template = (page: object, viewData: ViewData) => `
 </html>
 `
 
-export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+export async function isAuthenticated(req: Request, res: Response, next: NextFunction) {
   if (req.isAuthenticated()) {
     return next()
   }
 
   req.flash('warning', 'You need to login first to acces this page')
 
-  req.Inertia.redirect('/login')
+  req.Inertia.redirect('/auth/login')
 }
 
-function getReferer(req: Request) {
+export function getReferer(req: Request) {
   const { referer } = req.headers
 
   if (referer && req.method === 'GET') {
     const refererUrl = new Url.URL(referer)
 
-    if (refererUrl.host === req.headers.host && refererUrl.pathname !== req.url) {
-      return refererUrl.pathname
+    if (refererUrl.hostname === req.headers.host && refererUrl.pathname !== req.url) {
+      const url = refererUrl.pathname
+      if (refererUrl.search) {
+        return url + refererUrl.search
+      }
+
+      return url
     }
   }
 

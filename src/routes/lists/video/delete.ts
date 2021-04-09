@@ -1,91 +1,66 @@
 import { Request, Response, NextFunction } from 'express'
-import { literal, Op } from 'sequelize'
+import httpContext from 'express-http-context'
 import { isAuthenticated } from '../../../middlewares/inertia'
-import ListsVideos from '../../../models/listsvideos.model'
-import List from '../../../models/list.model'
-import Video from '../../../models/video.model'
+import Knex, { Tables, iListVideo } from '../../../utils/knex'
+import { setListIdAndHashToContext } from '../../../middlewares/utils'
 
 async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next: NextFunction) {
-  const { listId, videoId } = req.params
+  const listId = httpContext.get('listId')
+  const { videoId } = req.params
 
   // TODO: Verify separately the video exists and then it belongs to the user
+  const knex = Knex()
 
-  const list = await List.findOne({
-    where: {
-      id: listId,
-      user_id: req.user?.id ?? 0
-    },
-    include: [
-      {
-        model: Video,
-        through: {
-          where: {
-            video_id: videoId
-          }
-        }
-      }
-    ]
-  })
+  const list = await knex<iListVideo>(`${Tables.Lists} AS L`)
+    .select('L.id', 'LV.order_id')
+    .join(`${Tables.ListsVideos} AS LV`, 'L.id', 'LV.list_id')
+    .where({
+      'L.id': listId,
+      'L.user_id': req.user?.id ?? 0,
+      'LV.video_id': videoId
+    })
+    .first()
 
   if (!list) {
     req.flash('warning', 'The video can not be deleted')
 
-    req.Inertia.redirect(`/list/${listId}/edit`)
+    req.Inertia.redirect(`/list/${req.params.hash}/details`)
   }
+
+  httpContext.set('order_id', list.order_id)
 
   next()
 }
 
 async function deleteList(req: Request, _res: Response, next: NextFunction) {
-  const { listId, videoId } = req.params
+  const listId = httpContext.get('listId')
+  const { videoId } = req.params
+  const orderId = httpContext.get('order_id')
 
-  // Find the current item to delete
-  const item = await ListsVideos.findOne({
-    where: {
-      /**
-       * TODO: check if list belongs to the current user
-       */
+  const knex = Knex()
+
+  // Delete the video
+  await knex(Tables.ListsVideos)
+    .where({
       list_id: listId,
       video_id: videoId
-    }
-  })
-
-  if (item) {
-    // Delete the video
-    await ListsVideos.destroy({
-      where: {
-        list_id: listId,
-        video_id: videoId
-      }
     })
+    .delete()
 
-    // Update the order id of subsecuent videos
-    await ListsVideos.update(
-      {
-        order_id: literal('order_id - 1')
-      },
-      {
-        where: {
-          list_id: listId,
-          order_id: {
-            [Op.gt]: item.order_id
-          }
-        }
-      }
-    )
+  // Update the order id
+  await knex(Tables.ListsVideos)
+    .update({
+      order_id: knex.raw('?? - 1', ['order_id'])
+    })
+    .where('list_id', listId)
+    .andWhere('order_id', '>', orderId)
 
-    next()
-  }
-
-  req.flash('error', 'The video you want to delete not exists.')
-  req.Inertia.redirect(`/list/${listId}/edit`)
+  next()
 }
 
 async function response(req: Request) {
-  const { listId } = req.params
-
   req.flash('success', 'Video removed successfully')
-  req.Inertia.redirect(`/list/${listId}/edit`)
+  req.Inertia.redirect(`/list/${req.params.hash}/details`)
 }
 
-export default [isAuthenticated, verifyListBelongsToCurrentUser, deleteList, response]
+export default [isAuthenticated, setListIdAndHashToContext, verifyListBelongsToCurrentUser, deleteList, response]

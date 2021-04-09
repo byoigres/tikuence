@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 
 function SEO({ description, lang = 'en', title, image }) {
   const metaDescription = description || 'List of TikTok videos';
-  const metaTitle = `Tikuence | ${title}`;
+  const metaTitle = title;
   const metaUrl = 'https://tikuence.herokuapp.com';
   const metaImage = image || `${metaUrl}/images/logo200.png`;
 
@@ -13,7 +13,7 @@ function SEO({ description, lang = 'en', title, image }) {
         lang,
       }}
       title={metaTitle}
-      titleTemplate={`%s | ${title}`}
+      titleTemplate="%s • Tikuence"
       meta={[
         {
           name: `title`,

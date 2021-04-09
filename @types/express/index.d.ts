@@ -5,9 +5,18 @@ declare global {
     /**
      * @see https://stackoverflow.com/a/60981984/1301872
      */
+    interface AuthInfo {
+      pendingUser: {
+        token: string
+      }
+    }
     interface User {
+      pendingRegistrationToken: string | undefined;
       id: number;
       email: string;
+      username: string;
+      name: string;
+      picture: string | null;
       provider: {
         google?: string;
         twitter?: string;

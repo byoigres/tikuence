@@ -5,9 +5,12 @@ function response (req: Request) {
   const params = req.params
 
   req.Inertia.setViewData({ title: 'Add new video' }).render({
-    component: 'Lists/AddVideo',
+    component: 'Lists/Details',
     props: {
-      listId: params.listId
+      modal: {
+        modalName: 'add-video',
+        listId: params.hash
+      }
     }
   })
 }
