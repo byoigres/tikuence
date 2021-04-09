@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FabFloatingLink = ({ onClick }) => {
-  const theme = useTheme();;
+  const theme = useTheme();
   const isMdPlus200Match = useMediaQuery(`(min-width:${theme.breakpoints.values.md + 200}px)`);
   const classes = useStyles({ isMdPlus200Match });
 
