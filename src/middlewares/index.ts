@@ -22,6 +22,7 @@ const store = new KnexSessionStore({
 
 function middlewares(app: Express) {
   if (config.get('/session/secure')) {
+    // https://stackoverflow.com/a/14465043/1301872
     app.enable('trust proxy')
   }
   app.use(
@@ -38,6 +39,8 @@ function middlewares(app: Express) {
       secret: config.get('/session/secret').toString().split(','),
       resave: !!config.get('/session/resave'),
       saveUninitialized: !!config.get('/session/saveUninitialized'),
+      // https://stackoverflow.com/a/44435742/1301872
+      proxy: !!config.get('/session/secure'),
       cookie: {
         domain: config.get('/session/domain'),
         httpOnly: true,
