@@ -5,28 +5,23 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
-  container: {
+  container: ({ isFullWidthMatch }) => ({
     position: 'fixed',
-    bottom: theme.spacing(2),
-    textAlign: 'right',
-    [theme.breakpoints.up('sm')]: {
-      width: theme.breakpoints.values.md,
-    },
-    [theme.breakpoints.between('xs', 'sm')]: {
-      width: '100%',
-    },
-  },
-  fab: ({ isMdPlus200Match }) => ({
-    right: isMdPlus200Match ? 0 : theme.spacing(2),
-    position: 'absolute',
     bottom: 0,
+    width: isFullWidthMatch ? theme.breakpoints.values.md : '100%',
+    left: isFullWidthMatch ? 'initial' : 0,
+  }),
+  fab: ({ isFullWidthMatch }) => ({
+    right: isFullWidthMatch ? 0 : theme.spacing(1),
+    bottom: theme.spacing(1),
+    position: 'absolute',
   }),
 }));
 
 const FabFloatingLink = ({ onClick }) => {
   const theme = useTheme();
-  const isMdPlus200Match = useMediaQuery(`(min-width:${theme.breakpoints.values.md + 200}px)`);
-  const classes = useStyles({ isMdPlus200Match });
+  const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md + 50}px)`);
+  const classes = useStyles({ isFullWidthMatch });
 
   return (
     <div className={classes.container}>
