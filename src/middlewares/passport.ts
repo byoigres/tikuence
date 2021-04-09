@@ -25,12 +25,10 @@ Passport.use(
 )
 
 Passport.serializeUser(function (user, done) {
-  console.log('serializeUser', user)
   done(null, user)
 })
 
 Passport.deserializeUser(function (user: Express.User, done) {
-  console.log('deserializeUser', user)
   done(undefined, user)
 })
 
