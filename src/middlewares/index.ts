@@ -21,6 +21,9 @@ const store = new KnexSessionStore({
 })
 
 function middlewares(app: Express) {
+  if (config.get('/session/secure')) {
+    app.enable('trust proxy')
+  }
   app.use(
     compression({
       level: 9
