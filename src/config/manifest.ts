@@ -121,6 +121,11 @@ const manifest = {
     path: {
       $env: 'IMAGES_PATH'
     }
+  },
+  inertia: {
+    version: {
+      $env: 'INERTIA_VERSION'
+    }
   }
 }
 
