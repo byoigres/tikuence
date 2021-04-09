@@ -5,7 +5,6 @@ import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
-import Fab from '@material-ui/core/Fab';
 import MuiList from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -15,7 +14,6 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
-import AddIcon from '@material-ui/icons/Add';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
@@ -29,6 +27,7 @@ import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
 import UserAvatar from '../../components/UserAvatar';
 import FavoriteButton from '../../components/FavoriteButton';
+import FabFloatingLink from '../../components/FabFloatingLink';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -45,12 +44,6 @@ const useStyles = makeStyles((theme) => ({
   actionButtons: () => ({
     // display: 'flex',
     // flexDirection: 'column',
-  }),
-  addVideoContainer: ({ isMobile }) => ({
-    position: 'fixed',
-    bottom: '10px',
-    width: isMobile ? '100%' : '960px',
-    textAlign: 'right',
   }),
   createVideoButton: ({ isMobile }) => ({
     position: 'absolute',
@@ -348,17 +341,6 @@ const Details = () => {
       )}
       {isMe && (
         <>
-          <div className={classes.addVideoContainer}>
-            <Fab
-              color="primary"
-              aria-label="add"
-              className={classes.createVideoButton}
-              href={`/list/${id}/video/add`}
-              onClick={onAddVideoClick}
-            >
-              <AddIcon />
-            </Fab>
-          </div>
           <ConfirmDialog
             isOpen={isRemoveVideoDialogOpen}
             onDialogClose={onRemoveVideoDialogClose}
@@ -377,6 +359,7 @@ const Details = () => {
             actionText="Delete"
             cancelText="Cancel"
           />
+          <FabFloatingLink onClick={onAddVideoClick} />
         </>
       )}
       {modal && modal.modalName === 'list' && <List pageReferer="details" />}
