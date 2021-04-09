@@ -169,7 +169,7 @@ const Details = () => {
     <>
       {id && (
         <Grid container className={classes.mainGrid}>
-          <Grid item md={4}>
+          <Grid item sm={12} md={4}>
             <TitleForUpdate title={title} id={id} canEdit={isMe} />
             {videos && videos.length > 0 && (
               <Typography component="span" variant="caption">
@@ -179,7 +179,7 @@ const Details = () => {
               </Typography>
             )}
             <Divider variant="fullWidth" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }} />
-            <Grid container wrap="nowrap" alignItems="center" justify="space-evenly">
+            <Grid container wrap="nowrap" alignItems="flex-start">
               {auth.isAuthenticated && !isMe && (
                 <FavoriteButton
                   isFavorited={isFavorited}

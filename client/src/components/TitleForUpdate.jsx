@@ -66,12 +66,7 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
     <>
       {!isEditMode && (
         <Grid container direction="row" wrap="nowrap" alignItems="center">
-          <Typography
-            component="h6"
-            variant="h6"
-            className={classes.inlineTitle}
-            style={{ flexGrow: 1 }}
-          >
+          <Typography component="span" variant="h6">
             {title}
           </Typography>
           {canEdit && (
