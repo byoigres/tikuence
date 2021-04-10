@@ -21,10 +21,11 @@ const store = new KnexSessionStore({
 })
 
 function middlewares(app: Express) {
-  if (config.get('/session/secure')) {
-    // https://stackoverflow.com/a/14465043/1301872
-    app.enable('trust proxy')
-  }
+  // if (config.get('/session/secure')) {
+  //   // https://stackoverflow.com/a/14465043/1301872
+  //   app.enable('trust proxy')
+  //   console.log('trust proxy is set')
+  // }
   app.use(
     compression({
       level: 9
