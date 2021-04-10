@@ -1,11 +1,10 @@
-import express, { Express, Request, Response, NextFunction } from 'express'
+import express, { Express } from 'express'
 import httpContext from 'express-http-context'
 import session from 'express-session'
 import compression from 'compression'
 import flash from 'connect-flash'
 
 import inertia, { populateSharedProps } from './inertia'
-// import cookies from './cookies'
 import passport from './passport'
 import Knex from '../utils/knex'
 import config from '../config'
@@ -26,25 +25,7 @@ function middlewares(app: Express) {
     app.enable('trust proxy')
     console.log('trust proxy is set')
   }
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    !req.path.startsWith('/assets') && console.log(`
->>> REQUEST
-url: ${req.url}
-method: ${req.method}
-baseUrl: ${req.baseUrl}
-hostname: ${req.hostname}
-httpVersion: ${req.httpVersion}
-ip: ${req.ip}
-originalUrl: ${req.originalUrl}
-path: ${req.path}
-protocol: ${req.protocol}
-session: ${JSON.stringify(req.session)}
-xhr: ${req.xhr}
-headers: ${JSON.stringify(req.headers)}
-cookies: ${JSON.stringify(req.cookies)}
-    `)
-    next()
-  })
+
   app.use(
     compression({
       level: 9
@@ -52,7 +33,6 @@ cookies: ${JSON.stringify(req.cookies)}
   )
   app.use(express.static('public'))
   app.use(express.json())
-  // app.use(cookies)
   app.use(
     session({
       name: config.get('/session/name'),
@@ -64,7 +44,7 @@ cookies: ${JSON.stringify(req.cookies)}
       cookie: {
         domain: config.get('/session/domain'),
         httpOnly: true,
-        sameSite: true,
+        sameSite: false,
         secure: !!config.get('/session/secure'),
         maxAge: config.get('/session/maxAge')
       },
