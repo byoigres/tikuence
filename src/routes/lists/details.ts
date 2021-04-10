@@ -23,7 +23,7 @@ async function view(req: Request) {
       .where('LV.list_id', listId)
       .orderBy('LV.order_id')
 
-    return req.Inertia.setViewData({ title: 'Edit list' }).render({
+    return req.Inertia.setViewData({ title: list.title }).render({
       component: 'Lists/Details',
       props: {
         id: list.id,

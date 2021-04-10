@@ -17,8 +17,8 @@ router.get('/:videoId', view)
 
 router.post('/', append)
 
-router.delete('/:videoId', deleteVideo)
+router.delete('/:videoHash', deleteVideo)
 
-router.post('/:videoId', updateVideo)
+router.post('/:videoHash', updateVideo)
 
 export default router

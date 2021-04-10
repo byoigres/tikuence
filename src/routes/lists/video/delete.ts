@@ -2,11 +2,11 @@ import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import Knex, { Tables, iListVideo } from '../../../utils/knex'
-import { setListIdAndHashToContext } from '../../../middlewares/utils'
+import { setListIdAndHashToContext, setVideoIdAndHashToContext } from '../../../middlewares/utils'
 
 async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next: NextFunction) {
   const listId = httpContext.get('listId')
-  const { videoId } = req.params
+  const videoId = httpContext.get('videoId')
 
   // TODO: Verify separately the video exists and then it belongs to the user
   const knex = Knex()
@@ -34,7 +34,7 @@ async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next
 
 async function deleteList(req: Request, _res: Response, next: NextFunction) {
   const listId = httpContext.get('listId')
-  const { videoId } = req.params
+  const videoId = httpContext.get('videoId')
   const orderId = httpContext.get('order_id')
 
   const knex = Knex()
@@ -63,4 +63,11 @@ async function response(req: Request) {
   req.Inertia.redirect(`/list/${req.params.hash}/details`)
 }
 
-export default [isAuthenticated, setListIdAndHashToContext, verifyListBelongsToCurrentUser, deleteList, response]
+export default [
+  isAuthenticated,
+  setListIdAndHashToContext,
+  setVideoIdAndHashToContext,
+  verifyListBelongsToCurrentUser,
+  deleteList,
+  response
+]
