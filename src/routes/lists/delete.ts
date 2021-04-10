@@ -26,6 +26,7 @@ const validations = checkSchema({
             return Promise.reject('The list does not exists 1')
           }
         } catch (err) {
+          console.log(err)
           return Promise.reject(err)
         }
       }

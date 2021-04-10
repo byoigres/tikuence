@@ -170,6 +170,7 @@ async function create(req: Request, _res: Response, next: NextFunction) {
     })
     return next()
   } catch (err) {
+    console.log(err)
     await transaction.rollback()
     req.flash('error', 'Something went wrong... try again')
     return req.Inertia.redirect(`/auth/register/${req.body.token}`)

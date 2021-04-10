@@ -21,6 +21,7 @@ async function image(req: Request, res: Response) {
     res.set('Cache-Control', 'max-age=31536000')
     readStream.pipe(res)
   } catch (err) {
+    console.log(err)
     if (err.code === 404) {
       req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
         component: 'Errors/404'
