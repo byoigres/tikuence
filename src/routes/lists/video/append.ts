@@ -68,6 +68,7 @@ const validations = checkSchema({
             return Promise.reject('The list does not exists')
           }
         } catch (err) {
+          console.log(err)
           return Promise.reject(err)
         }
       }
@@ -120,6 +121,7 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
   try {
     parsedUrl = new url.URL(payload.videoUrl)
   } catch (err) {
+    console.log(err)
     req.flash('error', `That doesn't seems to be a valid url.`) /* eslint quotes: 0 */
     return req.Inertia.redirect(`/list/${req.params.hash}/video/add`)
   }
