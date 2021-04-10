@@ -17,3 +17,13 @@ export async function setListIdAndHashToContext(req: Request, _res: Response, ne
 
   next()
 }
+
+export async function setVideoIdAndHashToContext(req: Request, _res: Response, next: NextFunction) {
+  const { videoHash } = req.params
+  const videoId = getListIdFromHash(videoHash)
+
+  httpContext.set('videoHash', videoHash)
+  httpContext.set('videoId', videoId)
+
+  next()
+}
