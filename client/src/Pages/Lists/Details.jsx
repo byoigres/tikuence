@@ -22,6 +22,7 @@ import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
 import AddVideo from './AddVideo';
+import SEO from '../../components/SEO';
 import List from './List';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
@@ -160,6 +161,7 @@ const Details = () => {
 
   return (
     <>
+      <SEO title={title} />
       {id && (
         <Grid container className={classes.mainGrid}>
           <Grid item sm={12} md={4}>
