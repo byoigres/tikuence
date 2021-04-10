@@ -53,7 +53,7 @@ async function createList(req: Request, res: Response, next: NextFunction) {
   } catch (err) {
     console.log(err)
     await transaction.rollback()
-    req.flash('error', 'Something went wrong... try again')
+    req.flash('error', err)
     return req.Inertia.redirect(`/auth/register/${req.body.token}`)
   }
 
