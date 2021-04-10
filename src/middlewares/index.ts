@@ -1,4 +1,4 @@
-import express, { Express } from 'express'
+import express, { Express, Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import session from 'express-session'
 import compression from 'compression'
@@ -21,11 +21,30 @@ const store = new KnexSessionStore({
 })
 
 function middlewares(app: Express) {
-  // if (config.get('/session/secure')) {
-  //   // https://stackoverflow.com/a/14465043/1301872
-  //   app.enable('trust proxy')
-  //   console.log('trust proxy is set')
-  // }
+  if (config.get('/session/secure')) {
+    // https://stackoverflow.com/a/14465043/1301872
+    app.enable('trust proxy')
+    console.log('trust proxy is set')
+  }
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    !req.path.startsWith('/assets') && console.log(`
+>>> REQUEST
+url: ${req.url}
+method: ${req.method}
+baseUrl: ${req.baseUrl}
+hostname: ${req.hostname}
+httpVersion: ${req.httpVersion}
+ip: ${req.ip}
+originalUrl: ${req.originalUrl}
+path: ${req.path}
+protocol: ${req.protocol}
+session: ${JSON.stringify(req.session)}
+xhr: ${req.xhr}
+headers: ${JSON.stringify(req.headers)}
+cookies: ${JSON.stringify(req.cookies)}
+    `)
+    next()
+  })
   app.use(
     compression({
       level: 9
