@@ -28,8 +28,14 @@ export async function setVideoIdAndHashToContext(req: Request, _res: Response, n
   const { videoHash } = req.params
   const videoId = getListIdFromHash(videoHash)
 
-  httpContext.set('videoHash', videoHash)
-  httpContext.set('videoId', videoId)
+  if (videoId) {
+    httpContext.set('videoHash', videoHash)
+    httpContext.set('videoId', videoId)
 
-  next()
+    next()
+  }
+
+  req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
+    component: 'Errors/404'
+  })
 }

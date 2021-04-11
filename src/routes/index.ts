@@ -25,7 +25,7 @@ function bindRoutes(app: Express) {
     const { message, stack } = err
 
     return req.Inertia.setStatusCode(500)
-      .setViewData({ title: 'Somthing happened' })
+      .setViewData({ title: 'Something happened' })
       .render({
         component: 'Errors/500',
         props:

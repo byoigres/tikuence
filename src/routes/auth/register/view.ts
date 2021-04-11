@@ -5,7 +5,7 @@ export default function view(req: Request) {
     return req.Inertia.redirect('/')
   }
 
-  req.Inertia.setViewData({ title: 'Sing Up' }).render({
+  req.Inertia.setViewData({ title: 'Sign Up' }).render({
     component: 'Auth/Login',
     props: {
       isLogin: false
