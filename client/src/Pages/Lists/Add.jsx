@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+import SEO from '../../components/SEO';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -87,69 +88,72 @@ const AddPage = ({ pageReferer }) => {
   };
 
   return (
-    <Dialog
-      fullScreen={isMobile}
-      fullWidth
-      maxWidth="sm"
-      open={isOpen}
-      onClose={handleClose}
-      onExited={() => {
-        Inertia.visit(
-          referer || '/',
-          referer
-            ? {
-                preserveScroll: true,
-                preserveState: referer !== null,
-                only: ['auth', 'flash', 'errors', 'modal'],
-              }
-            : {}
-        );
-      }}
-      TransitionComponent={Transition}
-      closeAfterTransition
-    >
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={handleClose}
-            aria-label="close"
+    <>
+      <SEO title="Add new list" />
+      <Dialog
+        fullScreen={isMobile}
+        fullWidth
+        maxWidth="sm"
+        open={isOpen}
+        onClose={handleClose}
+        onExited={() => {
+          Inertia.visit(
+            referer || '/',
+            referer
+              ? {
+                  preserveScroll: true,
+                  preserveState: referer !== null,
+                  only: ['auth', 'flash', 'errors', 'modal'],
+                }
+              : {}
+          );
+        }}
+        TransitionComponent={Transition}
+        closeAfterTransition
+      >
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+              disabled={isLoading}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              New list
+            </Typography>
+            <Button autoFocus color="inherit" onClick={handleCreate} disabled={isLoading}>
+              Create
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <DialogContent>
+          <TextField
+            placeholder="Enter the name of the list"
+            label="List name"
+            autoFocus
+            fullWidth
+            margin="dense"
+            inputProps={{
+              maxLength: 150,
+              ref: listNameRef,
+            }}
             disabled={isLoading}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            New list
-          </Typography>
-          <Button autoFocus color="inherit" onClick={handleCreate} disabled={isLoading}>
-            Create
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <DialogContent>
-        <TextField
-          placeholder="Enter the name of the list"
-          label="List name"
-          autoFocus
-          fullWidth
-          margin="dense"
-          inputProps={{
-            maxLength: 150,
-            ref: listNameRef,
-          }}
-          disabled={isLoading}
-          value={title}
-          onChange={handleChange}
-          onKeyPress={handleOnKeyPress}
-          error={errors.title !== undefined}
-          helperText={errors.title}
-        />
-        <DialogContentText>
-          After creating the list you would be able to add videos to it.
-        </DialogContentText>
-      </DialogContent>
-    </Dialog>
+            value={title}
+            onChange={handleChange}
+            onKeyPress={handleOnKeyPress}
+            error={errors.title !== undefined}
+            helperText={errors.title}
+          />
+          <DialogContentText>
+            After creating the list you would be able to add videos to it.
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

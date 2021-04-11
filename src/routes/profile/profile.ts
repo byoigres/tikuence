@@ -121,7 +121,7 @@ async function response(req: Request) {
 
   delete user.id
 
-  req.Inertia.setViewData({ title: 'My Profile' }).render({
+  req.Inertia.setViewData({ title: `@${user.username} profile` }).render({
     component: 'Profile/Profile',
     props: {
       user,

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
 import MuiList from '@material-ui/core/List';
@@ -56,13 +57,23 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
+  infoColumn: ({ isFullWidthMatch }) => ({
+    position: isFullWidthMatch ? 'fixed' : 'initial',
+    maxWidth: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 4}px` : 'initial',
+    width: isFullWidthMatch ? `100%` : 'initial',
+  }),
+  contentColumn: ({ isFullWidthMatch }) => ({
+    marginLeft: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 4}px` : 'initial',
+  }),
 }));
 
 const Details = () => {
   const {
     props: { auth, id, title, isFavorited, user, videos, isMobile, isMe, modal = false },
   } = usePage();
-  const classes = useStyles({ isMobile });
+  const theme = useTheme();
+  const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
+  const classes = useStyles({ isMobile, isFullWidthMatch });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isSorting, setIsSorting] = useState(false);
@@ -164,7 +175,16 @@ const Details = () => {
       <SEO title={title} />
       {id && (
         <Grid container className={classes.mainGrid}>
-          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            lg={4}
+            xl={4}
+            className={classes.infoColumn}
+            data-name="col1"
+          >
             <TitleForUpdate title={title} id={id} canEdit={isMe} />
             {videos && videos.length > 0 && (
               <Typography component="span" variant="caption">
@@ -217,7 +237,16 @@ const Details = () => {
             </InertiaLink>
             <Divider variant="fullWidth" />
           </Grid>
-          <Grid item md={8}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={8}
+            lg={8}
+            xl={8}
+            className={classes.contentColumn}
+            data-name="col2"
+          >
             {videos.length === 0 && (
               <Typography component="h6" variant="h6" color="secondary">
                 {isMe && `Your list is not visible to others because doesn't have any videos.`}

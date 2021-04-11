@@ -14,6 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { usePage } from '@inertiajs/inertia-react';
 import Slide from '@material-ui/core/Slide';
 import Layout from '../../components/Layout';
+import SEO from '../../components/SEO';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -91,76 +92,79 @@ const AddVideoPage = () => {
   }
 
   return (
-    <Dialog
-      fullScreen={isMobile}
-      fullWidth
-      maxWidth="sm"
-      open={isOpen}
-      onClose={handleClose}
-      onExited={() => {
-        const visitOptions = {
-          preserveScroll: true,
-        };
+    <>
+      <SEO title="Add new video" />
+      <Dialog
+        fullScreen={isMobile}
+        fullWidth
+        maxWidth="sm"
+        open={isOpen}
+        onClose={handleClose}
+        onExited={() => {
+          const visitOptions = {
+            preserveScroll: true,
+          };
 
-        if (referer) {
-          visitOptions.only = ['auth', 'flash', 'errors', 'modal'];
-        }
+          if (referer) {
+            visitOptions.only = ['auth', 'flash', 'errors', 'modal'];
+          }
 
-        Inertia.visit(`/list/${listId}/details`, visitOptions);
-      }}
-      TransitionComponent={Transition}
-    >
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={handleClose}
-            aria-label="close"
+          Inertia.visit(`/list/${listId}/details`, visitOptions);
+        }}
+        TransitionComponent={Transition}
+      >
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+              disabled={isLoading}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              Add video to list
+            </Typography>
+            <Button autoFocus color="inherit" onClick={handleCreate} disabled={isLoading}>
+              Add
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <DialogContent>
+          <TextField
+            placeholder="Enter the URL of the video"
+            label="Video URL"
+            autoFocus
+            fullWidth
+            margin="dense"
+            inputProps={{
+              maxLength: 150,
+              required: true,
+              ref: titleRef,
+            }}
+            required
+            type="url"
             disabled={isLoading}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Add video to list
-          </Typography>
-          <Button autoFocus color="inherit" onClick={handleCreate} disabled={isLoading}>
-            Add
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <DialogContent>
-        <TextField
-          placeholder="Enter the URL of the video"
-          label="Video URL"
-          autoFocus
-          fullWidth
-          margin="dense"
-          inputProps={{
-            maxLength: 150,
-            required: true,
-            ref: titleRef,
-          }}
-          required
-          type="url"
-          disabled={isLoading}
-          value={videoUrl}
-          onChange={handleChange}
-          onKeyPress={handleOnKeyPress}
-          error={errors.videoUrl !== undefined}
-          helperText={errors.videoUrl}
-        />
-        <>
-          <DialogContentText>Paste a TikTok video URL</DialogContentText>
-          <DialogContentText>
-            <i>Example:</i>
-          </DialogContentText>
-          <DialogContentText>https://www.tiktok.com/[user]/video/[video-id]</DialogContentText>
-          <DialogContentText>https://m.tiktok.com/v/[video-id].html</DialogContentText>
-          <DialogContentText>https://vm.tiktok.com/[video-id]</DialogContentText>
-        </>
-      </DialogContent>
-    </Dialog>
+            value={videoUrl}
+            onChange={handleChange}
+            onKeyPress={handleOnKeyPress}
+            error={errors.videoUrl !== undefined}
+            helperText={errors.videoUrl}
+          />
+          <>
+            <DialogContentText>Paste a TikTok video URL</DialogContentText>
+            <DialogContentText>
+              <i>Example:</i>
+            </DialogContentText>
+            <DialogContentText>https://www.tiktok.com/[user]/video/[video-id]</DialogContentText>
+            <DialogContentText>https://m.tiktok.com/v/[video-id].html</DialogContentText>
+            <DialogContentText>https://vm.tiktok.com/[video-id]</DialogContentText>
+          </>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
