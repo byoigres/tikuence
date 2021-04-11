@@ -96,7 +96,13 @@ export function populateSharedProps(req: Request, _res: Response, next: NextFunc
   req.Inertia.shareProps({
     auth: {
       isAuthenticated: req.isAuthenticated(),
-      credentials: req.user || null
+      credentials: req.user
+        ? {
+            username: req.user.username,
+            name: req.user.name,
+            picture: req.user.picture
+          }
+        : null
     },
     isMobile: () =>
       isMobile({

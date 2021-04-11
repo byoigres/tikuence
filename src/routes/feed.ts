@@ -45,7 +45,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
       'L.url_hash AS id',
       'L.title',
       'VT.thumbnail_name as thumbnail',
-      'U.email',
+      'U.username',
       'VT.total as total_videos'
     )
     .joinRaw(
