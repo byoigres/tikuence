@@ -107,9 +107,6 @@ const Register = () => {
           {!auth.isAuthenticated && isInvalid && (
             <Typography variant="h6">This link is invalid</Typography>
           )}
-          {auth.isAuthenticated && (
-            <Typography variant="h6">{`You are currently login as ${auth.credentials.email}`}</Typography>
-          )}
           {!auth.isAuthenticated && !isExpired && !isInvalid && (
             <>
               <Typography variant="h4" color="primary" gutterBottom>
