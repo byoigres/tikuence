@@ -164,7 +164,7 @@ const Details = () => {
       <SEO title={title} />
       {id && (
         <Grid container className={classes.mainGrid}>
-          <Grid item sm={12} md={4}>
+          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
             <TitleForUpdate title={title} id={id} canEdit={isMe} />
             {videos && videos.length > 0 && (
               <Typography component="span" variant="caption">
