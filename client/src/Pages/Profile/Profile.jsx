@@ -221,6 +221,14 @@ const ProfilePage = () => {
                   Edit profile
                 </Button>
               </Typography>
+              <Typography
+                variant="subtitle2"
+                color="textSecondary"
+                gutterBottom
+                className={classes.typography}
+              >
+                {user.email}
+              </Typography>
               <Typography variant="body1" color="initial" className={classes.typography}>
                 {user.biography ? user.biography : 'No bio yet'}
               </Typography>

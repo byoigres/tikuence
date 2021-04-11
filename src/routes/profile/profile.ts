@@ -38,7 +38,7 @@ export async function setUser(req: Request, res: Response, next: NextFunction) {
 
   const fields: string[] = ['id', 'name', 'username', 'biography', 'tiktok_username', 'profile_picture_url AS picture']
 
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.username === params.username) {
     fields.push('email')
   }
 
@@ -53,7 +53,8 @@ export async function setUser(req: Request, res: Response, next: NextFunction) {
     })
   }
 
-  httpContext.set('user', { ...user, tiktok_url: `https://www.tiktok.com/@${user.tiktok_username}` })
+  const tiktok_url = user.tiktok_username ? `https://www.tiktok.com/@${user.tiktok_username}` : null
+  httpContext.set('user', { ...user, tiktok_url })
 
   next()
 }
@@ -117,6 +118,8 @@ async function response(req: Request) {
   const lists = httpContext.get('lists')
   const user = httpContext.get('user')
   const isMe = httpContext.get('isMe')
+
+  delete user.id
 
   req.Inertia.setViewData({ title: 'My Profile' }).render({
     component: 'Profile/Profile',

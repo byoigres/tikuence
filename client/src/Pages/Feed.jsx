@@ -166,7 +166,7 @@ const PageFeed = () => {
                             {`${item.total_videos} videos`}
                           </Typography>
                           <Typography component="span" variant="subtitle1" color="textPrimary">
-                            {`List by ${item.email}`}
+                            {`@${item.username}`}
                           </Typography>
                         </>
                       }

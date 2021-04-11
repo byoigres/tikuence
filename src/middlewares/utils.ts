@@ -12,10 +12,16 @@ export async function setListIdAndHashToContext(req: Request, _res: Response, ne
   const { hash } = req.params
   const listId = getListIdFromHash(hash)
 
-  httpContext.set('hash', hash)
-  httpContext.set('listId', listId)
+  if (listId) {
+    httpContext.set('hash', hash)
+    httpContext.set('listId', listId)
 
-  next()
+    return next()
+  }
+
+  req.Inertia.setStatusCode(404).setViewData({ title: 'List not found' }).render({
+    component: 'Errors/404'
+  })
 }
 
 export async function setVideoIdAndHashToContext(req: Request, _res: Response, next: NextFunction) {

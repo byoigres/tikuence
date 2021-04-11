@@ -33,7 +33,7 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   const knex = Knex()
 
   const list = await knex<iDetailsItem>(`${Tables.Lists} AS L`)
-    .select('L.url_hash AS id', 'L.title', 'U.id AS user_id')
+    .select('L.url_hash AS id', 'L.title', 'U.username')
     .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
     .where('L.id', listId)
     .first()
