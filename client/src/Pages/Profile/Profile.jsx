@@ -152,7 +152,7 @@ const ProfilePage = () => {
 
   return (
     <>
-      <SEO title="My Profile" />
+      <SEO title={`@${user.username} profile`} />
       <Grid
         container
         style={{
