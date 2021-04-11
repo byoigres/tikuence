@@ -25,6 +25,9 @@ async function view(req: Request) {
 
   // If the token is not an UUID
   if (!result.isEmpty()) {
+    if (req.isAuthenticated()) {
+      return req.Inertia.redirect('/')
+    }
     return req.Inertia.render(invalidResponse)
   }
 
