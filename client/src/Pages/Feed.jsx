@@ -197,6 +197,8 @@ const PageFeed = () => {
       </Grid>
       {isAuthenticated && (
         <FabFloatingLink
+          component={InertiaLink}
+          href="/list/add"
           onClick={() => {
             Inertia.visit('/list/add', {
               preserveScroll: true,

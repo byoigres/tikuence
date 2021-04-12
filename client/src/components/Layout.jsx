@@ -188,8 +188,12 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
                         onClose={handleUserMenuClose}
                         className={classes.userMenu}
                       >
-                        <MenuItem onClick={handleProfileClick}>
-                          <InertiaLink href={`/users/${credentials.username}`}>Profile</InertiaLink>
+                        <MenuItem
+                          onClick={handleProfileClick}
+                          component={InertiaLink}
+                          href={`/users/${credentials.username}`}
+                        >
+                          Profile
                         </MenuItem>
                         <MenuItem
                           onClick={() => {

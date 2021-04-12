@@ -191,6 +191,8 @@ const Details = ({ pageReferer }) => {
                   edge="start"
                   color="inherit"
                   aria-label="menu"
+                  component={InertiaLink}
+                  href={`/list/${list.id}/details`}
                   onClick={(e) => {
                     e.preventDefault();
                     Inertia.visit(`/list/${list.id}/details`);
@@ -207,7 +209,7 @@ const Details = ({ pageReferer }) => {
             <Grid item md={12}>
               <Grid container direction="row" wrap="nowrap" alignItems="center">
                 <Typography
-                  component="h6"
+                  component="h1"
                   variant="h6"
                   className={classes.inlineTitle}
                   style={{ flexGrow: 1 }}

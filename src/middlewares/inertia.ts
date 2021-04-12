@@ -13,7 +13,7 @@ const getShareImage = (thumbnail?: string) => {
     return thumbnail
   }
 
-  return `${config.get('/url/base')}/images/logo-share.png`
+  return `${config.get('/url/base')}images/logo-share.png`
 }
 
 const template = (page: object, viewData: ViewData) => `

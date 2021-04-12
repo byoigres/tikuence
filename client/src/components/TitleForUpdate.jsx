@@ -66,7 +66,7 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
     <>
       {!isEditMode && (
         <Grid container direction="row" wrap="nowrap" alignItems="center">
-          <Typography component="span" variant="h6">
+          <Typography component="h1" variant="h6">
             {title}
           </Typography>
           {canEdit && (

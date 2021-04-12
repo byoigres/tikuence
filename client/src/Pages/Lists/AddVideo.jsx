@@ -124,7 +124,7 @@ const AddVideoPage = () => {
             >
               <CloseIcon />
             </IconButton>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" component="h1" className={classes.title}>
               Add video to list
             </Typography>
             <Button autoFocus color="inherit" onClick={handleCreate} disabled={isLoading}>
