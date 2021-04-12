@@ -9,8 +9,12 @@ export const VIDEO_MODIFIER = config.get('/url/modifiers/videos')
 
 export default {
   encode: (value: number, modifier: number) => hashids.encode([value, modifier]),
-  decode: (hash: string) => {
-    const [value] = hashids.decode(hash)
+  decode: (hash: string, modifier: number) => {
+    const [value, modifierValue] = hashids.decode(hash)
+    if (modifier === modifierValue) {
+      return null
+    }
+
     return value
   }
 }
