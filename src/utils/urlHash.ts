@@ -11,7 +11,7 @@ export default {
   encode: (value: number, modifier: number) => hashids.encode([value, modifier]),
   decode: (hash: string, modifier: number) => {
     const [value, modifierValue] = hashids.decode(hash)
-    if (modifier === modifierValue) {
+    if (modifier !== modifierValue) {
       return null
     }
 
