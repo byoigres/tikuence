@@ -24,7 +24,7 @@ async function verifyListBelongsToCurrentUser(req: Request, _res: Response, next
   if (!list) {
     req.flash('warning', 'The video can not be deleted')
 
-    req.Inertia.redirect(`/list/${req.params.hash}/details`)
+    return req.Inertia.redirect(`/list/${req.params.hash}/details`)
   }
 
   httpContext.set('order_id', list.order_id)
@@ -39,28 +39,41 @@ async function deleteList(req: Request, _res: Response, next: NextFunction) {
 
   const knex = Knex()
 
-  // Delete the video
-  await knex(Tables.ListsVideos)
-    .where({
-      list_id: listId,
-      video_id: videoId
-    })
-    .delete()
+  const transaction = await knex.transaction()
 
-  // Update the order id
-  await knex(Tables.ListsVideos)
-    .update({
-      order_id: knex.raw('?? - 1', ['order_id'])
-    })
-    .where('list_id', listId)
-    .andWhere('order_id', '>', orderId)
+  try {
+    // Delete the video
+    await knex(Tables.ListsVideos)
+      .transacting(transaction)
+      .where({
+        list_id: listId,
+        video_id: videoId
+      })
+      .delete()
+
+    // Update the order id
+    await knex(Tables.ListsVideos)
+      .transacting(transaction)
+      .update({
+        order_id: knex.raw('?? - 1', ['order_id'])
+      })
+      .where('list_id', listId)
+      .andWhere('order_id', '>', orderId)
+
+    await transaction.commit()
+  } catch (err) {
+    console.log(err)
+    await transaction.rollback()
+    throw err
+  }
 
   next()
 }
 
 async function response(req: Request) {
+  const urlHash: string = httpContext.get('hash')
   req.flash('success', 'Video removed successfully')
-  req.Inertia.redirect(`/list/${req.params.hash}/details`)
+  req.Inertia.redirect(`/list/${urlHash}/details`)
 }
 
 export default [
@@ -70,4 +83,5 @@ export default [
   verifyListBelongsToCurrentUser,
   deleteList,
   response
+  // initial
 ]

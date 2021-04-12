@@ -61,7 +61,7 @@ async function createList(req: Request, res: Response, next: NextFunction) {
 }
 
 function response(req: Request) {
-  const urlHash: Number = httpContext.get('urlHash')
+  const urlHash: string = httpContext.get('urlHash')
 
   req.flash('success', 'List created successfully')
 

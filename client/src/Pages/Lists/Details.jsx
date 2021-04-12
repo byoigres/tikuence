@@ -289,7 +289,7 @@ const Details = () => {
                             alt={video.title}
                             className={classes.avatar}
                             variant="square"
-                            src={`/images/sm-${video.thumbnail_name}`}
+                            src={video.thumbnail}
                           />
                         </ListItemAvatar>
                         <ListItemText id={video.id} primary={video.title} />

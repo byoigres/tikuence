@@ -5,7 +5,6 @@ import { getFile } from '../utils/firebase'
 async function image(req: Request, res: Response) {
   const { image } = req.params
   try {
-    // TODO: Remove .jpg
     const file = await getFile(image)
     const readStream = new stream.PassThrough()
 

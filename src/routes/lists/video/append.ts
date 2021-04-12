@@ -258,6 +258,7 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
 
     // Verify if the video exists
     const videoExists = await knex<{ tiktok_id: string; author_id: number }>(Tables.Videos)
+      .transacting(transaction)
       .select('id')
       .where({
         tiktok_id: tiktokId,
