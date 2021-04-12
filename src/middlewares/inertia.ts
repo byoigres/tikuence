@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express'
 import inertia, { ViewData } from 'inertia-node'
 import isMobile from 'is-mobile'
+import { encode as htmlEntitiesEncode } from 'html-entities'
 import Url from 'url'
 import config from '../config'
 
 const ASSET_VERSION = config.get('/inertia/version')
 
 const getDescription = () => 'Watch the popular list of TikTok videos'
-const getTitle = (title: string) => `${title || getDescription()} • Tikuence`
+const getTitle = (title: string) => `${htmlEntitiesEncode(title || getDescription())} • Tikuence`
 const getShareImage = (thumbnail?: string) => {
   if (thumbnail) {
     return thumbnail
