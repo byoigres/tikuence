@@ -14,7 +14,7 @@ export async function fetchAndCreateVideoThumbnails(url: string, imageHash: stri
   const imageNames = {
     small: `${ThumbnailSize.Sm}${imageHash}.jpg`,
     medium: `${ThumbnailSize.Md}${imageHash}.jpg`,
-    large: `${ThumbnailSize.Md}${imageHash}.jpg`,
+    large: `${ThumbnailSize.Lg}${imageHash}.jpg`,
     original: `${imageHash}.jpg`
   }
 

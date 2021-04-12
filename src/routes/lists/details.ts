@@ -43,10 +43,14 @@ async function view(req: Request) {
     list.thumbnail = createThumbnailUrl(list.thumbnail, ThumbnailSize.Lg)
 
     const videos = await knex<iProfileListVideos>(`${Tables.ListsVideos} AS LV`)
-      .select('V.url_hash AS id', 'V.title', 'V.thumbnail_name', 'LV.order_id')
+      .select('V.url_hash AS id', 'V.title', 'V.thumbnail_name AS thumbnail', 'LV.order_id')
       .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
       .where('LV.list_id', listId)
       .orderBy('LV.order_id')
+
+    videos.forEach((item) => {
+      item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Sm)
+    })
 
     return req.Inertia.setViewData({ title: list.title, thumbnail: list.thumbnail }).render({
       component: 'Lists/Details',
