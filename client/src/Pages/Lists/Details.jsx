@@ -390,7 +390,11 @@ const Details = () => {
             actionText="Delete"
             cancelText="Cancel"
           />
-          <FabFloatingLink onClick={onAddVideoClick} />
+          <FabFloatingLink
+            component={InertiaLink}
+            href={`/list/${id}/video/add`}
+            onClick={onAddVideoClick}
+          />
         </>
       )}
       {modal && modal.modalName === 'list' && <List pageReferer="details" />}

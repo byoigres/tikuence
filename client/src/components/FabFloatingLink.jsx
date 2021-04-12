@@ -18,14 +18,21 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const FabFloatingLink = ({ onClick }) => {
+const FabFloatingLink = ({ onClick, component, href }) => {
   const theme = useTheme();
   const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md + 50}px)`);
   const classes = useStyles({ isFullWidthMatch });
 
   return (
     <div className={classes.container}>
-      <Fab color="primary" aria-label="add" className={classes.fab} onClick={onClick}>
+      <Fab
+        color="primary"
+        aria-label="add"
+        className={classes.fab}
+        onClick={onClick}
+        component={component}
+        href={href}
+      >
         <AddIcon />
       </Fab>
     </div>

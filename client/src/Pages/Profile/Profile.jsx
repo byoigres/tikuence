@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/inertia-react';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -376,6 +376,8 @@ const ProfilePage = () => {
       </Grid>
       {isAuthenticated && (
         <FabFloatingLink
+          component={InertiaLink}
+          href="/list/add"
           onClick={() => {
             Inertia.visit('/list/add', {
               preserveScroll: true,

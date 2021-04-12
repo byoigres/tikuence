@@ -191,6 +191,8 @@ const Details = ({ pageReferer }) => {
                   edge="start"
                   color="inherit"
                   aria-label="menu"
+                  component={InertiaLink}
+                  href={`/list/${list.id}/details`}
                   onClick={(e) => {
                     e.preventDefault();
                     Inertia.visit(`/list/${list.id}/details`);
