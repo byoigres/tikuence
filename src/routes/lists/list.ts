@@ -36,12 +36,11 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   const list = await knex<iDetailsItem>(`${Tables.Lists} AS L`)
     .select('L.url_hash AS id', 'L.title', 'U.username', 'VT.thumbnail_name AS thumbnail')
     .joinRaw(
-      `JOIN LATERAL (${knex
+      `LEFT JOIN LATERAL (${knex
         .select(
           'V.id',
           'V.thumbnail_name',
-          'V.created_at',
-          knex(`${Tables.ListsVideos} AS ILV`).count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
+          'V.created_at'
         )
         .from(`${Tables.ListsVideos} AS LV`)
         .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
@@ -59,7 +58,9 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
     })
   }
 
-  list.thumbnail = createThumbnailUrl(list.thumbnail, ThumbnailSize.Lg)
+  if (list.thumbnail) {
+    list.thumbnail = createThumbnailUrl(list.thumbnail, ThumbnailSize.Lg)
+  }
 
   let fromOrderId = 0
 

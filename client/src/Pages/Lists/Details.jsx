@@ -61,9 +61,11 @@ const useStyles = makeStyles((theme) => ({
     position: isFullWidthMatch ? 'fixed' : 'initial',
     maxWidth: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 4}px` : 'initial',
     width: isFullWidthMatch ? `100%` : 'initial',
+    backgroundColor: 'white',
   }),
   contentColumn: ({ isFullWidthMatch }) => ({
     marginLeft: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 4}px` : 'initial',
+    minHeight: 300,
   }),
 }));
 
