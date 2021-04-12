@@ -32,7 +32,7 @@ export async function setVideoIdAndHashToContext(req: Request, _res: Response, n
     httpContext.set('videoHash', videoHash)
     httpContext.set('videoId', videoId)
 
-    next()
+    return next()
   }
 
   req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
