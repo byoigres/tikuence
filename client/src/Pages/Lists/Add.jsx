@@ -122,7 +122,7 @@ const AddPage = ({ pageReferer }) => {
             >
               <CloseIcon />
             </IconButton>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" component="h1" className={classes.title}>
               New list
             </Typography>
             <Button autoFocus color="inherit" onClick={handleCreate} disabled={isLoading}>

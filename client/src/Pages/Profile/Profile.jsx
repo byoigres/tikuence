@@ -190,12 +190,7 @@ const ProfilePage = () => {
               </Avatar>
             </Grid>
             <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
-              <Typography
-                variant="h3"
-                component="span"
-                color="textPrimary"
-                className={classes.name}
-              >
+              <Typography variant="h3" component="h1" color="textPrimary" className={classes.name}>
                 {user.name}
               </Typography>
               <Typography

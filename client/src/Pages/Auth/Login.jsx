@@ -38,7 +38,7 @@ const Login = ({ isLogin, isMobile }) => {
       <SEO title={isLogin ? 'Login' : 'Sign Up'} />
       <Container maxWidth="sm" disableGutters={isMobile}>
         <Paper elevation={0} className={classes.container}>
-          <Typography variant="h4" color="primary" gutterBottom>
+          <Typography variant="h4" component="h1" color="primary" gutterBottom>
             {`${isLogin ? 'Welcome back 😄' : 'Hello user 👋'}`}
           </Typography>
           <Typography variant="subtitle2" gutterBottom>
