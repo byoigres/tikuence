@@ -4,6 +4,7 @@ import fetch from 'node-fetch'
 import Sharp from 'sharp'
 import path from 'path'
 import { upload as uploadImage } from './firebase'
+import { ThumbnailSize } from '../utils/images'
 
 export async function fetchAndCreateVideoThumbnails(url: string, imageHash: string) {
   const response = await fetch(url)
@@ -11,9 +12,9 @@ export async function fetchAndCreateVideoThumbnails(url: string, imageHash: stri
   const buffer = await response.buffer()
 
   const imageNames = {
-    small: `sm-${imageHash}.jpg`,
-    medium: `md-${imageHash}.jpg`,
-    large: `lg-${imageHash}.jpg`,
+    small: `${ThumbnailSize.Sm}${imageHash}.jpg`,
+    medium: `${ThumbnailSize.Md}${imageHash}.jpg`,
+    large: `${ThumbnailSize.Md}${imageHash}.jpg`,
     original: `${imageHash}.jpg`
   }
 

@@ -8,7 +8,13 @@ const ASSET_VERSION = config.get('/inertia/version')
 
 const getDescription = () => 'Watch the popular list of TikTok videos'
 const getTitle = (title: string) => `${title || getDescription()} • Tikuence`
-const getImage = () => 'https://tikuence.herokuapp.com/images/logo200.png'
+const getShareImage = (thumbnail?: string) => {
+  if (thumbnail) {
+    return thumbnail
+  }
+
+  return `${config.get('/url/base')}/images/logo-share.png`
+}
 
 const template = (page: object, viewData: ViewData) => `
 <!DOCTYPE html>
@@ -23,16 +29,16 @@ const template = (page: object, viewData: ViewData) => `
     <meta name="description" content="${getDescription()}">
 
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tikuence.herokuapp.com/">
+    <meta property="og:url" content="${config.get('/url/base')}">
     <meta property="og:title" content="${getTitle(viewData.title)}">
     <meta property="og:description" content="${getDescription()}">
-    <meta property="og:image" content="${getImage()}">
+    <meta property="og:image" content="${getShareImage(viewData.thumbnail)}">
 
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://tikuence.herokuapp.com/">
+    <meta property="twitter:url" content="${config.get('/url/base')}">
     <meta property="twitter:title" content="${getTitle(viewData.title)}">
     <meta property="twitter:description" content="${getDescription()}">
-    <meta property="twitter:image" content="${getImage()}">
+    <meta property="twitter:image" content="${getShareImage(viewData.thumbnail)}">
     <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
     <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">

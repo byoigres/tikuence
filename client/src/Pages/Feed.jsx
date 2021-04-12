@@ -145,7 +145,7 @@ const PageFeed = () => {
                         alt={item.title}
                         className={classes.avatar}
                         variant="square"
-                        src={`/images/sm-${item.thumbnail}`}
+                        src={item.thumbnail}
                       />
                     </ListItemAvatar>
                     <ListItemText
