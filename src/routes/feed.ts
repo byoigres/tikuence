@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import asyncRoutes from '../utils/asyncRoutes'
 import Knex, { Tables, iFeedResult } from '../utils/knex'
+import { createThumbnailUrl, ThumbnailSize } from '../utils/images'
 
 // TODO: validate headers
 
@@ -40,8 +41,8 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
 
   const knex = Knex()
 
-  const lists = await knex<iFeedResult>(`${Tables.Lists} as L`)
-    .select<iFeedResult>(
+  const lists = await knex<[iFeedResult]>(`${Tables.Lists} as L`)
+    .select<[iFeedResult]>(
       'L.url_hash AS id',
       'L.title',
       'VT.thumbnail_name as thumbnail',
@@ -66,6 +67,10 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
     .orderBy(category === 'recent' ? 'VT.created_at' : 'L.created_at', 'DESC')
     .limit(pageSize)
     .offset(offset)
+
+  lists.forEach((item) => {
+    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Sm)
+  })
 
   httpContext.set('lists', lists)
 

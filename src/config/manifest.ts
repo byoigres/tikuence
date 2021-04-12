@@ -96,6 +96,9 @@ const manifest = {
     }
   },
   url: {
+    base: {
+      $env: 'BASE_DOMAIN'
+    },
     salt: {
       $env: 'URL_HASH_SALT'
     },

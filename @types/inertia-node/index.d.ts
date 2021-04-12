@@ -7,7 +7,7 @@ declare module "inertia-node" {
   }
 
   interface IInertia {
-    setViewData(viewData: object): this;
+    setViewData(viewData: ViewData): this;
     shareProps(sharedProps: object): this;
     setStatusCode(statusCode: number): this;
     setHeaders(headers: object): this;
@@ -17,6 +17,7 @@ declare module "inertia-node" {
 
   interface ViewData {
     title: string;
+    thumbnail?: string;
   }
 
   function Html(page: object, viewData: ViewData): string;

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import Knex, { Tables, iDetailsItem } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
+import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
 
 async function verifyParams(req: Request, _res: Response, next: NextFunction) {
   const pageSize = 3
@@ -33,7 +34,21 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
   const knex = Knex()
 
   const list = await knex<iDetailsItem>(`${Tables.Lists} AS L`)
-    .select('L.url_hash AS id', 'L.title', 'U.username')
+    .select('L.url_hash AS id', 'L.title', 'U.username', 'VT.thumbnail_name AS thumbnail')
+    .joinRaw(
+      `JOIN LATERAL (${knex
+        .select(
+          'V.id',
+          'V.thumbnail_name',
+          'V.created_at',
+          knex(`${Tables.ListsVideos} AS ILV`).count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
+        )
+        .from(`${Tables.ListsVideos} AS LV`)
+        .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
+        .whereRaw('"LV"."list_id" = "L"."id"')
+        .orderBy('V.created_at', 'DESC')
+        .limit(1)}) AS "VT" ON TRUE`
+    )
     .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
     .where('L.id', listId)
     .first()
@@ -43,6 +58,8 @@ async function getListVideos(req: Request, _res: Response, next: NextFunction) {
       component: 'Errors/404'
     })
   }
+
+  list.thumbnail = createThumbnailUrl(list.thumbnail, ThumbnailSize.Lg)
 
   let fromOrderId = 0
 
@@ -98,7 +115,7 @@ export async function getIsFavorites(req: Request, _res: Response, next: NextFun
 async function response(req: Request) {
   const list = httpContext.get('list')
   const videos = httpContext.get('videos')
-  const isFavorited : Boolean = httpContext.get('isFavorited')
+  const isFavorited: Boolean = httpContext.get('isFavorited')
   let referer = req.headers['x-page-referer']
   const flashReferer = req.flash('x-page-referer')
 
@@ -122,7 +139,7 @@ async function response(req: Request) {
     }
   }
 
-  req.Inertia.setViewData({ title: list.title }).render({
+  req.Inertia.setViewData({ title: list.title, thumbnail: list.thumbnail }).render({
     component,
     props: {
       modal: {
