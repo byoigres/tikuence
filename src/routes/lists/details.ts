@@ -18,11 +18,12 @@ async function view(req: Request) {
       'L.user_id',
       'U.username',
       'U.profile_picture_url AS picture',
-      'VT.thumbnail_name AS thumbnail'
+      'VT.thumbnail_name AS thumbnail',
+      'VT.total AS total_videos'
     )
     .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
     .joinRaw(
-      `JOIN LATERAL (${knex
+      `LEFT JOIN LATERAL (${knex
         .select(
           'V.id',
           'V.thumbnail_name',
@@ -52,6 +53,7 @@ async function view(req: Request) {
       props: {
         id: list.id,
         title: list.title,
+        total_videos: list.total_videos || 0,
         isFavorited,
         user: {
           id: list.user_id,
