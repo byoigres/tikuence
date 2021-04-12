@@ -373,7 +373,8 @@ const ProfilePage = () => {
         <FabFloatingLink
           component={InertiaLink}
           href="/list/add"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             Inertia.visit('/list/add', {
               preserveScroll: true,
               preserveState: true,
