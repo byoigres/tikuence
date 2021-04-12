@@ -29,6 +29,9 @@ const template = (page: object, viewData: ViewData) => `
     <meta name="title" content="${getTitle(viewData.title)}">
     <meta name="description" content="${getDescription()}">
 
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
     <meta property="og:type" content="website">
     <meta property="og:url" content="${config.get('/url/base')}">
     <meta property="og:title" content="${getTitle(viewData.title)}">
