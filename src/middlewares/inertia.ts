@@ -50,8 +50,7 @@ const template = (page: object, viewData: ViewData) => `
     <style>
         html, body {
             font-family: "Source Sans Pro", 'Roboto', sans-serif;
-            /* background-color: #f5f5f5; */
-            background-color: #fff;
+            background-color: #f5f5f5;
             scroll-behavior: smooth;
         }
         a {

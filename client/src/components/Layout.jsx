@@ -32,7 +32,6 @@ const mainTheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: "white",
     [theme.breakpoints.down('md')]: {
       alignItems: 'normal',
     },
@@ -57,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'Changa One',
     // fontFamily: 'Faster One',
     fontSize: '2rem',
-    // color: 'white',
+    color: 'white',
     textDecoration: 'none',
     '&:hover': {
       color: theme.palette.text.secondary,
@@ -160,7 +159,7 @@ const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
           <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
         )}
       >
-        <Container maxWidth="sm" className={classes.container} disableGutters>
+        <Container maxWidth="md" className={classes.container} disableGutters>
           {!cleanLayout && (
             <AppBar position="fixed" className={classes.appBar}>
               <Container maxWidth="md" disableGutters data-name="container">
