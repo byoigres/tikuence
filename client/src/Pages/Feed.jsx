@@ -220,6 +220,6 @@ const PageFeed = () => {
   );
 };
 
-PageFeed.layout = (page) => <Layout children={page} title="Tikuence" />;
+PageFeed.layout = (page) => <Layout children={page} />;
 
 export default PageFeed;

@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
   },
   mainLink: {
+    fontFamily: 'Changa One',
+    // fontFamily: 'Faster One',
+    fontSize: '2rem',
     color: 'white',
     textDecoration: 'none',
     '&:hover': {
@@ -73,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '5rem',
     },
   },
+  toolBar: {
+    minHeight: 48,
+  },
   content: {
     [theme.breakpoints.down('md')]: {
       marginTop: 0,
@@ -89,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
+const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
   const {
     props: {
       auth: { isAuthenticated, credentials },
