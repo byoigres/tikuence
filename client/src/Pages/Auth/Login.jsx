@@ -84,6 +84,6 @@ const Login = ({ isLogin, isMobile }) => {
   );
 };
 
-Login.layout = (page) => <Layout children={page} />;
+Login.layout = (page) => <Layout children={page} title="Tikuence" />;
 
 export default Login;
