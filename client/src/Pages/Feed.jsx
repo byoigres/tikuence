@@ -8,19 +8,19 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import RestoreIcon from '@material-ui/icons/Restore';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import FabFloatingLink from '../components/FabFloatingLink';
 import AddNewList from './Lists/Add';
 import Profile from './Profile/Profile';
+import PillsNavigation, { PillAction } from '../components/PillsNavigation'
 import List from './Lists/List';
 import Login from './Auth/Login';
 import EndOfList from '../components/EndOfList';
@@ -47,27 +47,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const categories = [
-  {
+// TODO: Rename as "section"?
+const filters = {
+  recent: {
     id: 'recent',
     label: 'Recent',
     pageTitle: 'Recent lists',
     icon: <RestoreIcon />,
   },
-  {
+  new: {
     id: 'new',
     label: 'New',
     pageTitle: 'New lists',
     icon: <WbSunnyIcon />,
   },
-];
+};
 
 const PageFeed = () => {
   const {
     props: {
       auth: { isAuthenticated },
       isMobile,
-      category = 'recent',
+      initialCategory = 'recent',
       lists: initialLists = [],
       modal = false,
       user,
@@ -75,9 +76,19 @@ const PageFeed = () => {
   } = usePage();
   const classes = useStyles({ isMobile });
   const [lists, setLists] = useState(initialLists);
-  const [categoryIndex] = useState(categories.findIndex((x) => x.id === category));
+  const [category, setCategory] = useState(initialCategory);
   const [currentPage, setCurrentPage] = useState(1);
   const [isTheEnd, setIsTheEnd] = useState(false);
+  const theme = useTheme();
+  console.log({ category });
+  function onFilterClick(filter) {
+    setCategory(filter)
+    Inertia.visit('/', {
+      headers: {
+        'X-Feed-Category': filter,
+      },
+    });
+  }
 
   useEffect(() => {
     if (currentPage > 1) {
@@ -102,13 +113,22 @@ const PageFeed = () => {
 
   return (
     <>
-      <SEO title={categories[categoryIndex].pageTitle} />
+      <SEO title={filters[category].pageTitle} />
       <Grid
         container
         style={{ paddingLeft: '1rem', paddingRight: '1rem', backgroundColor: 'white' }}
       >
         <Grid item xs={12} md={12}>
-          <BottomNavigation
+          <PillsNavigation onChange={(type) => { console.log({ type }) }}>
+            <PillAction id="recent" label="Recent" icon={<RestoreIcon />} />
+            <PillAction id="new" label="New" icon={<WbSunnyIcon />} />
+          </PillsNavigation>
+          {/* <div>
+            <Chip color="primary" label="Recent" icon={<RestoreIcon />} style={{ height: 36, paddingLeft: theme.spacing(1), paddingRight: theme.spacing(1) }} onClick={() => onFilterClick('recent')} />
+            <Chip label="News" variant="outlined" icon={<WbSunnyIcon />} style={{ height: 36, marginLeft: theme.spacing(1), paddingLeft: theme.spacing(1), paddingRight: theme.spacing(1) }} onClick={() => onFilterClick('new')} />
+          </div> */}
+          {/* <BottomNavigation
+            style={{ display: 'none' }}
             value={categoryIndex}
             onChange={(_, selectedCategoryIndex) => {
               if (selectedCategoryIndex !== categoryIndex) {
@@ -125,7 +145,7 @@ const PageFeed = () => {
             {categories.map((item) => (
               <BottomNavigationAction key={item.label} label={item.label} icon={item.icon} />
             ))}
-          </BottomNavigation>
+          </BottomNavigation> */}
           <MaterialList dense={false} className={classes.list}>
             {lists &&
               lists.map((item) => (
