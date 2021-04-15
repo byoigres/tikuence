@@ -43,7 +43,7 @@ const validations = checkSchema({
       errorMessage: 'Username must be between 1 and 24 characterers',
       options: {
         min: 1,
-        max: 24
+        max: 15
       },
       bail: true
     }

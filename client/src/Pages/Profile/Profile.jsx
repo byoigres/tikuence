@@ -200,21 +200,22 @@ const ProfilePage = () => {
                 className={classes.typography}
               >
                 @{user.username}
-                <Button
-                  style={{ display: 'none' }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  href={`/users/${user.username}/edit`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    Inertia.visit(`/users/${user.username}/edit`, {
-                      only: ['auth', 'flash', 'errors', 'isMobile', 'modal', 'user', 'isMe'],
-                    });
-                  }}
-                >
-                  Edit profile
-                </Button>
+                {isMe && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    href={`/users/${user.username}/edit`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      Inertia.visit(`/users/${user.username}/edit`, {
+                        only: ['auth', 'flash', 'errors', 'isMobile', 'modal', 'user', 'isMe'],
+                      });
+                    }}
+                  >
+                    Edit profile
+                  </Button>
+                )}
               </Typography>
               <Typography
                 variant="subtitle2"
