@@ -8,19 +8,31 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import RestoreIcon from '@material-ui/icons/Restore';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+//
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardActions from '@material-ui/core/CardActions';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import LinkIcon from '@material-ui/icons/Link';
+import { red } from '@material-ui/core/colors';
+import ListIcon from '@material-ui/icons/List';
+//
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import FabFloatingLink from '../components/FabFloatingLink';
 import AddNewList from './Lists/Add';
 import Profile from './Profile/Profile';
-import PillsNavigation, { PillAction } from '../components/PillsNavigation'
+import PillsNavigation, { PillAction } from '../components/PillsNavigation';
 import List from './Lists/List';
 import Login from './Auth/Login';
 import EndOfList from '../components/EndOfList';
@@ -45,6 +57,27 @@ const useStyles = makeStyles((theme) => ({
     margin: '1rem',
     fontStyle: 'italic',
   },
+  //
+  root: {
+    // maxWidth: 345,
+  },
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+  avatar2: {
+    backgroundColor: red[500],
+  },
 }));
 
 // TODO: Rename as "section"?
@@ -68,7 +101,7 @@ const PageFeed = () => {
     props: {
       auth: { isAuthenticated },
       isMobile,
-      initialCategory = 'recent',
+      category = 'recent',
       lists: initialLists = [],
       modal = false,
       user,
@@ -76,19 +109,8 @@ const PageFeed = () => {
   } = usePage();
   const classes = useStyles({ isMobile });
   const [lists, setLists] = useState(initialLists);
-  const [category, setCategory] = useState(initialCategory);
   const [currentPage, setCurrentPage] = useState(1);
   const [isTheEnd, setIsTheEnd] = useState(false);
-  const theme = useTheme();
-  console.log({ category });
-  function onFilterClick(filter) {
-    setCategory(filter)
-    Inertia.visit('/', {
-      headers: {
-        'X-Feed-Category': filter,
-      },
-    });
-  }
 
   useEffect(() => {
     if (currentPage > 1) {
@@ -115,37 +137,101 @@ const PageFeed = () => {
     <>
       <SEO title={filters[category].pageTitle} />
       <Grid
+        data-name="Grid-Container"
         container
-        style={{ paddingLeft: '1rem', paddingRight: '1rem', backgroundColor: 'white' }}
+        style={{
+          // paddingLeft: '1rem',
+          // paddingRight: '1rem',
+          backgroundColor: 'white',
+          outline: '0px solid red',
+        }}
       >
-        <Grid item xs={12} md={12}>
-          <PillsNavigation onChange={(type) => { console.log({ type }) }}>
-            <PillAction id="recent" label="Recent" icon={<RestoreIcon />} />
-            <PillAction id="new" label="New" icon={<WbSunnyIcon />} />
-          </PillsNavigation>
-          {/* <div>
-            <Chip color="primary" label="Recent" icon={<RestoreIcon />} style={{ height: 36, paddingLeft: theme.spacing(1), paddingRight: theme.spacing(1) }} onClick={() => onFilterClick('recent')} />
-            <Chip label="News" variant="outlined" icon={<WbSunnyIcon />} style={{ height: 36, marginLeft: theme.spacing(1), paddingLeft: theme.spacing(1), paddingRight: theme.spacing(1) }} onClick={() => onFilterClick('new')} />
-          </div> */}
-          {/* <BottomNavigation
-            style={{ display: 'none' }}
-            value={categoryIndex}
-            onChange={(_, selectedCategoryIndex) => {
-              if (selectedCategoryIndex !== categoryIndex) {
+        <Grid
+          item
+          xs={12}
+          md={6}
+          style={{
+            outline: '0px solid transparent',
+          }}
+        />
+        <Grid
+          item
+          xs={12}
+          md={12}
+          style={{
+            position: 'fixed',
+            width: '100%',
+            outline: '0px solid pink',
+          }}
+        />
+        <Grid
+          item
+          xs={12}
+          md={6}
+          style={{
+            maxWith: 200,
+            outline: '0px solid green',
+          }}
+        >
+          <PillsNavigation
+            value={category}
+            onChange={(_, selectedCategory) => {
+              if (selectedCategory !== category) {
                 Inertia.visit('/', {
                   headers: {
-                    'X-Feed-Category': categories[selectedCategoryIndex].id,
+                    'X-Feed-Category': selectedCategory,
                   },
                 });
               }
             }}
-            showLabels
-            className={classes.root}
           >
-            {categories.map((item) => (
-              <BottomNavigationAction key={item.label} label={item.label} icon={item.icon} />
+            <PillAction value="recent" label="Recent" icon={<RestoreIcon />} />
+            <PillAction value="new" label="New" icon={<WbSunnyIcon />} />
+          </PillsNavigation>
+          {lists &&
+            lists.map((item) => (
+              <Fragment key={`list-item-${item.id}`}>
+                <Card className={classes.root} elevation={0}>
+                  <CardActionArea
+                    href={`/list/${item.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      Inertia.visit(`/list/${item.id}`, {
+                        preserveScroll: true,
+                        preserveState: true,
+                        headers: { 'X-Page-Referer': 'feed' },
+                        only: ['auth', 'flash', 'errors', 'modal', 'list', 'videos', 'referer'],
+                      });
+                    }}
+                  >
+                    <CardHeader title={item.title} subheader={`${item.total_videos} videos`} />
+                    <CardMedia
+                      className={classes.media}
+                      image={item.thumbnail}
+                      title={item.title}
+                    />
+                  </CardActionArea>
+                  <CardActions disableSpacing>
+                    <Tooltip title="Add to favorites">
+                      <IconButton aria-label="add to favorites">
+                        <FavoriteIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="View details">
+                      <IconButton aria-label="view details">
+                        <ListIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Copy Link">
+                      <IconButton aria-label="copy link">
+                        <LinkIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </CardActions>
+                </Card>
+                <Divider variant="fullWidth" component="div" />
+              </Fragment>
             ))}
-          </BottomNavigation> */}
           <MaterialList dense={false} className={classes.list}>
             {lists &&
               lists.map((item) => (
