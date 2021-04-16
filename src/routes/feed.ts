@@ -8,7 +8,7 @@ import { createThumbnailUrl, ThumbnailSize } from '../utils/images'
 
 async function verifyParams(req: Request, res: Response, next: NextFunction) {
   let category = req.headers['x-feed-category']
-  const pageSize = 10
+  const pageSize = 24
   let offset = 0
   let page = 1
 
@@ -37,7 +37,7 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
 async function getAllLists(req: Request, _res: Response, next: NextFunction) {
   const category = httpContext.get('category')
   const offset = httpContext.get('offset')
-  const pageSize = 10
+  const pageSize = 24
 
   const knex = Knex()
 
@@ -69,7 +69,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
     .offset(offset)
 
   lists.forEach((item) => {
-    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Sm)
+    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Original)
   })
 
   httpContext.set('lists', lists)
