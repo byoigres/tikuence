@@ -8,6 +8,6 @@ export enum ThumbnailSize {
 }
 
 export function createThumbnailUrl(thumbnail: string, size: ThumbnailSize = ThumbnailSize.Original) {
-  const url = `${config.get('/url/base')}images/${size}${thumbnail}.jpg`
+  const url = `${process.env.NODE_ENV === 'production' ? config.get('/url/base') : '/'}images/${size}${thumbnail}.jpg`
   return url
 }
