@@ -51,6 +51,7 @@ const template = (page: object, viewData: ViewData) => `
         html, body {
             font-family: 'Roboto', sans-serif;
             background-color: #f5f5f5;
+            background-color: #fff;
             scroll-behavior: smooth;
         }
         a {
