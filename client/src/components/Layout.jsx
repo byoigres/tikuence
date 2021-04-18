@@ -32,6 +32,7 @@ const mainTheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
+    backgroundColor: 'white',
     [theme.breakpoints.down('md')]: {
       alignItems: 'normal',
     },
@@ -53,7 +54,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
   },
   mainLink: {
-    color: 'white',
+    fontFamily: 'Changa One',
+    fontSize: '2rem',
     textDecoration: 'none',
     '&:hover': {
       color: theme.palette.text.secondary,
@@ -73,6 +75,9 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '5rem',
     },
   },
+  toolBar: {
+    minHeight: 48,
+  },
   content: {
     [theme.breakpoints.down('md')]: {
       marginTop: 0,
@@ -89,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
+const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
   const {
     props: {
       auth: { isAuthenticated, credentials },
@@ -158,7 +163,7 @@ const Layout = ({ children, title = 'Tikuence', cleanLayout = false }) => {
             <AppBar position="fixed" className={classes.appBar}>
               <Container maxWidth="md" disableGutters data-name="container">
                 <Toolbar className={classes.toolBar}>
-                  <Typography variant="h6" className={classes.title}>
+                  <Typography variant="h6" className={classes.title} color="primary">
                     <InertiaLink href="/" className={classes.mainLink}>
                       {title}
                     </InertiaLink>
