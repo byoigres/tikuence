@@ -88,7 +88,6 @@ const useStyles = makeStyles((theme) => ({
   },
   thumbnail: {
     width: '100%',
-    // height: '100%',
   },
   iconButton: {
     display: 'flex',
