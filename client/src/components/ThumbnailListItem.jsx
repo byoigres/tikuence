@@ -88,19 +88,18 @@ const useStyles = makeStyles((theme) => ({
   },
   thumbnail: {
     width: '100%',
-    height: '100%',
+    // height: '100%',
   },
   iconButton: {
     display: 'flex',
   },
-  actions: ({ isMobile }) => ({
+  actions: {
     position: 'absolute',
     bottom: theme.spacing(1),
     right: 0,
     left: 0,
     display: 'flex',
-    // justifyContent: isMobile ? 'center' : 'flex-end',
-  }),
+  },
   actionContainer: ({ isMobile }) => ({
     display: 'flex',
     flexGrow: 1,
@@ -108,10 +107,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: isMobile ? 'space-evenly' : 'flex-end',
   }),
   action: ({ isMobile }) => ({
-    // marginRight: theme.spacing(1),
-    // '&:not(:last-child)': {
-    //   marginRight: theme.spacing(1),
-    // },
     marginRight: theme.spacing(isMobile ? 0 : 1),
     borderRadius: '50%',
     backgroundColor: 'rgb(255 255 255 / 90%)',
@@ -161,13 +156,20 @@ const ThumbnailItem = ({ id, title, thumbnail, videos, username, isMobile }) => 
   }
 
   return (
-    <Grid item xs={4} sm={3} className={classes.item} data-name="Grid-Item" ref={thumbnailRef}>
+    <Grid item xs={4} sm={4} className={classes.item} data-name="Grid-Item" ref={thumbnailRef}>
       <InertiaLink
         href={`/list/${id}`}
         preserveScroll
         preserveState
         headers={{ 'X-Page-Referer': 'feed' }}
         only={['auth', 'flash', 'errors', 'modal', 'list', 'videos', 'referer']}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          height: '100%',
+          backgroundColor: '#000',
+        }}
       >
         <img src={thumbnail} alt={title} className={classes.thumbnail} />
         <Fade in={displayContainer}>
