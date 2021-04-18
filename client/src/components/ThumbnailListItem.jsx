@@ -118,6 +118,7 @@ const ThumbnailItem = ({ id, title, thumbnail, videos, username, isMobile }) => 
   const classes = useStyles({ displayContainer, isMobile });
   const thumbnailRef = useRef();
   const [iconButtonSize, setIconButtonSize] = useState('medium');
+  const [iconSize, setIconSize] = useState('default');
   const theme = useTheme();
   const isGreaterThanMedium = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
 
@@ -131,6 +132,7 @@ const ThumbnailItem = ({ id, title, thumbnail, videos, username, isMobile }) => 
 
   useEffect(() => {
     setIconButtonSize(isGreaterThanMedium ? 'medium' : 'small');
+    setIconSize(isGreaterThanMedium ? 'default' : 'small');
   }, [isGreaterThanMedium]);
 
   useEffect(() => {
@@ -203,10 +205,9 @@ const ThumbnailItem = ({ id, title, thumbnail, videos, username, isMobile }) => 
                         color="primary"
                         aria-label="list info"
                         size={iconButtonSize}
-                        className={classes.iconButton}
                         onClick={onThumbnailItemInfoClick}
                       >
-                        <InfoOutlinedIcon />
+                        <InfoOutlinedIcon fontSize={iconSize} />
                       </IconButton>
                     </div>
                   </Tooltip>
@@ -217,13 +218,12 @@ const ThumbnailItem = ({ id, title, thumbnail, videos, username, isMobile }) => 
                       color="primary"
                       aria-label="view details"
                       size={iconButtonSize}
-                      className={classes.iconButton}
                       onClick={(e) => {
                         e.preventDefault();
                         Inertia.visit(`/list/${id}/details`);
                       }}
                     >
-                      <ListAltOutlinedIcon />
+                      <ListAltOutlinedIcon fontSize={iconSize} />
                     </IconButton>
                   </div>
                 </Tooltip>
