@@ -46,10 +46,10 @@ const template = (page: object, viewData: ViewData) => `
     <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
     <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
         html, body {
-            font-family: "Source Sans Pro", 'Roboto', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f5f5f5;
             scroll-behavior: smooth;
         }

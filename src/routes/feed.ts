@@ -69,7 +69,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
     .offset(offset)
 
   lists.forEach((item) => {
-    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Original)
+    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Lg)
   })
 
   httpContext.set('lists', lists)

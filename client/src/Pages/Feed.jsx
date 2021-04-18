@@ -17,7 +17,8 @@ import Profile from './Profile/Profile';
 import List from './Lists/List';
 import Login from './Auth/Login';
 import EndOfList from '../components/EndOfList';
-import ThumbailList, { ThumbnailItem } from '../components/ThumbailList';
+import ThumbailList from '../components/ThumbailList';
+import ThumbnailListItem from '../components/ThumbnailListItem';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -145,12 +146,13 @@ const PageFeed = () => {
           <ThumbailList isMobile={isMobile}>
             {lists.length !== 0 &&
               lists.map((list) => (
-                <ThumbnailItem
+                <ThumbnailListItem
                   key={`thumbnail-item-${list.id}`}
                   id={list.id}
                   thumbnail={list.thumbnail}
                   title={list.title}
                   videos={list.total_videos}
+                  username={list.username}
                 />
               ))}
           </ThumbailList>
