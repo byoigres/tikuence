@@ -14,7 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import MuiAlert from '@material-ui/lab/Alert';
 import Slide from '@material-ui/core/Slide';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CloseIcon from '@material-ui/icons/Close';
 import ListIcon from '@material-ui/icons/List';
 import { Waypoint } from 'react-waypoint';
 import SEO from '../../components/SEO';
@@ -59,9 +59,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /* eslint react/jsx-props-no-spreading: 0 */
-const Transition = React.forwardRef((props, ref) => (
-  <Slide direction="left" ref={ref} {...props} />
-));
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const Details = ({ pageReferer }) => {
   const {
@@ -163,7 +161,7 @@ const Details = ({ pageReferer }) => {
         <AppBar position="relative">
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-              <ArrowBackIcon />
+              <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
               View list
