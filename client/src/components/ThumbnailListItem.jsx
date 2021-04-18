@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     // '&:not(:last-child)': {
     //   marginRight: theme.spacing(1),
     // },
-    marginRight: theme.spacing(isMobile ? 1 : 0),
+    marginRight: theme.spacing(isMobile ? 0 : 1),
     borderRadius: '50%',
     backgroundColor: 'rgb(255 255 255 / 90%)',
   }),
