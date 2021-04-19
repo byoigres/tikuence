@@ -4,13 +4,14 @@ import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import CircularProgress from '@material-ui/core/CircularProgress';
 //
+import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import MaterialList from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
+import HomeIcon from '@material-ui/icons/Home';
+import SearchIcon from '@material-ui/icons/Search';
 //
 import Grid from '@material-ui/core/Grid';
 import RestoreIcon from '@material-ui/icons/Restore';
@@ -157,15 +158,15 @@ const PageFeed = () => {
             <MaterialList component="nav" aria-label="main mailbox folders">
               <ListItem button>
                 <ListItemIcon>
-                  <InboxIcon color="primary" />
+                  <HomeIcon color="primary" />
                 </ListItemIcon>
                 <ListItemText primary="Home" />
               </ListItem>
               <ListItem button>
                 <ListItemIcon>
-                  <DraftsIcon />
+                  <SearchIcon />
                 </ListItemIcon>
-                <ListItemText primary="Drafts" />
+                <ListItemText primary="Search" />
               </ListItem>
             </MaterialList>
             <Divider />

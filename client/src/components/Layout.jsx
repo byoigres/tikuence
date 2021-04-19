@@ -69,14 +69,14 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     [theme.breakpoints.down('md')]: {
-      marginTop: '4rem',
+      // marginTop: '4rem',
     },
     [theme.breakpoints.up('md')]: {
-      marginTop: '5rem',
+      marginTop: theme.spacing(7),
     },
   },
   toolBar: {
-    minHeight: 48,
+    minHeight: theme.spacing(6),
   },
   content: {
     [theme.breakpoints.down('md')]: {
@@ -86,10 +86,10 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: 0,
     },
     [theme.breakpoints.up('md')]: {
-      marginTop: '1rem',
-      marginLeft: '1rem',
-      marginRight: '1rem',
-      marginBottom: '1rem',
+      // marginTop: '1rem',
+      // marginLeft: '1rem',
+      // marginRight: '1rem',
+      // marginBottom: '1rem',
     },
   },
 }));
@@ -158,10 +158,10 @@ const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
           <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
         )}
       >
-        <Container maxWidth="md" className={classes.container} disableGutters>
+        <Container  maxWidth="xl" className={classes.container} disableGutters>
           {!cleanLayout && (
             <AppBar position="fixed" className={classes.appBar}>
-              <Container maxWidth="md" disableGutters data-name="container">
+              <Container maxWidth="xl" disableGutters data-name="container">
                 <Toolbar className={classes.toolBar}>
                   <Typography variant="h6" className={classes.title} color="primary">
                     <InertiaLink href="/" className={classes.mainLink}>
