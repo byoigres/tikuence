@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles, ThemeProvider, useTheme } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -12,8 +13,19 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import Container from '@material-ui/core/Container';
+import Divider from '@material-ui/core/Divider';
+import MenuIcon from '@material-ui/icons/Menu';
 import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import HomeIcon from '@material-ui/icons/Home';
+import Hidden from '@material-ui/core/Hidden';
+import Drawer from '@material-ui/core/Drawer';
+import MailIcon from '@material-ui/icons/Mail';
 import UserAvatar from './UserAvatar';
 
 const mainTheme = createMuiTheme({
@@ -30,7 +42,7 @@ const mainTheme = createMuiTheme({
   },
 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles2 = makeStyles((theme) => ({
   appBar: {
     backgroundColor: 'white',
     [theme.breakpoints.down('md')]: {
@@ -75,9 +87,10 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(7),
     },
   },
-  toolBar: {
-    minHeight: theme.spacing(6),
-  },
+  // toolBar: {
+  //   minHeight: theme.spacing(6),
+  // },
+  // necessary for content to be below app bar
   content: {
     [theme.breakpoints.down('md')]: {
       marginTop: 0,
@@ -85,16 +98,49 @@ const useStyles = makeStyles((theme) => ({
       marginRight: 0,
       marginBottom: 0,
     },
-    [theme.breakpoints.up('md')]: {
-      // marginTop: '1rem',
-      // marginLeft: '1rem',
-      // marginRight: '1rem',
-      // marginBottom: '1rem',
-    },
   },
 }));
 
-const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+  },
+  drawer: {
+    [theme.breakpoints.up('md')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  appBar: {
+    [theme.breakpoints.up('md')]: {
+      // width: `calc(100% - ${drawerWidth}px)`,
+      zIndex: 9999999,
+      // marginLeft: drawerWidth
+    },
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  content: {
+    flexGrow: 1,
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(3),
+    },
+    // backgroundColor: 'red',
+  },
+}));
+
+const Layout = ({ window, children, title = 'TiKUENCE' }) => {
   const {
     props: {
       auth: { isAuthenticated, credentials },
@@ -103,6 +149,8 @@ const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
   } = usePage();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const theme = useTheme();
   const notistackRef = React.createRef();
 
   const handleUserMenuClick = (event) => {
@@ -118,6 +166,38 @@ const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
     setAnchorEl(null);
     Inertia.visit(`/users/${credentials.username}`);
   };
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <div
+      style={{
+        marginTop: theme.spacing(3),
+      }}
+    >
+      <div className={classes.toolbar} />
+      <Divider />
+      <List>
+        <ListItem button>
+          <ListItemIcon>
+            <HomeIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 
   useEffect(() => {
     if (flash) {
@@ -146,8 +226,11 @@ const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
     }
   }, [flash]);
 
+  const container = window !== undefined ? () => window().document.body : undefined;
+
   return (
     <ThemeProvider theme={mainTheme}>
+      <CssBaseline />
       <SnackbarProvider
         ref={notistackRef}
         anchorOrigin={{
@@ -158,92 +241,117 @@ const Layout = ({ children, title = 'TiKUENCE', cleanLayout = false }) => {
           <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
         )}
       >
-        <Container  maxWidth="xl" className={classes.container} disableGutters>
-          {!cleanLayout && (
-            <AppBar position="fixed" className={classes.appBar}>
-              <Container maxWidth="xl" disableGutters data-name="container">
-                <Toolbar className={classes.toolBar}>
-                  <Typography variant="h6" className={classes.title} color="primary">
-                    <InertiaLink href="/" className={classes.mainLink}>
-                      {title}
-                    </InertiaLink>
-                  </Typography>
-                  {isAuthenticated && (
-                    <>
-                      <Tooltip title={isAuthenticated ? credentials.name : 'Login'}>
-                        <IconButton
-                          edge="start"
-                          className={classes.menuButton}
-                          color="inherit"
-                          aria-label="menu"
-                          aria-haspopup="true"
-                          onClick={handleUserMenuClick}
-                        >
-                          <UserAvatar
-                            image={credentials.picture}
-                            letter={credentials.username[0]}
-                          />
-                        </IconButton>
-                      </Tooltip>
-                      <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleUserMenuClose}
-                        className={classes.userMenu}
-                      >
-                        <MenuItem
-                          onClick={handleProfileClick}
-                          component={InertiaLink}
-                          href={`/users/${credentials.username}`}
-                        >
-                          Profile
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            Inertia.get('/auth/logout');
-                          }}
-                        >
-                          <Typography color="secondary">Logout</Typography>
-                        </MenuItem>
-                      </Menu>
-                    </>
-                  )}
-                  {!isAuthenticated && (
-                    <>
-                      {/* Hide in small screens */}
-                      <Button
-                        className={classes.loginLink}
-                        href="/auth/login"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          Inertia.visit('/auth/login');
-                        }}
-                      >
-                        Sing In
-                      </Button>
-                      <Button
-                        color="secondary"
-                        variant="contained"
-                        href="/auth/register"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          Inertia.visit('/auth/register');
-                        }}
-                      >
-                        Create account
-                      </Button>
-                    </>
-                  )}
-                </Toolbar>
-              </Container>
-            </AppBar>
-          )}
-          <div className={classes.content} data-name="children">
+        <div className={classes.root}>
+          <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar className={classes.toolBar}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                className={classes.menuButton}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap color="primary" className={classes.title}>
+                <InertiaLink href="/" className={classes.mainLink}>
+                  {title}
+                </InertiaLink>
+              </Typography>
+              {isAuthenticated && (
+                <>
+                  <Tooltip title={isAuthenticated ? credentials.name : 'Login'}>
+                    <IconButton
+                      edge="start"
+                      className={classes.menuButton}
+                      color="inherit"
+                      aria-label="menu"
+                      aria-haspopup="true"
+                      onClick={handleUserMenuClick}
+                    >
+                      <UserAvatar image={credentials.picture} letter={credentials.username[0]} />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleUserMenuClose}
+                    className={classes.userMenu}
+                  >
+                    <MenuItem
+                      onClick={handleProfileClick}
+                      component={InertiaLink}
+                      href={`/users/${credentials.username}`}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        Inertia.get('/auth/logout');
+                      }}
+                    >
+                      <Typography color="secondary">Logout</Typography>
+                    </MenuItem>
+                  </Menu>
+                </>
+              )}
+              {!isAuthenticated && (
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  href="/auth/register"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    Inertia.visit('/auth/register');
+                  }}
+                >
+                  Create account
+                </Button>
+              )}
+            </Toolbar>
+          </AppBar>
+          <nav className={classes.drawer} aria-label="mailbox folders">
+            {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+            <Hidden mdUp implementation="css">
+              <Drawer
+                container={container}
+                variant="temporary"
+                anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+                ModalProps={{
+                  keepMounted: true, // Better open performance on mobile.
+                }}
+              >
+                {drawer}
+              </Drawer>
+            </Hidden>
+            <Hidden smDown implementation="css">
+              <Drawer
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+                variant="permanent"
+                open
+              >
+                {drawer}
+              </Drawer>
+            </Hidden>
+          </nav>
+          <Container maxWidth="md" disableGutters component="main" className={classes.content}>
+            <div className={classes.toolbar} />
+            {/* <Typography paragraph>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt
+            </Typography> */}
             {children}
-          </div>
-        </Container>
+          </Container>
+        </div>
       </SnackbarProvider>
     </ThemeProvider>
   );

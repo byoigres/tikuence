@@ -3,16 +3,7 @@ import { Inertia } from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import CircularProgress from '@material-ui/core/CircularProgress';
-//
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
-import MaterialList from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import SearchIcon from '@material-ui/icons/Search';
-//
+import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import RestoreIcon from '@material-ui/icons/Restore';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
@@ -30,6 +21,10 @@ import ThumbailList from '../components/ThumbailList';
 import ThumbnailListItem from '../components/ThumbnailListItem';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    paddingTop: theme.spacing(1),
+    [theme.breakpoints.up('md')]: {},
+  },
   list: {
     backgroundColor: '#fff',
   },
@@ -139,112 +134,52 @@ const PageFeed = () => {
   return (
     <>
       <SEO title={categories[categoryIndex].pageTitle} />
-      <Grid
-        container
-        style={{
-          backgroundColor: 'white',
-        }}
-      >
-        <Grid
-          item
-          xs={12}
-          md={4}
-          style={{
-            outline: '0px solid transparent',
+      <Paper className={classes.root}>
+        <PillsNavigation
+          value={category}
+          onChange={(_, selectedCategory) => {
+            if (selectedCategory !== category) {
+              Inertia.visit('/', {
+                headers: {
+                  'X-Feed-Category': selectedCategory,
+                },
+              });
+            }
           }}
-        />
-        <Grid item xs={12} md={12} className={classes.sidebar} data-name="sidebar">
-          <div style={{ flexGrow: 1 }}>
-            <MaterialList component="nav" aria-label="main mailbox folders">
-              <ListItem button>
-                <ListItemIcon>
-                  <HomeIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <SearchIcon />
-                </ListItemIcon>
-                <ListItemText primary="Search" />
-              </ListItem>
-            </MaterialList>
-            <Divider />
-            <MaterialList component="nav" aria-label="secondary mailbox folders">
-              <ListItem button>
-                <ListItemText primary="Trash" />
-              </ListItem>
-            </MaterialList>
-          </div>
-          <Divider orientation="vertical" flexItem />
-        </Grid>
-        <Grid item xs={12} md={8}>
-          {/* <BottomNavigation
-            value={categoryIndex}
-            onChange={(_, selectedCategoryIndex) => {
-              if (selectedCategoryIndex !== categoryIndex) {
-                Inertia.visit('/', {
-                  headers: {
-                    'X-Feed-Category': categories[selectedCategoryIndex].id,
-                  },
-                });
-              }
-            }}
-            showLabels
-            className={classes.root}
-          >
-            {categories.map((item) => (
-              <BottomNavigationAction key={item.label} label={item.label} icon={item.icon} />
-            ))}
-          </BottomNavigation> */}
-          <PillsNavigation
-            value={category}
-            onChange={(_, selectedCategory) => {
-              if (selectedCategory !== category) {
-                Inertia.visit('/', {
-                  headers: {
-                    'X-Feed-Category': selectedCategory,
-                  },
-                });
-              }
-            }}
-          >
-            <PillAction value="recent" label="Recent" icon={<RestoreIcon />} />
-            <PillAction value="new" label="New" icon={<WbSunnyIcon />} />
-          </PillsNavigation>
-          <ThumbailList isMobile={isMobile}>
-            {lists.length !== 0 &&
-              lists.map((list) => (
-                <ThumbnailListItem
-                  key={`thumbnail-item-${list.id}`}
-                  id={list.id}
-                  thumbnail={list.thumbnail}
-                  title={list.title}
-                  videos={list.total_videos}
-                  username={list.username}
-                />
-              ))}
-          </ThumbailList>
-          {isTheEnd && <EndOfList text="You reached the end of the lists" />}
-          {!isTheEnd && (
-            <>
-              {!modal && (
-                <div className={classes.loader}>
-                  <CircularProgress />
-                </div>
-              )}
-              <Waypoint
-                onEnter={() => {
-                  if (lists.length > 0) {
-                    setCurrentPage(currentPage + 1);
-                  }
-                }}
+        >
+          <PillAction value="recent" label="Recent" icon={<RestoreIcon />} />
+          <PillAction value="new" label="New" icon={<WbSunnyIcon />} />
+        </PillsNavigation>
+        <ThumbailList isMobile={isMobile}>
+          {lists.length !== 0 &&
+            lists.map((list) => (
+              <ThumbnailListItem
+                key={`thumbnail-item-${list.id}`}
+                id={list.id}
+                thumbnail={list.thumbnail}
+                title={list.title}
+                videos={list.total_videos}
+                username={list.username}
               />
-            </>
-          )}
-        </Grid>
-      </Grid>
-      {isAuthenticated && (
+            ))}
+        </ThumbailList>
+        {isTheEnd && <EndOfList text="You reached the end of the lists" />}
+        {!isTheEnd && (
+          <>
+            {!modal && (
+              <div className={classes.loader}>
+                <CircularProgress />
+              </div>
+            )}
+            <Waypoint
+              onEnter={() => {
+                if (lists.length > 0) {
+                  setCurrentPage(currentPage + 1);
+                }
+              }}
+            />
+          </>
+        )}
         <FabFloatingLink
           component={InertiaLink}
           href="/list/add"
@@ -260,7 +195,7 @@ const PageFeed = () => {
             });
           }}
         />
-      )}
+      </Paper>
       {modal && modal.modalName === 'list' && <List pageReferer="feed" />}
       {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="feed" />}
       {modal && modal.modalName === 'profile' && <Profile user={user} />}

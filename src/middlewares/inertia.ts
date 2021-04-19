@@ -43,8 +43,6 @@ const template = (page: object, viewData: ViewData) => `
     <meta property="twitter:title" content="${getTitle(viewData.title)}">
     <meta property="twitter:description" content="${getDescription()}">
     <meta property="twitter:image" content="${getShareImage(viewData.thumbnail)}">
-    <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
