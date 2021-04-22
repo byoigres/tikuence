@@ -84,6 +84,11 @@ const useTitleBarStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(1),
     height: '100%',
   },
+  title: {
+    '& a': {
+      color: theme.palette.common.white,
+    },
+  },
   subtitle: {
     color: theme.palette.common.white,
     lineHeight: theme.spacing(0.2), // 1.6
@@ -147,6 +152,16 @@ export const ThumbnailGridListItem = ({
     setDisplayInfo(!displayInfo);
   };
 
+  const onListClick = (e) => {
+    e.preventDefault();
+    Inertia.visit(`/list/${id}`, {
+      preserveScroll: true,
+      preserveState: true,
+      headers: { 'X-Page-Referer': 'feed' },
+      only: ['auth', 'flash', 'errors', 'modal', 'list', 'videos', 'referer'],
+    });
+  };
+
   return (
     <GridListTile
       cols={1}
@@ -154,17 +169,15 @@ export const ThumbnailGridListItem = ({
       style={style}
       data-name="GridListTile"
     >
-      <InertiaLink
-        href={`/list/${id}`}
-        preserveScroll
-        preserveState
-        headers={{ 'X-Page-Referer': 'feed' }}
-        only={['auth', 'flash', 'errors', 'modal', 'list', 'videos', 'referer']}
-      >
+      <a href={`/list/${id}`} onClick={onListClick}>
         <img src={thumbnail} alt={title} style={{ width: '100%' }} />
-      </InertiaLink>
+      </a>
       <GridListTileBar
-        title={<span title={title}>{title}</span>}
+        title={
+          <a href={`/list/${id}`} title={title} onClick={onListClick}>
+            {title}
+          </a>
+        }
         subtitle={
           <>
             <Divider variant="fullWidth" />
