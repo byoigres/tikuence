@@ -45,18 +45,6 @@ const template = (page: object, viewData: ViewData) => `
     <meta property="twitter:image" content="${getShareImage(viewData.thumbnail)}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <style>
-        html, body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
-            background-color: #fff;
-            scroll-behavior: smooth;
-        }
-        a {
-          text-decoration: none;
-          color: #1e1e1e;
-        }
-    </style>
   </head>
 
   <body>
