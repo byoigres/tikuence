@@ -4,7 +4,6 @@ import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 import RestoreIcon from '@material-ui/icons/Restore';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,10 +16,18 @@ import List from './Lists/List';
 import Login from './Auth/Login';
 import EndOfList from '../components/EndOfList';
 import PillsNavigation, { PillAction } from '../components/PillsNavigation';
-import ThumbailList from '../components/ThumbailList';
-import ThumbnailListItem from '../components/ThumbnailListItem';
+import ThumbnailGridList, { ThumbnailGridListItem } from '../components/ThumbnailGridList';
 
 const useStyles = makeStyles((theme) => ({
+  gridListTile: {
+    // position: 'relative',
+    // float: 'left',
+    // width: '100%',
+    // minHeight: '400px',
+    // minWidth: '664px',
+    // overflow: 'hidden',
+    height: '100% !important',
+  },
   root: {
     paddingTop: theme.spacing(1),
     [theme.breakpoints.up('md')]: {},
@@ -150,10 +157,10 @@ const PageFeed = () => {
           <PillAction value="recent" label="Recent" icon={<RestoreIcon />} />
           <PillAction value="new" label="New" icon={<WbSunnyIcon />} />
         </PillsNavigation>
-        <ThumbailList isMobile={isMobile}>
+        <ThumbnailGridList>
           {lists.length !== 0 &&
             lists.map((list) => (
-              <ThumbnailListItem
+              <ThumbnailGridListItem
                 key={`thumbnail-item-${list.id}`}
                 id={list.id}
                 thumbnail={list.thumbnail}
@@ -162,7 +169,7 @@ const PageFeed = () => {
                 username={list.username}
               />
             ))}
-        </ThumbailList>
+        </ThumbnailGridList>
         {isTheEnd && <EndOfList text="You reached the end of the lists" />}
         {!isTheEnd && (
           <>
@@ -180,21 +187,23 @@ const PageFeed = () => {
             />
           </>
         )}
-        <FabFloatingLink
-          component={InertiaLink}
-          href="/list/add"
-          onClick={(e) => {
-            e.preventDefault();
-            Inertia.visit('/list/add', {
-              preserveScroll: true,
-              preserveState: true,
-              headers: {
-                'X-Page-Referer': 'feed',
-              },
-              only: ['auth', 'flash', 'errors', 'referer', 'modal'],
-            });
-          }}
-        />
+        {isAuthenticated && (
+          <FabFloatingLink
+            component={InertiaLink}
+            href="/list/add"
+            onClick={(e) => {
+              e.preventDefault();
+              Inertia.visit('/list/add', {
+                preserveScroll: true,
+                preserveState: true,
+                headers: {
+                  'X-Page-Referer': 'feed',
+                },
+                only: ['auth', 'flash', 'errors', 'referer', 'modal'],
+              });
+            }}
+          />
+        )}
       </Paper>
       {modal && modal.modalName === 'list' && <List pageReferer="feed" />}
       {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="feed" />}
