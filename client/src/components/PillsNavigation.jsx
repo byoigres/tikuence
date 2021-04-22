@@ -3,6 +3,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles((theme) => ({
+  [theme.breakpoints.down('sm')]: {
+    navigation: {
+      display: 'flex',
+      justifyContent: 'space-evenly',
+    },
+    pill: {
+      flexGrow: 1,
+    },
+  },
   navigation: {
     margin: theme.spacing(1),
   },
