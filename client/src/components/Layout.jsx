@@ -59,65 +59,6 @@ const mainTheme = createMuiTheme({
   },
 });
 
-const useStyles2 = makeStyles((theme) => ({
-  appBar: {
-    backgroundColor: 'white',
-    [theme.breakpoints.down('md')]: {
-      alignItems: 'normal',
-    },
-    [theme.breakpoints.up('md')]: {
-      alignItems: 'center',
-    },
-  },
-  loginLink: {
-    color: 'white',
-    marginRight: '0.5rem',
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
-    },
-  },
-  title: {
-    flex: 1,
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-  },
-  mainLink: {
-    fontFamily: 'Changa One',
-    fontSize: '2rem',
-    textDecoration: 'none',
-    '&:hover': {
-      color: theme.palette.text.secondary,
-    },
-  },
-  userMenu: {
-    '& a': {
-      color: 'initial',
-      textDecoration: 'none',
-    },
-  },
-  container: {
-    [theme.breakpoints.down('md')]: {
-      // marginTop: '4rem',
-    },
-    [theme.breakpoints.up('md')]: {
-      marginTop: theme.spacing(7),
-    },
-  },
-  // toolBar: {
-  //   minHeight: theme.spacing(6),
-  // },
-  // necessary for content to be below app bar
-  content: {
-    [theme.breakpoints.down('md')]: {
-      marginTop: 0,
-      marginLeft: 0,
-      marginRight: 0,
-      marginBottom: 0,
-    },
-  },
-}));
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -133,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     [theme.breakpoints.up('md')]: {
       // width: `calc(100% - ${drawerWidth}px)`,
-      zIndex: 9999999,
+      zIndex: 1201,
       // marginLeft: drawerWidth
     },
   },
@@ -158,6 +99,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const useCssBaselineStyles = makeStyles((theme) => ({
+  '@global': {
+    html: {
+      WebkitFontSmoothing: 'auto',
+      fontFamily: "'Roboto', sans-serif",
+      scrollBehavior: 'smooth',
+    },
+    a: {
+      color: theme.palette.text.primary,
+      textDecoration: 'none',
+    },
+  },
+}));
+
 const Layout = ({ window, children, title = 'TiKUENCE' }) => {
   const {
     props: {
@@ -166,6 +121,7 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
     },
   } = usePage();
   const classes = useStyles();
+  const cssBaselineStyles = useCssBaselineStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const theme = useTheme();
@@ -248,7 +204,7 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
 
   return (
     <ThemeProvider theme={mainTheme}>
-      <CssBaseline />
+      <CssBaseline classes={cssBaselineStyles} />
       <SnackbarProvider
         ref={notistackRef}
         anchorOrigin={{
