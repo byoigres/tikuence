@@ -44,7 +44,7 @@ const template = (page: object, viewData: ViewData) => `
     <meta property="twitter:description" content="${getDescription()}">
     <meta property="twitter:image" content="${getShareImage(viewData.thumbnail)}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Passion+One&display=swap" rel="stylesheet">
   </head>
 
   <body>
