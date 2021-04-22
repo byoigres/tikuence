@@ -16,11 +16,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PillsNavigation = ({ children, value, onChange }) => {
+const PillsNavigation = ({ children, value, onChange, style = {} }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.navigation}>
+    <div className={classes.navigation} style={style}>
       {React.Children.map(children, (child, childIndex) => {
         if (!React.isValidElement(child)) {
           return null;
