@@ -3,6 +3,7 @@ import { InertiaLink } from '@inertiajs/inertia-react';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
+import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import ListIcon from '@material-ui/icons/List';
@@ -22,45 +23,53 @@ md: 960
 lg: 1280
 xl: 1920
 
+
+xs: 320   Mobile devices
+sm: 480   iPads, Tablets
+md: 768   Small screens, laptops
+lg: 1024  Desktops, large screens
+xl: 1200  Extra large screens, TV
+
 */
 const useTitleBarStyles = makeStyles((theme) => ({
-  root: ({ displayInfo }) => ({
-    // display: 'flex',
-    // flexDirection: 'column',
-    // height: displayInfo ? '100%' : 'auto',
-    // -- backgroundColor: 'red',
-    [theme.breakpoints.down('xs')]: {
+  [theme.breakpoints.down('xs')]: {
+    root: ({ displayInfo }) => ({
+      height: displayInfo ? '100%' : 'auto',
       display: 'flex',
       flexDirection: 'column',
-      height: displayInfo ? '100%' : 'auto',
-      backgroundColor: 'red',
- qqqqq   },
-  }),
-  rootSubtitle: () => ({
-    [theme.breakpoints.down('xs')]: {
-      // height: '100%', // displayInfo ? '100%' : 30,
+    }),
+    titleWrap: {
+      marginTop: theme.spacing(1),
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      marginBottom: theme.spacing(0),
+      overflowY: 'scroll',
+      '&::-webkit-scrollbar': {
+        width: theme.spacing(0.5),
+        background: 'transparent',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: theme.palette.grey[500],
+        borderRadius: theme.spacing(1),
+      },
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: theme.palette.grey[700],
+      },
     },
-    [theme.breakpoints.up('md')]: {
+    title: {
+      whiteSpace: 'normal',
+      lineHeight: theme.spacing(0.1625), // 1.3
+    },
+    actionIcon: {
+      marginBottom: theme.spacing(0.5),
+    },
+  },
+  [theme.breakpoints.up('sm')]: {
+    rootSubtitle: {
       height: 120,
     },
-  }),
-  titleWrap: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  title: {
-    [theme.breakpoints.down('xs')]: {
-      whiteSpace: 'normal',
-      fontSize: theme.spacing(1.5),
-      lineHeight: 1.5,
-      // height: '100%',
-    },
-    [theme.breakpoints.between('sm', 'md')]: {
-      color: 'red',
-      whiteSpace: 'normal',
-      fontSize: '1.5rem',
-    },
-    [theme.breakpoints.up('md')]: {
+    title: {
+      lineHeight: 1.3,
       whiteSpace: 'normal',
       display: '-webkit-box',
       '-webkit-box-orient': 'vertical',
@@ -68,25 +77,20 @@ const useTitleBarStyles = makeStyles((theme) => ({
     },
   },
   subtitle: {
-    [theme.breakpoints.down('xs')]: {
-      // whiteSpace: 'normal',
-      // fontSize: theme.spacing(1.5),
-      lineHeight: 2,
-      // height: '100%',
-    },
-  },
-  actionIcon: {
-    [theme.breakpoints.down('sm')]: {
-      marginBottom: theme.spacing(1),
-    },
+    lineHeight: theme.spacing(0.2), // 1.6
   },
 }));
 
-const useIconButtonStyles = makeStyles({
+const useIconButtonStyles = makeStyles((theme) => ({
+  [theme.breakpoints.up('sm')]: {
+    root: ({ isInfoButton }) => ({
+      display: isInfoButton ? 'none' : 'initial',
+    }),
+  },
   root: {
     color: 'rgba(255, 255, 255, 0.54)',
   },
-});
+}));
 
 const ThumbnailGridList = ({ children, isMobile = false }) => {
   const theme = useTheme();
@@ -94,7 +98,7 @@ const ThumbnailGridList = ({ children, isMobile = false }) => {
 
   return (
     <>
-      <GridList cellHeight="auto" cols={3}>
+      <GridList cellHeight="auto" cols={isMediumAndUpMatch ? 4 : 3}>
         {React.Children.map(children, (child) => {
           if (!React.isValidElement(child)) {
             return null;
@@ -120,10 +124,11 @@ export const ThumbnailGridListItem = ({
   isMediumAndUpMatch,
   style,
 }) => {
-  const [displayInfo, setDisplayInfo] = useState(false);
+  const [displayInfo, setDisplayInfo] = useState(true);
   const gridListTileStylesClasses = useGridListTileStyles({ isMobile });
   const titleBarClasses = useTitleBarStyles({ isMobile, displayInfo });
-  const iconButtonStyles = useIconButtonStyles();
+  const infoIconButtonStyles = useIconButtonStyles({ isInfoButton: true });
+  const listIconButtonStyles = useIconButtonStyles({ isInfoButton: false });
 
   const onButtonInfoClick = (e) => {
     e.preventDefault();
@@ -151,6 +156,7 @@ export const ThumbnailGridListItem = ({
         subtitle={
           displayInfo ? (
             <>
+              <Divider variant="fullWidth" />
               <div>@{username}</div>
               <div>{videos} videos</div>
             </>
@@ -158,19 +164,17 @@ export const ThumbnailGridListItem = ({
         }
         actionIcon={
           <>
-            {!isMediumAndUpMatch && (
-              <IconButton
-                aria-label={`info about ${title}`}
-                classes={{ ...iconButtonStyles }}
-                size={isMediumAndUpMatch ? 'medium' : 'small'}
-                onClick={onButtonInfoClick}
-              >
-                <InfoIcon />
-              </IconButton>
-            )}
             <IconButton
               aria-label={`info about ${title}`}
-              classes={{ ...iconButtonStyles }}
+              classes={{ ...infoIconButtonStyles }}
+              size={isMediumAndUpMatch ? 'medium' : 'small'}
+              onClick={onButtonInfoClick}
+            >
+              <InfoIcon />
+            </IconButton>
+            <IconButton
+              aria-label={`info about ${title}`}
+              classes={{ ...listIconButtonStyles }}
               size={isMediumAndUpMatch ? 'medium' : 'small'}
               onClick={onButtonInfoClick}
             >

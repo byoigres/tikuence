@@ -141,7 +141,7 @@ const PageFeed = () => {
   return (
     <>
       <SEO title={categories[categoryIndex].pageTitle} />
-      <Paper className={classes.root}>
+      <Paper className={classes.root} square>
         <PillsNavigation
           value={category}
           onChange={(_, selectedCategory) => {
