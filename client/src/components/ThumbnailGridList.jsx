@@ -9,6 +9,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import ListIcon from '@material-ui/icons/List';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Inertia } from '@inertiajs/inertia';
 
 const useGridListTileStyles = makeStyles({
   tile: {
@@ -38,7 +39,8 @@ const useTitleBarStyles = makeStyles((theme) => ({
       display: 'flex',
       flexDirection: 'column',
     }),
-    titleWrap: {
+    titleWrap: ({ displayInfo }) => ({
+      display: displayInfo ? 'initial' : 'none',
       marginTop: theme.spacing(1),
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
@@ -55,7 +57,7 @@ const useTitleBarStyles = makeStyles((theme) => ({
       '&::-webkit-scrollbar-thumb:hover': {
         background: theme.palette.grey[700],
       },
-    },
+    }),
     title: {
       whiteSpace: 'normal',
       lineHeight: theme.spacing(0.1625), // 1.3
@@ -65,6 +67,9 @@ const useTitleBarStyles = makeStyles((theme) => ({
     },
   },
   [theme.breakpoints.up('sm')]: {
+    root: {
+      alignItems: 'baseline',
+    },
     rootSubtitle: {
       height: 120,
     },
@@ -77,7 +82,11 @@ const useTitleBarStyles = makeStyles((theme) => ({
     },
   },
   subtitle: {
+    color: theme.palette.common.white,
     lineHeight: theme.spacing(0.2), // 1.6
+    '& a': {
+      color: theme.palette.common.white,
+    },
   },
 }));
 
@@ -124,7 +133,7 @@ export const ThumbnailGridListItem = ({
   isMediumAndUpMatch,
   style,
 }) => {
-  const [displayInfo, setDisplayInfo] = useState(true);
+  const [displayInfo, setDisplayInfo] = useState(false);
   const gridListTileStylesClasses = useGridListTileStyles({ isMobile });
   const titleBarClasses = useTitleBarStyles({ isMobile, displayInfo });
   const infoIconButtonStyles = useIconButtonStyles({ isInfoButton: true });
@@ -152,15 +161,13 @@ export const ThumbnailGridListItem = ({
         <img src={thumbnail} alt={title} style={{ width: '100%' }} />
       </InertiaLink>
       <GridListTileBar
-        title={displayInfo ? title : null}
+        title={<span title={title}>{title}</span>}
         subtitle={
-          displayInfo ? (
-            <>
-              <Divider variant="fullWidth" />
-              <div>@{username}</div>
-              <div>{videos} videos</div>
-            </>
-          ) : null
+          <>
+            <Divider variant="fullWidth" />
+            <InertiaLink href={`/users/${username}`}>@{username}</InertiaLink>
+            <div>{videos} videos</div>
+          </>
         }
         actionIcon={
           <>
@@ -176,7 +183,11 @@ export const ThumbnailGridListItem = ({
               aria-label={`info about ${title}`}
               classes={{ ...listIconButtonStyles }}
               size={isMediumAndUpMatch ? 'medium' : 'small'}
-              onClick={onButtonInfoClick}
+              onClick={(e) => {
+                e.preventDefault();
+                Inertia.visit(`/list/${id}/details`);
+              }}
+              href={`/list/${id}/details`}
             >
               <ListIcon />
             </IconButton>
