@@ -28,7 +28,24 @@ import Drawer from '@material-ui/core/Drawer';
 import MailIcon from '@material-ui/icons/Mail';
 import UserAvatar from './UserAvatar';
 
+/*
+  xs: 320   Mobile devices
+  sm: 480   iPads, Tablets
+  md: 768   Small screens, laptops
+  lg: 1024  Desktops, large screens
+  xl: 1280  Extra large screens, TV
+*/
+
 const mainTheme = createMuiTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 480,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+    },
+  },
   palette: {
     primary: blue,
     secondary: red,
@@ -108,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   drawer: {
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('lg')]: {
       width: drawerWidth,
       flexShrink: 0,
     },
@@ -122,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('lg')]: {
       display: 'none',
     },
   },
@@ -133,10 +150,11 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('lg')]: {
       padding: theme.spacing(3),
+      // backgroundColor: 'red',
     },
-    // backgroundColor: 'red',
+    // backgroundColor: 'blue',
   },
 }));
 
@@ -314,7 +332,7 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
           </AppBar>
           <nav className={classes.drawer} aria-label="mailbox folders">
             {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-            <Hidden mdUp implementation="css">
+            <Hidden lgUp implementation="css">
               <Drawer
                 container={container}
                 variant="temporary"
@@ -331,7 +349,7 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
                 {drawer}
               </Drawer>
             </Hidden>
-            <Hidden smDown implementation="css">
+            <Hidden lgDown implementation="css">
               <Drawer
                 classes={{
                   paper: classes.drawerPaper,
@@ -343,7 +361,7 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
               </Drawer>
             </Hidden>
           </nav>
-          <Container maxWidth="md" disableGutters component="main" className={classes.content}>
+          <Container maxWidth="lg" disableGutters component="main" className={classes.content}>
             <div className={classes.toolbar} />
             {/* <Typography paragraph>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
