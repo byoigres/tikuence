@@ -140,7 +140,7 @@ const Details = ({ pageReferer }) => {
       <Dialog
         fullScreen={isMobile}
         fullWidth
-        maxWidth="sm"
+        maxWidth="md"
         open={isModalOpen}
         onClose={handleClose}
         onExited={() => {
