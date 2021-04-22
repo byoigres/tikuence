@@ -73,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     [theme.breakpoints.up('md')]: {
+      display: 'none',
       // width: `calc(100% - ${drawerWidth}px)`,
       zIndex: 1201,
       // marginLeft: drawerWidth
@@ -148,12 +149,28 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
   const drawer = (
     <div
       style={{
-        marginTop: theme.spacing(3),
+        // marginTop: theme.spacing(3),
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
       }}
     >
-      <div className={classes.toolbar} />
+      {/* <div className={classes.toolbar} /> */}
+      <Typography
+        style={{
+          fontFamily: 'Passion One',
+          fontSize: 48, // theme.spacing(8)
+          textAlign: 'center',
+          color: 'white', // theme.palette.common.white
+          backgroundColor: '#2196f3', // theme.palette.primary.main
+          padding: 0,
+          margin: 8, // theme.spacing(1)
+        }}
+      >
+        TiKUENCE
+      </Typography>
       <Divider />
-      <List>
+      <List component="div">
         <ListItem button>
           <ListItemIcon>
             <HomeIcon color="primary" />
@@ -162,13 +179,25 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
         </ListItem>
       </List>
       <Divider />
-      <List>
+      <List component="div" style={{ flexGrow: 1 }}>
         {['All mail', 'Trash', 'Spam'].map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
         ))}
+        <Divider />
+      </List>
+      <List component="div">
+        <ListItem button>
+          <ListItemText primary="Terms of service" />
+        </ListItem>
+        <ListItem button>
+          <ListItemText primary="Privacy policy" />
+        </ListItem>
+        <ListItem button>
+          <ListItemText primary="Cookies policy" />
+        </ListItem>
       </List>
     </div>
   );
@@ -318,7 +347,7 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
             </Hidden>
           </nav>
           <Container maxWidth="lg" disableGutters component="main" className={classes.content}>
-            <div className={classes.toolbar} />
+            {/* <div className={classes.toolbar} /> */}
             {/* <Typography paragraph>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt
