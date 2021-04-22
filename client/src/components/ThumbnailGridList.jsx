@@ -4,6 +4,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import ListIcon from '@material-ui/icons/List';
@@ -67,9 +68,6 @@ const useTitleBarStyles = makeStyles((theme) => ({
     },
   },
   [theme.breakpoints.up('sm')]: {
-    root: {
-      alignItems: 'baseline',
-    },
     rootSubtitle: {
       height: 120,
     },
@@ -80,6 +78,11 @@ const useTitleBarStyles = makeStyles((theme) => ({
       '-webkit-box-orient': 'vertical',
       '-webkit-line-clamp': 3,
     },
+  },
+  titleWrap: {
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    height: '100%',
   },
   subtitle: {
     color: theme.palette.common.white,
@@ -93,7 +96,7 @@ const useTitleBarStyles = makeStyles((theme) => ({
 const useIconButtonStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
     root: ({ isInfoButton }) => ({
-      display: isInfoButton ? 'none' : 'initial',
+      display: isInfoButton ? 'none' : 'inline-flex',
     }),
   },
   root: {
@@ -171,26 +174,30 @@ export const ThumbnailGridListItem = ({
         }
         actionIcon={
           <>
-            <IconButton
-              aria-label={`info about ${title}`}
-              classes={{ ...infoIconButtonStyles }}
-              size={isMediumAndUpMatch ? 'medium' : 'small'}
-              onClick={onButtonInfoClick}
-            >
-              <InfoIcon />
-            </IconButton>
-            <IconButton
-              aria-label={`info about ${title}`}
-              classes={{ ...listIconButtonStyles }}
-              size={isMediumAndUpMatch ? 'medium' : 'small'}
-              onClick={(e) => {
-                e.preventDefault();
-                Inertia.visit(`/list/${id}/details`);
-              }}
-              href={`/list/${id}/details`}
-            >
-              <ListIcon />
-            </IconButton>
+            <Tooltip title="View list info">
+              <IconButton
+                aria-label={`info about ${title}`}
+                classes={{ ...infoIconButtonStyles }}
+                size={isMediumAndUpMatch ? 'medium' : 'small'}
+                onClick={onButtonInfoClick}
+              >
+                <InfoIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="View list details">
+              <IconButton
+                aria-label={`info about ${title}`}
+                classes={{ ...listIconButtonStyles }}
+                size={isMediumAndUpMatch ? 'medium' : 'small'}
+                onClick={(e) => {
+                  e.preventDefault();
+                  Inertia.visit(`/list/${id}/details`);
+                }}
+                href={`/list/${id}/details`}
+              >
+                <ListIcon />
+              </IconButton>
+            </Tooltip>
           </>
         }
         classes={{ ...titleBarClasses }}
