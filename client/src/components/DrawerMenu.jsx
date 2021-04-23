@@ -52,7 +52,7 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
 
   useEffect(() => {}, [open]);
 
-  const userCard = (
+  const userCard = credentials ? (
     <UserCard
       name={credentials.name}
       username={credentials.username}
@@ -61,7 +61,7 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
         onClose();
       }}
     />
-  );
+  ) : null;
 
   const onLegalItemClick = () => {
     setIsMoreItemOpen(!isMoreItemOpen);
