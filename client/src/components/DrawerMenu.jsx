@@ -6,14 +6,18 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
+import Collapse from '@material-ui/core/Collapse';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import BarChartIcon from '@material-ui/icons/BarChart';
-import FaceIcon from '@material-ui/icons/Face';
+import ExploreIcon from '@material-ui/icons/Explore';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
+import MoreHorizOutlinedIcon from '@material-ui/icons/MoreHorizOutlined';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import UserCard from './UserCard';
 
@@ -41,15 +45,17 @@ const DrawerMenu = ({ isAuthenticated, credentials }) => {
   const theme = useTheme();
   const match = useMediaQuery(theme.breakpoints.up('md'));
   const [isDrawerOpen, setisDrawerOpen] = useState(true);
+  const [isMoreItemOpen, setIsMoreItemOpen] = React.useState(false);
   const generalClasses = useGeneralClasses();
   const navClasses = useNavClasses();
   const drawerClasses = useDrawerClasses();
 
-  // console.log({ match, isDrawerOpen });
-  // console.log({ credentials });
-
   const handleDrawerToggle = () => {
     setisDrawerOpen(!isDrawerOpen);
+  };
+
+  const onLegalItemClick = () => {
+    setIsMoreItemOpen(!isMoreItemOpen);
   };
 
   useEffect(() => {
@@ -87,42 +93,30 @@ const DrawerMenu = ({ isAuthenticated, credentials }) => {
         <List component="div" style={{ display: 'initial-flex', flexGrow: 1 }}>
           <ListItem button component={InertiaLink} href="/" selected>
             <ListItemIcon>
-              <HomeIcon />
+              <HomeIcon style={{ color: theme.palette.primary.main }} />
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
           <ListItem button key="search" component={InertiaLink} href="/search">
             <ListItemIcon>
-              <SearchIcon />
+              <SearchIcon style={{ color: theme.palette.secondary.main }} />
             </ListItemIcon>
             <ListItemText primary="Search" />
           </ListItem>
-          <ListItem button component={InertiaLink} href="/creators">
+          <ListItem button component={InertiaLink} href="/explore">
             <ListItemIcon>
-              <FaceIcon />
+              <ExploreIcon style={{ color: theme.palette.error.light }} />
             </ListItemIcon>
-            <ListItemText primary="Creators" />
+            <ListItemText primary="Explore" />
           </ListItem>
           <ListItem button component={InertiaLink} href="/trending">
             <ListItemIcon>
-              <BarChartIcon />
+              <BarChartIcon style={{ color: theme.palette.info.main }} />
             </ListItemIcon>
             <ListItemText primary="Trending" />
           </ListItem>
         </List>
         <Divider />
-        <List component="div" style={{ display: 'initial-flex' }}>
-          <ListItem button component={InertiaLink} href="/legal/terms">
-            <ListItemText primary="Terms of service" />
-          </ListItem>
-          <ListItem button component={InertiaLink} href="/legal/privacy">
-            <ListItemText primary="Privacy policy" />
-          </ListItem>
-          <ListItem button component={InertiaLink} href="/legal/cookies">
-            <ListItemText primary="Cookies policy" />
-          </ListItem>
-          <Divider />
-        </List>
         {!isAuthenticated && (
           <div
             style={{
@@ -163,6 +157,28 @@ const DrawerMenu = ({ isAuthenticated, credentials }) => {
             picture={credentials.picture}
           />
         )}
+        <ListItem button onClick={onLegalItemClick}>
+          <ListItemIcon>
+            <MoreHorizOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="More..." />
+          {isMoreItemOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isMoreItemOpen} timeout="auto" unmountOnExit>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              flexWrap: 'wrap',
+            }}
+          >
+            <InertiaLink href="/about">About</InertiaLink>
+            <InertiaLink href="/contact">Contact</InertiaLink>
+            <InertiaLink href="/terms">Terms</InertiaLink>
+            <InertiaLink href="/privacy">Privacy</InertiaLink>
+            <InertiaLink href="/cookies">Cookies policy</InertiaLink>
+          </div>
+        </Collapse>
       </Drawer>
     </nav>
   );
