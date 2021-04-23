@@ -12,7 +12,9 @@ const useStyles = makeStyles((theme) => ({
 const UserAvatar = ({ image = null, letter }) => {
   const classes = useStyles();
   return (
-    <Avatar src={image} className={classes.avatar}>{letter.toUpperCase()}</Avatar>
+    <Avatar src={image} className={classes.avatar}>
+      {letter.toUpperCase()}
+    </Avatar>
   );
 };
 
