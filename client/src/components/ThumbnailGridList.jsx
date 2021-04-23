@@ -12,27 +12,18 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Inertia } from '@inertiajs/inertia';
 
+const useGridListStyles = makeStyles({
+  root: {
+    width: '100%',
+  },
+});
+
 const useGridListTileStyles = makeStyles({
   tile: {
     backgroundColor: '#000',
   },
 });
-/*
 
-xs: 0
-sm: 600
-md: 960
-lg: 1280
-xl: 1920
-
-
-xs: 320   Mobile devices
-sm: 480   iPads, Tablets
-md: 768   Small screens, laptops
-lg: 1024  Desktops, large screens
-xl: 1200  Extra large screens, TV
-
-*/
 const useTitleBarStyles = makeStyles((theme) => ({
   [theme.breakpoints.down('xs')]: {
     root: ({ displayInfo }) => ({
@@ -111,23 +102,22 @@ const useIconButtonStyles = makeStyles((theme) => ({
 
 const ThumbnailGridList = ({ children, isMobile = false }) => {
   const theme = useTheme();
-  const isMediumAndUpMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
+  const gridListStyles = useGridListStyles();
+  const isMediumAndUpMatch = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
-    <>
-      <GridList cellHeight="auto" cols={isMediumAndUpMatch ? 4 : 3}>
-        {React.Children.map(children, (child) => {
-          if (!React.isValidElement(child)) {
-            return null;
-          }
+    <GridList cellHeight="auto" cols={isMediumAndUpMatch ? 4 : 3} classes={{ ...gridListStyles }}>
+      {React.Children.map(children, (child) => {
+        if (!React.isValidElement(child)) {
+          return null;
+        }
 
-          return React.cloneElement(child, {
-            isMobile,
-            isMediumAndUpMatch,
-          });
-        })}
-      </GridList>
-    </>
+        return React.cloneElement(child, {
+          isMobile,
+          isMediumAndUpMatch,
+        });
+      })}
+    </GridList>
   );
 };
 
