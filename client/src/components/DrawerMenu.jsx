@@ -15,6 +15,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreHorizOutlinedIcon from '@material-ui/icons/MoreHorizOutlined';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { InertiaLink } from '@inertiajs/inertia-react';
@@ -51,6 +52,17 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
 
   useEffect(() => {}, [open]);
 
+  const userCard = (
+    <UserCard
+      name={credentials.name}
+      username={credentials.username}
+      picture={credentials.picture}
+      onClick={() => {
+        onClose();
+      }}
+    />
+  );
+
   const onLegalItemClick = () => {
     setIsMoreItemOpen(!isMoreItemOpen);
   };
@@ -70,7 +82,8 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
           keepMounted: true,
         }}
       >
-        <Logo />
+        {isAuthenticated && !match && userCard}
+        {match && <Logo />}
         <Divider />
         <List component="div" style={{ display: 'initial-flex', flexGrow: 1 }}>
           <ListItem
@@ -141,15 +154,14 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
             </Button>
           </div>
         )}
-        {isAuthenticated && (
-          <UserCard
-            name={credentials.name}
-            username={credentials.username}
-            picture={credentials.picture}
-            onClick={() => {
-              onClose();
-            }}
-          />
+        {isAuthenticated && match && userCard}
+        {isAuthenticated && match && (
+          <ListItem button>
+            <ListItemIcon>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
         )}
         <ListItem button onClick={onLegalItemClick}>
           <ListItemIcon>
