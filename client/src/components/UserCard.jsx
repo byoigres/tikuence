@@ -26,7 +26,7 @@ const UserCard = ({ name, username, picture }) => {
 
   return (
     <InertiaLink href={`/users/${username}`} className={classes.link}>
-      <Grid container direction="row" alignItems="center" data-name="container" xs={12}>
+      <Grid container direction="row" alignItems="center" data-name="container">
         <Grid container justify="center" item data-name="avatar" xs={4}>
           <UserAvatar image={picture} letter={username[0]} />
         </Grid>
