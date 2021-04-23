@@ -21,11 +21,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserCard = ({ name, username, picture }) => {
+const UserCard = ({ name, username, picture, onClick = null }) => {
   const classes = useStyles();
 
   return (
-    <InertiaLink href={`/users/${username}`} className={classes.link}>
+    <InertiaLink href={`/users/${username}`} className={classes.link} onClick={onClick}>
       <Grid container direction="row" alignItems="center" data-name="container">
         <Grid container justify="center" item data-name="avatar" xs={4}>
           <UserAvatar image={picture} letter={username[0]} />

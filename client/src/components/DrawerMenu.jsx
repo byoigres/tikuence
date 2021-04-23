@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -41,49 +41,36 @@ const useDrawerClasses = makeStyles({
   },
 });
 
-const DrawerMenu = ({ open, onCloseCallback, isAuthenticated, credentials }) => {
+const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
   const theme = useTheme();
   const match = useMediaQuery(theme.breakpoints.up('md'));
-  const [isDrawerOpen, setisDrawerOpen] = useState(true);
+  // const [isDrawerOpen, setisDrawerOpen] = useState(true);
   const [isMoreItemOpen, setIsMoreItemOpen] = React.useState(false);
   const generalClasses = useGeneralClasses();
   const navClasses = useNavClasses();
   const drawerClasses = useDrawerClasses();
 
-  const handleDrawerToggle = () => {
-    setisDrawerOpen(!isDrawerOpen);
-
-    if (onCloseCallback) {
-      onCloseCallback();
-    }
-  };
+  useEffect(() => {}, [open]);
 
   const onLegalItemClick = () => {
     setIsMoreItemOpen(!isMoreItemOpen);
   };
 
-  useEffect(() => {
-    setisDrawerOpen(match);
-  }, [match]);
-
-  useEffect(() => {
-    setisDrawerOpen(open);
-  }, [open]);
-
   return (
     <nav className={navClasses.nav} aria-label="mailbox folders">
       <Drawer
-        // container={container}
         variant={match ? 'permanent' : 'temporary'}
         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-        open={isDrawerOpen}
-        onClose={handleDrawerToggle}
+        open={open}
+        onClose={() => {
+          setIsMoreItemOpen(false);
+          onClose();
+        }}
         classes={drawerClasses}
         ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
+          keepMounted: true,
         }}
       >
-        {/* <div className={classes.toolbar} /> */}
         <Typography
           style={{
             fontFamily: 'Passion One',
@@ -99,7 +86,14 @@ const DrawerMenu = ({ open, onCloseCallback, isAuthenticated, credentials }) => 
         </Typography>
         <Divider />
         <List component="div" style={{ display: 'initial-flex', flexGrow: 1 }}>
-          <ListItem button component={InertiaLink} href="/" selected>
+          <ListItem
+            button
+            component={InertiaLink}
+            href="/"
+            onClick={() => {
+              onClose();
+            }}
+          >
             <ListItemIcon>
               <HomeIcon style={{ color: theme.palette.primary.main }} />
             </ListItemIcon>
@@ -138,6 +132,7 @@ const DrawerMenu = ({ open, onCloseCallback, isAuthenticated, credentials }) => 
               href="/auth/login"
               onClick={(e) => {
                 e.preventDefault();
+                onClose();
                 Inertia.visit('/auth/login');
               }}
               className={generalClasses.singInButton}
@@ -151,6 +146,7 @@ const DrawerMenu = ({ open, onCloseCallback, isAuthenticated, credentials }) => 
               href="/auth/register"
               onClick={(e) => {
                 e.preventDefault();
+                onClose();
                 Inertia.visit('/auth/register');
               }}
             >
@@ -163,6 +159,9 @@ const DrawerMenu = ({ open, onCloseCallback, isAuthenticated, credentials }) => 
             name={credentials.name}
             username={credentials.username}
             picture={credentials.picture}
+            onClick={() => {
+              onClose();
+            }}
           />
         )}
         <ListItem button onClick={onLegalItemClick}>

@@ -245,7 +245,7 @@ const Layout = ({ children, title = 'TiKUENCE' }) => {
             isAuthenticated={isAuthenticated}
             credentials={credentials}
             open={mobileOpen}
-            onCloseCallback={() => setMobileOpen(false)}
+            onClose={() => setMobileOpen(false)}
           />
           <Container maxWidth="lg" disableGutters component="main" className={classes.content}>
             {/* <div className={classes.toolbar} /> */}
