@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Inertia } from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
@@ -14,18 +13,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red';
 import UserAvatar from './UserAvatar';
 import DrawerMenu from './DrawerMenu';
-
-/*
-  xs: 320   Mobile devices
-  sm: 480   iPads, Tablets
-  md: 768   Small screens, laptops
-  lg: 1024  Desktops, large screens
-  xl: 1280  Extra large screens, TV
-*/
+import Logo from './Logo';
 
 const mainTheme = createMuiTheme({
   palette: {
@@ -41,36 +34,15 @@ const mainTheme = createMuiTheme({
   },
 });
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
-  drawer: {
-    [theme.breakpoints.up('lg')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
   appBar: {
     [theme.breakpoints.up('md')]: {
       display: 'none',
-      // width: `calc(100% - ${drawerWidth}px)`,
       zIndex: 1201,
-      // marginLeft: drawerWidth
     },
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('lg')]: {
-      display: 'none',
-    },
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
   },
   content: {
     flexGrow: 1,
@@ -98,7 +70,7 @@ const useCssBaselineStyles = makeStyles((theme) => ({
   },
 }));
 
-const Layout = ({ children, title = 'TiKUENCE' }) => {
+const Layout = ({ children }) => {
   const {
     props: {
       auth: { isAuthenticated, credentials },
@@ -119,10 +91,8 @@ const Layout = ({ children, title = 'TiKUENCE' }) => {
     setAnchorEl(null);
   };
 
-  const handleProfileClick = (e) => {
-    e.preventDefault();
+  const handleMenuItemClick = () => {
     setAnchorEl(null);
-    Inertia.visit(`/users/${credentials.username}`);
   };
 
   const handleDrawerToggle = () => {
@@ -177,70 +147,70 @@ const Layout = ({ children, title = 'TiKUENCE' }) => {
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                className={classes.menuButton}
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap color="primary" className={classes.title}>
-                <InertiaLink href="/" className={classes.mainLink}>
-                  {title}
-                </InertiaLink>
-              </Typography>
-              {isAuthenticated && (
-                <>
-                  <Tooltip title={isAuthenticated ? credentials.name : 'Login'}>
-                    <IconButton
-                      edge="start"
-                      className={classes.menuButton}
-                      color="inherit"
-                      aria-label="menu"
-                      aria-haspopup="true"
-                      onClick={handleUserMenuClick}
-                    >
-                      <UserAvatar image={credentials.picture} letter={credentials.username[0]} />
-                    </IconButton>
-                  </Tooltip>
-                  <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleUserMenuClose}
-                    className={classes.userMenu}
-                  >
-                    <MenuItem
-                      onClick={handleProfileClick}
-                      component={InertiaLink}
-                      href={`/users/${credentials.username}`}
-                    >
-                      Profile
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        Inertia.get('/auth/logout');
-                      }}
-                    >
-                      <Typography color="secondary">Logout</Typography>
-                    </MenuItem>
-                  </Menu>
-                </>
-              )}
-              {!isAuthenticated && (
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  href="/auth/register"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    Inertia.visit('/auth/register');
-                  }}
+              <Logo size="small" disableGutters style={{ flexGrow: 1 }} />
+              <Tooltip title={isAuthenticated ? credentials.name : 'Login'}>
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  aria-label="menu"
+                  aria-haspopup="true"
+                  onClick={handleUserMenuClick}
                 >
-                  Create account
-                </Button>
-              )}
+                  {isAuthenticated ? (
+                    <UserAvatar
+                      size="small"
+                      image={credentials.picture}
+                      letter={credentials.username[0]}
+                    />
+                  ) : (
+                    <AccountCircleIcon />
+                  )}
+                </IconButton>
+              </Tooltip>
+              <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleUserMenuClose}
+                className={classes.userMenu}
+              >
+                {isAuthenticated && [
+                  <MenuItem
+                    key="menu-item-user-profile"
+                    onClick={handleMenuItemClick}
+                    component={InertiaLink}
+                    href={`/users/${credentials.username}`}
+                  >
+                    Profile
+                  </MenuItem>,
+                  <MenuItem key="menu-item-logout" component="a" href="/auth/logout">
+                    <Typography color="secondary">Logout</Typography>
+                  </MenuItem>,
+                ]}
+                {!isAuthenticated && [
+                  <MenuItem
+                    key="menu-item-auth-login"
+                    component={InertiaLink}
+                    href="/auth/login"
+                    onClick={handleMenuItemClick}
+                  >
+                    Sing in
+                  </MenuItem>,
+                  <MenuItem
+                    key="menu-item-auth-register"
+                    component={InertiaLink}
+                    href="/auth/register"
+                    onClick={handleMenuItemClick}
+                  >
+                    <Typography color="secondary">Create account</Typography>
+                  </MenuItem>,
+                ]}
+              </Menu>
             </Toolbar>
           </AppBar>
-          {/* TODO: DRAWER HERE */}
           <DrawerMenu
             isAuthenticated={isAuthenticated}
             credentials={credentials}
@@ -248,7 +218,6 @@ const Layout = ({ children, title = 'TiKUENCE' }) => {
             onClose={() => setMobileOpen(false)}
           />
           <Container maxWidth="lg" disableGutters component="main" className={classes.content}>
-            {/* <div className={classes.toolbar} /> */}
             {children}
           </Container>
         </div>

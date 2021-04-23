@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -20,6 +19,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import UserCard from './UserCard';
+import Logo from './Logo';
 
 const drawerWidth = 240;
 
@@ -44,7 +44,6 @@ const useDrawerClasses = makeStyles({
 const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
   const theme = useTheme();
   const match = useMediaQuery(theme.breakpoints.up('md'));
-  // const [isDrawerOpen, setisDrawerOpen] = useState(true);
   const [isMoreItemOpen, setIsMoreItemOpen] = React.useState(false);
   const generalClasses = useGeneralClasses();
   const navClasses = useNavClasses();
@@ -71,19 +70,7 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
           keepMounted: true,
         }}
       >
-        <Typography
-          style={{
-            fontFamily: 'Passion One',
-            fontSize: 48, // theme.spacing(8)
-            textAlign: 'center',
-            color: 'white', // theme.palette.common.white
-            backgroundColor: '#2196f3', // theme.palette.primary.main
-            padding: 0,
-            margin: 8, // theme.spacing(1)
-          }}
-        >
-          TiKUENCE
-        </Typography>
+        <Logo />
         <Divider />
         <List component="div" style={{ display: 'initial-flex', flexGrow: 1 }}>
           <ListItem

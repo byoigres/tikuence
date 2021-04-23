@@ -186,7 +186,7 @@ async function response(req: Request, res: Response) {
       return req.Inertia.redirect(`/auth/register/${req.body.token}`)
     }
 
-    req.flash('success', 'Hey! Welcome to Tikuence 🙂')
+    req.flash('success', 'Hey! Welcome to TiKUENCE 🙂')
     res.redirect('/')
   })
 }

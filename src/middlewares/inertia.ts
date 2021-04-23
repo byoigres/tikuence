@@ -8,7 +8,7 @@ import config from '../config'
 const ASSET_VERSION = config.get('/inertia/version')
 
 const getDescription = () => 'Watch the popular list of TikTok videos'
-const getTitle = (title: string) => `${htmlEntitiesEncode(title || getDescription())} • Tikuence`
+const getTitle = (title: string) => `${htmlEntitiesEncode(title || getDescription())} • TiKUENCE`
 const getShareImage = (thumbnail?: string) => {
   if (thumbnail) {
     return thumbnail
