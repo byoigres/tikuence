@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
-import { createMuiTheme, makeStyles, ThemeProvider, useTheme } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,20 +13,11 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import Container from '@material-ui/core/Container';
-import Divider from '@material-ui/core/Divider';
 import MenuIcon from '@material-ui/icons/Menu';
 import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import HomeIcon from '@material-ui/icons/Home';
-import Hidden from '@material-ui/core/Hidden';
-import Drawer from '@material-ui/core/Drawer';
-import MailIcon from '@material-ui/icons/Mail';
 import UserAvatar from './UserAvatar';
+import DrawerMenu from './DrawerMenu';
 
 /*
   xs: 320   Mobile devices
@@ -37,15 +28,6 @@ import UserAvatar from './UserAvatar';
 */
 
 const mainTheme = createMuiTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 480,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-    },
-  },
   palette: {
     primary: blue,
     secondary: red,
@@ -92,11 +74,13 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    [theme.breakpoints.up('lg')]: {
-      padding: theme.spacing(3),
-      // backgroundColor: 'red',
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: theme.spacing(9),
+      paddingBottom: theme.spacing(0),
+      paddingLeft: theme.spacing(0),
+      paddingRight: theme.spacing(0),
     },
-    // backgroundColor: 'blue',
+    padding: theme.spacing(3),
   },
 }));
 
@@ -114,7 +98,7 @@ const useCssBaselineStyles = makeStyles((theme) => ({
   },
 }));
 
-const Layout = ({ window, children, title = 'TiKUENCE' }) => {
+const Layout = ({ children, title = 'TiKUENCE' }) => {
   const {
     props: {
       auth: { isAuthenticated, credentials },
@@ -125,7 +109,6 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
   const cssBaselineStyles = useCssBaselineStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const theme = useTheme();
   const notistackRef = React.createRef();
 
   const handleUserMenuClick = (event) => {
@@ -145,62 +128,6 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const drawer = (
-    <div
-      style={{
-        // marginTop: theme.spacing(3),
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-      }}
-    >
-      {/* <div className={classes.toolbar} /> */}
-      <Typography
-        style={{
-          fontFamily: 'Passion One',
-          fontSize: 48, // theme.spacing(8)
-          textAlign: 'center',
-          color: 'white', // theme.palette.common.white
-          backgroundColor: '#2196f3', // theme.palette.primary.main
-          padding: 0,
-          margin: 8, // theme.spacing(1)
-        }}
-      >
-        TiKUENCE
-      </Typography>
-      <Divider />
-      <List component="div">
-        <ListItem button>
-          <ListItemIcon>
-            <HomeIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItem>
-      </List>
-      <Divider />
-      <List component="div" style={{ flexGrow: 1 }}>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-        <Divider />
-      </List>
-      <List component="div">
-        <ListItem button>
-          <ListItemText primary="Terms of service" />
-        </ListItem>
-        <ListItem button>
-          <ListItemText primary="Privacy policy" />
-        </ListItem>
-        <ListItem button>
-          <ListItemText primary="Cookies policy" />
-        </ListItem>
-      </List>
-    </div>
-  );
 
   useEffect(() => {
     if (flash) {
@@ -228,8 +155,6 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
       }
     }
   }, [flash]);
-
-  const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <ThemeProvider theme={mainTheme}>
@@ -315,43 +240,10 @@ const Layout = ({ window, children, title = 'TiKUENCE' }) => {
               )}
             </Toolbar>
           </AppBar>
-          <nav className={classes.drawer} aria-label="mailbox folders">
-            {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-            <Hidden lgUp implementation="css">
-              <Drawer
-                container={container}
-                variant="temporary"
-                anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                classes={{
-                  paper: classes.drawerPaper,
-                }}
-                ModalProps={{
-                  keepMounted: true, // Better open performance on mobile.
-                }}
-              >
-                {drawer}
-              </Drawer>
-            </Hidden>
-            <Hidden lgDown implementation="css">
-              <Drawer
-                classes={{
-                  paper: classes.drawerPaper,
-                }}
-                variant="permanent"
-                open
-              >
-                {drawer}
-              </Drawer>
-            </Hidden>
-          </nav>
+          {/* TODO: DRAWER HERE */}
+          <DrawerMenu isAuthenticated={isAuthenticated} credentials={credentials} />
           <Container maxWidth="lg" disableGutters component="main" className={classes.content}>
             {/* <div className={classes.toolbar} /> */}
-            {/* <Typography paragraph>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt
-            </Typography> */}
             {children}
           </Container>
         </div>
