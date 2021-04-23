@@ -241,7 +241,12 @@ const Layout = ({ children, title = 'TiKUENCE' }) => {
             </Toolbar>
           </AppBar>
           {/* TODO: DRAWER HERE */}
-          <DrawerMenu isAuthenticated={isAuthenticated} credentials={credentials} />
+          <DrawerMenu
+            isAuthenticated={isAuthenticated}
+            credentials={credentials}
+            open={mobileOpen}
+            onCloseCallback={() => setMobileOpen(false)}
+          />
           <Container maxWidth="lg" disableGutters component="main" className={classes.content}>
             {/* <div className={classes.toolbar} /> */}
             {children}

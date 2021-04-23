@@ -41,7 +41,7 @@ const useDrawerClasses = makeStyles({
   },
 });
 
-const DrawerMenu = ({ isAuthenticated, credentials }) => {
+const DrawerMenu = ({ open, onCloseCallback, isAuthenticated, credentials }) => {
   const theme = useTheme();
   const match = useMediaQuery(theme.breakpoints.up('md'));
   const [isDrawerOpen, setisDrawerOpen] = useState(true);
@@ -52,6 +52,10 @@ const DrawerMenu = ({ isAuthenticated, credentials }) => {
 
   const handleDrawerToggle = () => {
     setisDrawerOpen(!isDrawerOpen);
+
+    if (onCloseCallback) {
+      onCloseCallback();
+    }
   };
 
   const onLegalItemClick = () => {
@@ -62,11 +66,15 @@ const DrawerMenu = ({ isAuthenticated, credentials }) => {
     setisDrawerOpen(match);
   }, [match]);
 
+  useEffect(() => {
+    setisDrawerOpen(open);
+  }, [open]);
+
   return (
     <nav className={navClasses.nav} aria-label="mailbox folders">
       <Drawer
         // container={container}
-        variant={isDrawerOpen ? 'permanent' : 'temporary'}
+        variant={match ? 'permanent' : 'temporary'}
         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
         open={isDrawerOpen}
         onClose={handleDrawerToggle}
@@ -170,6 +178,7 @@ const DrawerMenu = ({ isAuthenticated, credentials }) => {
               display: 'flex',
               justifyContent: 'space-evenly',
               flexWrap: 'wrap',
+              marginBottom: theme.spacing(1),
             }}
           >
             <InertiaLink href="/about">About</InertiaLink>
