@@ -16,6 +16,7 @@ async function view(req: Request) {
       'L.url_hash AS id',
       'L.title',
       'L.user_id',
+      'U.name',
       'U.username',
       'U.profile_picture_url AS picture',
       'VT.thumbnail_name AS thumbnail',
@@ -61,6 +62,7 @@ async function view(req: Request) {
         isFavorited,
         user: {
           id: list.user_id,
+          name: list.name,
           username: list.username,
           picture: list.picture
         },

@@ -28,10 +28,6 @@ const useStyles = makeStyles((theme) => ({
     // overflow: 'hidden',
     height: '100% !important',
   },
-  root: {
-    paddingTop: theme.spacing(1),
-    [theme.breakpoints.up('md')]: {},
-  },
   list: {
     backgroundColor: '#fff',
   },
@@ -85,6 +81,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const usePaperStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}));
+
 const categories = [
   {
     id: 'recent',
@@ -112,6 +114,7 @@ const PageFeed = () => {
     },
   } = usePage();
   const classes = useStyles({ isMobile });
+  const paperClasses = usePaperStyles({ isMobile });
   const [lists, setLists] = useState(initialLists);
   const [categoryIndex] = useState(categories.findIndex((x) => x.id === category));
   const [currentPage, setCurrentPage] = useState(1);
@@ -141,7 +144,7 @@ const PageFeed = () => {
   return (
     <>
       <SEO title={categories[categoryIndex].pageTitle} />
-      <Paper className={classes.root} square>
+      <Paper classes={{ ...paperClasses }} square elevation={1}>
         <PillsNavigation
           value={category}
           onChange={(_, selectedCategory) => {

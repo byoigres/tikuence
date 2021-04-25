@@ -150,7 +150,7 @@ const Details = ({ pageReferer }) => {
               ? {
                   preserveScroll: true,
                   preserveState: !referer.includes('?tab=favorited'),
-                  only: ['auth', 'flash', 'errors', 'modal', 'isFavorited', 'lists'],
+                  only: ['auth', 'flash', 'errors', 'modal', 'isFavorited', 'lists', 'category'],
                 }
               : {}
           );

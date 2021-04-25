@@ -18,6 +18,7 @@ import MoreHorizOutlinedIcon from '@material-ui/icons/MoreHorizOutlined';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import AddIcon from '@material-ui/icons/Add';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import UserCard from './UserCard';
 import Logo from './Logo';
@@ -54,9 +55,10 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
 
   const userCard = credentials ? (
     <UserCard
-      name={credentials.name}
-      username={credentials.username}
-      picture={credentials.picture}
+      variant="contained"
+      nameText={credentials.name}
+      usernameText={`${credentials.username}`}
+      pictureUrl={credentials.picture}
       onClick={() => {
         onClose();
       }}
@@ -84,6 +86,33 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
       >
         {isAuthenticated && !match && userCard}
         {match && <Logo />}
+
+        <Divider />
+        {isAuthenticated && (
+          <div
+            style={{
+              padding: theme.spacing(2),
+            }}
+          >
+            <Button
+              startIcon={<AddIcon />}
+              color="primary"
+              variant="contained"
+              fullWidth
+              size="large"
+              href="/list/add"
+              onClick={(e) => {
+                e.preventDefault();
+                onClose();
+                Inertia.visit('/list/add');
+              }}
+              className={generalClasses.singInButton}
+            >
+              Create new list
+            </Button>
+          </div>
+        )}
+
         <Divider />
         <List component="div" style={{ display: 'initial-flex', flexGrow: 1 }}>
           <ListItem
@@ -150,13 +179,13 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
                 Inertia.visit('/auth/register');
               }}
             >
-              Create account
+              Create new account
             </Button>
           </div>
         )}
         {isAuthenticated && match && userCard}
         {isAuthenticated && match && (
-          <ListItem button>
+          <ListItem button component={InertiaLink} href="/auth/logout">
             <ListItemIcon>
               <ExitToAppIcon />
             </ListItemIcon>

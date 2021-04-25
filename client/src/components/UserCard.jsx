@@ -1,46 +1,115 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { InertiaLink } from '@inertiajs/inertia-react';
-import Grid from '@material-ui/core/Grid';
+// import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import UserAvatar from './UserAvatar';
 
 const useStyles = makeStyles((theme) => ({
-  link: {
-    backgroundColor: theme.palette.grey[100],
+  container: ({ isTransparent }) => ({
+    display: 'flex',
+    justifyContent: isTransparent ? 'flex-start' : 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  }),
+  pictureWrapper: {},
+  detailsWrapper: {
+    marginLeft: theme.spacing(1),
+  },
+  nameWrapper: ({ isTransparent }) => ({
     '&:hover': {
-      backgroundColor: theme.palette.grey[300],
+      textDecoration: isTransparent ? 'underline' : 'none',
     },
-    margin: theme.spacing(1),
+  }),
+  usernameWrapper: ({ isTransparent }) => ({
+    '&:hover': {
+      textDecoration: isTransparent ? 'underline' : 'none',
+    },
+  }),
+  linkWrapper: ({ isTransparent, round }) => ({
+    display: isTransparent ? 'inline' : 'flex',
+    justifyContent: isTransparent ? 'flex-start' : 'center',
+    backgroundColor: isTransparent ? 'transparent' : theme.palette.grey[100],
+    '&:hover': {
+      backgroundColor: isTransparent ? 'transparent' : theme.palette.grey[300],
+      textDecoration: isTransparent ? 'underline' : 'none',
+    },
     padding: theme.spacing(1),
     color: theme.palette.text.primary,
-    borderRadius: theme.spacing(1.2),
-  },
+    borderRadius: round ? theme.spacing(1.2) : 0,
+  }),
   name: {
     fontWeight: 600,
   },
 }));
 
-const UserCard = ({ name, username, picture, onClick = null }) => {
-  const classes = useStyles();
+const UserCard = ({
+  variant = 'transparent',
+  round = false,
+  nameText,
+  usernameText,
+  pictureUrl,
+  onClick = null,
+}) => {
+  const isTransparent = variant === 'transparent';
+  const classes = useStyles({
+    isTransparent,
+    round,
+  });
 
-  return (
-    <InertiaLink href={`/users/${username}`} className={classes.link} onClick={onClick}>
-      <Grid container direction="row" alignItems="center" data-name="container">
-        <Grid container justify="center" item data-name="avatar" xs={4}>
-          <UserAvatar image={picture} letter={username[0]} />
-        </Grid>
-        <Grid item container direction="row" alignItems="center" data-name="user-container" xs={8}>
-          <Grid item data-name="name" xs={12}>
-            <Typography className={classes.name}>{name}</Typography>
-          </Grid>
-          <Grid item data-name="username" xs={12}>
-            <Typography>&nbsp;@{username}</Typography>
-          </Grid>
-        </Grid>
-      </Grid>
+  const CardLink = ({ children, className }) => (
+    <InertiaLink href={`/users/${usernameText}`} className={className} onClick={onClick}>
+      {children}
     </InertiaLink>
   );
+
+  let picture = <UserAvatar image={pictureUrl} letter={usernameText[0]} />;
+
+  if (isTransparent) {
+    picture = (
+      <CardLink>
+        <UserAvatar image={pictureUrl} letter={usernameText[0]} />
+      </CardLink>
+    );
+  }
+
+  let name = <Typography className={classes.name}>{nameText}</Typography>;
+
+  if (isTransparent) {
+    name = (
+      <Typography className={classes.name}>
+        <CardLink>{nameText}</CardLink>
+      </Typography>
+    );
+  }
+
+  let username = <Typography>@{usernameText}</Typography>;
+
+  if (isTransparent) {
+    username = (
+      <Typography>
+        <CardLink>@{usernameText}</CardLink>
+      </Typography>
+    );
+  }
+
+  const content = (
+    <div className={classes.container} data-name="container">
+      <div className={classes.pictureWrapper} data-name="avatar">
+        {picture}
+      </div>
+      <div className={classes.detailsWrapper} data-name="user-container">
+        <div className={classes.nameWrapper}>{name}</div>
+        <div className={classes.usernameWrapper}>{username}</div>
+      </div>
+    </div>
+  );
+
+  if (isTransparent) {
+    return content;
+  }
+
+  return <CardLink className={classes.linkWrapper}>{content}</CardLink>;
 };
 
 export default UserCard;
