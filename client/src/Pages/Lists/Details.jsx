@@ -230,8 +230,8 @@ const Details = () => {
                   />
                 )}
                 {isMe && (
-                  <>
-                    <IconButton onClick={onDeleteButtonClick}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <IconButton onClick={onDeleteButtonClick} style={{ display: 'none' }}>
                       <DeleteIcon />
                     </IconButton>
                     <Button
@@ -239,36 +239,29 @@ const Details = () => {
                       color="secondary"
                       variant="text"
                       size="medium"
-                      href="/auth/register"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        Inertia.visit('/auth/register');
-                      }}
+                      onClick={onDeleteButtonClick}
                     >
-                      Delete
+                      Delete this list
                     </Button>
                     <Button
                       startIcon={<AddCircleIcon />}
                       color="primary"
                       variant="text"
                       size="medium"
-                      href="/auth/register"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        Inertia.visit('/auth/register');
-                      }}
+                      href={`/list/${id}/video/add`}
+                      onClick={onAddVideoClick}
                     >
                       Add video to list
                     </Button>
-                  </>
-                )}
-                {isMe && videos && videos.length > 1 && (
-                  <FormControlLabel
-                    control={
-                      <Switch checked={isSorting} onChange={onSortigChange} name="sorting" />
-                    }
-                    label="Sort videos"
-                  />
+                    {videos && videos.length > 1 && (
+                      <FormControlLabel
+                        control={
+                          <Switch checked={isSorting} onChange={onSortigChange} name="sorting" />
+                        }
+                        label="Sort videos"
+                      />
+                    )}
+                  </div>
                 )}
               </Grid>
               <Divider variant="fullWidth" />
