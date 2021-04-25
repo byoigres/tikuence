@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { InertiaLink } from '@inertiajs/inertia-react';
-// import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import UserAvatar from './UserAvatar';
 
@@ -29,9 +28,8 @@ const useStyles = makeStyles((theme) => ({
   linkWrapper: ({ isTransparent, round }) => ({
     display: isTransparent ? 'inline' : 'flex',
     justifyContent: isTransparent ? 'flex-start' : 'center',
-    backgroundColor: isTransparent ? 'transparent' : theme.palette.grey[100],
     '&:hover': {
-      backgroundColor: isTransparent ? 'transparent' : theme.palette.grey[300],
+      backgroundColor: isTransparent ? 'transparent' : theme.palette.grey[100],
       textDecoration: isTransparent ? 'underline' : 'none',
     },
     padding: theme.spacing(1),
