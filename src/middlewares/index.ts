@@ -42,7 +42,7 @@ function middlewares(app: Express) {
       // https://stackoverflow.com/a/44435742/1301872
       proxy: !!config.get('/session/secure'),
       cookie: {
-        domain: config.get('/session/domain'),
+        domain: process.env.NODE_ENV === 'production' ? config.get('/session/domain') : undefined,
         httpOnly: true,
         sameSite: false,
         secure: !!config.get('/session/secure'),
