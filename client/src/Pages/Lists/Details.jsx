@@ -11,12 +11,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -36,6 +35,8 @@ import FavoriteButton from '../../components/FavoriteButton';
 const useStyles = makeStyles((theme) => ({
   list: {
     // backgroundColor: '#fff',
+    marginLeft: theme.spacing(-2),
+    marginRight: theme.spacing(-2),
   },
   listItemAvatar: {
     minWidth: 72,
@@ -88,7 +89,6 @@ const Details = () => {
   const classes = useStyles({ isMobile, isFullWidthMatch });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isSorting, setIsSorting] = useState(false);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
   const [anchorEl, setAnchorEl] = useState([]);
@@ -147,6 +147,7 @@ const Details = () => {
           newOrderIndex: addedIndex + 1,
         },
         {
+          preserveScroll: true,
           onStart() {
             setIsLoading(true);
           },
@@ -157,10 +158,6 @@ const Details = () => {
         }
       );
     }
-  };
-
-  const onSortigChange = () => {
-    setIsSorting(!isSorting);
   };
 
   const handleUserMenuClose = (identifier) => () => {
@@ -240,14 +237,6 @@ const Details = () => {
                     >
                       Add video to list
                     </Button>
-                    {videos && videos.length > 1 && (
-                      <FormControlLabel
-                        control={
-                          <Switch checked={isSorting} onChange={onSortigChange} name="sorting" />
-                        }
-                        label="Sort videos"
-                      />
-                    )}
                   </div>
                 )}
               </Grid>
@@ -266,7 +255,7 @@ const Details = () => {
                 </Typography>
               )}
               {videos.length > 0 && (
-                <MuiList dense className={classes.list}>
+                <MuiList dense className={classes.list} component="div" data-name="MuiList">
                   <ContainerDraggable
                     dragHandleSelector=".drag-handle"
                     lockAxis="y"
@@ -278,6 +267,8 @@ const Details = () => {
                           key={video.id}
                           component={InertiaLink}
                           button
+                          divider
+                          dense
                           disabled={isLoading}
                           href={`/list/${id}`}
                           preserveScroll
@@ -294,6 +285,19 @@ const Details = () => {
                             'from',
                           ]}
                         >
+                          {isMe && (
+                            <ListItemIcon style={{ minWidth: theme.spacing(5) }}>
+                              <IconButton
+                                size="small"
+                                aria-label="sort"
+                                disabled={isLoading}
+                                className="drag-handle"
+                                style={{ cursor: 'grab' }}
+                              >
+                                <DragHandleIcon />
+                              </IconButton>
+                            </ListItemIcon>
+                          )}
                           <ListItemAvatar className={classes.listItemAvatar}>
                             <Avatar
                               alt={video.title}
@@ -305,39 +309,18 @@ const Details = () => {
                           <ListItemText id={video.id} primary={video.title} />
                           {isMe && (
                             <ListItemSecondaryAction className={classes.actionButtons}>
-                              {/* <IconButton
-                                  edge="start"
-                                  className={classes.menuButton2}
-                                  color="inherit"
-                                  aria-label="menu"
-                                  aria-haspopup="true"
-                                  onClick={handleUserMenuClick(video.id)}
-                                >
-                                  <MoreVertIcon />
-                                </IconButton> */}
-                              {!isSorting && (
-                                <IconButton
-                                  edge="end"
-                                  aria-label="remove"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    onRemoveButtonClick(video.id);
-                                  }}
-                                  disabled={isLoading}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              )}
-                              {isSorting && (
-                                <IconButton
-                                  edge="end"
-                                  aria-label="sort"
-                                  disabled={isLoading}
-                                  className="drag-handle"
-                                >
-                                  <DragHandleIcon />
-                                </IconButton>
-                              )}
+                              <IconButton
+                                size="small"
+                                edge="end"
+                                aria-label="remove"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  onRemoveButtonClick(video.id);
+                                }}
+                                disabled={isLoading}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
                               <Menu
                                 id="simple-menu"
                                 anchorEl={anchorEl[video.id]}
