@@ -47,7 +47,7 @@ const UserCard = ({
   nameText,
   usernameText,
   pictureUrl,
-  onClick = null,
+  onClick = () => {},
 }) => {
   const isTransparent = variant === 'transparent';
   const classes = useStyles({

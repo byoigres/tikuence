@@ -19,7 +19,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
-import { InertiaLink } from '@inertiajs/inertia-react';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import UserCard from './UserCard';
 import Logo from './Logo';
 
@@ -50,6 +50,20 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
   const generalClasses = useGeneralClasses();
   const navClasses = useNavClasses();
   const drawerClasses = useDrawerClasses();
+  const page = usePage();
+
+  let pageReferer = 'feed';
+
+  switch (page.component) {
+    case 'Lists/Details':
+      pageReferer = 'details';
+      break;
+    case 'Profile/Profile':
+      pageReferer = 'profile';
+      break;
+    default:
+      pageReferer = 'feed';
+  }
 
   useEffect(() => {}, [open]);
 
@@ -104,7 +118,14 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
               onClick={(e) => {
                 e.preventDefault();
                 onClose();
-                Inertia.visit('/list/add');
+                Inertia.visit('/list/add', {
+                  preserveScroll: true,
+                  preserveState: true,
+                  headers: {
+                    'X-Page-Referer': pageReferer,
+                  },
+                  only: ['auth', 'flash', 'errors', 'referer', 'modal'],
+                });
               }}
               className={generalClasses.singInButton}
             >

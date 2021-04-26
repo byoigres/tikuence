@@ -8,6 +8,8 @@ function response (req: Request) {
   if (referer && typeof referer === 'string') {
     if (referer === 'profile') {
       component = 'Profile/Profile'
+    } else if (referer === 'details') {
+      component = 'Lists/Details'
     }
   }
 

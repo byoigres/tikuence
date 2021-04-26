@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -26,6 +25,7 @@ import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
 import AddVideo from './AddVideo';
+import AddNewList from './Add';
 import SEO from '../../components/SEO';
 import List from './List';
 import ConfirmDialog from '../../components/ConfirmDialog';
@@ -432,6 +432,7 @@ const Details = () => {
           />
         </>
       )}
+      {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="details" />}
       {modal && modal.modalName === 'list' && <List pageReferer="details" />}
       {modal && modal.modalName === 'add-video' && <AddVideo />}
     </>

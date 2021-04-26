@@ -52,7 +52,9 @@ const AddPage = ({ pageReferer }) => {
         onStart() {
           setIsLoading(true);
         },
-        onSuccess() {},
+        onSuccess() {
+          Inertia.reload();
+        },
         onFinish() {
           setIsLoading(false);
           if (listNameRef.current) {
