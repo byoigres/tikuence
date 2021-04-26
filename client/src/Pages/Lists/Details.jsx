@@ -285,7 +285,7 @@ const Details = () => {
                             'from',
                           ]}
                         >
-                          {isMe && (
+                          {isMe && videos.length > 1 && (
                             <ListItemIcon style={{ minWidth: theme.spacing(5) }}>
                               <IconButton
                                 size="small"
@@ -306,7 +306,11 @@ const Details = () => {
                               src={video.thumbnail}
                             />
                           </ListItemAvatar>
-                          <ListItemText id={video.id} primary={video.title} />
+                          <ListItemText
+                            id={video.id}
+                            primary={video.title}
+                            style={{ wordBreak: 'break-word' }}
+                          />
                           {isMe && (
                             <ListItemSecondaryAction className={classes.actionButtons}>
                               <IconButton
