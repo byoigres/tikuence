@@ -162,7 +162,7 @@ export const ThumbnailGridListItem = ({
       data-name="GridListTile"
     >
       <a href={`/list/${id}`} onClick={onListClick}>
-        {thumbnail && <img src={thumbnail} alt={title} style={{ width: '100%' }} />}
+        {thumbnail && <img src={thumbnail} loading="lazy" alt={title} style={{ width: '100%' }} />}
         {!thumbnail && <div>No videos</div>}
       </a>
       <GridListTileBar
