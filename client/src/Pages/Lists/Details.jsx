@@ -187,6 +187,7 @@ const Details = () => {
                 container
                 direction={isFullWidthMatch ? 'column' : 'row'}
                 alignContent="flex-start"
+                alignItems="flex-start"
                 justify="space-evenly"
                 classes={{ ...actionClasses }}
               >
