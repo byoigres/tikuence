@@ -231,9 +231,9 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
           >
             <InertiaLink href="/about">About</InertiaLink>
             <InertiaLink href="/contact">Contact</InertiaLink>
-            <InertiaLink href="/terms">Terms</InertiaLink>
-            <InertiaLink href="/privacy">Privacy</InertiaLink>
-            <InertiaLink href="/cookies">Cookies policy</InertiaLink>
+            <InertiaLink href="/policies/terms">Terms</InertiaLink>
+            <InertiaLink href="/policies/privacy">Privacy</InertiaLink>
+            <InertiaLink href="/policies/cookies">Cookies policy</InertiaLink>
           </div>
         </Collapse>
       </Drawer>
