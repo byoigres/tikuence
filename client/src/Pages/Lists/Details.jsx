@@ -61,13 +61,14 @@ const useStyles = makeStyles((theme) => ({
   },
   infoColumn: ({ isFullWidthMatch }) => ({
     position: isFullWidthMatch ? 'fixed' : 'initial',
-    maxWidth: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 4}px` : 'initial',
+    maxWidth: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 3}px` : 'initial',
     width: isFullWidthMatch ? `100%` : 'initial',
     backgroundColor: 'white',
   }),
   contentColumn: ({ isFullWidthMatch }) => ({
-    marginLeft: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 4}px` : 'initial',
+    marginLeft: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 3}px` : 'initial',
     minHeight: 300,
+    width: '100%',
   }),
 }));
 
@@ -135,19 +136,6 @@ const Details = () => {
 
   function onDelete() {
     Inertia.visit(`/list/${id}`, { method: 'delete' });
-    // Inertia.delete(`/list/${id}`, {
-    //   onStart() {
-    //     setIsLoading(true);
-    //   },
-    //   onSuccess({ props: { lists: newLists } }) {
-    //     setLists(newLists);
-    //   },
-    //   onFinish() {
-    //     setIsLoading(false);
-    //     setIsDeleteDialogOpen(false);
-    //     setCurrentItemToDelete(null);
-    //   },
-    // });
   }
 
   const onVideoDrop = ({ removedIndex, addedIndex }) => {
@@ -270,16 +258,7 @@ const Details = () => {
                 pictureUrl={user.picture}
               />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={8}
-              lg={8}
-              xl={8}
-              className={classes.contentColumn}
-              data-name="col2"
-            >
+            <div className={classes.contentColumn} data-name="col2">
               {videos.length === 0 && (
                 <Typography component="h6" variant="h6" color="secondary">
                   {isMe && `Your list is not visible to others because doesn't have any videos.`}
@@ -400,7 +379,7 @@ const Details = () => {
                   </ContainerDraggable>
                 </MuiList>
               )}
-            </Grid>
+            </div>
           </Grid>
         </Paper>
       )}
