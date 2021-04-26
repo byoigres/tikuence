@@ -8,7 +8,7 @@
     "start": "npm run dev",
     "build": "./node_modules/.bin/webpack --mode production --env NODE_ENV=production --config webpack/webpack.prod.js",
     "eslint": "eslint './src/**/*.{js,jsx}' --fix",
-    "prettier": "prettier --config .prettierrc.json --write src/**/*.js",
+    "prettier": "prettier --config .prettierrc.json --write ./src/**/*.{js,jsx}",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
