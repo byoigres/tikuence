@@ -9,22 +9,13 @@ import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import { makeStyles } from '@material-ui/core/styles';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
-import AddNewList from './Lists/Add';
-import Profile from './Profile/Profile';
-import List from './Lists/List';
-import Login from './Auth/Login';
+import InertiaModals from '../components/InertiaModals';
 import EndOfList from '../components/EndOfList';
 import PillsNavigation, { PillAction } from '../components/PillsNavigation';
 import ThumbnailGridList, { ThumbnailGridListItem } from '../components/ThumbnailGridList';
 
 const useStyles = makeStyles((theme) => ({
   gridListTile: {
-    // position: 'relative',
-    // float: 'left',
-    // width: '100%',
-    // minHeight: '400px',
-    // minWidth: '664px',
-    // overflow: 'hidden',
     height: '100% !important',
   },
   list: {
@@ -103,7 +94,7 @@ const categories = [
 
 const PageFeed = () => {
   const {
-    props: { isMobile, category = 'recent', lists: initialLists = [], modal = false, user },
+    props: { isMobile, category = 'recent', lists: initialLists = [], modal = false },
   } = usePage();
   const classes = useStyles({ isMobile });
   const paperClasses = usePaperStyles({ isMobile });
@@ -183,10 +174,7 @@ const PageFeed = () => {
           </>
         )}
       </Paper>
-      {modal && modal.modalName === 'list' && <List pageReferer="feed" />}
-      {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="feed" />}
-      {modal && modal.modalName === 'profile' && <Profile user={user} />}
-      {modal && modal.modalName === 'login' && <Login />}
+      <InertiaModals modal={modal} />
     </>
   );
 };

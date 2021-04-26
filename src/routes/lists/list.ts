@@ -145,6 +145,7 @@ async function response(req: Request) {
     props: {
       modal: {
         modalName: 'list',
+        referer,
         list: { ...list, is_favorited: isFavorited },
         videos,
         from:

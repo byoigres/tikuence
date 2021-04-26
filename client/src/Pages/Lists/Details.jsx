@@ -24,14 +24,12 @@ import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
 import SEO from '../../components/SEO';
-import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
 import UserCard from '../../components/UserCard';
 import FavoriteButton from '../../components/FavoriteButton';
+import InertiaModals from '../../components/InertiaModals';
 
-const AddNewList = ReactLazy(() => import('./Add'));
-const List = ReactLazy(() => import('./List'));
-const AddVideo = ReactLazy(() => import('./AddVideo'));
+const ConfirmDialog = ReactLazy(() => import('../../components/ConfirmDialog'));
 
 const useStyles = makeStyles((theme) => ({
   userCard: {
@@ -371,31 +369,33 @@ const Details = () => {
       )}
       {isMe && (
         <>
-          <ConfirmDialog
-            isOpen={isRemoveVideoDialogOpen}
-            onDialogClose={onRemoveVideoDialogClose}
-            actionHandler={onRemove}
-            title="Confirm"
-            description="Are you sure to remove this video from the list?"
-            actionText="Remove"
-            cancelText="Cancel"
-          />
-          <ConfirmDialog
-            isOpen={isDeleteDialogOpen}
-            onDialogClose={onDeleteDialogClose}
-            actionHandler={onDelete}
-            title="Confirm"
-            description="Are you sure to delete this list?"
-            actionText="Delete"
-            cancelText="Cancel"
-          />
+          <Suspense fallback={<div>Loading...</div>}>
+            {isRemoveVideoDialogOpen && (
+              <ConfirmDialog
+                isOpen={isRemoveVideoDialogOpen}
+                onDialogClose={onRemoveVideoDialogClose}
+                actionHandler={onRemove}
+                title="Confirm"
+                description="Are you sure to remove this video from the list?"
+                actionText="Remove"
+                cancelText="Cancel"
+              />
+            )}
+            {isDeleteDialogOpen && (
+              <ConfirmDialog
+                isOpen={isDeleteDialogOpen}
+                onDialogClose={onDeleteDialogClose}
+                actionHandler={onDelete}
+                title="Confirm"
+                description="Are you sure to delete this list?"
+                actionText="Delete"
+                cancelText="Cancel"
+              />
+            )}
+          </Suspense>
+          <InertiaModals modal={modal} />
         </>
       )}
-      <Suspense fallback={<div>Loading...</div>}>
-        {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="details" />}
-        {modal && modal.modalName === 'list' && <List pageReferer="details" />}
-        {modal && modal.modalName === 'add-video' && <AddVideo />}
-      </Suspense>
     </>
   );
 };

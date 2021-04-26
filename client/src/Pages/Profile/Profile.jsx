@@ -21,10 +21,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import ListIcon from '@material-ui/icons/List';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { makeStyles } from '@material-ui/core/styles';
-import List from '../Lists/List';
 import Layout from '../../components/Layout';
-import AddNewList from '../Lists/Add';
-import EditProfile from './Edit';
+import InertiaModals from '../../components/InertiaModals';
 import SEO from '../../components/SEO';
 import EndOfList from '../../components/EndOfList';
 import TikTokIcon from '../../components/TikTokIcon';
@@ -362,9 +360,7 @@ const ProfilePage = () => {
           </>
         )}
       </Grid>
-      {modal && modal.modalName === 'list' && <List pageReferer="profile" />}
-      {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="profile" />}
-      {modal && modal.modalName === 'edit-profile' && <EditProfile />}
+      <InertiaModals modal={modal} />
     </>
   );
 };

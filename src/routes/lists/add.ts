@@ -17,7 +17,8 @@ function response (req: Request) {
     component,
     props: {
       modal: {
-        modalName: 'add-list'
+        modalName: 'add-list',
+        referer: 'feed'
       }
     }
   })
