@@ -47,6 +47,7 @@ const UserCard = ({
   nameText,
   usernameText,
   pictureUrl,
+  className: wrapperClassName,
   onClick = () => {},
 }) => {
   const isTransparent = variant === 'transparent';
@@ -55,8 +56,8 @@ const UserCard = ({
     round,
   });
 
-  const CardLink = ({ children, className }) => (
-    <InertiaLink href={`/users/${usernameText}`} className={className} onClick={onClick}>
+  const CardLink = ({ children, className: linkClassName }) => (
+    <InertiaLink href={`/users/${usernameText}`} className={linkClassName} onClick={onClick}>
       {children}
     </InertiaLink>
   );
@@ -92,7 +93,10 @@ const UserCard = ({
   }
 
   const content = (
-    <div className={classes.container} data-name="container">
+    <div
+      className={`${classes.container} ${isTransparent ? wrapperClassName : ''}`}
+      data-name="container"
+    >
       <div className={classes.pictureWrapper} data-name="avatar">
         {picture}
       </div>
@@ -107,7 +111,7 @@ const UserCard = ({
     return content;
   }
 
-  return <CardLink className={classes.linkWrapper}>{content}</CardLink>;
+  return <CardLink className={`${classes.linkWrapper} ${wrapperClassName}`}>{content}</CardLink>;
 };
 
 export default UserCard;
