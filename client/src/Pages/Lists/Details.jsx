@@ -32,7 +32,6 @@ import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
 import UserCard from '../../components/UserCard';
 import FavoriteButton from '../../components/FavoriteButton';
-import FabFloatingLink from '../../components/FabFloatingLink';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -424,11 +423,6 @@ const Details = () => {
             description="Are you sure to delete this list?"
             actionText="Delete"
             cancelText="Cancel"
-          />
-          <FabFloatingLink
-            component={InertiaLink}
-            href={`/list/${id}/video/add`}
-            onClick={onAddVideoClick}
           />
         </>
       )}

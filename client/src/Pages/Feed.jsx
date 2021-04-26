@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { InertiaLink, usePage } from '@inertiajs/inertia-react';
+import { usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
@@ -9,7 +9,6 @@ import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import { makeStyles } from '@material-ui/core/styles';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
-import FabFloatingLink from '../components/FabFloatingLink';
 import AddNewList from './Lists/Add';
 import Profile from './Profile/Profile';
 import List from './Lists/List';
@@ -104,14 +103,7 @@ const categories = [
 
 const PageFeed = () => {
   const {
-    props: {
-      auth: { isAuthenticated },
-      isMobile,
-      category = 'recent',
-      lists: initialLists = [],
-      modal = false,
-      user,
-    },
+    props: { isMobile, category = 'recent', lists: initialLists = [], modal = false, user },
   } = usePage();
   const classes = useStyles({ isMobile });
   const paperClasses = usePaperStyles({ isMobile });
@@ -189,23 +181,6 @@ const PageFeed = () => {
               }}
             />
           </>
-        )}
-        {isAuthenticated && (
-          <FabFloatingLink
-            component={InertiaLink}
-            href="/list/add"
-            onClick={(e) => {
-              e.preventDefault();
-              Inertia.visit('/list/add', {
-                preserveScroll: true,
-                preserveState: true,
-                headers: {
-                  'X-Page-Referer': 'feed',
-                },
-                only: ['auth', 'flash', 'errors', 'referer', 'modal'],
-              });
-            }}
-          />
         )}
       </Paper>
       {modal && modal.modalName === 'list' && <List pageReferer="feed" />}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { InertiaLink, usePage } from '@inertiajs/inertia-react';
+import { usePage } from '@inertiajs/inertia-react';
 import { Waypoint } from 'react-waypoint';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -26,7 +26,6 @@ import Layout from '../../components/Layout';
 import AddNewList from '../Lists/Add';
 import EditProfile from './Edit';
 import SEO from '../../components/SEO';
-import FabFloatingLink from '../../components/FabFloatingLink';
 import EndOfList from '../../components/EndOfList';
 import TikTokIcon from '../../components/TikTokIcon';
 
@@ -112,14 +111,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfilePage = () => {
   const {
-    props: {
-      user,
-      lists: initialLists = [],
-      isMe = false,
-      isMobile,
-      modal = false,
-      auth: { isAuthenticated },
-    },
+    props: { user, lists: initialLists = [], isMe = false, isMobile, modal = false },
   } = usePage();
   const classes = useStyles({ isMobile, isMe });
   const [lists, setLists] = useState(initialLists);
@@ -370,23 +362,6 @@ const ProfilePage = () => {
           </>
         )}
       </Grid>
-      {isAuthenticated && (
-        <FabFloatingLink
-          component={InertiaLink}
-          href="/list/add"
-          onClick={(e) => {
-            e.preventDefault();
-            Inertia.visit('/list/add', {
-              preserveScroll: true,
-              preserveState: true,
-              headers: {
-                'X-Page-Referer': 'profile',
-              },
-              only: ['auth', 'flash', 'errors', 'referer', 'modal'],
-            });
-          }}
-        />
-      )}
       {modal && modal.modalName === 'list' && <List pageReferer="profile" />}
       {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="profile" />}
       {modal && modal.modalName === 'edit-profile' && <EditProfile />}
