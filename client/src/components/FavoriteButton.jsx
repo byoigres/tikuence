@@ -5,10 +5,11 @@ import IconButton from '@material-ui/core/IconButton';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarIcon from '@material-ui/icons/Star';
 
-const FavoriteButton = ({ isFavorited = false, text, onClick }) => (
+const FavoriteButton = ({ isFavorited = false, text, disabled, onClick }) => (
   <>
     {text ? (
       <Button
+        disabled={disabled}
         color="primary"
         startIcon={isFavorited ? <StarIcon /> : <StarBorderIcon />}
         onClick={() => onClick(isFavorited)}
@@ -18,6 +19,7 @@ const FavoriteButton = ({ isFavorited = false, text, onClick }) => (
     ) : (
       <Tooltip title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}>
         <IconButton
+          disabled={disabled}
           edge="start"
           color="inherit"
           aria-label="menu"

@@ -12,13 +12,12 @@ import { usePage } from '@inertiajs/inertia-react';
 
 const useStyles = makeStyles(() => ({}));
 
-const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
+const TitleForUpdate = ({ id, title: initialTitle, canEdit = true, isLoading }) => {
   const {
     props: { errors },
   } = usePage();
   const classes = useStyles();
   const [title, setTitle] = useState(initialTitle);
-  const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
   function onTitleUpdate() {
@@ -27,14 +26,8 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
       { title },
       {
         only: ['auth', 'flash', 'errors', 'referer', 'showModal', 'title'],
-        onStart() {
-          setIsLoading(true);
-        },
         onSuccess() {
           setIsEditMode(false);
-        },
-        onFinish() {
-          setIsLoading(false);
         },
       }
     );

@@ -75,7 +75,7 @@ const usePaperStyles = makeStyles((theme) => ({
   },
 }));
 
-const Details = () => {
+const Details = ({ isLoading }) => {
   const {
     props: { auth, id, title, isFavorited, user, videos, isMobile, isMe, modal = false },
   } = usePage();
@@ -84,7 +84,6 @@ const Details = () => {
   const paperClasses = usePaperStyles({ isMobile });
   const classes = useStyles({ isMobile, isFullWidthMatch });
   const actionClasses = useActionStyles({ isMobile, isFullWidthMatch });
-  const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
@@ -111,12 +110,7 @@ const Details = () => {
 
   function onRemove() {
     Inertia.delete(`/list/${id}/video/${currentVideoToDelete}`, {
-      onStart() {
-        setIsLoading(true);
-      },
-      onSuccess() {},
       onFinish() {
-        setIsLoading(false);
         setIsRemoveVideoDialogOpen(false);
         setCurrentVideoToDelete(null);
       },
@@ -146,11 +140,11 @@ const Details = () => {
         {
           preserveScroll: true,
           onStart() {
-            setIsLoading(true);
+            // -- setIsLoading(true);
           },
           onSuccess() {},
           onFinish() {
-            setIsLoading(false);
+            // -- setIsLoading(false);
           },
         }
       );
@@ -170,7 +164,7 @@ const Details = () => {
         <Paper elevation={1} classes={{ ...paperClasses }}>
           <Grid container>
             <Grid item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.infoColumn}>
-              <TitleForUpdate title={title} id={id} canEdit={isMe} />
+              <TitleForUpdate title={title} id={id} canEdit={isMe} isLoading={isLoading} />
               {videos && videos.length > 0 && (
                 <Typography component="span" variant="caption">
                   {`There ${videos.length > 1 ? 'are' : 'is'} ${videos.length} video${
@@ -192,6 +186,7 @@ const Details = () => {
               >
                 {auth.isAuthenticated && !isMe && (
                   <FavoriteButton
+                    disabled={isLoading}
                     isFavorited={isFavorited}
                     text="a"
                     onClick={() => {
@@ -215,6 +210,7 @@ const Details = () => {
                     </IconButton>
                     <Button
                       startIcon={<DeleteIcon />}
+                      disabled={isLoading}
                       color="secondary"
                       variant="text"
                       size="medium"
@@ -224,6 +220,7 @@ const Details = () => {
                     </Button>
                     <Button
                       startIcon={<AddCircleIcon />}
+                      disabled={isLoading}
                       color="primary"
                       variant="text"
                       size="medium"

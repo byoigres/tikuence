@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Inertia } from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
@@ -11,6 +12,8 @@ import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -81,7 +84,26 @@ const Layout = ({ children }) => {
   const cssBaselineStyles = useCssBaselineStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [isBackdropOpen, setIsBackdropOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const notistackRef = React.createRef();
+  let backdropLoadingTimer = null;
+
+  Inertia.on('start', () => {
+    setIsLoading(true);
+    backdropLoadingTimer = setTimeout(() => {
+      setIsBackdropOpen(() => true);
+    }, 350);
+  });
+
+  Inertia.on('finish', () => {
+    setIsBackdropOpen(false);
+    setIsLoading(false);
+
+    if (backdropLoadingTimer) {
+      clearTimeout(backdropLoadingTimer);
+    }
+  });
 
   const handleUserMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -218,10 +240,21 @@ const Layout = ({ children }) => {
             onClose={() => setMobileOpen(false)}
           />
           <Container maxWidth="lg" disableGutters component="main" className={classes.content}>
-            {children}
+            {React.Children.map(children, (child) => {
+              if (!React.isValidElement(child)) {
+                return null;
+              }
+
+              return React.cloneElement(child, {
+                isLoading,
+              });
+            })}
           </Container>
         </div>
       </SnackbarProvider>
+      <Backdrop open={isBackdropOpen} style={{ zIndex: 1500 }}>
+        <CircularProgress color="primary" />
+      </Backdrop>
     </ThemeProvider>
   );
 };

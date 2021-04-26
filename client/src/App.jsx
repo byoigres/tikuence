@@ -5,7 +5,12 @@ import { InertiaProgress } from '@inertiajs/progress/src';
 
 const el = document.getElementById('app');
 
-InertiaProgress.init();
+InertiaProgress.init({
+  delay: 250,
+  color: 'rgb(33, 150, 243)',
+  includeCSS: true,
+  showSpinner: true,
+});
 
 render(
   <App
