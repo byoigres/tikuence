@@ -100,7 +100,7 @@ const useIconButtonStyles = makeStyles((theme) => ({
   },
 }));
 
-const ThumbnailGridList = ({ children, isMobile = false }) => {
+const ThumbnailGridList = ({ children, referer, isMobile = false }) => {
   const theme = useTheme();
   const gridListStyles = useGridListStyles();
   const isMediumAndUpMatch = useMediaQuery(theme.breakpoints.up('md'));
@@ -115,6 +115,7 @@ const ThumbnailGridList = ({ children, isMobile = false }) => {
         return React.cloneElement(child, {
           isMobile,
           isMediumAndUpMatch,
+          referer,
         });
       })}
     </GridList>
@@ -129,6 +130,7 @@ export const ThumbnailGridListItem = ({
   username,
   isMobile,
   isMediumAndUpMatch,
+  referer,
   style,
 }) => {
   const [displayInfo, setDisplayInfo] = useState(false);
@@ -147,7 +149,7 @@ export const ThumbnailGridListItem = ({
     Inertia.visit(`/list/${id}`, {
       preserveScroll: true,
       preserveState: true,
-      headers: { 'X-Page-Referer': 'feed' },
+      headers: { 'X-Page-Referer': referer },
       only: ['auth', 'flash', 'errors', 'modal', 'list', 'videos', 'referer'],
     });
   };
@@ -160,7 +162,8 @@ export const ThumbnailGridListItem = ({
       data-name="GridListTile"
     >
       <a href={`/list/${id}`} onClick={onListClick}>
-        <img src={thumbnail} alt={title} style={{ width: '100%' }} />
+        {thumbnail && <img src={thumbnail} alt={title} style={{ width: '100%' }} />}
+        {!thumbnail && <div>No videos</div>}
       </a>
       <GridListTileBar
         title={
@@ -171,7 +174,7 @@ export const ThumbnailGridListItem = ({
         subtitle={
           <>
             <Divider variant="fullWidth" />
-            <InertiaLink href={`/users/${username}`}>@{username}</InertiaLink>
+            {username && <InertiaLink href={`/users/${username}`}>@{username}</InertiaLink>}
             <div>{videos} videos</div>
           </>
         }

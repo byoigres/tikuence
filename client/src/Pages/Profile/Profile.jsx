@@ -6,18 +6,10 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Tooltip from '@material-ui/core/Tooltip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
 import ListIcon from '@material-ui/icons/List';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,6 +18,7 @@ import InertiaModals from '../../components/InertiaModals';
 import SEO from '../../components/SEO';
 import EndOfList from '../../components/EndOfList';
 import TikTokIcon from '../../components/TikTokIcon';
+import ThumbnailGridList, { ThumbnailGridListItem } from '../../components/ThumbnailGridList';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -261,7 +254,20 @@ const ProfilePage = () => {
             </Tabs>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
+        <ThumbnailGridList referer="profile">
+          {lists.length !== 0 &&
+            lists.map((list) => (
+              <ThumbnailGridListItem
+                key={`thumbnail-item-${list.id}`}
+                id={list.id}
+                thumbnail={list.thumbnail}
+                title={list.title}
+                videos={list.total_videos}
+                username={list.username}
+              />
+            ))}
+        </ThumbnailGridList>
+        {/* <Grid item xs={12}>
           <Grid container wrap="wrap" spacing={2}>
             {lists.length !== 0 &&
               lists.map((list) => (
@@ -324,7 +330,7 @@ const ProfilePage = () => {
                 </Grid>
               ))}
           </Grid>
-        </Grid>
+        </Grid> */}
         {lists.length === 0 && (
           <>
             {currentTab === 'lists' && (

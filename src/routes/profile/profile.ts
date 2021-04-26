@@ -110,7 +110,11 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
   const lists = await query.where('U.id', user.id).orderBy('VT.created_at', 'DESC').limit(pageSize).offset(offset)
 
   lists.forEach((item) => {
-    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Lg)
+    if (item.thumbnail) {
+      item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Lg)
+    } else {
+      item.thumbnail = null
+    }
   })
 
   httpContext.set('lists', lists)

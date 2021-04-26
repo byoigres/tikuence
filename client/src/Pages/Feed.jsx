@@ -143,7 +143,7 @@ const PageFeed = () => {
           <PillAction value="recent" label="Recent" icon={<RestoreIcon />} />
           <PillAction value="new" label="New" icon={<WbSunnyIcon />} />
         </PillsNavigation>
-        <ThumbnailGridList>
+        <ThumbnailGridList referer="feed">
           {lists.length !== 0 &&
             lists.map((list) => (
               <ThumbnailGridListItem
