@@ -33,10 +33,9 @@ import UserCard from '../../components/UserCard';
 import FavoriteButton from '../../components/FavoriteButton';
 
 const useStyles = makeStyles((theme) => ({
-  list: {
-    // backgroundColor: '#fff',
-    marginLeft: theme.spacing(-2),
-    marginRight: theme.spacing(-2),
+  userCard: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   listItemAvatar: {
     minWidth: 72,
@@ -45,20 +44,6 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(7),
     minHeight: '100px',
     height: '100%',
-  },
-  actionButtons: () => ({
-    // display: 'flex',
-    // flexDirection: 'column',
-  }),
-  createVideoButton: ({ isMobile }) => ({
-    position: 'absolute',
-    right: isMobile ? '10px' : '52px',
-    bottom: '0',
-  }),
-  mainGrid: {
-    // backgroundColor: 'white',
-    // paddingLeft: theme.spacing(2),
-    // paddingRight: theme.spacing(2),
   },
   infoColumn: ({ isFullWidthMatch }) => ({
     position: isFullWidthMatch ? 'fixed' : 'initial',
@@ -71,6 +56,18 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 300,
     width: '100%',
   }),
+}));
+
+const useActionStyles = makeStyles((theme) => ({
+  [theme.breakpoints.down('sm')]: {
+    'direction-xs-column': {
+      // flexDirection: 'row',
+    },
+  },
+  root: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 const usePaperStyles = makeStyles((theme) => ({
@@ -87,6 +84,7 @@ const Details = () => {
   const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
   const paperClasses = usePaperStyles({ isMobile });
   const classes = useStyles({ isMobile, isFullWidthMatch });
+  const actionClasses = useActionStyles({ isMobile, isFullWidthMatch });
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
@@ -171,17 +169,8 @@ const Details = () => {
       <SEO title={title} />
       {id && (
         <Paper elevation={1} classes={{ ...paperClasses }}>
-          <Grid container className={classes.mainGrid}>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={4}
-              lg={4}
-              xl={4}
-              className={classes.infoColumn}
-              data-name="col1"
-            >
+          <Grid container>
+            <Grid item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.infoColumn}>
               <TitleForUpdate title={title} id={id} canEdit={isMe} />
               {videos && videos.length > 0 && (
                 <Typography component="span" variant="caption">
@@ -194,7 +183,13 @@ const Details = () => {
                 variant="fullWidth"
                 style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
               />
-              <Grid container wrap="nowrap" alignItems="flex-start">
+              <Grid
+                container
+                direction={isFullWidthMatch ? 'column' : 'row'}
+                alignContent="flex-start"
+                justify="space-evenly"
+                classes={{ ...actionClasses }}
+              >
                 {auth.isAuthenticated && !isMe && (
                   <FavoriteButton
                     isFavorited={isFavorited}
@@ -214,7 +209,7 @@ const Details = () => {
                   />
                 )}
                 {isMe && (
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <>
                     <IconButton onClick={onDeleteButtonClick} style={{ display: 'none' }}>
                       <DeleteIcon />
                     </IconButton>
@@ -237,17 +232,18 @@ const Details = () => {
                     >
                       Add video to list
                     </Button>
-                  </div>
+                  </>
                 )}
               </Grid>
               <Divider variant="fullWidth" />
               <UserCard
+                className={classes.userCard}
                 nameText={user.name}
                 usernameText={user.username}
                 pictureUrl={user.picture}
               />
             </Grid>
-            <div className={classes.contentColumn} data-name="col2">
+            <div className={classes.contentColumn}>
               {videos.length === 0 && (
                 <Typography component="h6" variant="h6" color="secondary">
                   {isMe && `Your list is not visible to others because doesn't have any videos.`}
@@ -255,7 +251,7 @@ const Details = () => {
                 </Typography>
               )}
               {videos.length > 0 && (
-                <MuiList dense className={classes.list} component="div" data-name="MuiList">
+                <MuiList dense component="div" data-name="MuiList">
                   <ContainerDraggable
                     dragHandleSelector=".drag-handle"
                     lockAxis="y"
@@ -312,7 +308,7 @@ const Details = () => {
                             style={{ wordBreak: 'break-word' }}
                           />
                           {isMe && (
-                            <ListItemSecondaryAction className={classes.actionButtons}>
+                            <ListItemSecondaryAction>
                               <IconButton
                                 size="small"
                                 edge="end"
