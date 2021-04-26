@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy as ReactLazy } from 'react';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -23,14 +23,15 @@ import { Inertia } from '@inertiajs/inertia';
 import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import Layout from '../../components/Layout';
-import AddVideo from './AddVideo';
-import AddNewList from './Add';
 import SEO from '../../components/SEO';
-import List from './List';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import TitleForUpdate from '../../components/TitleForUpdate';
 import UserCard from '../../components/UserCard';
 import FavoriteButton from '../../components/FavoriteButton';
+
+const AddNewList = ReactLazy(() => import('./Add'));
+const List = ReactLazy(() => import('./List'));
+const AddVideo = ReactLazy(() => import('./AddVideo'));
 
 const useStyles = makeStyles((theme) => ({
   userCard: {
@@ -243,6 +244,7 @@ const Details = () => {
                 usernameText={user.username}
                 pictureUrl={user.picture}
               />
+              <Divider variant="fullWidth" />
             </Grid>
             <div className={classes.contentColumn}>
               {videos.length === 0 && (
@@ -389,9 +391,11 @@ const Details = () => {
           />
         </>
       )}
-      {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="details" />}
-      {modal && modal.modalName === 'list' && <List pageReferer="details" />}
-      {modal && modal.modalName === 'add-video' && <AddVideo />}
+      <Suspense fallback={<div>Loading...</div>}>
+        {modal && modal.modalName === 'add-list' && <AddNewList pageReferer="details" />}
+        {modal && modal.modalName === 'list' && <List pageReferer="details" />}
+        {modal && modal.modalName === 'add-video' && <AddVideo />}
+      </Suspense>
     </>
   );
 };
