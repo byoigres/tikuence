@@ -15,14 +15,11 @@ import { Inertia } from '@inertiajs/inertia';
 const useGridListStyles = makeStyles({
   root: {
     width: '100%',
+    minHeight: 500,
   },
 });
 
-const useGridListTileStyles = makeStyles({
-  tile: {
-    backgroundColor: '#000',
-  },
-});
+const useGridListTileStyles = makeStyles({});
 
 const useTitleBarStyles = makeStyles((theme) => ({
   [theme.breakpoints.down('xs')]: {
@@ -161,9 +158,38 @@ export const ThumbnailGridListItem = ({
       style={style}
       data-name="GridListTile"
     >
-      <a href={`/list/${id}`} onClick={onListClick}>
-        {thumbnail && <img src={thumbnail} loading="lazy" alt={title} style={{ width: '100%' }} />}
-        {!thumbnail && <div>No videos</div>}
+      <a
+        href={`/list/${id}`}
+        onClick={onListClick}
+        data-name="th-container"
+        style={{
+          width: '100%',
+          paddingTop: thumbnail ? 0 : '178%',
+          position: 'relative',
+          display: 'block',
+        }}
+      >
+        {thumbnail && <img src={thumbnail} alt={title} style={{ width: '100%' }} />}
+        {!thumbnail && (
+          <div
+            data-name="th-item"
+            style={{
+              height: '100%',
+              width: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              border: '1px solid black',
+            }}
+          >
+            No videos
+          </div>
+        )}
       </a>
       <GridListTileBar
         title={

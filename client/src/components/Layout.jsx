@@ -89,21 +89,28 @@ const Layout = ({ children }) => {
   const notistackRef = React.createRef();
   let backdropLoadingTimer = null;
 
-  Inertia.on('start', () => {
-    setIsLoading(true);
-    backdropLoadingTimer = setTimeout(() => {
-      setIsBackdropOpen(() => true);
-    }, 350);
-  });
+  useEffect(() => {
+    const inertiaStartEventListener = Inertia.on('start', () => {
+      setIsLoading(true);
+      backdropLoadingTimer = setTimeout(() => {
+        setIsBackdropOpen(() => true);
+      }, 2000);
+    });
 
-  Inertia.on('finish', () => {
-    setIsBackdropOpen(false);
-    setIsLoading(false);
+    const inertiaFinishEventListener = Inertia.on('finish', () => {
+      setIsBackdropOpen(false);
+      setIsLoading(false);
 
-    if (backdropLoadingTimer) {
-      clearTimeout(backdropLoadingTimer);
-    }
-  });
+      if (backdropLoadingTimer) {
+        clearTimeout(backdropLoadingTimer);
+      }
+    });
+
+    return () => {
+      inertiaStartEventListener();
+      inertiaFinishEventListener();
+    };
+  }, []);
 
   const handleUserMenuClick = (event) => {
     setAnchorEl(event.currentTarget);

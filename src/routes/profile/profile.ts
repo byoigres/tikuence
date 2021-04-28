@@ -5,8 +5,8 @@ import Knex, { Tables } from '../../utils/knex'
 import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
 
 async function verifyParams(req: Request, res: Response, next: NextFunction) {
-  let category = req.headers['x-profile-category'] || req.query.tab
-  const pageSize = 16
+  let category = req.headers['x-profile-category'] || req.query.tab || 'lists'
+  const pageSize = 24
   let offset = 0
   let page = 1
 
@@ -107,7 +107,7 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
       .join(`${Tables.Users} AS U`, 'UF.user_id', 'U.id')
   }
 
-  const lists = await query.where('U.id', user.id).orderBy('VT.created_at', 'DESC').limit(pageSize).offset(offset)
+  const lists = await query.where('U.id', user.id).orderBy('L.created_at', 'DESC').limit(pageSize).offset(offset)
 
   lists.forEach((item) => {
     if (item.thumbnail) {
@@ -137,9 +137,7 @@ async function response(req: Request) {
       isMe,
       lists,
       category,
-      modal: {
-        modalName: false
-      }
+      modal: false
     }
   })
 }
