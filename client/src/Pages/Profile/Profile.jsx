@@ -178,22 +178,6 @@ const ProfilePage = () => {
                 className={classes.typography}
               >
                 @{user.username}
-                {isMe && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    href={`/users/${user.username}/edit`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      Inertia.visit(`/users/${user.username}/edit`, {
-                        only: ['auth', 'flash', 'errors', 'isMobile', 'modal', 'user', 'isMe'],
-                      });
-                    }}
-                  >
-                    Edit profile
-                  </Button>
-                )}
               </Typography>
               <Typography
                 variant="subtitle2"
@@ -216,6 +200,25 @@ const ProfilePage = () => {
                     rel="noopener noreferrer nofollow"
                   >
                     {user.tiktok_username}
+                  </Button>
+                </div>
+              )}
+              {isMe && (
+                <div className={classes.typography}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth={isMobile}
+                    size="small"
+                    href={`/users/${user.username}/edit`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      Inertia.visit(`/users/${user.username}/edit`, {
+                        only: ['auth', 'flash', 'errors', 'isMobile', 'modal', 'user', 'isMe'],
+                      });
+                    }}
+                  >
+                    Edit profile
                   </Button>
                 </div>
               )}
