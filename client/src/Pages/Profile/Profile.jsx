@@ -17,6 +17,12 @@ import SEO from '../../components/SEO';
 import TikTokIcon from '../../components/TikTokIcon';
 import ThumbnailInfiniteList from '../../components/ThumbnailInfiniteList';
 
+const usePaperStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}));
+
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
@@ -100,6 +106,7 @@ const ProfilePage = () => {
   const {
     props: { user, lists: initialLists = [], isMe = false, isMobile, modal = false },
   } = usePage();
+  const paperClasses = usePaperStyles({ isMobile });
   const classes = useStyles({ isMobile, isMe });
   const [lists, setLists] = useState(initialLists);
   const [currentPage, setCurrentPage] = useState(1);
@@ -133,130 +140,135 @@ const ProfilePage = () => {
   return (
     <>
       <SEO title={`@${user.username} profile`} />
-      <Grid
-        container
-        style={{
-          paddingLeft: '1rem',
-          paddingRight: '1rem',
-          paddingBottom: '1rem',
-          backgroundColor: 'white',
-        }}
-      >
-        <Grid item xs={12} md={12}>
-          <Grid
-            container
-            alignContent="center"
-            alignItems="center"
-            style={{
-              paddingTop: '1rem',
-              paddingBottom: '1rem',
-            }}
-          >
+      <Paper classes={{ ...paperClasses }} square elevation={1}>
+        <Grid
+          container
+          style={{
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
+            paddingBottom: '1rem',
+            backgroundColor: 'white',
+          }}
+        >
+          <Grid item xs={12} md={12}>
             <Grid
               container
               alignContent="center"
-              direction="column"
-              item
-              xs={12}
-              sm={12}
-              md={3}
-              lg={3}
-              xl={3}
+              alignItems="center"
+              style={{
+                paddingTop: '1rem',
+                paddingBottom: '1rem',
+              }}
             >
-              <Avatar src={user.picture} className={classes.avatar}>
-                {user.username[0].toUpperCase()}
-              </Avatar>
-            </Grid>
-            <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
-              <Typography variant="h3" component="h1" color="textPrimary" className={classes.name}>
-                {user.name}
-              </Typography>
-              <Typography
-                variant="subtitle2"
-                color="textSecondary"
-                gutterBottom
-                className={classes.typography}
+              <Grid
+                container
+                alignContent="center"
+                direction="column"
+                item
+                xs={12}
+                sm={12}
+                md={3}
+                lg={3}
+                xl={3}
               >
-                @{user.username}
-              </Typography>
-              <Typography
-                variant="subtitle2"
-                color="textSecondary"
-                gutterBottom
-                className={classes.typography}
-              >
-                {user.email}
-              </Typography>
-              <Typography variant="body1" color="initial" className={classes.typography}>
-                {user.biography ? user.biography : 'No bio yet'}
-              </Typography>
-              {user.tiktok_username && (
-                <div className={classes.typography}>
-                  <Button
-                    className={classes.button}
-                    startIcon={<TikTokIcon />}
-                    href={user.tiktok_url}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                  >
-                    {user.tiktok_username}
-                  </Button>
-                </div>
-              )}
-              {isMe && (
-                <div className={classes.typography}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth={isMobile}
-                    size="small"
-                    href={`/users/${user.username}/edit`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      Inertia.visit(`/users/${user.username}/edit`, {
-                        only: ['auth', 'flash', 'errors', 'isMobile', 'modal', 'user', 'isMe'],
-                      });
-                    }}
-                  >
-                    Edit profile
-                  </Button>
-                </div>
-              )}
+                <Avatar src={user.picture} className={classes.avatar}>
+                  {user.username[0].toUpperCase()}
+                </Avatar>
+              </Grid>
+              <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
+                <Typography
+                  variant="h3"
+                  component="h1"
+                  color="textPrimary"
+                  className={classes.name}
+                >
+                  {user.name}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  gutterBottom
+                  className={classes.typography}
+                >
+                  @{user.username}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  gutterBottom
+                  className={classes.typography}
+                >
+                  {user.email}
+                </Typography>
+                <Typography variant="body1" color="initial" className={classes.typography}>
+                  {user.biography ? user.biography : 'No bio yet'}
+                </Typography>
+                {user.tiktok_username && (
+                  <div className={classes.typography}>
+                    <Button
+                      className={classes.button}
+                      startIcon={<TikTokIcon />}
+                      href={user.tiktok_url}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                    >
+                      {user.tiktok_username}
+                    </Button>
+                  </div>
+                )}
+                {isMe && (
+                  <div className={classes.typography}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth={isMobile}
+                      size="small"
+                      href={`/users/${user.username}/edit`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        Inertia.visit(`/users/${user.username}/edit`, {
+                          only: ['auth', 'flash', 'errors', 'isMobile', 'modal', 'user', 'isMe'],
+                        });
+                      }}
+                    >
+                      Edit profile
+                    </Button>
+                  </div>
+                )}
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
 
-        <Grid item xs={12}>
-          <Paper square>
-            <Tabs
-              value={currentTab === 'lists' ? 0 : 1}
-              indicatorColor="primary"
-              variant="fullWidth"
-              textColor="primary"
-              onChange={(_e, id) => {
-                const tab = id === 0 ? 'lists' : 'favorited';
-                setCurrentTab(tab);
-                Inertia.visit(`/users/${user.username}?tab=${tab}`, {
-                  only: ['auth', 'flash', 'errors', 'lists', 'category'],
-                  headers: {
-                    'X-Profile-Category': id === 0 ? 'lists' : 'favorited',
-                  },
-                  onStart() {
-                    setLists([]);
-                    setIsSwitchingTab(true);
-                  },
-                });
-              }}
-              aria-label="disabled tabs example"
-              style={{ marginBottom: '1rem' }}
-            >
-              <Tab icon={<ListIcon />} label="LISTS" />
-              <Tab icon={<FavoriteIcon />} label="FAVORITED" />
-            </Tabs>
-          </Paper>
+          <Grid item xs={12}>
+            <Paper square>
+              <Tabs
+                value={currentTab === 'lists' ? 0 : 1}
+                indicatorColor="primary"
+                variant="fullWidth"
+                textColor="primary"
+                onChange={(_e, id) => {
+                  const tab = id === 0 ? 'lists' : 'favorited';
+                  setCurrentTab(tab);
+                  Inertia.visit(`/users/${user.username}?tab=${tab}`, {
+                    only: ['auth', 'flash', 'errors', 'lists', 'category'],
+                    headers: {
+                      'X-Profile-Category': id === 0 ? 'lists' : 'favorited',
+                    },
+                    onStart() {
+                      setLists([]);
+                      setIsSwitchingTab(true);
+                    },
+                  });
+                }}
+                aria-label="disabled tabs example"
+                style={{ marginBottom: '1rem' }}
+              >
+                <Tab icon={<ListIcon />} label="LISTS" />
+                <Tab icon={<FavoriteIcon />} label="FAVORITED" />
+              </Tabs>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
-      <Paper>
         <ThumbnailInfiniteList
           referer="profile"
           isLoading={isSwitchingTab}
