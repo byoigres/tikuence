@@ -6,6 +6,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ThumbnailGridList, { ThumbnailGridListItem } from './ThumbnailGridList';
 import EndOfList from './EndOfList';
+import IndeterminateProgress from './IndeterminateProgress';
 
 function useWidth() {
   const theme = useTheme();
@@ -69,7 +70,12 @@ export const ThumbnailSkeleton = ({ singleRow = false }) => {
       {[...Array(total).keys()].map((key) => (
         <Grid key={key} item xs={size}>
           <div className={skelletonStyles.container}>
-            <Skeleton variant="rect" animation="pulse" className={skelletonStyles.element} />
+            <Skeleton
+              variant="rect"
+              animation="pulse"
+              className={skelletonStyles.element}
+              data-name="skeleton"
+            />
           </div>
         </Grid>
       ))}
@@ -87,8 +93,6 @@ const ThumbnailInfiniteList = ({
   endOfListText = 'End of list',
   noItemsText = 'No items',
 }) => {
-  // return <ThumbnailSkeleton />;
-  // console.log({ lists, isTheEnd, modal, onEnter, referer, isLoading });
   if (isLoading) {
     return <ThumbnailSkeleton />;
   }
@@ -110,18 +114,10 @@ const ThumbnailInfiniteList = ({
             ))}
         </ThumbnailGridList>
       )}
-      {!isLoading && lists.length === 0 && <EndOfList text={noItemsText} />}
+      {!isLoading && !modal && lists.length === 0 && <EndOfList text={noItemsText} />}
       {!isLoading && isTheEnd && <EndOfList text={endOfListText} />}
-      {!isTheEnd && (
-        <>
-          {!modal && lists.length > 0 && (
-            <div>
-              <ThumbnailSkeleton singleRow />
-            </div>
-          )}
-          <Waypoint onEnter={onEnter} debug />
-        </>
-      )}
+      {!isTheEnd && !modal && lists.length > 0 && <IndeterminateProgress />}
+      {!isTheEnd && <Waypoint onEnter={onEnter} bottomOffset={-100} />}
     </>
   );
 };
