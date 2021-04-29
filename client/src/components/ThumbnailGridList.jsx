@@ -46,7 +46,6 @@ const useStyles = makeStyles(() => ({
 const useGridListStyles = makeStyles({
   root: {
     width: '100%',
-    minHeight: 500,
   },
 });
 
