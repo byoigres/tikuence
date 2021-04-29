@@ -50,7 +50,13 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     [theme.breakpoints.down('sm')]: {
-      paddingTop: theme.spacing(9),
+      paddingTop: theme.spacing(7),
+      paddingBottom: theme.spacing(0),
+      paddingLeft: theme.spacing(0),
+      paddingRight: theme.spacing(0),
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      paddingTop: theme.spacing(8),
       paddingBottom: theme.spacing(0),
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
