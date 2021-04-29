@@ -170,7 +170,7 @@ export const ThumbnailGridListItem = ({
 }) => {
   const [displayInfo, setDisplayInfo] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [displayBlurImage, setDisplayBlurImage] = useState(false);
+  const [displayBlurImage, setDisplayBlurImage] = useState(!thumbnail);
   const styles = useStyles({ thumbnail, displayBlurImage });
   const gridListTileStylesClasses = useGridListTileStyles({ isMobile });
   const titleBarClasses = useTitleBarStyles({ isMobile, displayInfo });
@@ -193,10 +193,12 @@ export const ThumbnailGridListItem = ({
   };
 
   useEffect(() => {
-    const blurTimeout = setTimeout(() => {
-      setDisplayBlurImage(true);
-      clearTimeout(blurTimeout);
-    }, 1000);
+    if (!thumbnail) {
+      const blurTimeout = setTimeout(() => {
+        setDisplayBlurImage(true);
+        clearTimeout(blurTimeout);
+      }, 1000);
+    }
   }, []);
 
   return (
