@@ -141,25 +141,9 @@ const ProfilePage = () => {
     <>
       <SEO title={`@${user.username} profile`} />
       <Paper classes={{ ...paperClasses }} square elevation={1}>
-        <Grid
-          container
-          style={{
-            paddingLeft: '1rem',
-            paddingRight: '1rem',
-            paddingBottom: '1rem',
-            backgroundColor: 'white',
-          }}
-        >
+        <Grid container>
           <Grid item xs={12} md={12}>
-            <Grid
-              container
-              alignContent="center"
-              alignItems="center"
-              style={{
-                paddingTop: '1rem',
-                paddingBottom: '1rem',
-              }}
-            >
+            <Grid container alignContent="center" alignItems="center">
               <Grid
                 container
                 alignContent="center"
@@ -238,9 +222,14 @@ const ProfilePage = () => {
               </Grid>
             </Grid>
           </Grid>
-
-          <Grid item xs={12}>
-            <Paper square>
+          <Grid item xs={12} md={12}>
+            <Paper
+              square
+              style={{
+                marginTop: 16,
+                marginBottom: 16,
+              }}
+            >
               <Tabs
                 value={currentTab === 'lists' ? 0 : 1}
                 indicatorColor="primary"
@@ -268,25 +257,27 @@ const ProfilePage = () => {
               </Tabs>
             </Paper>
           </Grid>
+          <Grid item xs={12} md={12}>
+            <ThumbnailInfiniteList
+              referer="profile"
+              isLoading={isSwitchingTab}
+              lists={lists}
+              isTheEnd={isTheEnd}
+              endOfListText={`You reached the end of @${user.username}'s ${
+                currentTab === 'lists' ? '' : 'favorite'
+              } lists`}
+              noItemsText={`@${user.username} hasn't ${
+                currentTab === 'lists' ? 'created' : 'liked'
+              } any lists yet`}
+              modal={modal}
+              onEnter={() => {
+                if (lists.length > 0) {
+                  setCurrentPage(currentPage + 1);
+                }
+              }}
+            />
+          </Grid>
         </Grid>
-        <ThumbnailInfiniteList
-          referer="profile"
-          isLoading={isSwitchingTab}
-          lists={lists}
-          isTheEnd={isTheEnd}
-          endOfListText={`You reached the end of @${user.username}'s ${
-            currentTab === 'lists' ? '' : 'favorite'
-          } lists`}
-          noItemsText={`@${user.username} hasn't ${
-            currentTab === 'lists' ? 'created' : 'liked'
-          } any lists yet`}
-          modal={modal}
-          onEnter={() => {
-            if (lists.length > 0) {
-              setCurrentPage(currentPage + 1);
-            }
-          }}
-        />
       </Paper>
       <InertiaModals modal={modal} />
     </>
