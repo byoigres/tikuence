@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
+import Slide from '@material-ui/core/Slide';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import HelpIcon from '@material-ui/icons/Help';
 
@@ -35,6 +36,9 @@ const HelpAdornment = ({ title = '', position = 'end' }) => (
     </Tooltip>
   </InputAdornment>
 );
+
+/* eslint react/jsx-props-no-spreading: 0 */
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const EditProfile = () => {
   const {
@@ -98,7 +102,7 @@ const EditProfile = () => {
           only: ['auth', 'flash', 'errors', 'modal'],
         });
       }}
-      // {...transtitionProps}
+      TransitionComponent={Transition}
       className={classes.dialog}
     >
       <AppBar position="relative">
