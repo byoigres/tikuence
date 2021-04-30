@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import DialogContent from '@material-ui/core/DialogContent';
 import AppBar from '@material-ui/core/AppBar';
@@ -16,11 +14,9 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Slide from '@material-ui/core/Slide';
 import CloseIcon from '@material-ui/icons/Close';
 import ListIcon from '@material-ui/icons/List';
-import { Waypoint } from 'react-waypoint';
 import SEO from '../../components/SEO';
-import TikTokVideo from '../../components/TikTokVideo';
-import EndOfList from '../../components/EndOfList';
 import FavoriteButton from '../../components/FavoriteButton';
+import InfiniteVideoList from '../../components/InfiniteVideoList';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -36,13 +32,6 @@ const useStyles = makeStyles((theme) => ({
   },
   section: {
     textAlign: 'center',
-  },
-  videoContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: '1rem',
-    maxWidth: 1024,
   },
   endOfTheList: {
     textAlign: 'center',
@@ -72,62 +61,12 @@ const Details = ({ pageReferer }) => {
   } = usePage();
   const classes = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [videos, setVideos] = useState(initialVideos);
-  const [items, setItems] = useState([]);
   const [initialVideoOrderId] = useState(initialVideos.length > 0 ? initialVideos[0].order_id : 0);
-  const [hasMore, setHasMore] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loadingCount, setLoadingCount] = useState(initialVideos.length);
   const transtitionProps = {};
 
   async function handleClose() {
     setIsModalOpen(false);
   }
-
-  useEffect(() => {
-    if (videos.length > 0) {
-      const newVideos = videos.map((video) => (
-        <Paper
-          key={`list-item-details-${video.id}`}
-          elevation={0}
-          className={classes.videoContainer}
-        >
-          <TikTokVideo
-            tiktokId={video.tiktok_id}
-            html={video.html}
-            isReadyCallback={() => {
-              setLoadingCount((val) => val - 1);
-            }}
-          />
-        </Paper>
-      ));
-      setItems([...items, ...newVideos]);
-    } else {
-      setHasMore(false);
-    }
-  }, [videos]);
-
-  useEffect(() => {
-    if (currentPage > 1) {
-      Inertia.visit(`/list/${list.id}`, {
-        only: ['auth', 'flash', 'errors', 'from', 'modal'],
-        preserveScroll: true,
-        preserveState: true,
-        headers: {
-          'X-List-From': from,
-          'X-List-Page': currentPage,
-          'X-Page-Referer': pageReferer,
-        },
-        onStart() {
-          setLoadingCount(100);
-        },
-        onSuccess({ props }) {
-          setLoadingCount(props.modal.videos.length);
-          setVideos(props.modal.videos);
-        },
-      });
-    }
-  }, [currentPage]);
 
   if (referer) {
     transtitionProps.TransitionComponent = Transition;
@@ -203,7 +142,7 @@ const Details = ({ pageReferer }) => {
           </Toolbar>
         </AppBar>
         <DialogContent className={classes.content}>
-          <Grid container className={classes.mainGrid}>
+          <Grid container justify="center" className={classes.mainGrid}>
             <Grid item md={12}>
               <Grid container direction="row" wrap="nowrap" alignItems="center">
                 <Typography
@@ -232,20 +171,12 @@ const Details = ({ pageReferer }) => {
               </MuiAlert>
             </InertiaLink>
           )}
-          <section className={classes.section}>
-            {items}
-            {hasMore && <CircularProgress />}
-            {loadingCount === 0 && hasMore && (
-              <Waypoint
-                data-name="waypoint"
-                onEnter={() => {
-                  setCurrentPage(currentPage + 1);
-                }}
-              />
-            )}
-            {!hasMore && <EndOfList text="This is the end of the list" />}
-            <div style={{ height: 10 }} />
-          </section>
+          <InfiniteVideoList
+            listId={list.id}
+            initialVideos={initialVideos}
+            pageReferer={pageReferer}
+            from={from}
+          />
         </DialogContent>
       </Dialog>
     </>
