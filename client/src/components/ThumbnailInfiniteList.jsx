@@ -106,7 +106,7 @@ const ThumbnailInfiniteList = ({
               <ThumbnailGridListItem
                 key={`thumbnail-item-${list.id}`}
                 id={list.id}
-                thumbnail={list.thumbnail}
+                thumbnails={list.thumbnails}
                 title={list.title}
                 videos={list.total_videos}
                 username={list.username}

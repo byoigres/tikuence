@@ -43,12 +43,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const useGridListStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-});
-
 const useGridListTileStyles = makeStyles((theme) => ({
   tile: {
     outlineStyle: 'solid',
@@ -135,11 +129,10 @@ const useIconButtonStyles = makeStyles((theme) => ({
 
 const ThumbnailGridList = ({ children, referer, isMobile = false, scrollPosition }) => {
   const theme = useTheme();
-  const gridListStyles = useGridListStyles();
   const isMediumAndUpMatch = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
-    <GridList cellHeight="auto" cols={isMediumAndUpMatch ? 4 : 3} classes={{ ...gridListStyles }}>
+    <GridList cellHeight="auto" cols={isMediumAndUpMatch ? 4 : 3}>
       {React.Children.map(children, (child) => {
         if (!React.isValidElement(child)) {
           return null;
@@ -159,7 +152,7 @@ const ThumbnailGridList = ({ children, referer, isMobile = false, scrollPosition
 export const ThumbnailGridListItem = ({
   id,
   title,
-  thumbnail,
+  thumbnails,
   videos,
   username,
   isMobile,
@@ -169,8 +162,8 @@ export const ThumbnailGridListItem = ({
 }) => {
   const [displayInfo, setDisplayInfo] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [displayBlurImage, setDisplayBlurImage] = useState(!thumbnail);
-  const styles = useStyles({ thumbnail, displayBlurImage });
+  const [displayBlurImage, setDisplayBlurImage] = useState(!thumbnails);
+  const styles = useStyles({ thumbnails, displayBlurImage });
   const gridListTileStylesClasses = useGridListTileStyles({ isMobile });
   const titleBarClasses = useTitleBarStyles({ isMobile, displayInfo });
   const infoIconButtonStyles = useIconButtonStyles({ isInfoButton: true });
@@ -192,7 +185,7 @@ export const ThumbnailGridListItem = ({
   };
 
   useEffect(() => {
-    if (!thumbnail) {
+    if (!thumbnails) {
       const blurTimeout = setTimeout(() => {
         setDisplayBlurImage(true);
         clearTimeout(blurTimeout);
@@ -204,18 +197,22 @@ export const ThumbnailGridListItem = ({
     <GridListTile cols={1} classes={{ ...gridListTileStylesClasses }} style={style}>
       <div className={styles.gridListTileWrapper}>
         <div className={styles.gridListTileContainer}>
-          <Fade in={!isLoading}>
-            <a href={`/list/${id}`} onClick={onListClick} className={styles.image}>
-              <img
-                onLoad={() => {
-                  setIsLoading(false);
-                }}
-                src={thumbnail}
-                alt={title}
-                className={styles.image}
-              />
-            </a>
-          </Fade>
+          {thumbnails && (
+            <Fade in={!isLoading}>
+              <a href={`/list/${id}`} onClick={onListClick} className={styles.image}>
+                <img
+                  onLoad={() => {
+                    setIsLoading(false);
+                  }}
+                  src={thumbnails.name}
+                  srcSet={thumbnails.sizes}
+                  sizes="100vw"
+                  alt={title}
+                  className={styles.image}
+                />
+              </a>
+            </Fade>
+          )}
         </div>
       </div>
       <GridListTileBar

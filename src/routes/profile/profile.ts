@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables } from '../../utils/knex'
-import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
+import { createThumbnailsUrl } from '../../utils/images'
 
 async function verifyParams(req: Request, res: Response, next: NextFunction) {
   let category = req.headers['x-profile-category'] || req.query.tab || 'lists'
@@ -111,10 +111,12 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
 
   lists.forEach((item) => {
     if (item.thumbnail) {
-      item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Lg)
+      item.thumbnails = createThumbnailsUrl(item.thumbnail)
     } else {
-      item.thumbnail = null
+      item.thumbnails = null
     }
+
+    delete item.thumbnail
   })
 
   httpContext.set('lists', lists)

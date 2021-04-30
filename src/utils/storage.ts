@@ -4,19 +4,12 @@ import fetch from 'node-fetch'
 import Sharp from 'sharp'
 import path from 'path'
 import { upload as uploadImage } from './firebase'
-import { ThumbnailSize } from '../utils/images'
+import { getThumbnailsNames } from '../utils/images'
 
 export async function fetchAndCreateVideoThumbnails(url: string, imageHash: string) {
   const response = await fetch(url)
-
   const buffer = await response.buffer()
-
-  const imageNames = {
-    small: `${ThumbnailSize.Sm}${imageHash}.jpg`,
-    medium: `${ThumbnailSize.Md}${imageHash}.jpg`,
-    large: `${ThumbnailSize.Lg}${imageHash}.jpg`,
-    original: `${imageHash}.jpg`
-  }
+  const imageNames = getThumbnailsNames(imageHash)
 
   const imagePaths = Object.entries(imageNames).reduce((acc, [size, name]) => {
     acc[size] = path.join(Os.tmpdir(), name)
