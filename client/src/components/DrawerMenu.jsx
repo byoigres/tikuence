@@ -10,10 +10,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import ExploreIcon from '@material-ui/icons/Explore';
 import HomeIcon from '@material-ui/icons/Home';
-import SearchIcon from '@material-ui/icons/Search';
 import MoreHorizOutlinedIcon from '@material-ui/icons/MoreHorizOutlined';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -148,24 +145,6 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
               <HomeIcon style={{ color: theme.palette.primary.main }} />
             </ListItemIcon>
             <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem button key="search" component={InertiaLink} href="/search">
-            <ListItemIcon>
-              <SearchIcon style={{ color: theme.palette.secondary.main }} />
-            </ListItemIcon>
-            <ListItemText primary="Search" />
-          </ListItem>
-          <ListItem button component={InertiaLink} href="/explore">
-            <ListItemIcon>
-              <ExploreIcon style={{ color: theme.palette.error.light }} />
-            </ListItemIcon>
-            <ListItemText primary="Explore" />
-          </ListItem>
-          <ListItem button component={InertiaLink} href="/trending">
-            <ListItemIcon>
-              <BarChartIcon style={{ color: theme.palette.info.main }} />
-            </ListItemIcon>
-            <ListItemText primary="Trending" />
           </ListItem>
         </List>
         <Divider />
