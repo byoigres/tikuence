@@ -159,7 +159,7 @@ const Details = ({ pageReferer }) => {
           {initialVideoOrderId > 1 && (
             <InertiaLink
               href={`/list/${list.id}`}
-              only={['auth', 'flash', 'errors', 'from', 'videos']}
+              only={['auth', 'flash', 'errors', 'from', 'videos', 'modal']}
               preserveScroll
               headers={{
                 'X-Page-Referer': pageReferer,
