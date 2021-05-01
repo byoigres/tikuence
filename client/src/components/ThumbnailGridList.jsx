@@ -92,6 +92,7 @@ const useTitleBarStyles = makeStyles((theme) => ({
     title: {
       lineHeight: 1.3,
       whiteSpace: 'normal',
+      wordBreak: 'break-word',
       display: '-webkit-box',
       '-webkit-box-orient': 'vertical',
       '-webkit-line-clamp': 3,
