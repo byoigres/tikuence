@@ -72,6 +72,8 @@ const useActionStyles = makeStyles((theme) => ({
 const usePaperStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
+    // minHeight: calc(vieport height - (paper padding * 2) - (main padding))
+    minHeight: `calc(100vh - ${theme.spacing(2 * 2)}px - ${theme.spacing(3)}px)`,
   },
 }));
 
@@ -164,7 +166,7 @@ const Details = ({ isLoading }) => {
         <Paper elevation={1} classes={{ ...paperClasses }}>
           <Grid container>
             <Grid item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.infoColumn}>
-              <TitleForUpdate title={title} id={id} canEdit={isMe} isLoading={isLoading} />
+              <TitleForUpdate title={title} id={id} canEdit={isMe} />
               {videos && videos.length > 0 && (
                 <Typography component="span" variant="caption">
                   {`There ${videos.length > 1 ? 'are' : 'is'} ${videos.length} video${
