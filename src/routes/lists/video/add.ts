@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import asyncRoutes from '../../../utils/asyncRoutes'
 import { isAuthenticated } from '../../../middlewares/inertia'
 
 function response (req: Request) {
@@ -15,4 +16,7 @@ function response (req: Request) {
   })
 }
 
-export default [isAuthenticated, response]
+export default asyncRoutes([
+  isAuthenticated,
+  response
+])

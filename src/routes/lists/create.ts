@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import { checkSchema } from 'express-validator'
+import asyncRoutes from '../../utils/asyncRoutes'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
@@ -51,16 +52,14 @@ async function createList(req: Request, res: Response, next: NextFunction) {
 
     httpContext.set('urlHash', urlHash)
   } catch (err) {
-    console.log(err)
     await transaction.rollback()
-    req.flash('error', err)
-    return req.Inertia.redirect(`/auth/register/${req.body.token}`)
+    throw err
   }
 
   next()
 }
 
-function response(req: Request) {
+async function response(req: Request) {
   const urlHash: string = httpContext.get('urlHash')
 
   req.flash('success', 'List created successfully')
@@ -68,4 +67,4 @@ function response(req: Request) {
   req.Inertia.redirect(`/list/${urlHash}/details`)
 }
 
-export default [isAuthenticated, ...validations, prepareValidationForErrorMessages('/list/add'), createList, response]
+export default asyncRoutes([isAuthenticated, ...validations, prepareValidationForErrorMessages('/list/add'), createList, response])

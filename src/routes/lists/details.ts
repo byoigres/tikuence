@@ -1,5 +1,6 @@
 import { Request } from 'express'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
 import { getIsFavorites } from '../lists/list'
@@ -78,4 +79,8 @@ async function view(req: Request) {
   })
 }
 
-export default [setListIdAndHashToContext, getIsFavorites, view]
+export default asyncRoutes([
+  setListIdAndHashToContext,
+  getIsFavorites,
+  view
+])

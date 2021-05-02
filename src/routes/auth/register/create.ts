@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Express } from 'express'
 import { checkSchema } from 'express-validator'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../../utils/asyncRoutes'
 import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
 import Knex, { Tables } from '../../../utils/knex'
 
@@ -77,7 +78,7 @@ async function verifyTokenExpiration(req: Request, res: Response, next: NextFunc
       identifier: string
       picture: string
       expiresAt: Date
-    }>('email', 'provider_id AS providerId', 'identifier', 'profile_picture_url AS picture', 'expires_at AS expiresAt')
+    }>('email2', 'provider_id AS providerId', 'identifier', 'profile_picture_url AS picture', 'expires_at AS expiresAt')
     .where('token', req.body.token)
     .first()
 
@@ -170,10 +171,8 @@ async function create(req: Request, _res: Response, next: NextFunction) {
     })
     return next()
   } catch (err) {
-    console.log(err)
     await transaction.rollback()
-    req.flash('error', 'Something went wrong... try again')
-    return req.Inertia.redirect(`/auth/register/${req.body.token}`)
+    throw err
   }
 }
 
@@ -191,11 +190,11 @@ async function response(req: Request, res: Response) {
   })
 }
 
-export default [
+export default asyncRoutes([
   ...validations,
   prepareValidationForErrorMessages((req: Request) => `/auth/register/${req.body.token}`),
   verifyTokenExpiration,
   verifyUsernameAvailability,
   create,
   response
-]
+])

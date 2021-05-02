@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables, iDetailsItem } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
 import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
@@ -155,4 +156,10 @@ async function response(req: Request) {
   })
 }
 
-export default [setListIdAndHashToContext, verifyParams, getListVideos, getIsFavorites, response]
+export default asyncRoutes([
+  setListIdAndHashToContext,
+  verifyParams,
+  getListVideos,
+  getIsFavorites,
+  response
+])

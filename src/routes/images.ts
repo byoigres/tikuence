@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import stream from 'stream'
+import asyncRoutes from '../utils/asyncRoutes'
 import { getFile } from '../utils/firebase'
 
 async function image(req: Request, res: Response) {
@@ -33,4 +34,6 @@ async function image(req: Request, res: Response) {
   }
 }
 
-export default [image]
+export default asyncRoutes([
+  image
+])

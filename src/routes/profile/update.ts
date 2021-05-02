@@ -51,8 +51,7 @@ async function updateFields(req: Request, res: Response, next: NextFunction) {
   } catch (err) {
     console.log(err)
     await transaction.rollback()
-    req.flash('error', 'Something went wrong... try again')
-    return req.Inertia.redirect(`/user/${req.params.username}`)
+    throw err
   }
 
   next()

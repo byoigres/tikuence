@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import asyncRoutes from '../../../utils/asyncRoutes'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import Knex, { Tables } from '../../../utils/knex'
 
@@ -24,4 +25,7 @@ async function response(req: Request) {
   return req.Inertia.redirect(`/list/${listId}/video/${videoId}`)
 }
 
-export default [isAuthenticated, response]
+export default asyncRoutes([
+  isAuthenticated,
+  response
+])

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import asyncRoutes from '../../../utils/asyncRoutes'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import Knex, { Tables } from '../../../utils/knex'
 import httpContext from 'express-http-context'
@@ -30,4 +31,10 @@ async function response(req: Request) {
   req.Inertia.redirect(`/list/${req.params.hash}/details`)
 }
 
-export default [isAuthenticated, setListIdAndHashToContext, setVideoIdAndHashToContext, updateList, response]
+export default asyncRoutes([
+  isAuthenticated,
+  setListIdAndHashToContext,
+  setVideoIdAndHashToContext,
+  updateList,
+  response
+])
