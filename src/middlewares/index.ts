@@ -10,6 +10,7 @@ import inertia, { populateSharedProps } from './inertia'
 import passport from './passport'
 import Knex from '../utils/knex'
 import config from '../config'
+import isMobile from './isMobile'
 
 const KnexSessionStore = require('connect-session-knex')(session)
 
@@ -72,6 +73,7 @@ function middlewares(app: Express) {
     })
   )
   app.use(populateSharedProps)
+  app.use(isMobile)
   app.use(httpContext.middleware)
 }
 
