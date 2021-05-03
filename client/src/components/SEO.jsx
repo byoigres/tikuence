@@ -13,7 +13,7 @@ function SEO({ description, lang = 'en', title, image }) {
         lang,
       }}
       title={metaTitle}
-      titleTemplate="%s • Tikuence"
+      titleTemplate="%s • TiKUENCE"
       meta={[
         {
           name: `title`,

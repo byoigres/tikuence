@@ -31,12 +31,12 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 const AddPage = ({ pageReferer }) => {
   const classes = useStyles();
   const {
-    props: { isMobile, referer, errors },
+    props: { isMobile, referer: initialReferer, errors },
   } = usePage();
   const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
-
+  const [referer] = useState(initialReferer);
   const listNameRef = useRef(null);
 
   function onCreate() {
@@ -52,7 +52,9 @@ const AddPage = ({ pageReferer }) => {
         onStart() {
           setIsLoading(true);
         },
-        onSuccess() {},
+        onSuccess() {
+          Inertia.reload();
+        },
         onFinish() {
           setIsLoading(false);
           if (listNameRef.current) {

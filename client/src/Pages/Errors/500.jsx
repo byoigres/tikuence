@@ -12,6 +12,9 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  pre: {
+    whiteSpace: 'pre-line',
+  },
 }));
 
 const Page500 = ({ message, stack }) => {
@@ -26,11 +29,13 @@ const Page500 = ({ message, stack }) => {
           <Typography variant="h4" color="primary" gutterBottom>
             Something wrong happened, try again in a couple of minutes
           </Typography>
-          <Typography variant="caption" color="textPrimary" gutterBottom>
+          <Typography variant="h6" color="textPrimary" gutterBottom>
             {message}
           </Typography>
           <Typography variant="caption" color="secondary" gutterBottom>
-            {stack}
+            <pre className={classes.pre}>
+              <code>{stack}</code>
+            </pre>
           </Typography>
           <Typography variant="body1">
             <InertiaLink href="/">Go to home, you are drunk</InertiaLink>

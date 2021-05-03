@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../utils/asyncRoutes'
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
@@ -16,7 +17,7 @@ async function favoriteList(req: Request, _res: Response, next: NextFunction) {
   const isListFavorite = await knex(Tables.UsersFavorites)
     .select(knex.raw('1 AS result'))
     .where('list_id', listId)
-    .andWhere('user_id', req.user ? req.user.id : 0)
+    .andWhere('user_id', req.user!.id)
     .first()
 
   if (isListFavorite) {
@@ -44,18 +45,16 @@ async function response(req: Request) {
   const referer = req.headers['x-page-referer'] || ''
 
   if (referer && referer === 'details-page') {
-    // return req.Inertia.setHeaders({ 'X-Page-Referer': referer }).redirect(`/list/${listId}/details`)
     return req.Inertia.redirect(`/list/${req.params.hash}/details`)
   } else {
     req.flash('x-page-referer', referer)
-    // return req.Inertia.setHeaders({ 'X-Page-Referer': referer, 'X-Test-Header': 'test' }).redirect(`/list/${listId}`)
     return req.Inertia.redirect(`/list/${req.params.hash}`)
   }
 }
 
-export default [
+export default asyncRoutes([
   isAuthenticated,
   setListIdAndHashToContext,
   favoriteList,
   response
-]
+])

@@ -43,12 +43,17 @@ export enum Tables {
   PendingUsers = 'public.pending_users'
 }
 
+export interface iFeedResultThumbnails {
+  name: string
+  sizes: string
+}
+
 export interface iFeedResult {
   id: number
   title: string
   email: string
   thumbnail: string
-  // eslint-disable-next-line camelcase
+  thumbnails?: iFeedResultThumbnails
   total_videos: number
 }
 

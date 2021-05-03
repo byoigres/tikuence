@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import asyncRoutes from '../../utils/asyncRoutes'
 import { isAuthenticated } from '../../middlewares/inertia'
 
 function response (req: Request) {
@@ -8,6 +9,8 @@ function response (req: Request) {
   if (referer && typeof referer === 'string') {
     if (referer === 'profile') {
       component = 'Profile/Profile'
+    } else if (referer === 'details') {
+      component = 'Lists/Details'
     }
   }
 
@@ -15,10 +18,14 @@ function response (req: Request) {
     component,
     props: {
       modal: {
-        modalName: 'add-list'
+        modalName: 'add-list',
+        referer: 'feed'
       }
     }
   })
 }
 
-export default [isAuthenticated, response]
+export default asyncRoutes([
+  isAuthenticated,
+  response
+])

@@ -2,13 +2,13 @@ import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import asyncRoutes from '../utils/asyncRoutes'
 import Knex, { Tables, iFeedResult } from '../utils/knex'
-import { createThumbnailUrl, ThumbnailSize } from '../utils/images'
+import { createThumbnailsUrl } from '../utils/images'
 
 // TODO: validate headers
 
 async function verifyParams(req: Request, res: Response, next: NextFunction) {
   let category = req.headers['x-feed-category']
-  const pageSize = 10
+  const pageSize = 24
   let offset = 0
   let page = 1
 
@@ -37,7 +37,7 @@ async function verifyParams(req: Request, res: Response, next: NextFunction) {
 async function getAllLists(req: Request, _res: Response, next: NextFunction) {
   const category = httpContext.get('category')
   const offset = httpContext.get('offset')
-  const pageSize = 10
+  const pageSize = 24
 
   const knex = Knex()
 
@@ -60,6 +60,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
         .from(`${Tables.ListsVideos} AS LV`)
         .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
         .whereRaw('"LV"."list_id" = "L"."id"')
+        .andWhereRaw('"LV"."video_id" = "L"."video_cover_id"')
         .orderBy('V.created_at', 'DESC')
         .limit(1)}) AS "VT" ON TRUE`
     )
@@ -69,7 +70,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
     .offset(offset)
 
   lists.forEach((item) => {
-    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Sm)
+    item.thumbnails = createThumbnailsUrl(item.thumbnail)
   })
 
   httpContext.set('lists', lists)

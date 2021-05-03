@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables, iDetailsItem } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
 import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
@@ -100,7 +101,7 @@ export async function getIsFavorites(req: Request, _res: Response, next: NextFun
     const isListFavorite = await knex(Tables.UsersFavorites)
       .select(knex.raw('1 AS result'))
       .where('list_id', listId)
-      .andWhere('user_id', req.user ? req.user.id : 0)
+      .andWhere('user_id', req.user!.id)
       .first()
 
     httpContext.set('isFavorited', !!isListFavorite)
@@ -145,6 +146,7 @@ async function response(req: Request) {
     props: {
       modal: {
         modalName: 'list',
+        referer,
         list: { ...list, is_favorited: isFavorited },
         videos,
         from:
@@ -154,4 +156,10 @@ async function response(req: Request) {
   })
 }
 
-export default [setListIdAndHashToContext, verifyParams, getListVideos, getIsFavorites, response]
+export default asyncRoutes([
+  setListIdAndHashToContext,
+  verifyParams,
+  getListVideos,
+  getIsFavorites,
+  response
+])

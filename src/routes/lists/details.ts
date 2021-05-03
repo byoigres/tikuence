@@ -1,9 +1,11 @@
 import { Request } from 'express'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
 import { getIsFavorites } from '../lists/list'
 import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
+import UrlHash, { VIDEO_MODIFIER } from '../../utils/urlHash'
 
 async function view(req: Request) {
   const listId = httpContext.get('listId')
@@ -16,6 +18,8 @@ async function view(req: Request) {
       'L.url_hash AS id',
       'L.title',
       'L.user_id',
+      'L.video_cover_id',
+      'U.name',
       'U.username',
       'U.profile_picture_url AS picture',
       'VT.thumbnail_name AS thumbnail',
@@ -57,10 +61,12 @@ async function view(req: Request) {
       props: {
         id: list.id,
         title: list.title,
+        coverId: UrlHash.encode(list.video_cover_id, VIDEO_MODIFIER),
         total_videos: list.total_videos || 0,
         isFavorited,
         user: {
           id: list.user_id,
+          name: list.name,
           username: list.username,
           picture: list.picture
         },
@@ -76,4 +82,8 @@ async function view(req: Request) {
   })
 }
 
-export default [setListIdAndHashToContext, getIsFavorites, view]
+export default asyncRoutes([
+  setListIdAndHashToContext,
+  getIsFavorites,
+  view
+])

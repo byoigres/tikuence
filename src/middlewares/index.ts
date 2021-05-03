@@ -3,11 +3,14 @@ import httpContext from 'express-http-context'
 import session from 'express-session'
 import compression from 'compression'
 import flash from 'connect-flash'
+import cookieParser from 'cookie-parser'
+import csurf from 'csurf'
 
 import inertia, { populateSharedProps } from './inertia'
 import passport from './passport'
 import Knex from '../utils/knex'
 import config from '../config'
+import isMobile from './isMobile'
 
 const KnexSessionStore = require('connect-session-knex')(session)
 
@@ -42,7 +45,7 @@ function middlewares(app: Express) {
       // https://stackoverflow.com/a/44435742/1301872
       proxy: !!config.get('/session/secure'),
       cookie: {
-        domain: config.get('/session/domain'),
+        domain: process.env.NODE_ENV === 'production' ? config.get('/session/domain') : undefined,
         httpOnly: true,
         sameSite: false,
         secure: !!config.get('/session/secure'),
@@ -51,11 +54,26 @@ function middlewares(app: Express) {
       store
     })
   )
+  app.use(cookieParser())
   app.use(passport.initialize())
   app.use(passport.session())
   app.use(flash())
   app.use(inertia)
+  app.use(
+    csurf({
+      ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
+      cookie: {
+        key: 'XSRF-TOKEN'
+        // domain: process.env.NODE_ENV === 'production' ? config.get('/session/domain') : undefined,
+        // httpOnly: true,
+        // sameSite: false,
+        // secure: !!config.get('/session/secure'),
+        // maxAge: config.get('/session/maxAge')
+      }
+    })
+  )
   app.use(populateSharedProps)
+  app.use(isMobile)
   app.use(httpContext.middleware)
 }
 

@@ -37,7 +37,7 @@ const Login = ({ isLogin, isMobile }) => {
     <>
       <SEO title={isLogin ? 'Login' : 'Sign Up'} />
       <Container maxWidth="sm" disableGutters={isMobile}>
-        <Paper elevation={0} className={classes.container}>
+        <Paper elevation={1} className={classes.container}>
           <Typography variant="h4" component="h1" color="primary" gutterBottom>
             {`${isLogin ? 'Welcome back 😄' : 'Hello user 👋'}`}
           </Typography>
@@ -84,6 +84,6 @@ const Login = ({ isLogin, isMobile }) => {
   );
 };
 
-Login.layout = (page) => <Layout children={page} title="Tikuence" />;
+Login.layout = (page) => <Layout children={page} />;
 
 export default Login;

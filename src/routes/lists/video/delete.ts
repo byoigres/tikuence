@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../../utils/asyncRoutes'
 import { isAuthenticated } from '../../../middlewares/inertia'
 import Knex, { Tables, iListVideo } from '../../../utils/knex'
 import { setListIdAndHashToContext, setVideoIdAndHashToContext } from '../../../middlewares/utils'
@@ -62,7 +63,6 @@ async function deleteList(req: Request, _res: Response, next: NextFunction) {
 
     await transaction.commit()
   } catch (err) {
-    console.log(err)
     await transaction.rollback()
     throw err
   }
@@ -76,12 +76,11 @@ async function response(req: Request) {
   req.Inertia.redirect(`/list/${urlHash}/details`)
 }
 
-export default [
+export default asyncRoutes([
   isAuthenticated,
   setListIdAndHashToContext,
   setVideoIdAndHashToContext,
   verifyListBelongsToCurrentUser,
   deleteList,
   response
-  // initial
-]
+])

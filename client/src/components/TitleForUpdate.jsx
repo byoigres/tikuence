@@ -10,7 +10,11 @@ import EditIcon from '@material-ui/icons/Edit';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
 
-const useStyles = makeStyles(() => ({}));
+const useStyles = makeStyles(() => ({
+  title: {
+    wordBreak: 'break-word',
+  },
+}));
 
 const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
   const {
@@ -18,8 +22,8 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
   } = usePage();
   const classes = useStyles();
   const [title, setTitle] = useState(initialTitle);
-  const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   function onTitleUpdate() {
     Inertia.put(
@@ -32,8 +36,6 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
         },
         onSuccess() {
           setIsEditMode(false);
-        },
-        onFinish() {
           setIsLoading(false);
         },
       }
@@ -66,7 +68,7 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
     <>
       {!isEditMode && (
         <Grid container direction="row" wrap="nowrap" alignItems="center">
-          <Typography component="h1" variant="h6">
+          <Typography component="h1" variant="h6" className={classes.title}>
             {title}
           </Typography>
           {canEdit && (

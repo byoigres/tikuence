@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
+import Slide from '@material-ui/core/Slide';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import HelpIcon from '@material-ui/icons/Help';
 
@@ -36,6 +37,9 @@ const HelpAdornment = ({ title = '', position = 'end' }) => (
   </InputAdornment>
 );
 
+/* eslint react/jsx-props-no-spreading: 0 */
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+
 const EditProfile = () => {
   const {
     props: { isMobile, user, errors },
@@ -49,7 +53,6 @@ const EditProfile = () => {
   const [isLoading] = useState(false);
   const [values, setValues] = useState({
     name: user.name,
-    username: user.username,
     bio: user.biography,
     tiktokUsername: user.tiktok_username,
   });
@@ -68,6 +71,23 @@ const EditProfile = () => {
     }));
   }
 
+  function onSave(e) {
+    e.preventDefault();
+
+    Inertia.post(`/users/${user.username}/edit`, values, {
+      only: ['auth', 'flash', 'errors', 'referer', 'modal', 'user'],
+      onStart() {
+        // setIsLoading(true);
+      },
+      onSuccess() {
+        // setIsEditMode(false);
+      },
+      onFinish() {
+        // setIsLoading(false);
+      },
+    });
+  }
+
   return (
     <Dialog
       fullScreen={isMobile}
@@ -82,7 +102,7 @@ const EditProfile = () => {
           only: ['auth', 'flash', 'errors', 'modal'],
         });
       }}
-      // {...transtitionProps}
+      TransitionComponent={Transition}
       className={classes.dialog}
     >
       <AppBar position="relative">
@@ -93,7 +113,9 @@ const EditProfile = () => {
           <Typography variant="h6" className={classes.dialogtitle}>
             Edit profile
           </Typography>
-          <Button color="inherit">Save</Button>
+          <Button color="inherit" onClick={onSave}>
+            Save
+          </Button>
         </Toolbar>
       </AppBar>
       <DialogContent className={classes.content}>
@@ -104,6 +126,23 @@ const EditProfile = () => {
             value={user.email}
             fullWidth
             disabled
+            variant="outlined"
+          />
+          <TextField
+            name="username"
+            label="Username"
+            value={user.username}
+            helperText={errors.username}
+            disabled
+            InputProps={{
+              maxLength: 24,
+              autoComplete: 'off',
+              ref: usernameRef,
+              endAdornment: (
+                <HelpAdornment title="This is a unique identifier for your account, this will be part of your profile URL. This field cannot be changed" />
+              ),
+            }}
+            fullWidth
             variant="outlined"
           />
           <TextField
@@ -125,26 +164,6 @@ const EditProfile = () => {
             }}
             fullWidth
             autoFocus
-            variant="outlined"
-          />
-          <TextField
-            name="username"
-            label="Username"
-            value={values.username}
-            error={errors.username !== undefined}
-            helperText={errors.username}
-            autoComplete="off"
-            disabled={isLoading}
-            onChange={handleChange}
-            InputProps={{
-              maxLength: 24,
-              autoComplete: 'off',
-              ref: usernameRef,
-              endAdornment: (
-                <HelpAdornment title="This is a unique identifier for your account, this will be part of your profile URL." />
-              ),
-            }}
-            fullWidth
             variant="outlined"
           />
           <TextField

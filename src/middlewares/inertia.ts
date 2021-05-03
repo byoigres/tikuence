@@ -8,7 +8,7 @@ import config from '../config'
 const ASSET_VERSION = config.get('/inertia/version')
 
 const getDescription = () => 'Watch the popular list of TikTok videos'
-const getTitle = (title: string) => `${htmlEntitiesEncode(title || getDescription())} • Tikuence`
+const getTitle = (title: string) => `${htmlEntitiesEncode(title || getDescription())} • TiKUENCE`
 const getShareImage = (thumbnail?: string) => {
   if (thumbnail) {
     return thumbnail
@@ -29,7 +29,7 @@ const template = (page: object, viewData: ViewData) => `
     <meta name="title" content="${getTitle(viewData.title)}">
     <meta name="description" content="${getDescription()}">
 
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     <meta property="og:type" content="website">
@@ -43,21 +43,8 @@ const template = (page: object, viewData: ViewData) => `
     <meta property="twitter:title" content="${getTitle(viewData.title)}">
     <meta property="twitter:description" content="${getDescription()}">
     <meta property="twitter:image" content="${getShareImage(viewData.thumbnail)}">
-    <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" async href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-    <style>
-        html, body {
-            font-family: "Source Sans Pro", 'Roboto', sans-serif;
-            background-color: #f5f5f5;
-            scroll-behavior: smooth;
-        }
-        a {
-          text-decoration: none;
-          color: #1e1e1e;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Passion+One&display=swap" rel="stylesheet">
   </head>
 
   <body>

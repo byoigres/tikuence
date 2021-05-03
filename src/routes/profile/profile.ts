@@ -2,11 +2,11 @@ import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables } from '../../utils/knex'
-import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
+import { createThumbnailsUrl } from '../../utils/images'
 
 async function verifyParams(req: Request, res: Response, next: NextFunction) {
-  let category = req.headers['x-profile-category'] || req.query.tab
-  const pageSize = 16
+  let category = req.headers['x-profile-category'] || req.query.tab || 'lists'
+  const pageSize = 24
   let offset = 0
   let page = 1
 
@@ -95,6 +95,7 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
         .from(`${Tables.ListsVideos} AS LV`)
         .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
         .whereRaw('"LV"."list_id" = "L"."id"')
+        .andWhereRaw('"LV"."video_id" = "L"."video_cover_id"')
         .orderBy('V.created_at', 'DESC')
         .limit(1)}) AS "VT" ON TRUE`
     )
@@ -107,10 +108,16 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
       .join(`${Tables.Users} AS U`, 'UF.user_id', 'U.id')
   }
 
-  const lists = await query.where('U.id', user.id).orderBy('VT.created_at', 'DESC').limit(pageSize).offset(offset)
+  const lists = await query.where('U.id', user.id).orderBy('L.created_at', 'DESC').limit(pageSize).offset(offset)
 
   lists.forEach((item) => {
-    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Lg)
+    if (item.thumbnail) {
+      item.thumbnails = createThumbnailsUrl(item.thumbnail)
+    } else {
+      item.thumbnails = null
+    }
+
+    delete item.thumbnail
   })
 
   httpContext.set('lists', lists)
@@ -133,9 +140,7 @@ async function response(req: Request) {
       isMe,
       lists,
       category,
-      modal: {
-        modalName: false
-      }
+      modal: false
     }
   })
 }

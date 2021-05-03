@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../utils/asyncRoutes'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
@@ -65,11 +66,11 @@ async function response(req: Request) {
   req.Inertia.redirect(`/list/${hash}/details`)
 }
 
-export default [
+export default asyncRoutes([
   isAuthenticated,
   setListIdAndHashToContext,
   ...validations,
   prepareValidationForErrorMessages((req: Request) => `/list/${req.params.hash}/details`),
   updateList,
   response
-]
+])

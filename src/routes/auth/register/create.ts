@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Express } from 'express'
 import { checkSchema } from 'express-validator'
 import httpContext from 'express-http-context'
+import asyncRoutes from '../../../utils/asyncRoutes'
 import { prepareValidationForErrorMessages } from '../../../middlewares/validations'
 import Knex, { Tables } from '../../../utils/knex'
 
@@ -43,7 +44,7 @@ const validations = checkSchema({
       errorMessage: 'Username must be between 1 and 24 characterers',
       options: {
         min: 1,
-        max: 24
+        max: 15
       },
       bail: true
     }
@@ -77,7 +78,7 @@ async function verifyTokenExpiration(req: Request, res: Response, next: NextFunc
       identifier: string
       picture: string
       expiresAt: Date
-    }>('email', 'provider_id AS providerId', 'identifier', 'profile_picture_url AS picture', 'expires_at AS expiresAt')
+    }>('email2', 'provider_id AS providerId', 'identifier', 'profile_picture_url AS picture', 'expires_at AS expiresAt')
     .where('token', req.body.token)
     .first()
 
@@ -170,10 +171,8 @@ async function create(req: Request, _res: Response, next: NextFunction) {
     })
     return next()
   } catch (err) {
-    console.log(err)
     await transaction.rollback()
-    req.flash('error', 'Something went wrong... try again')
-    return req.Inertia.redirect(`/auth/register/${req.body.token}`)
+    throw err
   }
 }
 
@@ -186,16 +185,16 @@ async function response(req: Request, res: Response) {
       return req.Inertia.redirect(`/auth/register/${req.body.token}`)
     }
 
-    req.flash('success', 'Hey! Welcome to Tikuence 🙂')
+    req.flash('success', 'Hey! Welcome to TiKUENCE 🙂')
     res.redirect('/')
   })
 }
 
-export default [
+export default asyncRoutes([
   ...validations,
   prepareValidationForErrorMessages((req: Request) => `/auth/register/${req.body.token}`),
   verifyTokenExpiration,
   verifyUsernameAvailability,
   create,
   response
-]
+])

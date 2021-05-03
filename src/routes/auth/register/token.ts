@@ -1,5 +1,6 @@
 import { Request } from 'express'
 import { checkSchema, validationResult } from 'express-validator'
+import asyncRoutes from '../../../utils/asyncRoutes'
 import Knex, { Tables } from '../../../utils/knex'
 
 const validations = checkSchema({
@@ -63,8 +64,7 @@ async function view(req: Request) {
   return req.Inertia.render(invalidResponse)
 }
 
-export default [
+export default asyncRoutes([
   ...validations,
-  // prepareValidationForErrorMessages('/404'),
   view
-]
+])
