@@ -12,6 +12,8 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Badge from '@material-ui/core/Badge';
+import Tooltip from '@material-ui/core/Tooltip';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
@@ -79,7 +81,7 @@ const usePaperStyles = makeStyles((theme) => ({
 
 const Details = ({ isLoading }) => {
   const {
-    props: { auth, id, title, isFavorited, user, videos, isMobile, isMe, modal = false },
+    props: { auth, id, title, isFavorited, user, videos, isMobile, isMe, modal = false, coverId },
   } = usePage();
   const theme = useTheme();
   const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
@@ -295,12 +297,26 @@ const Details = ({ isLoading }) => {
                             </ListItemIcon>
                           )}
                           <ListItemAvatar className={classes.listItemAvatar}>
-                            <Avatar
-                              alt={video.title}
-                              className={classes.avatar}
-                              variant="square"
-                              src={video.thumbnail}
-                            />
+                            {video.id === coverId && (
+                              <Tooltip title="This video is the current cover of the list">
+                                <Badge color="secondary" badgeContent=" " variant="dot">
+                                  <Avatar
+                                    alt={video.title}
+                                    className={classes.avatar}
+                                    variant="square"
+                                    src={video.thumbnail}
+                                  />
+                                </Badge>
+                              </Tooltip>
+                            )}
+                            {video.id !== coverId && (
+                              <Avatar
+                                alt={video.title}
+                                className={classes.avatar}
+                                variant="square"
+                                src={video.thumbnail}
+                              />
+                            )}
                           </ListItemAvatar>
                           <ListItemText
                             id={video.id}

@@ -60,6 +60,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
         .from(`${Tables.ListsVideos} AS LV`)
         .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
         .whereRaw('"LV"."list_id" = "L"."id"')
+        .andWhereRaw('"LV"."video_id" = "L"."video_cover_id"')
         .orderBy('V.created_at', 'DESC')
         .limit(1)}) AS "VT" ON TRUE`
     )

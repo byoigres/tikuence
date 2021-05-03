@@ -5,6 +5,7 @@ import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
 import { getIsFavorites } from '../lists/list'
 import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
+import UrlHash, { VIDEO_MODIFIER } from '../../utils/urlHash'
 
 async function view(req: Request) {
   const listId = httpContext.get('listId')
@@ -17,6 +18,7 @@ async function view(req: Request) {
       'L.url_hash AS id',
       'L.title',
       'L.user_id',
+      'L.video_cover_id',
       'U.name',
       'U.username',
       'U.profile_picture_url AS picture',
@@ -59,6 +61,7 @@ async function view(req: Request) {
       props: {
         id: list.id,
         title: list.title,
+        coverId: UrlHash.encode(list.video_cover_id, VIDEO_MODIFIER),
         total_videos: list.total_videos || 0,
         isFavorited,
         user: {
@@ -68,7 +71,7 @@ async function view(req: Request) {
           picture: list.picture
         },
         videos: videos,
-        isMe: req.user!.id === list.user_id,
+        isMe: req.user ? req.user.id === list.user_id : false,
         modal: false
       }
     })

@@ -95,6 +95,7 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
         .from(`${Tables.ListsVideos} AS LV`)
         .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
         .whereRaw('"LV"."list_id" = "L"."id"')
+        .andWhereRaw('"LV"."video_id" = "L"."video_cover_id"')
         .orderBy('V.created_at', 'DESC')
         .limit(1)}) AS "VT" ON TRUE`
     )
