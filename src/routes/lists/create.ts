@@ -36,7 +36,7 @@ async function createList(req: Request, res: Response, next: NextFunction) {
       .transacting(transaction)
       .insert({
         title: payload.title,
-        user_id: req.user ? req.user.id : null
+        user_id: req.user!.id
       })
       .returning<[number]>('id')
 

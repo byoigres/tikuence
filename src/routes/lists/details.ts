@@ -68,7 +68,7 @@ async function view(req: Request) {
           picture: list.picture
         },
         videos: videos,
-        isMe: req.user ? req.user.id === list.user_id : false,
+        isMe: req.user!.id === list.user_id,
         modal: false
       }
     })

@@ -17,7 +17,7 @@ async function favoriteList(req: Request, _res: Response, next: NextFunction) {
   const isListFavorite = await knex(Tables.UsersFavorites)
     .select(knex.raw('1 AS result'))
     .where('list_id', listId)
-    .andWhere('user_id', req.user ? req.user.id : 0)
+    .andWhere('user_id', req.user!.id)
     .first()
 
   if (isListFavorite) {
