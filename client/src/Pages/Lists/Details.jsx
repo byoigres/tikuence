@@ -419,34 +419,32 @@ const Details = ({ isLoading }) => {
         </Paper>
       )}
       {isMe && (
-        <>
-          <Suspense fallback={<div>Loading...</div>}>
-            {isRemoveVideoDialogOpen && (
-              <ConfirmDialog
-                isOpen={isRemoveVideoDialogOpen}
-                onDialogClose={onRemoveVideoDialogClose}
-                actionHandler={onRemove}
-                title="Confirm"
-                description="Are you sure to remove this video from the list?"
-                actionText="Remove"
-                cancelText="Cancel"
-              />
-            )}
-            {isDeleteDialogOpen && (
-              <ConfirmDialog
-                isOpen={isDeleteDialogOpen}
-                onDialogClose={onDeleteDialogClose}
-                actionHandler={onDelete}
-                title="Confirm"
-                description="Are you sure to delete this list?"
-                actionText="Delete"
-                cancelText="Cancel"
-              />
-            )}
-          </Suspense>
-          <InertiaModals modal={modal} />
-        </>
+        <Suspense fallback={<div>Loading...</div>}>
+          {isRemoveVideoDialogOpen && (
+            <ConfirmDialog
+              isOpen={isRemoveVideoDialogOpen}
+              onDialogClose={onRemoveVideoDialogClose}
+              actionHandler={onRemove}
+              title="Confirm"
+              description="Are you sure to remove this video from the list?"
+              actionText="Remove"
+              cancelText="Cancel"
+            />
+          )}
+          {isDeleteDialogOpen && (
+            <ConfirmDialog
+              isOpen={isDeleteDialogOpen}
+              onDialogClose={onDeleteDialogClose}
+              actionHandler={onDelete}
+              title="Confirm"
+              description="Are you sure to delete this list?"
+              actionText="Delete"
+              cancelText="Cancel"
+            />
+          )}
+        </Suspense>
       )}
+      <InertiaModals modal={modal} />
     </>
   );
 };
