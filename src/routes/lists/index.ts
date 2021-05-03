@@ -8,6 +8,7 @@ import details from './details'
 import update from './update'
 import add from './add'
 import video from './video'
+import cover from './cover'
 
 const router = Router({
   mergeParams: true
@@ -26,6 +27,9 @@ router.post('/', create)
 
 // Create new list endpoint
 router.post('/:hash/favorite', favorite)
+
+// Set cover for list
+router.post('/:hash/cover', cover)
 
 // List details view
 router.get('/:hash/details', details)

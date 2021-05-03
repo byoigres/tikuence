@@ -21,6 +21,8 @@ import Avatar from '@material-ui/core/Avatar';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Inertia } from '@inertiajs/inertia';
 import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
@@ -59,12 +61,13 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const useActionStyles = makeStyles((theme) => ({
-  [theme.breakpoints.down('sm')]: {
-    'direction-xs-column': {
-      // flexDirection: 'row',
-    },
+const useMenuListItemIconStyles = makeStyles((theme) => ({
+  root: {
+    minWidth: theme.spacing(4),
   },
+}));
+
+const useActionStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -87,11 +90,12 @@ const Details = ({ isLoading }) => {
   const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
   const paperClasses = usePaperStyles({ isMobile });
   const classes = useStyles({ isMobile, isFullWidthMatch });
+  const menuListItemIconStyles = useMenuListItemIconStyles();
   const actionClasses = useActionStyles({ isMobile, isFullWidthMatch });
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
-  const [anchorEl, setAnchorEl] = useState([]);
+  const [itemMenuState, setItemMenuState] = useState();
 
   function onRemoveVideoDialogClose() {
     setIsRemoveVideoDialogOpen(false);
@@ -119,6 +123,18 @@ const Details = ({ isLoading }) => {
         setCurrentVideoToDelete(null);
       },
     });
+  }
+
+  function onUpdateListCover(videoId) {
+    Inertia.post(
+      `/list/${id}/cover`,
+      {
+        videoId,
+      },
+      {
+        preserveScroll: true,
+      }
+    );
   }
 
   function onDeleteDialogClose() {
@@ -155,10 +171,12 @@ const Details = ({ isLoading }) => {
     }
   };
 
-  const handleUserMenuClose = (identifier) => () => {
-    const newArray = [...anchorEl];
-    newArray[identifier] = null;
-    setAnchorEl(newArray);
+  const handleUserMenuClose = () => {
+    setItemMenuState({ ...itemMenuState, isOpen: false });
+  };
+
+  const handleUserMenuClick = (videoId) => (event) => {
+    setItemMenuState({ videoId, anchor: event.currentTarget, isOpen: true });
   };
 
   return (
@@ -253,130 +271,148 @@ const Details = ({ isLoading }) => {
                 </Typography>
               )}
               {videos.length > 0 && (
-                <MuiList dense component="div" data-name="MuiList">
-                  <ContainerDraggable
-                    dragHandleSelector=".drag-handle"
-                    lockAxis="y"
-                    onDrop={onVideoDrop}
-                  >
-                    {videos.map((video, index) => (
-                      <Draggable key={video.id}>
-                        <ListItem
-                          key={video.id}
-                          component={InertiaLink}
-                          button
-                          divider
-                          dense
-                          disabled={isLoading}
-                          href={`/list/${id}`}
-                          preserveScroll
-                          preserveState
-                          headers={{ 'X-List-From': video.id, 'X-Page-Referer': 'details' }}
-                          only={[
-                            'auth',
-                            'flash',
-                            'errors',
-                            'modal',
-                            'list',
-                            'videos',
-                            'referer',
-                            'from',
-                          ]}
-                        >
-                          {isMe && videos.length > 1 && (
-                            <ListItemIcon style={{ minWidth: theme.spacing(5) }}>
-                              <IconButton
-                                size="small"
-                                aria-label="sort"
-                                disabled={isLoading}
-                                className="drag-handle"
-                                style={{ cursor: 'grab' }}
-                              >
-                                <DragHandleIcon />
-                              </IconButton>
-                            </ListItemIcon>
-                          )}
-                          <ListItemAvatar className={classes.listItemAvatar}>
-                            {video.id === coverId && (
-                              <Tooltip title="This video is the current cover of the list">
-                                <Badge color="secondary" badgeContent=" " variant="dot">
+                <>
+                  <MuiList dense component="div" data-name="MuiList">
+                    <ContainerDraggable
+                      dragHandleSelector=".drag-handle"
+                      lockAxis="y"
+                      onDrop={onVideoDrop}
+                    >
+                      {videos.map((video, index) => (
+                        <Draggable key={video.id}>
+                          <ListItem
+                            key={video.id}
+                            component={InertiaLink}
+                            button
+                            divider
+                            dense
+                            disabled={isLoading}
+                            href={`/list/${id}`}
+                            preserveScroll
+                            preserveState
+                            headers={{ 'X-List-From': video.id, 'X-Page-Referer': 'details' }}
+                            only={[
+                              'auth',
+                              'flash',
+                              'errors',
+                              'modal',
+                              'list',
+                              'videos',
+                              'referer',
+                              'from',
+                            ]}
+                          >
+                            {isMe && videos.length > 1 && (
+                              <ListItemIcon style={{ minWidth: theme.spacing(5) }}>
+                                <IconButton
+                                  size="small"
+                                  aria-label="sort"
+                                  disabled={isLoading}
+                                  className="drag-handle"
+                                  style={{ cursor: 'grab' }}
+                                >
+                                  <DragHandleIcon />
+                                </IconButton>
+                              </ListItemIcon>
+                            )}
+                            <ListItemAvatar className={classes.listItemAvatar}>
+                              <>
+                                {video.id === coverId && (
+                                  <Tooltip title="This video is the current cover of the list">
+                                    <Badge color="secondary" badgeContent=" " variant="dot">
+                                      <Avatar
+                                        alt={video.title}
+                                        className={classes.avatar}
+                                        variant="square"
+                                        src={video.thumbnail}
+                                      />
+                                    </Badge>
+                                  </Tooltip>
+                                )}
+                                {video.id !== coverId && (
                                   <Avatar
                                     alt={video.title}
                                     className={classes.avatar}
                                     variant="square"
                                     src={video.thumbnail}
                                   />
-                                </Badge>
-                              </Tooltip>
-                            )}
-                            {video.id !== coverId && (
-                              <Avatar
-                                alt={video.title}
-                                className={classes.avatar}
-                                variant="square"
-                                src={video.thumbnail}
-                              />
-                            )}
-                          </ListItemAvatar>
-                          <ListItemText
-                            id={video.id}
-                            primary={video.title}
-                            style={{ wordBreak: 'break-word' }}
-                          />
-                          {isMe && (
-                            <ListItemSecondaryAction>
-                              <IconButton
-                                size="small"
-                                edge="end"
-                                aria-label="remove"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  onRemoveButtonClick(video.id);
-                                }}
-                                disabled={isLoading}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                              <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl[video.id]}
-                                keepMounted
-                                open={Boolean(anchorEl[video.id])}
-                                onClose={handleUserMenuClose(video.id)}
-                                className={classes.userMenu}
-                              >
-                                <MenuItem onClick={handleUserMenuClose}>
-                                  <IconButton
-                                    edge="end"
-                                    aria-label="remove"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      onRemoveButtonClick(video.id);
-                                    }}
-                                    disabled={isLoading}
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                  Delete
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() => {
-                                    Inertia.get('/auth/logout');
+                                )}
+                              </>
+                            </ListItemAvatar>
+                            <ListItemText
+                              id={video.id}
+                              primary={video.title}
+                              style={{ wordBreak: 'break-word' }}
+                            />
+                            {isMe && (
+                              <ListItemSecondaryAction>
+                                <IconButton
+                                  style={{ display: 'none' }}
+                                  size="small"
+                                  edge="start"
+                                  aria-label="remove"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    onRemoveButtonClick(video.id);
                                   }}
+                                  disabled={isLoading}
                                 >
-                                  Logout
-                                </MenuItem>
-                              </Menu>
-                            </ListItemSecondaryAction>
+                                  <DeleteIcon fontSize="small" />
+                                </IconButton>
+                                <IconButton
+                                  aria-haspopup="true"
+                                  onClick={handleUserMenuClick(video.id)}
+                                >
+                                  <MoreVertIcon />
+                                </IconButton>
+                              </ListItemSecondaryAction>
+                            )}
+                          </ListItem>
+                          {index !== videos.length - 1 && (
+                            <Divider variant="fullWidth" component="li" />
                           )}
-                        </ListItem>
-                        {index !== videos.length - 1 && (
-                          <Divider variant="fullWidth" component="li" />
-                        )}
-                      </Draggable>
-                    ))}
-                  </ContainerDraggable>
-                </MuiList>
+                        </Draggable>
+                      ))}
+                    </ContainerDraggable>
+                  </MuiList>
+                  {itemMenuState && (
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={itemMenuState.anchor}
+                      open={itemMenuState.isOpen}
+                      onClose={handleUserMenuClose}
+                      onExited={() => {
+                        setItemMenuState(null);
+                      }}
+                      className={classes.userMenu}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          onRemoveButtonClick(itemMenuState.videoId);
+                          handleUserMenuClose();
+                        }}
+                      >
+                        <ListItemIcon classes={{ ...menuListItemIconStyles }}>
+                          <DeleteIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Remove video" />
+                      </MenuItem>
+                      {coverId !== itemMenuState.videoId && (
+                        <MenuItem
+                          onClick={() => {
+                            onUpdateListCover(itemMenuState.videoId);
+                            handleUserMenuClose();
+                          }}
+                        >
+                          <ListItemIcon classes={{ ...menuListItemIconStyles }}>
+                            <CheckCircleIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Make list cover" />
+                        </MenuItem>
+                      )}
+                    </Menu>
+                  )}
+                </>
               )}
             </div>
           </Grid>
