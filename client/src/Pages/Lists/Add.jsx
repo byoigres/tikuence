@@ -45,7 +45,7 @@ const AddPage = ({ pageReferer }) => {
       { title },
       {
         preserveScroll: true,
-        only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'modal'],
+        only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'modal', 'title'],
         headers: {
           'X-Page-Referer': pageReferer,
         },
