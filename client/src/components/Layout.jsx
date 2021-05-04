@@ -1,8 +1,8 @@
 import React from 'react';
 import { usePage } from '@inertiajs/inertia-react';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
+import CssBaselineStyles from './CssBaselineStyles';
 import DrawerMenu from './DrawerMenu';
 import NavBar from './NavBar';
 import BackDrop from './BackDrop';
@@ -27,20 +27,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useCssBaselineStyles = makeStyles((theme) => ({
-  '@global': {
-    html: {
-      WebkitFontSmoothing: 'auto',
-      fontFamily: "'Roboto', sans-serif",
-      scrollBehavior: 'smooth',
-    },
-    a: {
-      color: theme.palette.text.primary,
-      textDecoration: 'none',
-    },
-  },
-}));
-
 const Layout = ({ children }) => {
   const {
     props: {
@@ -49,7 +35,6 @@ const Layout = ({ children }) => {
     },
   } = usePage();
   const classes = useStyles();
-  const cssBaselineStyles = useCssBaselineStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -59,7 +44,7 @@ const Layout = ({ children }) => {
 
   return (
     <ThemeProvider theme={mainTheme}>
-      <CssBaseline classes={cssBaselineStyles} />
+      <CssBaselineStyles />
       <SnackbarProvider flash={flash}>
         <div className={classes.root}>
           <NavBar
