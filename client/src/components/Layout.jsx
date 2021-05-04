@@ -3,26 +3,13 @@ import { usePage } from '@inertiajs/inertia-react';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import blue from '@material-ui/core/colors/blue';
-import red from '@material-ui/core/colors/red';
 import DrawerMenu from './DrawerMenu';
 import NavBar from './NavBar';
 import BackDrop from './BackDrop';
 import SnackbarProvider from './SnackbarProvider';
+import themeConfig from '../theme';
 
-const mainTheme = createMuiTheme({
-  palette: {
-    primary: blue,
-    secondary: red,
-  },
-  typography: {
-    fontFamily: `Roboto, "Helvetica", "Arial", sans-serif`,
-    fontSize: 14,
-    fontWeightLight: 300,
-    fontWeightRegular: 400,
-    fontWeightMedium: 600,
-  },
-});
+const mainTheme = createMuiTheme(themeConfig);
 
 const useStyles = makeStyles((theme) => ({
   root: {
