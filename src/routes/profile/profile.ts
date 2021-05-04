@@ -82,22 +82,26 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
       'L.title',
       'VT.thumbnail_name as thumbnail',
       'U.email',
-      knex.raw('COALESCE("VT"."total", 0) as "total_videos"')
+      knex.raw('COALESCE("VTO"."total", 0) as "total_videos"')
     )
     .joinRaw(
       `${isMe ? 'LEFT' : ''} JOIN LATERAL (${knex
+        .select('V.thumbnail_name')
+        .from(`${Tables.Videos} AS V`)
+        .whereRaw('"V"."id" = "L"."video_cover_id"')
+        .limit(1)}) AS "VT" ON TRUE`
+    )
+    .joinRaw(
+      `JOIN LATERAL (${knex
         .select(
-          'V.id',
-          'V.thumbnail_name',
           'V.created_at',
           knex(`${Tables.ListsVideos} AS ILV`).count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
         )
         .from(`${Tables.ListsVideos} AS LV`)
         .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
         .whereRaw('"LV"."list_id" = "L"."id"')
-        .andWhereRaw('"LV"."video_id" = "L"."video_cover_id"')
         .orderBy('V.created_at', 'DESC')
-        .limit(1)}) AS "VT" ON TRUE`
+        .limit(1)}) AS "VTO" ON TRUE`
     )
 
   if (category === 'lists') {

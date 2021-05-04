@@ -47,25 +47,29 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
       'L.title',
       'VT.thumbnail_name as thumbnail',
       'U.username',
-      'VT.total as total_videos'
+      'VTO.total as total_videos'
+    )
+    .joinRaw(
+      `JOIN LATERAL (${knex
+        .select('V.thumbnail_name')
+        .from(`${Tables.Videos} AS V`)
+        .whereRaw('"V"."id" = "L"."video_cover_id"')
+        .limit(1)}) AS "VT" ON TRUE`
     )
     .joinRaw(
       `JOIN LATERAL (${knex
         .select(
-          'V.id',
-          'V.thumbnail_name',
           'V.created_at',
           knex(`${Tables.ListsVideos} AS ILV`).count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
         )
         .from(`${Tables.ListsVideos} AS LV`)
         .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
         .whereRaw('"LV"."list_id" = "L"."id"')
-        .andWhereRaw('"LV"."video_id" = "L"."video_cover_id"')
         .orderBy('V.created_at', 'DESC')
-        .limit(1)}) AS "VT" ON TRUE`
+        .limit(1)}) AS "VTO" ON TRUE`
     )
     .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
-    .orderBy(category === 'recent' ? 'VT.created_at' : 'L.created_at', 'DESC')
+    .orderBy(category === 'recent' ? 'VTO.created_at' : 'L.created_at', 'DESC')
     .limit(pageSize)
     .offset(offset)
 
