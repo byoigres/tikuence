@@ -92,7 +92,7 @@ async function getAllListsFromUser(req: Request, res: Response, next: NextFuncti
         .limit(1)}) AS "VT" ON TRUE`
     )
     .joinRaw(
-      `JOIN LATERAL (${knex
+      `${isMe ? 'LEFT' : ''} JOIN LATERAL (${knex
         .select(
           'V.created_at',
           knex(`${Tables.ListsVideos} AS ILV`).count('*').whereRaw('"ILV"."list_id" = "L"."id"').as('total')
