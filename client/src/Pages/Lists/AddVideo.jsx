@@ -60,7 +60,18 @@ const AddVideoPage = () => {
       `/list/${listId}/video`,
       { videoUrl },
       {
-        only: ['auth', 'flash', 'errors', 'listId', 'modal', 'referer', 'videos'],
+        // TODO: pull all list info in a list variable
+        only: [
+          'auth',
+          'flash',
+          'errors',
+          'listId',
+          'modal',
+          'referer',
+          'videos',
+          'title',
+          'coverId',
+        ],
         preserveScroll: true,
         preserveState: true,
         onStart() {

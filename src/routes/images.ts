@@ -34,6 +34,4 @@ async function image(req: Request, res: Response) {
   }
 }
 
-export default asyncRoutes([
-  image
-])
+export default asyncRoutes([image])

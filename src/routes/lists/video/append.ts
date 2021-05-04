@@ -335,6 +335,14 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
         updated_at: new Date()
       })
 
+    if (count.total === 0) {
+      await knex(Tables.Lists)
+        .update({
+          video_cover_id: videoId
+        })
+        .where('id', listId)
+    }
+
     await transaction.commit()
   } catch (err) {
     await transaction.rollback()

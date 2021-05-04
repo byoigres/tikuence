@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -24,6 +24,10 @@ const TitleForUpdate = ({ id, title: initialTitle, canEdit = true }) => {
   const [title, setTitle] = useState(initialTitle);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setTitle(initialTitle);
+  }, [initialTitle]);
 
   function onTitleUpdate() {
     Inertia.put(

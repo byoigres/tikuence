@@ -320,6 +320,7 @@ const Details = ({ isLoading }) => {
                                 {video.id === coverId && (
                                   <Tooltip title="This video is the current cover of the list">
                                     <Badge color="secondary" badgeContent=" " variant="dot">
+                                      {/* TODO: find a way to not repeat the same Avatar component */}
                                       <Avatar
                                         alt={video.title}
                                         className={classes.avatar}
@@ -347,19 +348,6 @@ const Details = ({ isLoading }) => {
                             {isMe && (
                               <ListItemSecondaryAction>
                                 <IconButton
-                                  style={{ display: 'none' }}
-                                  size="small"
-                                  edge="start"
-                                  aria-label="remove"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    onRemoveButtonClick(video.id);
-                                  }}
-                                  disabled={isLoading}
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                                <IconButton
                                   aria-haspopup="true"
                                   onClick={handleUserMenuClick(video.id)}
                                 >
@@ -386,17 +374,6 @@ const Details = ({ isLoading }) => {
                       }}
                       className={classes.userMenu}
                     >
-                      <MenuItem
-                        onClick={() => {
-                          onRemoveButtonClick(itemMenuState.videoId);
-                          handleUserMenuClose();
-                        }}
-                      >
-                        <ListItemIcon classes={{ ...menuListItemIconStyles }}>
-                          <DeleteIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Remove video" />
-                      </MenuItem>
                       {coverId !== itemMenuState.videoId && (
                         <MenuItem
                           onClick={() => {
@@ -405,11 +382,22 @@ const Details = ({ isLoading }) => {
                           }}
                         >
                           <ListItemIcon classes={{ ...menuListItemIconStyles }}>
-                            <CheckCircleIcon />
+                            <CheckCircleIcon color="primary" />
                           </ListItemIcon>
                           <ListItemText primary="Make list cover" />
                         </MenuItem>
                       )}
+                      <MenuItem
+                        onClick={() => {
+                          onRemoveButtonClick(itemMenuState.videoId);
+                          handleUserMenuClose();
+                        }}
+                      >
+                        <ListItemIcon classes={{ ...menuListItemIconStyles }}>
+                          <DeleteIcon color="secondary" />
+                        </ListItemIcon>
+                        <ListItemText primary="Remove video" />
+                      </MenuItem>
                     </Menu>
                   )}
                 </>
@@ -419,34 +407,32 @@ const Details = ({ isLoading }) => {
         </Paper>
       )}
       {isMe && (
-        <>
-          <Suspense fallback={<div>Loading...</div>}>
-            {isRemoveVideoDialogOpen && (
-              <ConfirmDialog
-                isOpen={isRemoveVideoDialogOpen}
-                onDialogClose={onRemoveVideoDialogClose}
-                actionHandler={onRemove}
-                title="Confirm"
-                description="Are you sure to remove this video from the list?"
-                actionText="Remove"
-                cancelText="Cancel"
-              />
-            )}
-            {isDeleteDialogOpen && (
-              <ConfirmDialog
-                isOpen={isDeleteDialogOpen}
-                onDialogClose={onDeleteDialogClose}
-                actionHandler={onDelete}
-                title="Confirm"
-                description="Are you sure to delete this list?"
-                actionText="Delete"
-                cancelText="Cancel"
-              />
-            )}
-          </Suspense>
-          <InertiaModals modal={modal} />
-        </>
+        <Suspense fallback={<div>Loading...</div>}>
+          {isRemoveVideoDialogOpen && (
+            <ConfirmDialog
+              isOpen={isRemoveVideoDialogOpen}
+              onDialogClose={onRemoveVideoDialogClose}
+              actionHandler={onRemove}
+              title="Confirm"
+              description="Are you sure to remove this video from the list?"
+              actionText="Remove"
+              cancelText="Cancel"
+            />
+          )}
+          {isDeleteDialogOpen && (
+            <ConfirmDialog
+              isOpen={isDeleteDialogOpen}
+              onDialogClose={onDeleteDialogClose}
+              actionHandler={onDelete}
+              title="Confirm"
+              description="Are you sure to delete this list?"
+              actionText="Delete"
+              cancelText="Cancel"
+            />
+          )}
+        </Suspense>
       )}
+      <InertiaModals modal={modal} />
     </>
   );
 };
