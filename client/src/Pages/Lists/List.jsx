@@ -105,7 +105,7 @@ const Details = ({ pageReferer }) => {
             <Typography variant="h6" className={classes.title}>
               View list
             </Typography>
-            {auth.isAuthenticated && list.user_id !== auth.credentials.id && (
+            {auth.isAuthenticated && list.username !== auth.credentials.username && (
               <FavoriteButton
                 isFavorited={list.is_favorited}
                 onClick={() => {

@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy as ReactLazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy as ReactLazy } from 'react';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -159,17 +159,30 @@ const Details = ({ isLoading }) => {
         },
         {
           preserveScroll: true,
-          onStart() {
-            // -- setIsLoading(true);
-          },
-          onSuccess() {},
-          onFinish() {
-            // -- setIsLoading(false);
-          },
         }
       );
     }
   };
+
+  /**
+   * There is a bug with react-smooth-dnd that block scroll of the page after a
+   * touchend event.
+   *
+   * This is a workaround because the development seems to be frozen
+   *
+   * @see https://github.com/kutlugsahin/react-smooth-dnd/issues/75
+   */
+  useEffect(() => {
+    const cleanClasses = () => {
+      document.body.className = '';
+    };
+
+    document.addEventListener('touchend', cleanClasses, false);
+
+    return () => {
+      document.removeEventListener('touchend', cleanClasses, false);
+    };
+  }, []);
 
   const handleUserMenuClose = () => {
     setItemMenuState({ ...itemMenuState, isOpen: false });
@@ -276,6 +289,7 @@ const Details = ({ isLoading }) => {
                     <ContainerDraggable
                       dragHandleSelector=".drag-handle"
                       lockAxis="y"
+                      orientation="vertical"
                       onDrop={onVideoDrop}
                     >
                       {videos.map((video, index) => (
@@ -307,7 +321,6 @@ const Details = ({ isLoading }) => {
                                 <IconButton
                                   size="small"
                                   aria-label="sort"
-                                  disabled={isLoading}
                                   className="drag-handle"
                                   style={{ cursor: 'grab' }}
                                 >

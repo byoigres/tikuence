@@ -180,6 +180,11 @@ async function extractAuthorFromUrl(req: Request, _res: Response, next: NextFunc
 
   const authorUsername = parsedUrl.pathname.slice(2)
 
+  if (authorUsername.length > 24) {
+    req.flash('warning', `It appears that the video you are trying to add is an sponsored video, you can't do that. 😔`)
+    return req.Inertia.redirect(`/list/${req.params.hash}/details`)
+  }
+
   httpContext.set('authorUsername', authorUsername)
   next()
 }
