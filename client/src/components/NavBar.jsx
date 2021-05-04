@@ -1,95 +1,115 @@
-import React, { useEffect } from 'react';
-import { Inertia } from '@inertiajs/inertia';
+import React from 'react';
+import { InertiaLink } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import ListIcon from '@material-ui/icons/List';
-import AddBoxIcon from '@material-ui/icons/AddBox';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import UserAvatar from './UserAvatar';
+import Logo from './Logo';
 
-const useStyles = makeStyles({
-  bottomNavigation: {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    zIndex: 99,
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+      zIndex: 1201,
+    },
   },
-});
+}));
 
-const NavBar = ({ isAuthenticated }) => {
+const NavBar = ({ isAuthenticated, credentials, handleDrawerToggle }) => {
   const classes = useStyles();
-  const [selectedAction, setSelectedAction] = React.useState(0);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  useEffect(() => {
-    switch (window.location.pathname) {
-      case '/':
-        setSelectedAction(0);
-        break;
-      case '/list/add':
-        setSelectedAction(1);
-        break;
-      case '/profile':
-      case '/auth/login':
-        setSelectedAction(2);
-        break;
-      default:
-    }
-  });
+  const handleUserMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  const items = [
-    {
-      id: 'lists',
-      component: <BottomNavigationAction key="lists" label="Lists" icon={<ListIcon />} />,
-    },
-    isAuthenticated && {
-      id: 'add-list',
-      component: <BottomNavigationAction key="add-list" label="Add" icon={<AddBoxIcon />} />,
-    },
-    {
-      id: 'profile',
-      component: (
-        <BottomNavigationAction
-          key="profile"
-          label={isAuthenticated ? 'Profile' : 'Login'}
-          icon={<AccountCircleIcon />}
-        />
-      ),
-    },
-  ];
+  const handleUserMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <BottomNavigation
-      value={selectedAction}
-      onChange={(_, action) => {
-        switch (items[action].id) {
-          case 'lists':
-            Inertia.visit('/');
-            break;
-          case 'add-list':
-            Inertia.visit('/list/add', {
-              preserveScroll: true,
-              preserveState: true,
-              only: ['auth', 'flash', 'errors', 'referer', 'showModal'],
-            });
-            break;
-          case 'profile':
-            Inertia.visit(isAuthenticated ? '/profile' : '/auth/login', {
-              preserveScroll: true,
-              only: ['auth', 'flash', 'errors', 'showModal', 'user'],
-            });
-            break;
-          default:
-            Inertia.get('/');
-            break;
-        }
-        setSelectedAction(action);
-      }}
-      showLabels
-      className={classes.bottomNavigation}
-    >
-      {items.map((x) => x.component)}
-    </BottomNavigation>
+    <AppBar position="fixed" className={classes.appBar}>
+      <Toolbar className={classes.toolBar}>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Logo size="small" disableGutters style={{ flexGrow: 1 }} />
+        <Tooltip title={isAuthenticated ? credentials.name : 'Login'}>
+          <IconButton
+            edge="end"
+            color="inherit"
+            aria-label="menu"
+            aria-haspopup="true"
+            onClick={handleUserMenuClick}
+          >
+            {isAuthenticated ? (
+              <UserAvatar
+                size="small"
+                image={credentials.picture}
+                letter={credentials.username[0]}
+              />
+            ) : (
+              <AccountCircleIcon />
+            )}
+          </IconButton>
+        </Tooltip>
+        <Menu
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleUserMenuClose}
+          className={classes.userMenu}
+        >
+          {isAuthenticated && [
+            <MenuItem
+              key="menu-item-user-profile"
+              onClick={handleMenuItemClick}
+              component={InertiaLink}
+              href={`/users/${credentials.username}`}
+            >
+              Profile
+            </MenuItem>,
+            <MenuItem key="menu-item-logout" component="a" href="/auth/logout">
+              <Typography color="secondary">Logout</Typography>
+            </MenuItem>,
+          ]}
+          {!isAuthenticated && [
+            <MenuItem
+              key="menu-item-auth-login"
+              component={InertiaLink}
+              href="/auth/login"
+              onClick={handleMenuItemClick}
+            >
+              Sing in
+            </MenuItem>,
+            <MenuItem
+              key="menu-item-auth-register"
+              component={InertiaLink}
+              href="/auth/register"
+              onClick={handleMenuItemClick}
+            >
+              <Typography color="secondary">Create account</Typography>
+            </MenuItem>,
+          ]}
+        </Menu>
+      </Toolbar>
+    </AppBar>
   );
 };
 
