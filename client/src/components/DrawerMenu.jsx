@@ -108,7 +108,7 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
             <Button
               startIcon={<AddIcon />}
               color="primary"
-              variant="contained"
+              variant="outlined"
               fullWidth
               size="large"
               href="/list/add"
