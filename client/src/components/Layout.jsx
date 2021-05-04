@@ -1,19 +1,15 @@
 import React, { useEffect } from 'react';
-import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
 import { SnackbarProvider } from 'notistack';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
-
 import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red';
-
 import DrawerMenu from './DrawerMenu';
 import NavBar from './NavBar';
+import BackDrop from './BackDrop';
 
 const mainTheme = createMuiTheme({
   palette: {
@@ -69,37 +65,12 @@ const Layout = ({ children }) => {
   const classes = useStyles();
   const cssBaselineStyles = useCssBaselineStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [isBackdropOpen, setIsBackdropOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const notistackRef = React.createRef();
-  let backdropLoadingTimer = null;
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  useEffect(() => {
-    const inertiaStartEventListener = Inertia.on('start', () => {
-      setIsLoading(true);
-      backdropLoadingTimer = setTimeout(() => {
-        setIsBackdropOpen(() => true);
-      }, 2000);
-    });
-
-    const inertiaFinishEventListener = Inertia.on('finish', () => {
-      setIsBackdropOpen(false);
-      setIsLoading(false);
-
-      if (backdropLoadingTimer) {
-        clearTimeout(backdropLoadingTimer);
-      }
-    });
-
-    return () => {
-      inertiaStartEventListener();
-      inertiaFinishEventListener();
-    };
-  }, []);
 
   useEffect(() => {
     if (flash) {
@@ -166,9 +137,11 @@ const Layout = ({ children }) => {
           </Container>
         </div>
       </SnackbarProvider>
-      <Backdrop open={isBackdropOpen} style={{ zIndex: 1500 }}>
-        <CircularProgress color="primary" />
-      </Backdrop>
+      <BackDrop
+        onLoadingChange={(loading) => {
+          setIsLoading(loading);
+        }}
+      />
     </ThemeProvider>
   );
 };
