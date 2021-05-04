@@ -6,32 +6,32 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 function BackDrop({ onLoadingChange }) {
   const [isBackdropOpen, setIsBackdropOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  let backdropLoadingTimer = null;
+  let backdropTimer = null;
 
   useEffect(() => {
     onLoadingChange(isLoading);
   }, [isLoading]);
 
   useEffect(() => {
-    const inertiaStartEventListener = Inertia.on('start', () => {
+    const onInertiaStart = Inertia.on('start', () => {
       setIsLoading(true);
-      backdropLoadingTimer = setTimeout(() => {
+      backdropTimer = setTimeout(() => {
         setIsBackdropOpen(() => true);
       }, 2000);
     });
 
-    const inertiaFinishEventListener = Inertia.on('finish', () => {
+    const onInertiaFinish = Inertia.on('finish', () => {
       setIsBackdropOpen(false);
       setIsLoading(false);
 
-      if (backdropLoadingTimer) {
-        clearTimeout(backdropLoadingTimer);
+      if (backdropTimer) {
+        clearTimeout(backdropTimer);
       }
     });
 
     return () => {
-      inertiaStartEventListener();
-      inertiaFinishEventListener();
+      onInertiaStart();
+      onInertiaFinish();
     };
   }, []);
 
