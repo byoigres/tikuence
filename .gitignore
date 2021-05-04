@@ -2,8 +2,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,windows,macos,linux
 
 ### Project
+build/
 .ignore
-**/*.js
 public/assets
 public/images
 client/node_modules
