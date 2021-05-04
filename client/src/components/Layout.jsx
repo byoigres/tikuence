@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { usePage } from '@inertiajs/inertia-react';
-import { SnackbarProvider } from 'notistack';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red';
 import DrawerMenu from './DrawerMenu';
 import NavBar from './NavBar';
 import BackDrop from './BackDrop';
+import SnackbarProvider from './SnackbarProvider';
 
 const mainTheme = createMuiTheme({
   palette: {
@@ -66,52 +65,15 @@ const Layout = ({ children }) => {
   const cssBaselineStyles = useCssBaselineStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const notistackRef = React.createRef();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  useEffect(() => {
-    if (flash) {
-      let message = null;
-      let variant = null;
-
-      if (flash.success) {
-        message = flash.success;
-        variant = 'success';
-      } else if (flash.info) {
-        message = flash.info;
-        variant = 'info';
-      } else if (flash.warning) {
-        message = flash.warning;
-        variant = 'warning';
-      } else if (flash.error) {
-        message = flash.error;
-        variant = 'error';
-      }
-
-      if (message) {
-        notistackRef.current.enqueueSnackbar(message, {
-          variant,
-        });
-      }
-    }
-  }, [flash]);
-
   return (
     <ThemeProvider theme={mainTheme}>
       <CssBaseline classes={cssBaselineStyles} />
-      <SnackbarProvider
-        ref={notistackRef}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        action={(key) => (
-          <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
-        )}
-      >
+      <SnackbarProvider flash={flash}>
         <div className={classes.root}>
           <NavBar
             isAuthenticated={isAuthenticated}
