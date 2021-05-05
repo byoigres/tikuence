@@ -32,6 +32,7 @@ import TitleForUpdate from '../../components/TitleForUpdate';
 import UserCard from '../../components/UserCard';
 import FavoriteButton from '../../components/FavoriteButton';
 import InertiaModals from '../../components/InertiaModals';
+import CreatorsList from '../../components/CreatorsList';
 
 const ConfirmDialog = ReactLazy(() => import('../../components/ConfirmDialog'));
 
@@ -53,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 3}px` : 'initial',
     width: isFullWidthMatch ? `100%` : 'initial',
     backgroundColor: 'white',
+    overflowY: 'auto',
+    // maxHeight: calc(vieport height - (paper padding * 2) - (main padding))
+    maxHeight: `calc(100vh - ${theme.spacing(2 * 2)}px - ${theme.spacing(3)}px)`,
   }),
   contentColumn: ({ isFullWidthMatch }) => ({
     marginLeft: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 3}px` : 'initial',
@@ -84,7 +88,19 @@ const usePaperStyles = makeStyles((theme) => ({
 
 const Details = ({ isLoading }) => {
   const {
-    props: { auth, id, title, isFavorited, user, videos, isMobile, isMe, modal = false, coverId },
+    props: {
+      auth,
+      id,
+      title,
+      isFavorited,
+      user,
+      videos,
+      isMobile,
+      isMe,
+      modal = false,
+      coverId,
+      authors,
+    },
   } = usePage();
   const theme = useTheme();
   const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
@@ -274,6 +290,8 @@ const Details = ({ isLoading }) => {
                 usernameText={user.username}
                 pictureUrl={user.picture}
               />
+              <Divider variant="fullWidth" />
+              <CreatorsList creators={authors} />
               <Divider variant="fullWidth" />
             </Grid>
             <div className={classes.contentColumn}>
