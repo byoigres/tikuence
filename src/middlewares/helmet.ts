@@ -10,6 +10,9 @@ export default [
   helmet.ieNoOpen(),
   helmet.noSniff(),
   helmet.permittedCrossDomainPolicies(),
-  helmet.referrerPolicy(),
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
+  helmet.referrerPolicy({
+    policy: ['same-origin']
+  }),
   helmet.xssFilter()
 ]
