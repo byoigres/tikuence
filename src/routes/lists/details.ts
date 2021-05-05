@@ -52,6 +52,21 @@ async function getList(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
+async function getCategories(req: Request, res: Response, next: NextFunction) {
+  const listId = httpContext.get('listId')
+
+  const knex = Knex()
+
+  const categories = await knex(`${Tables.ListsCategories} AS LC`)
+    .select('C.id', 'C.description', 'C.identifier')
+    .join(`${Tables.Categories} AS C`, 'LC.category_id', 'C.id')
+    .where('LC.list_id', listId)
+
+  httpContext.set('categories', categories)
+
+  next()
+}
+
 async function getAuthors(req: Request, res: Response, next: NextFunction) {
   const listId = httpContext.get('listId')
 
@@ -96,6 +111,7 @@ async function setThumbnails(req: Request, res: Response, next: NextFunction) {
 async function response(req: Request) {
   const list = httpContext.get('list')
   const videos = httpContext.get('videos')
+  const categories = httpContext.get('categories')
   const authors = httpContext.get('authors')
   const isFavorited: Boolean = httpContext.get('isFavorited')
 
@@ -115,10 +131,19 @@ async function response(req: Request) {
       },
       videos,
       authors,
+      categories,
       isMe: req.user ? req.user.id === list.user_id : false,
       modal: false
     }
   })
 }
 
-export default asyncRoutes([setListIdAndHashToContext, getIsFavorites, getList, getAuthors, setThumbnails, response])
+export default asyncRoutes([
+  setListIdAndHashToContext,
+  getIsFavorites,
+  getList,
+  getCategories,
+  getAuthors,
+  setThumbnails,
+  response
+])

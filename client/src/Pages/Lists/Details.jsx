@@ -33,6 +33,7 @@ import UserCard from '../../components/UserCard';
 import FavoriteButton from '../../components/FavoriteButton';
 import InertiaModals from '../../components/InertiaModals';
 import CreatorsList from '../../components/CreatorsList';
+import CategoriesList from '../../components/CategoriesList';
 
 const ConfirmDialog = ReactLazy(() => import('../../components/ConfirmDialog'));
 
@@ -100,6 +101,7 @@ const Details = ({ isLoading }) => {
       modal = false,
       coverId,
       authors,
+      categories,
     },
   } = usePage();
   const theme = useTheme();
@@ -292,6 +294,8 @@ const Details = ({ isLoading }) => {
               />
               <Divider variant="fullWidth" />
               <CreatorsList creators={authors} />
+              <Divider variant="fullWidth" />
+              <CategoriesList categories={categories} />
               <Divider variant="fullWidth" />
             </Grid>
             <div className={classes.contentColumn}>
