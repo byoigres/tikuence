@@ -197,7 +197,7 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
             <MoreHorizOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary="More..." />
-          {isMoreItemOpen ? <ExpandLess /> : <ExpandMore />}
+          {isMoreItemOpen ? <ExpandMore /> : <ExpandLess />}
         </ListItem>
         <Collapse in={isMoreItemOpen} timeout="auto" unmountOnExit>
           <div

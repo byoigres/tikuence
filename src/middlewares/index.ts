@@ -5,15 +5,16 @@ import compression from 'compression'
 import flash from 'connect-flash'
 import cookieParser from 'cookie-parser'
 import csurf from 'csurf'
-
 import inertia, { populateSharedProps } from './inertia'
 import passport from './passport'
 import Knex from '../utils/knex'
 import config from '../config'
 import isMobile from './isMobile'
+import helmet from './helmet'
 
 const KnexSessionStore = require('connect-session-knex')(session)
 
+// TODO: Move this info to env variables
 const store = new KnexSessionStore({
   tablename: 'sessions',
   sidfieldname: 'sid',
@@ -61,6 +62,7 @@ function middlewares(app: Express) {
   app.use(inertia)
   app.use(
     csurf({
+      // TODO: Investigate how to use this
       ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
       cookie: {
         key: 'XSRF-TOKEN'
@@ -75,6 +77,7 @@ function middlewares(app: Express) {
   app.use(populateSharedProps)
   app.use(isMobile)
   app.use(httpContext.middleware)
+  app.use(helmet)
 }
 
 export default middlewares
