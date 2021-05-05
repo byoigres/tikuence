@@ -3,6 +3,7 @@
 
 ### Project
 build/
+*.js
 .ignore
 public/assets
 public/images

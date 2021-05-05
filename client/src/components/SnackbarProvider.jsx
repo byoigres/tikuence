@@ -1,9 +1,19 @@
 import React, { useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { SnackbarProvider as NativeSnackbarProvider } from 'notistack';
+import { useCookieConcent } from './useCookieConcent';
+
+const useButtonStyles = makeStyles((theme) => ({
+  root: {
+    color: theme.palette.common.white,
+  },
+}));
 
 const SnackBarProvider = ({ children, flash }) => {
   const notistackRef = React.createRef();
+  const buttonStyles = useButtonStyles();
+  useCookieConcent({ ref: notistackRef });
 
   useEffect(() => {
     if (flash) {
@@ -40,7 +50,12 @@ const SnackBarProvider = ({ children, flash }) => {
         horizontal: 'center',
       }}
       action={(key) => (
-        <Button onClick={() => notistackRef.current.closeSnackbar(key)}>Dismiss</Button>
+        <Button
+          classes={{ ...buttonStyles }}
+          onClick={() => notistackRef.current.closeSnackbar(key)}
+        >
+          Dismiss
+        </Button>
       )}
     >
       {children}

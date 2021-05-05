@@ -72,7 +72,7 @@ export const ThumbnailSkeleton = ({ singleRow = false }) => {
           <div className={skelletonStyles.container}>
             <Skeleton
               variant="rect"
-              animation="pulse"
+              animation="wave"
               className={skelletonStyles.element}
               data-name="skeleton"
             />
