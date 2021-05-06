@@ -4,6 +4,7 @@ import { Express, Request, Response, NextFunction } from 'express'
 // import events from "./events";
 import feed from './feed'
 import lists from './lists'
+import categories from './categories'
 import profile from './profile'
 import auth from './auth'
 import images from './images'
@@ -13,6 +14,9 @@ function bindRoutes(app: Express) {
   app.use('/auth', auth)
   app.get('/images/:image', images)
   app.use('/list', lists)
+  if (process.env.NODE_ENV !== 'production') {
+    app.use('/categories', categories)
+  }
   app.use('/users/:username', profile)
   app.use(function (req) {
     req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
