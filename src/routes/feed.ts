@@ -69,6 +69,7 @@ async function getAllLists(req: Request, _res: Response, next: NextFunction) {
         .limit(1)}) AS "VTO" ON TRUE`
     )
     .join(`${Tables.Users} AS U`, 'L.user_id', 'U.id')
+    .where('VTO.total', '>', category === 'recent' ? 3 : 0)
     .orderBy(category === 'recent' ? 'VTO.created_at' : 'L.created_at', 'DESC')
     .limit(pageSize)
     .offset(offset)
