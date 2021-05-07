@@ -8,9 +8,9 @@ import Knex, { Tables } from '../../utils/knex'
 import UrlHash, { LIST_MODIFIER } from '../../utils/urlHash'
 
 interface iPayload {
-  title: string;
-  categories: string[];
-  languages: string[];
+  title: string
+  categories: number[]
+  languages: number[]
 }
 
 const validations = checkSchema({
@@ -92,30 +92,27 @@ async function createList(req: Request, res: Response, next: NextFunction) {
 
     const urlHash = UrlHash.encode(listId, LIST_MODIFIER)
 
-    await knex(Tables.Lists).transacting(transaction).update({
-      url_hash: urlHash
-    }).where({
-      id: listId
-    })
+    await knex(Tables.Lists)
+      .transacting(transaction)
+      .update({
+        url_hash: urlHash
+      })
+      .where({
+        id: listId
+      })
 
-    // Get categories
-    const categoriesIds = await knex(Tables.Categories).select('id').whereIn('identifier', payload.categories)
-
-    const listCategories = categoriesIds.map((x) => ({
+    const categories = payload.categories.map((categoryId: number) => ({
       list_id: listId,
-      category_id: x.id,
+      category_id: categoryId,
       created_at: new Date(),
       updated_at: new Date()
     }))
 
-    await knex.batchInsert(Tables.ListsCategories, listCategories).transacting(transaction)
+    await knex.batchInsert(Tables.ListsCategories, categories).transacting(transaction)
 
-    // Get Languages
-    const languagesIds = await knex(Tables.Languages).select('id').whereIn('code', payload.languages)
-
-    const listLanguages = languagesIds.map((x) => ({
+    const listLanguages = payload.languages.map((languageId: number) => ({
       list_id: listId,
-      language_id: x.id,
+      language_id: languageId,
       created_at: new Date(),
       updated_at: new Date()
     }))
@@ -141,4 +138,10 @@ async function response(req: Request) {
   req.Inertia.redirect(`/list/${urlHash}/details`)
 }
 
-export default asyncRoutes([isAuthenticated, ...validations, prepareValidationForErrorMessages('/list/add'), createList, response])
+export default asyncRoutes([
+  isAuthenticated,
+  ...validations,
+  prepareValidationForErrorMessages('/list/add'),
+  createList,
+  response
+])
