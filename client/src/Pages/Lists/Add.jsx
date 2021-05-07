@@ -162,6 +162,9 @@ const AddPage = ({ pageReferer }) => {
             error={errors.title !== undefined}
             helperText={errors.title}
           />
+          <DialogContentText>
+            <Typography variant="body2">Choose a useful name for the list</Typography>
+          </DialogContentText>
           <MultiSelect
             label="Categories"
             placeholder="Type a category name"
@@ -174,6 +177,11 @@ const AddPage = ({ pageReferer }) => {
               setSelectedCategories(values.map((x) => x.identifier));
             }}
           />
+          <DialogContentText>
+            <Typography variant="body2">
+              Categories help us to organize the content in the site
+            </Typography>
+          </DialogContentText>
           <MultiSelect
             label="Languages"
             placeholder="Type a language name"
@@ -187,7 +195,15 @@ const AddPage = ({ pageReferer }) => {
             }}
           />
           <DialogContentText>
-            After creating the list you would be able to add videos to it.
+            <Typography variant="body2">
+              If the videos have subtitles in a different language than the one spoken, help us by
+              selecting both languages.
+            </Typography>
+          </DialogContentText>
+          <DialogContentText>
+            <Typography variant="subtitle2">
+              After creating the list you would be able to add videos to it.
+            </Typography>
           </DialogContentText>
         </DialogContent>
       </Dialog>

@@ -306,19 +306,21 @@ const Details = ({ isLoading }) => {
               />
               <Divider variant="fullWidth" />
               <Divider variant="fullWidth" />
-              <ListItem
-                button
-                onClick={() => {
-                  setViewDetails(!viewDetails);
-                }}
-              >
-                <ListItemIcon>
-                  <ListIcon />
-                </ListItemIcon>
-                <ListItemText primary="More details..." />
-                {viewDetails ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={viewDetails}>
+              {!isFullWidthMatch && (
+                <ListItem
+                  button
+                  onClick={() => {
+                    setViewDetails(!viewDetails);
+                  }}
+                >
+                  <ListItemIcon>
+                    <ListIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="More details..." />
+                  {viewDetails ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+              )}
+              <Collapse in={isFullWidthMatch || viewDetails}>
                 <ItemsList
                   title="Creators"
                   items={authors}
