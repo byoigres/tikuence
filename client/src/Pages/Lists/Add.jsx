@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+import MultiSelect from '../../components/MultiSelect';
 import SEO from '../../components/SEO';
 
 const useStyles = makeStyles((theme) => ({
@@ -31,18 +32,29 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 const AddPage = ({ pageReferer }) => {
   const classes = useStyles();
   const {
-    props: { isMobile, referer: initialReferer, errors },
+    props: {
+      isMobile,
+      referer: initialReferer,
+      errors,
+      modal: { categories, languages },
+    },
   } = usePage();
   const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [referer] = useState(initialReferer);
   const listNameRef = useRef(null);
 
   function onCreate() {
     Inertia.post(
       '/list',
-      { title },
+      {
+        title,
+        categories: selectedCategories,
+        languages: selectedLanguages,
+      },
       {
         preserveScroll: true,
         only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'modal', 'title'],
@@ -149,6 +161,26 @@ const AddPage = ({ pageReferer }) => {
             onKeyPress={handleOnKeyPress}
             error={errors.title !== undefined}
             helperText={errors.title}
+          />
+          <MultiSelect
+            label="Categories"
+            placeholder="Type a category name"
+            maxSelected={3}
+            options={categories}
+            labelPropertyName="description"
+            onValueChage={(values) => {
+              setSelectedCategories(values.map((x) => x.identifier));
+            }}
+          />
+          <MultiSelect
+            label="Languages"
+            placeholder="Type a language name"
+            maxSelected={2}
+            options={languages}
+            labelPropertyName="name"
+            onValueChage={(values) => {
+              setSelectedLanguages(values.map((x) => x.code));
+            }}
           />
           <DialogContentText>
             After creating the list you would be able to add videos to it.

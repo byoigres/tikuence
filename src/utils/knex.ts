@@ -44,7 +44,9 @@ export enum Tables {
   Categories = 'public.categories',
   ListsCategories = 'public.lists_categories',
   Hashtags = 'public.hashtags',
-  ListsHashtags = 'public.lists_hashtags'
+  ListsHashtags = 'public.lists_hashtags',
+  Languages = 'public.languages',
+  ListsLanguages = 'public.lists_languages'
 }
 
 export interface iFeedResultThumbnails {

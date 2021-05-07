@@ -8,7 +8,9 @@ import Knex, { Tables } from '../../utils/knex'
 import UrlHash, { LIST_MODIFIER } from '../../utils/urlHash'
 
 interface iPayload {
-  title: string
+  title: string;
+  categories: string[];
+  languages: string[];
 }
 
 const validations = checkSchema({
@@ -47,6 +49,30 @@ async function createList(req: Request, res: Response, next: NextFunction) {
     }).where({
       id: listId
     })
+
+    // Get categories
+    const categoriesIds = await knex(Tables.Categories).select('id').whereIn('identifier', payload.categories)
+
+    const listCategories = categoriesIds.map((x) => ({
+      list_id: listId,
+      category_id: x.id,
+      created_at: new Date(),
+      updated_at: new Date()
+    }))
+
+    await knex.batchInsert(Tables.ListsCategories, listCategories).transacting(transaction)
+
+    // Get Languages
+    const languagesIds = await knex(Tables.Languages).select('id').whereIn('code', payload.languages)
+
+    const listLanguages = languagesIds.map((x) => ({
+      list_id: listId,
+      language_id: x.id,
+      created_at: new Date(),
+      updated_at: new Date()
+    }))
+
+    await knex.batchInsert(Tables.ListsLanguages, listLanguages).transacting(transaction)
 
     await transaction.commit()
 

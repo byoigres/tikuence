@@ -20,13 +20,13 @@ const usePaperStyles = makeStyles((theme) => ({
 const categories = [
   {
     id: 'recent',
-    label: 'Recent',
+    label: 'Recently updated',
     pageTitle: 'Recent lists',
     icon: <RestoreIcon />,
   },
   {
     id: 'new',
-    label: 'New',
+    label: 'New lists',
     pageTitle: 'New lists',
     icon: <WbSunnyIcon />,
   },
@@ -91,8 +91,8 @@ const PageFeed = () => {
             }
           }}
         >
-          <PillAction value="recent" label="Recent" icon={<RestoreIcon />} />
-          <PillAction value="new" label="New" icon={<WbSunnyIcon />} />
+          <PillAction value="recent" label="Recently updated" icon={<RestoreIcon />} />
+          <PillAction value="new" label="New lists" icon={<WbSunnyIcon />} />
         </PillsNavigation>
         <ThumbnailInfiniteList
           referer="feed"
