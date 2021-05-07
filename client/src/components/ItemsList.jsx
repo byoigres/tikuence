@@ -11,10 +11,10 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 const useGridClasses = makeStyles((theme) => ({
   [theme.breakpoints.down('md')]: {
     root: {
-      maxHeight: theme.spacing(7),
+      maxHeight: theme.spacing(8),
       flexWrap: 'nowrap',
       width: 'auto',
-      overflowX: 'scroll',
+      overflowX: 'auto',
       overflowY: 'hidden',
     },
   },
@@ -94,7 +94,6 @@ const ItemsList = ({
         {isFullWidthMatch && minimal && initialItems.length > minimal && (
           <Typography
             variant="body2"
-            style={{ display: 'block' }}
             onClick={() => {
               setIsCollapsed(!isCollapsed);
             }}
