@@ -58,11 +58,26 @@ async function getCategories(req: Request, res: Response, next: NextFunction) {
   const knex = Knex()
 
   const categories = await knex(`${Tables.ListsCategories} AS LC`)
-    .select('C.id', 'C.description', 'C.identifier')
+    .select('C.description', 'C.identifier')
     .join(`${Tables.Categories} AS C`, 'LC.category_id', 'C.id')
     .where('LC.list_id', listId)
 
   httpContext.set('categories', categories)
+
+  next()
+}
+
+async function getLanguages(req: Request, res: Response, next: NextFunction) {
+  const listId = httpContext.get('listId')
+
+  const knex = Knex()
+
+  const languages = await knex(`${Tables.ListsLanguages} AS LL`)
+    .select('L.name', 'L.code')
+    .join(`${Tables.Languages} AS L`, 'LL.language_id', 'L.id')
+    .where('LL.list_id', listId)
+
+  httpContext.set('languages', languages)
 
   next()
 }
@@ -112,6 +127,7 @@ async function response(req: Request) {
   const list = httpContext.get('list')
   const videos = httpContext.get('videos')
   const categories = httpContext.get('categories')
+  const languages = httpContext.get('languages')
   const authors = httpContext.get('authors')
   const isFavorited: Boolean = httpContext.get('isFavorited')
 
@@ -132,6 +148,7 @@ async function response(req: Request) {
       videos,
       authors,
       categories,
+      languages,
       isMe: req.user ? req.user.id === list.user_id : false,
       modal: false
     }
@@ -143,6 +160,7 @@ export default asyncRoutes([
   getIsFavorites,
   getList,
   getCategories,
+  getLanguages,
   getAuthors,
   setThumbnails,
   response
