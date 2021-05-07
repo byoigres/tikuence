@@ -1,60 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
-/*
-import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
-import * as icons from '@material-ui/icons';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-const categoryIconsMaping = {
-  'life-style': 'EmojiPeople', // 'Cake', 'ChildFriendly'
-  music: 'MusicNote',
-  'movies-tv': 'Theaters',
-  'video-games': 'VideogameAsset',
-  travel: 'Flight',
-  news: 'Announcement',
-  'story-time': 'Forum',
-  history: 'History',
-  science: 'Public',
-  pictures: 'Satellite',
-  pranks: 'DirectionsRun',
-  'horror-terror': 'MoodBad',
-  driving: 'DriveEta',
-  tech: 'Computer',
-  internet: 'Http',
-  health: 'LocalHospital',
-  funny: 'EmojiEmotions',
-  culture: 'Map',
-  mystery: 'RemoveRedEye',
-  languages: 'Language',
-  sports: 'Sports',
-};
-
-function useIcons(word) {
-  const Icon = icons[word];
-  return <Icon />;
-}
-*/
 const useChipClasses = makeStyles((theme) => ({
   root: {
     marginBottom: theme.spacing(1),
   },
 }));
 
-const ItemsList = ({ title, items = [], keyProperty, labelProperty }) => {
+const ItemsList = ({
+  title,
+  items: initialItems = [],
+  keyProperty,
+  labelProperty,
+  minimal = null,
+}) => {
   const chipClasses = useChipClasses();
   const theme = useTheme();
+  const [items, setItems] = useState([]);
+  const [baseItems, setBaseItems] = useState([]);
+  const [isCollapsed, setIsCollapsed] = useState(minimal === null);
   const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
 
-  if (items.length === 0) {
+  useEffect(() => {
+    if (minimal) {
+      const minimalItems = initialItems.filter((_, index) => index < minimal);
+      setBaseItems(minimalItems);
+      const restItems = initialItems.filter((_, index) => index >= minimal);
+      setItems(restItems);
+    } else {
+      setBaseItems(initialItems);
+    }
+  }, []);
+
+  if (initialItems.length === 0) {
     return null;
   }
 
   return (
     <>
-      <Typography variant="button">{title}</Typography>
+      <Typography variant="button">
+        {title} ({initialItems.length})
+      </Typography>
       <Grid
         container
         direction={isFullWidthMatch ? 'column' : 'row'}
@@ -62,7 +55,7 @@ const ItemsList = ({ title, items = [], keyProperty, labelProperty }) => {
         alignItems="flex-start"
         justify="space-evenly"
       >
-        {items.map((item) => (
+        {baseItems.map((item) => (
           <Chip
             key={item[keyProperty]}
             classes={{ ...chipClasses }}
@@ -70,6 +63,27 @@ const ItemsList = ({ title, items = [], keyProperty, labelProperty }) => {
             label={item[labelProperty]}
           />
         ))}
+        <Collapse in={isCollapsed}>
+          {items.map((item) => (
+            <Chip
+              key={item[keyProperty]}
+              classes={{ ...chipClasses }}
+              variant="outlined"
+              label={item[labelProperty]}
+            />
+          ))}
+        </Collapse>
+        {minimal && initialItems.length > minimal && (
+          <Typography
+            variant="body2"
+            style={{ display: 'block' }}
+            onClick={() => {
+              setIsCollapsed(!isCollapsed);
+            }}
+          >
+            View all... {isCollapsed ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </Typography>
+        )}
       </Grid>
     </>
   );

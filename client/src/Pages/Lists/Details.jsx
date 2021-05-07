@@ -32,7 +32,6 @@ import TitleForUpdate from '../../components/TitleForUpdate';
 import UserCard from '../../components/UserCard';
 import FavoriteButton from '../../components/FavoriteButton';
 import InertiaModals from '../../components/InertiaModals';
-import CreatorsList from '../../components/CreatorsList';
 import ItemsList from '../../components/ItemsList';
 
 const ConfirmDialog = ReactLazy(() => import('../../components/ConfirmDialog'));
@@ -294,8 +293,14 @@ const Details = ({ isLoading }) => {
                 pictureUrl={user.picture}
               />
               <Divider variant="fullWidth" />
-              <CreatorsList creators={authors} />
               <Divider variant="fullWidth" />
+              <ItemsList
+                title="Creators"
+                items={authors}
+                keyProperty="username"
+                labelProperty="name"
+                minimal={3}
+              />
               <ItemsList
                 title="Categories"
                 items={categories}
