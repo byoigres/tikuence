@@ -8,9 +8,25 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
+const useGridClasses = makeStyles((theme) => ({
+  [theme.breakpoints.down('md')]: {
+    root: {
+      maxHeight: theme.spacing(7),
+      flexWrap: 'nowrap',
+      width: 'auto',
+      overflowX: 'scroll',
+      overflowY: 'hidden',
+    },
+  },
+  [theme.breakpoints.up('md')]: {
+    root: {},
+  },
+}));
+
 const useChipClasses = makeStyles((theme) => ({
   root: {
     marginBottom: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -22,6 +38,7 @@ const ItemsList = ({
   minimal = null,
 }) => {
   const chipClasses = useChipClasses();
+  const gridClasses = useGridClasses();
   const theme = useTheme();
   const [items, setItems] = useState([]);
   const [baseItems, setBaseItems] = useState([]);
@@ -29,7 +46,7 @@ const ItemsList = ({
   const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
 
   useEffect(() => {
-    if (minimal) {
+    if (minimal && isFullWidthMatch) {
       const minimalItems = initialItems.filter((_, index) => index < minimal);
       setBaseItems(minimalItems);
       const restItems = initialItems.filter((_, index) => index >= minimal);
@@ -37,7 +54,7 @@ const ItemsList = ({
     } else {
       setBaseItems(initialItems);
     }
-  }, []);
+  }, [isFullWidthMatch]);
 
   if (initialItems.length === 0) {
     return null;
@@ -53,7 +70,8 @@ const ItemsList = ({
         direction={isFullWidthMatch ? 'column' : 'row'}
         alignContent="flex-start"
         alignItems="flex-start"
-        justify="space-evenly"
+        justify={isFullWidthMatch ? 'space-evenly' : 'flex-start'}
+        classes={{ ...gridClasses }}
       >
         {baseItems.map((item) => (
           <Chip
@@ -73,7 +91,7 @@ const ItemsList = ({
             />
           ))}
         </Collapse>
-        {minimal && initialItems.length > minimal && (
+        {isFullWidthMatch && minimal && initialItems.length > minimal && (
           <Typography
             variant="body2"
             style={{ display: 'block' }}
