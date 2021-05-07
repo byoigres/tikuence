@@ -165,6 +165,8 @@ const AddPage = ({ pageReferer }) => {
           <MultiSelect
             label="Categories"
             placeholder="Type a category name"
+            error={errors.categories !== undefined}
+            helperText={errors.categories}
             maxSelected={3}
             options={categories}
             labelPropertyName="description"
@@ -175,6 +177,8 @@ const AddPage = ({ pageReferer }) => {
           <MultiSelect
             label="Languages"
             placeholder="Type a language name"
+            error={errors.languages !== undefined}
+            helperText={errors.languages}
             maxSelected={2}
             options={languages}
             labelPropertyName="name"

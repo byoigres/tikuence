@@ -9,6 +9,8 @@ const CategorySelector = ({
   maxSelected = null,
   labelPropertyName,
   onValueChage,
+  error,
+  helperText,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState([]);
@@ -50,6 +52,8 @@ const CategorySelector = ({
             variant="standard"
             label={label}
             placeholder={maxSelected && selected.length === maxSelected ? null : placeholder}
+            error={error}
+            helperText={helperText}
           />
         )}
       />
