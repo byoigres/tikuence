@@ -28,6 +28,11 @@ function bindRoutes(app: Express) {
   app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
     const { message, stack } = err
 
+    console.log({
+      message,
+      stack
+    })
+
     return req.Inertia.setStatusCode(500)
       .setViewData({ title: 'Something happened' })
       .render({
