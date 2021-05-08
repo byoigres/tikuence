@@ -78,7 +78,7 @@ const validations = checkSchema({
   videoUrl: {
     in: 'body',
     isLength: {
-      errorMessage: 'You must provide a title for the list',
+      errorMessage: 'You must provide a valid URL',
       options: {
         min: 1
         // TODO: check what is the max lenght of a complete URL
@@ -166,9 +166,13 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
 async function fetchVideoInfo(req: Request, _res: Response, next: NextFunction) {
   const videoUrl = httpContext.get('tiktokUrl')
 
+  console.log({ videoUrl })
+
   const response = await fetch(`https://www.tiktok.com/oembed?url=${videoUrl}`)
 
   const json: iTikTokOembed = await response.json()
+
+  console.log({ response: json })
 
   httpContext.set('videoInfo', json)
 
