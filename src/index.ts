@@ -1,3 +1,8 @@
+/* eslint import/first: 0 */
+import dotenv from 'dotenv'
+dotenv.config()
+
+import 'newrelic'
 import app from './app'
 import config from './config'
 import './utils/knex'
