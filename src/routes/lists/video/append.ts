@@ -121,17 +121,21 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
 
   try {
     parsedUrl = new url.URL(payload.videoUrl)
+    console.log('[1]:payload.videoUrl', payload.videoUrl)
   } catch (err) {
     console.log(err)
     req.flash('error', `That doesn't seems to be a valid url.`) /* eslint quotes: 0 */
     return req.Inertia.redirect(`/list/${req.params.hash}/video/add`)
   }
 
+  console.log('[2]:parsedUrl.hostname', parsedUrl.hostname)
   // If the url.URL is a shorturl, get the "real" url by following the redirection
   if (parsedUrl.hostname === 'vm.tiktok.com') {
     const response = await fetch(payload.videoUrl)
 
+    console.log('[3]:response.redirected', response.redirected)
     if (response.redirected) {
+      console.log('[4]:response.url', response.url)
       parsedUrl = new url.URL(response.url)
     }
   }
@@ -141,6 +145,8 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
       parsedUrl.hostname === 'www.tiktok.com' ? regExpPathForWeb : regExpPathForMobile
     )
 
+    console.log('[5]:parsedPath', parsedPath)
+
     if (!parsedPath) {
       req.flash('error', `That doesn't seems to be a TikTok video url.URL`) /* eslint quotes: 0 */
       return req.Inertia.redirect(`/list/${req.params.hash}/video/add`)
@@ -149,6 +155,8 @@ async function validateUrl(req: Request, _res: Response, next: NextFunction) {
     const [, tiktokId] = parsedPath
     httpContext.set('tiktokId', tiktokId)
     httpContext.set('tiktokUrl', url.format(parsedUrl))
+
+    console.log('[6]:url.format(parsedUrl)', url.format(parsedUrl))
 
     return next()
   }
@@ -167,12 +175,15 @@ async function fetchVideoInfo(req: Request, _res: Response, next: NextFunction) 
   const videoUrl = httpContext.get('tiktokUrl')
 
   console.log({ videoUrl })
+  console.log('[7]:videoUrl', videoUrl)
 
   const response = await fetch(`https://www.tiktok.com/oembed?url=${videoUrl}`)
 
+  console.log('[8]:response', response)
+
   const json: iTikTokOembed = await response.json()
 
-  console.log({ response: json })
+  console.log('[9]:json', json)
 
   httpContext.set('videoInfo', json)
 
