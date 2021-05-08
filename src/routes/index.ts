@@ -8,12 +8,14 @@ import categories from './categories'
 import profile from './profile'
 import auth from './auth'
 import images from './images'
+import policies from './policies'
 
 function bindRoutes(app: Express) {
   app.get('/', feed)
   app.use('/auth', auth)
   app.get('/images/:image', images)
   app.use('/list', lists)
+  app.use('/policies', policies)
   if (process.env.NODE_ENV !== 'production') {
     app.use('/categories', categories)
   }
