@@ -1,10 +1,14 @@
 import * as admin from 'firebase-admin'
 import config from '../config'
 
+const encodedPrivateKey = config.get('/firebase/cert/privateKey')
+const buff = Buffer.alloc(encodedPrivateKey.length, encodedPrivateKey, 'base64')
+const privateKey = buff.toString('utf-8')
+
 admin.initializeApp({
   credential: admin.credential.cert({
     projectId: config.get('/firebase/cert/projectId'),
-    privateKey: config.get('/firebase/cert/privateKey'),
+    privateKey,
     clientEmail: config.get('/firebase/cert/clientEmail')
   })
 })
