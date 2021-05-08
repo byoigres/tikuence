@@ -40,7 +40,13 @@ export enum Tables {
   UsersSocialProviders = 'public.users_social_providers',
   UsersFavorites = 'public.users_favorites',
   Videos = 'public.videos',
-  PendingUsers = 'public.pending_users'
+  PendingUsers = 'public.pending_users',
+  Categories = 'public.categories',
+  ListsCategories = 'public.lists_categories',
+  Hashtags = 'public.hashtags',
+  ListsHashtags = 'public.lists_hashtags',
+  Languages = 'public.languages',
+  ListsLanguages = 'public.lists_languages'
 }
 
 export interface iFeedResultThumbnails {

@@ -1,4 +1,4 @@
-import { Request } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import asyncRoutes from '../../utils/asyncRoutes'
 import Knex, { Tables, iProfileListVideos } from '../../utils/knex'
@@ -7,10 +7,8 @@ import { getIsFavorites } from '../lists/list'
 import { createThumbnailUrl, ThumbnailSize } from '../../utils/images'
 import UrlHash, { VIDEO_MODIFIER } from '../../utils/urlHash'
 
-async function view(req: Request) {
+async function getList(req: Request, res: Response, next: NextFunction) {
   const listId = httpContext.get('listId')
-  const isFavorited: Boolean = httpContext.get('isFavorited')
-
   const knex = Knex()
 
   const list = await knex(`${Tables.Lists} AS L`)
@@ -43,47 +41,127 @@ async function view(req: Request) {
     .where({ 'L.id': listId })
     .first()
 
-  if (list) {
-    list.thumbnail = createThumbnailUrl(list.thumbnail, ThumbnailSize.Lg)
-
-    const videos = await knex<iProfileListVideos>(`${Tables.ListsVideos} AS LV`)
-      .select('V.url_hash AS id', 'V.title', 'V.thumbnail_name AS thumbnail', 'LV.order_id')
-      .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
-      .where('LV.list_id', listId)
-      .orderBy('LV.order_id')
-
-    videos.forEach((item) => {
-      item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Sm)
-    })
-
-    return req.Inertia.setViewData({ title: list.title, thumbnail: list.thumbnail }).render({
-      component: 'Lists/Details',
-      props: {
-        id: list.id,
-        title: list.title,
-        coverId: UrlHash.encode(list.video_cover_id, VIDEO_MODIFIER),
-        total_videos: list.total_videos || 0,
-        isFavorited,
-        user: {
-          id: list.user_id,
-          name: list.name,
-          username: list.username,
-          picture: list.picture
-        },
-        videos: videos,
-        isMe: req.user ? req.user.id === list.user_id : false,
-        modal: false
-      }
+  if (!list) {
+    return req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
+      component: 'Errors/404'
     })
   }
 
-  req.Inertia.setStatusCode(404).setViewData({ title: 'Page not found' }).render({
-    component: 'Errors/404'
+  httpContext.set('list', list)
+
+  next()
+}
+
+async function getCategories(req: Request, res: Response, next: NextFunction) {
+  const listId = httpContext.get('listId')
+
+  const knex = Knex()
+
+  const categories = await knex(`${Tables.ListsCategories} AS LC`)
+    .select('C.description', 'C.identifier')
+    .join(`${Tables.Categories} AS C`, 'LC.category_id', 'C.id')
+    .where('LC.list_id', listId)
+
+  httpContext.set('categories', categories)
+
+  next()
+}
+
+async function getLanguages(req: Request, res: Response, next: NextFunction) {
+  const listId = httpContext.get('listId')
+
+  const knex = Knex()
+
+  const languages = await knex(`${Tables.ListsLanguages} AS LL`)
+    .select('L.name', 'L.code')
+    .join(`${Tables.Languages} AS L`, 'LL.language_id', 'L.id')
+    .where('LL.list_id', listId)
+
+  httpContext.set('languages', languages)
+
+  next()
+}
+
+async function getAuthors(req: Request, res: Response, next: NextFunction) {
+  const listId = httpContext.get('listId')
+
+  const knex = Knex()
+
+  const authors = await knex(`${Tables.ListsVideos} AS LV`)
+    .select('A.name', 'A.username')
+    .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
+    .join(`${Tables.Authors} AS A`, 'V.author_id', 'A.id')
+    .where('LV.list_id', listId)
+    .groupBy('A.name', 'A.username')
+    .orderBy('A.username')
+
+  httpContext.set('authors', authors)
+
+  next()
+}
+
+async function setThumbnails(req: Request, res: Response, next: NextFunction) {
+  const listId = httpContext.get('listId')
+  const list = httpContext.get('list')
+
+  const knex = Knex()
+
+  list.thumbnail = createThumbnailUrl(list.thumbnail, ThumbnailSize.Lg)
+
+  const videos = await knex<iProfileListVideos>(`${Tables.ListsVideos} AS LV`)
+    .select('V.url_hash AS id', 'V.title', 'V.thumbnail_name AS thumbnail', 'LV.order_id')
+    .join(`${Tables.Videos} AS V`, 'LV.video_id', 'V.id')
+    .where('LV.list_id', listId)
+    .orderBy('LV.order_id')
+
+  videos.forEach((item) => {
+    item.thumbnail = createThumbnailUrl(item.thumbnail, ThumbnailSize.Sm)
+  })
+
+  httpContext.set('videos', videos)
+
+  next()
+}
+
+async function response(req: Request) {
+  const list = httpContext.get('list')
+  const videos = httpContext.get('videos')
+  const categories = httpContext.get('categories')
+  const languages = httpContext.get('languages')
+  const authors = httpContext.get('authors')
+  const isFavorited: Boolean = httpContext.get('isFavorited')
+
+  return req.Inertia.setViewData({ title: list.title, thumbnail: list.thumbnail }).render({
+    component: 'Lists/Details',
+    props: {
+      id: list.id,
+      title: list.title,
+      coverId: UrlHash.encode(list.video_cover_id, VIDEO_MODIFIER),
+      total_videos: list.total_videos || 0,
+      isFavorited,
+      user: {
+        id: list.user_id,
+        name: list.name,
+        username: list.username,
+        picture: list.picture
+      },
+      videos,
+      authors,
+      categories,
+      languages,
+      isMe: req.user ? req.user.id === list.user_id : false,
+      modal: false
+    }
   })
 }
 
 export default asyncRoutes([
   setListIdAndHashToContext,
   getIsFavorites,
-  view
+  getList,
+  getCategories,
+  getLanguages,
+  getAuthors,
+  setThumbnails,
+  response
 ])

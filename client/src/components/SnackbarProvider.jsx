@@ -19,6 +19,7 @@ const SnackBarProvider = ({ children, flash }) => {
     if (flash) {
       let message = null;
       let variant = null;
+      const timestamp = localStorage.getItem('_tklastflashtime');
 
       if (flash.success) {
         message = flash.success;
@@ -34,10 +35,12 @@ const SnackBarProvider = ({ children, flash }) => {
         variant = 'error';
       }
 
-      if (message) {
+      if (message && timestamp !== flash.timestamp) {
         notistackRef.current.enqueueSnackbar(message, {
           variant,
         });
+
+        localStorage.setItem('_tklastflashtime', flash.timestamp);
       }
     }
   }, [flash]);

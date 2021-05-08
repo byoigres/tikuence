@@ -18,11 +18,15 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
+import Collapse from '@material-ui/core/Collapse';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ListIcon from '@material-ui/icons/List';
 import { Inertia } from '@inertiajs/inertia';
 import { Container as ContainerDraggable, Draggable } from 'react-smooth-dnd';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
@@ -32,10 +36,16 @@ import TitleForUpdate from '../../components/TitleForUpdate';
 import UserCard from '../../components/UserCard';
 import FavoriteButton from '../../components/FavoriteButton';
 import InertiaModals from '../../components/InertiaModals';
+import ItemsList from '../../components/ItemsList';
 
 const ConfirmDialog = ReactLazy(() => import('../../components/ConfirmDialog'));
 
 const useStyles = makeStyles((theme) => ({
+  [theme.breakpoints.down('md')]: {
+    infoColumn: {
+      maxHeight: 'auto',
+    },
+  },
   userCard: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -48,12 +58,17 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100px',
     height: '100%',
   },
-  infoColumn: ({ isFullWidthMatch }) => ({
-    position: isFullWidthMatch ? 'fixed' : 'initial',
-    maxWidth: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 3}px` : 'initial',
-    width: isFullWidthMatch ? `100%` : 'initial',
-    backgroundColor: 'white',
-  }),
+  [theme.breakpoints.up('md')]: {
+    infoColumn: ({ isFullWidthMatch }) => ({
+      position: isFullWidthMatch ? 'fixed' : 'initial',
+      maxWidth: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 3}px` : 'initial',
+      width: isFullWidthMatch ? `100%` : 'initial',
+      backgroundColor: 'white',
+      overflowY: 'auto',
+      // maxHeight: calc(vieport height - (paper padding * 2) - (main padding))
+      maxHeight: `calc(100vh - ${theme.spacing(2 * 2)}px - ${theme.spacing(3)}px)`,
+    }),
+  },
   contentColumn: ({ isFullWidthMatch }) => ({
     marginLeft: isFullWidthMatch ? `${(theme.breakpoints.values.md / 12) * 3}px` : 'initial',
     minHeight: 300,
@@ -84,7 +99,21 @@ const usePaperStyles = makeStyles((theme) => ({
 
 const Details = ({ isLoading }) => {
   const {
-    props: { auth, id, title, isFavorited, user, videos, isMobile, isMe, modal = false, coverId },
+    props: {
+      auth,
+      id,
+      title,
+      isFavorited,
+      user,
+      videos,
+      isMobile,
+      isMe,
+      modal = false,
+      coverId,
+      authors,
+      categories,
+      languages,
+    },
   } = usePage();
   const theme = useTheme();
   const isFullWidthMatch = useMediaQuery(`(min-width:${theme.breakpoints.values.md}px)`);
@@ -96,6 +125,7 @@ const Details = ({ isLoading }) => {
   const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState(false);
   const [currentVideoToDelete, setCurrentVideoToDelete] = useState(null);
   const [itemMenuState, setItemMenuState] = useState();
+  const [viewDetails, setViewDetails] = useState(false);
 
   function onRemoveVideoDialogClose() {
     setIsRemoveVideoDialogOpen(false);
@@ -274,6 +304,43 @@ const Details = ({ isLoading }) => {
                 usernameText={user.username}
                 pictureUrl={user.picture}
               />
+              <Divider variant="fullWidth" />
+              <Divider variant="fullWidth" />
+              {!isFullWidthMatch && (
+                <ListItem
+                  button
+                  onClick={() => {
+                    setViewDetails(!viewDetails);
+                  }}
+                >
+                  <ListItemIcon>
+                    <ListIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="More details..." />
+                  {viewDetails ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+              )}
+              <Collapse in={isFullWidthMatch || viewDetails}>
+                <ItemsList
+                  title="Creators"
+                  items={authors}
+                  keyProperty="username"
+                  labelProperty="name"
+                  minimal={3}
+                />
+                <ItemsList
+                  title="Categories"
+                  items={categories}
+                  keyProperty="identifier"
+                  labelProperty="description"
+                />
+                <ItemsList
+                  title="Languages"
+                  items={languages}
+                  keyProperty="code"
+                  labelProperty="name"
+                />
+              </Collapse>
               <Divider variant="fullWidth" />
             </Grid>
             <div className={classes.contentColumn}>

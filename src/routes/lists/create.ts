@@ -9,6 +9,8 @@ import UrlHash, { LIST_MODIFIER } from '../../utils/urlHash'
 
 interface iPayload {
   title: string
+  categories: number[]
+  languages: number[]
 }
 
 const validations = checkSchema({
@@ -19,6 +21,54 @@ const validations = checkSchema({
       options: {
         min: 1,
         max: 150
+      }
+    }
+  },
+  categories: {
+    in: 'body',
+    errorMessage: 'You must select at least one category',
+    isArray: {
+      options: {
+        min: 1,
+        max: 3
+      },
+      bail: true
+    },
+    customSanitizer: {
+      options: async (values) => {
+        const knex = Knex()
+
+        const ids = await knex(Tables.Categories).select('id', 'identifier').whereIn('identifier', values)
+
+        if (ids.length === values.length) {
+          return ids.map((x) => x.id)
+        }
+
+        return Promise.reject(new Error("The selected categories weren't valid."))
+      }
+    }
+  },
+  languages: {
+    in: 'body',
+    errorMessage: 'You must select at least one language',
+    isArray: {
+      options: {
+        min: 1,
+        max: 2
+      },
+      bail: true
+    },
+    customSanitizer: {
+      options: async (values) => {
+        const knex = Knex()
+
+        const ids = await knex(Tables.Languages).select('id', 'code').whereIn('code', values)
+
+        if (ids.length === values.length) {
+          return ids.map((x) => x.id)
+        }
+
+        return Promise.reject(new Error("The selected languages weren't valid."))
       }
     }
   }
@@ -42,11 +92,32 @@ async function createList(req: Request, res: Response, next: NextFunction) {
 
     const urlHash = UrlHash.encode(listId, LIST_MODIFIER)
 
-    await knex(Tables.Lists).transacting(transaction).update({
-      url_hash: urlHash
-    }).where({
-      id: listId
-    })
+    await knex(Tables.Lists)
+      .transacting(transaction)
+      .update({
+        url_hash: urlHash
+      })
+      .where({
+        id: listId
+      })
+
+    const categories = payload.categories.map((categoryId: number) => ({
+      list_id: listId,
+      category_id: categoryId,
+      created_at: new Date(),
+      updated_at: new Date()
+    }))
+
+    await knex.batchInsert(Tables.ListsCategories, categories).transacting(transaction)
+
+    const listLanguages = payload.languages.map((languageId: number) => ({
+      list_id: listId,
+      language_id: languageId,
+      created_at: new Date(),
+      updated_at: new Date()
+    }))
+
+    await knex.batchInsert(Tables.ListsLanguages, listLanguages).transacting(transaction)
 
     await transaction.commit()
 
@@ -67,4 +138,10 @@ async function response(req: Request) {
   req.Inertia.redirect(`/list/${urlHash}/details`)
 }
 
-export default asyncRoutes([isAuthenticated, ...validations, prepareValidationForErrorMessages('/list/add'), createList, response])
+export default asyncRoutes([
+  isAuthenticated,
+  ...validations,
+  prepareValidationForErrorMessages('/list/add'),
+  createList,
+  response
+])

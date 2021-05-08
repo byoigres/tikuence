@@ -118,7 +118,8 @@ export function populateSharedProps(req: Request, _res: Response, next: NextFunc
         success: messages.success.length > 0 ? messages.success[0] : null,
         error: messages.error.length > 0 ? messages.error[0] : null,
         info: messages.info.length > 0 ? messages.info[0] : null,
-        warning: messages.warning.length > 0 ? messages.warning[0] : null
+        warning: messages.warning.length > 0 ? messages.warning[0] : null,
+        timestamp: Date.now().toString()
       }
     },
     errors: () => {

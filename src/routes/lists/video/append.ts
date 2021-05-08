@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import httpContext from 'express-http-context'
 import fetch from 'node-fetch'
+import HashtagRegex from 'hashtag-regex'
 import url from 'url'
 import { v4 as uuidv4 } from 'uuid'
 import { checkSchema } from 'express-validator'
@@ -258,10 +259,10 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
   const knex = Knex()
   const transaction = await knex.transaction()
 
-  try {
-    let videoId: number
+  let videoId: number
 
-    // Verify if the video exists
+  try {
+    // TODO: Verify if the video exists
     const videoExists = await knex<{ tiktok_id: string; author_id: number }>(Tables.Videos)
       .transacting(transaction)
       .select('id')
@@ -358,6 +359,76 @@ async function createVideo(req: Request, _res: Response, next: NextFunction) {
   next()
 }
 
+async function createHashtags(req: Request, _res: Response, next: NextFunction) {
+  const listId = httpContext.get('listId')
+  const videoInfo: iTikTokOembed = httpContext.get('videoInfo')
+
+  // Extract the unique hashtags
+  const regex = HashtagRegex()
+  const hashtags = new Map()
+  let match
+
+  while ((match = regex.exec(videoInfo.title))) {
+    const [singleMatch] = match
+    const hashtag = singleMatch.substr(1, singleMatch.length)
+
+    if (!hashtags.has(hashtag)) {
+      hashtags.set(hashtag, {})
+    }
+  }
+
+  const knex = Knex()
+
+  const transaction = await knex.transaction()
+
+  try {
+    const hashtagsIds = []
+
+    // Insert the new hashtags or get the ids of the existing ones
+    for await (const hashtag of hashtags.keys()) {
+      const [hashtagRow] = await knex(Tables.Hashtags).select('id').where('hashtag', hashtag)
+
+      if (!hashtagRow) {
+        const [id] = await knex(Tables.Hashtags)
+          .transacting(transaction)
+          .insert({
+            hashtag,
+            created_at: new Date(),
+            updated_at: new Date()
+          })
+          .onConflict('hashtag')
+          .ignore()
+          .returning<[number]>('id')
+
+        hashtagsIds.push(id)
+      } else {
+        hashtagsIds.push(hashtagRow.id)
+      }
+    }
+
+    // Insert the ids of the hashtags for the list
+    for await (const hashtagId of hashtagsIds) {
+      await knex(Tables.ListsHashtags)
+        .transacting(transaction)
+        .insert({
+          list_id: listId,
+          hashtag_id: hashtagId,
+          created_at: new Date(),
+          updated_at: new Date()
+        })
+        .onConflict(['list_id', 'hashtag_id'])
+        .ignore()
+    }
+
+    await transaction.commit()
+  } catch (err) {
+    await transaction.rollback()
+    throw err
+  }
+
+  next()
+}
+
 async function response(req: Request) {
   req.flash('success', 'Video added successfully')
 
@@ -376,5 +447,6 @@ export default asyncRoutes([
   verifyIfVideoExistinList,
   createAuthor,
   createVideo,
+  createHashtags,
   response
 ])

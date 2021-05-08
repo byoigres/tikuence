@@ -61,7 +61,20 @@ async function deleteList(req: Request, res: Response, next: NextFunction) {
 
   const knex = Knex()
 
-  await knex(Tables.Lists).where('id', listId).delete()
+  const transaction = await knex.transaction()
+
+  try {
+    await knex(Tables.ListsVideos).transacting(transaction).where('list_id', listId).delete()
+    await knex(Tables.ListsCategories).transacting(transaction).where('list_id', listId).delete()
+    await knex(Tables.ListsLanguages).transacting(transaction).where('list_id', listId).delete()
+    await knex(Tables.ListsHashtags).transacting(transaction).where('list_id', listId).delete()
+    await knex(Tables.Lists).transacting(transaction).where('id', listId).delete()
+
+    await transaction.commit()
+  } catch (err) {
+    await transaction.rollback()
+    throw err
+  }
 
   next()
 }
