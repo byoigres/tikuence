@@ -4,10 +4,10 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
 import Divider from '@material-ui/core/Divider';
 import GTranslateIcon from '@material-ui/icons/GTranslate';
 import { InertiaLink } from '@inertiajs/inertia-react';
+import { Inertia } from '@inertiajs/inertia';
 import Layout from '../../components/Layout';
 import SEO from '../../components/SEO';
 
@@ -57,17 +57,28 @@ const Login = ({ isLogin, isMobile }) => {
             >
               {isLogin ? 'Continue' : 'Sign up'} with Google
             </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              href="/auth/local"
+              onClick={(e) => {
+                e.preventDefault();
+                Inertia.visit('/auth/local', {
+                  method: 'post',
+                  data: { username: 'quis.urna@diamDuis.edu', password: '213' },
+                });
+              }}
+            >
+              Local
+            </Button>
           </div>
           {!isLogin && (
             <Typography variant="body2">
               {`You will be asked to accept the `}
-              <Link href="/legal/terms" target="_blank">
-                terms of service
-              </Link>
+              <InertiaLink href="/policies/terms">terms of service</InertiaLink>
               {` and `}
-              <Link href="/legal/privacy" target="_blank">
-                privacy policy
-              </Link>
+              <InertiaLink href="/policies/privacy">privacy policy</InertiaLink>
               {' in a later step.'}
             </Typography>
           )}

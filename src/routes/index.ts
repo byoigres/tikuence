@@ -12,6 +12,10 @@ import policies from './policies'
 
 function bindRoutes(app: Express) {
   app.get('/', feed)
+  app.use('/about', (req: Request, res: Response) => {
+    res.redirect('https://tikuence.launchaco.com/')
+  })
+  app.use('/auth', auth)
   app.use('/auth', auth)
   app.get('/images/:image', images)
   app.use('/list', lists)
