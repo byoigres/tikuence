@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -208,11 +209,16 @@ const DrawerMenu = ({ open, onClose, isAuthenticated, credentials }) => {
               marginBottom: theme.spacing(1),
             }}
           >
-            <InertiaLink href="/about">About</InertiaLink>
-            <InertiaLink href="/contact">Contact</InertiaLink>
-            <InertiaLink href="/policies/terms">Terms</InertiaLink>
-            <InertiaLink href="/policies/privacy">Privacy</InertiaLink>
-            <InertiaLink href="/policies/cookies">Cookies policy</InertiaLink>
+            <Link href="/about">About</Link>
+            <Link component={InertiaLink} href="/policies/terms">
+              Terms
+            </Link>
+            <Link component={InertiaLink} href="/policies/privacy">
+              Privacy
+            </Link>
+            <Link component={InertiaLink} href="/policies/cookies">
+              Cookies policy
+            </Link>
           </div>
         </Collapse>
       </Drawer>

@@ -14,7 +14,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
 import HelpIcon from '@material-ui/icons/Help';
 import Link from '@material-ui/core/Link';
-import { usePage } from '@inertiajs/inertia-react';
+import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
 import Layout from '../../components/Layout';
 import SEO from '../../components/SEO';
@@ -238,11 +238,11 @@ const Register = () => {
                       label={
                         <>
                           {`Accept the `}
-                          <Link href="/legal/terms" target="_blank">
+                          <Link component={InertiaLink} href="/policies/terms">
                             terms of service
                           </Link>
                           {` and `}
-                          <Link href="/legal/privacy" target="_blank">
+                          <Link component={InertiaLink} href="/policies/privacy">
                             privacy policy
                           </Link>
                           .

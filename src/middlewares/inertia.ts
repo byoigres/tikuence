@@ -45,6 +45,9 @@ const template = (page: object, viewData: ViewData) => `
     <meta property="twitter:image" content="${getShareImage(viewData.thumbnail)}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Passion+One&display=swap" rel="stylesheet">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-98315944-4"></script>
+    <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-98315944-4');</script>
+
   </head>
 
   <body>
