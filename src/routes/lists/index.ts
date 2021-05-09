@@ -9,6 +9,7 @@ import update from './update'
 import add from './add'
 import video from './video'
 import cover from './cover'
+import categories from './categories'
 
 const router = Router({
   mergeParams: true
@@ -30,6 +31,11 @@ router.post('/:hash/favorite', favorite)
 
 // Set cover for list
 router.post('/:hash/cover', cover)
+
+if (process.env.NODE_ENV !== 'production') {
+  // Update categories for list
+  router.post('/:hash/categories', categories)
+}
 
 // List details view
 router.get('/:hash/details', details)

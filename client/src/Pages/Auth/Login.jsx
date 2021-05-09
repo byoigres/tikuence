@@ -57,21 +57,6 @@ const Login = ({ isLogin, isMobile }) => {
             >
               {isLogin ? 'Continue' : 'Sign up'} with Google
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              href="/auth/local"
-              onClick={(e) => {
-                e.preventDefault();
-                Inertia.visit('/auth/local', {
-                  method: 'post',
-                  data: { username: 'quis.urna@diamDuis.edu', password: '213' },
-                });
-              }}
-            >
-              Local
-            </Button>
           </div>
           {!isLogin && (
             <Typography variant="body2">

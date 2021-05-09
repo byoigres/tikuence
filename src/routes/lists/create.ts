@@ -6,6 +6,7 @@ import { prepareValidationForErrorMessages } from '../../middlewares/validations
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
 import UrlHash, { LIST_MODIFIER } from '../../utils/urlHash'
+import { paramSchemaTitle, paramSchemaCategories, paramSchemaLanguages } from '../../utils/validations'
 
 interface iPayload {
   title: string
@@ -14,64 +15,9 @@ interface iPayload {
 }
 
 const validations = checkSchema({
-  title: {
-    in: 'body',
-    errorMessage: 'You must provide a title for the list',
-    isLength: {
-      options: {
-        min: 1,
-        max: 150
-      }
-    }
-  },
-  categories: {
-    in: 'body',
-    errorMessage: 'You must select at least one category',
-    isArray: {
-      options: {
-        min: 1,
-        max: 3
-      },
-      bail: true
-    },
-    customSanitizer: {
-      options: async (values) => {
-        const knex = Knex()
-
-        const ids = await knex(Tables.Categories).select('id', 'identifier').whereIn('identifier', values)
-
-        if (ids.length === values.length) {
-          return ids.map((x) => x.id)
-        }
-
-        return Promise.reject(new Error("The selected categories weren't valid."))
-      }
-    }
-  },
-  languages: {
-    in: 'body',
-    errorMessage: 'You must select at least one language',
-    isArray: {
-      options: {
-        min: 1,
-        max: 2
-      },
-      bail: true
-    },
-    customSanitizer: {
-      options: async (values) => {
-        const knex = Knex()
-
-        const ids = await knex(Tables.Languages).select('id', 'code').whereIn('code', values)
-
-        if (ids.length === values.length) {
-          return ids.map((x) => x.id)
-        }
-
-        return Promise.reject(new Error("The selected languages weren't valid."))
-      }
-    }
-  }
+  title: paramSchemaTitle,
+  categories: paramSchemaCategories,
+  languages: paramSchemaLanguages
 })
 
 async function createList(req: Request, res: Response, next: NextFunction) {
