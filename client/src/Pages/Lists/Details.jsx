@@ -97,7 +97,7 @@ const usePaperStyles = makeStyles((theme) => ({
   },
 }));
 
-const Details = ({ isLoading }) => {
+const Details = ({ isLoading, categories, languages }) => {
   const {
     props: {
       auth,
@@ -111,8 +111,6 @@ const Details = ({ isLoading }) => {
       modal = false,
       coverId,
       authors,
-      categories,
-      languages,
     },
   } = usePage();
   const theme = useTheme();
@@ -333,6 +331,14 @@ const Details = ({ isLoading }) => {
                   items={categories}
                   keyProperty="identifier"
                   labelProperty="description"
+                  onEditClick={(e) => {
+                    e.preventDefault();
+                    Inertia.visit(`/list/${id}/categories`, {
+                      only: ['auth', 'flash', 'errors', 'listId', 'modal', 'referer'],
+                      preserveScroll: true,
+                      preserveState: true,
+                    });
+                  }}
                 />
                 <ItemsList
                   title="Languages"
