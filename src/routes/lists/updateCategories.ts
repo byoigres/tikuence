@@ -6,19 +6,16 @@ import { prepareValidationForErrorMessages } from '../../middlewares/validations
 import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
-import { paramSchemaCategories } from '../../utils/validations'
+import { paramSchemaListBelongsToAuthUser, paramSchemaCategories } from '../../utils/validations'
 
 interface iPayload {
   categories: number[]
 }
 
 const validations = checkSchema({
+  hash: paramSchemaListBelongsToAuthUser,
   categories: paramSchemaCategories
 })
-
-/**
- * TODO: check if list belongs to the current user
- */
 
 async function updateCategories(req: Request, _res: Response, next: NextFunction) {
   const listId = httpContext.get('listId')
