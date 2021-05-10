@@ -34,6 +34,7 @@ const useChipClasses = makeStyles((theme) => ({
 const ItemsList = ({
   title,
   items: initialItems = [],
+  displayItemCount = false,
   keyProperty,
   labelProperty,
   minimal = null,
@@ -58,14 +59,11 @@ const ItemsList = ({
     }
   }, [isFullWidthMatch, initialItems]);
 
-  if (initialItems.length === 0) {
-    return null;
-  }
-
   return (
     <>
       <Typography variant="button">
-        {title} ({initialItems.length})
+        {title}
+        {displayItemCount && initialItems.length > minimal && ` (${initialItems.length})`}
         {onEditClick && (
           <IconButton size="small" onClick={onEditClick}>
             <EditIcon fontSize="small" />
