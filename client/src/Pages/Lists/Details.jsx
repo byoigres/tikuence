@@ -324,6 +324,7 @@ const Details = ({ isLoading, categories, languages }) => {
                   items={authors}
                   keyProperty="username"
                   labelProperty="name"
+                  displayItemCount
                   minimal={3}
                 />
                 <ItemsList

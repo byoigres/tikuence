@@ -3,7 +3,7 @@ import { checkSchema } from 'express-validator'
 import httpContext from 'express-http-context'
 import asyncRoutes from '../../utils/asyncRoutes'
 import { prepareValidationForErrorMessages } from '../../middlewares/validations'
-// import { isAuthenticated } from '../../middlewares/inertia'
+import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
 import { paramSchemaCategories } from '../../utils/validations'
@@ -62,8 +62,8 @@ async function response(req: Request) {
 
 export default asyncRoutes([
   ...validations,
-  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.hash}/details`),
-  // isAuthenticated,
+  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.hash}/categories`),
+  isAuthenticated,
   setListIdAndHashToContext,
   updateCategories,
   response

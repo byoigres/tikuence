@@ -54,11 +54,8 @@ const EditCategoriesPage = () => {
         onStart() {
           setIsLoading(true);
         },
-        onSuccess() {
-          // Inertia.reload();
-        },
         onFinish() {
-          // setIsLoading(false);
+          setIsLoading(false);
         },
       }
     );
