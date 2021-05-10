@@ -9,7 +9,7 @@ import update from './update'
 import add from './add'
 import video from './video'
 import cover from './cover'
-import categories from './categories'
+import updateCategories from './updateCategories'
 
 const router = Router({
   mergeParams: true
@@ -34,7 +34,7 @@ router.post('/:hash/cover', cover)
 
 if (process.env.NODE_ENV !== 'production') {
   // Update categories for list
-  router.post('/:hash/categories', categories)
+  router.post('/:hash/categories', updateCategories)
 }
 
 // List details view
