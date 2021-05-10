@@ -119,8 +119,8 @@ const EditCategoriesPage = () => {
           <MultiSelect
             label="Categories"
             placeholder="Type a category name"
-            error={errors.categories !== undefined}
-            helperText={errors.categories}
+            error={errors.hash !== undefined || errors.categories !== undefined}
+            helperText={errors.hash || errors.categories}
             maxSelected={3}
             options={categories}
             defaultValue={selected}
