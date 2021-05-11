@@ -35,16 +35,14 @@ router.post('/:hash/favorite', favorite)
 // Set cover for list
 router.post('/:hash/cover', cover)
 
-if (process.env.NODE_ENV !== 'production') {
-  // Display edit list categories modal
-  router.get('/:hash/categories', categories)
-  // Update categories for list
-  router.post('/:hash/categories', updateCategories)
-  // Display edit list languages modal
-  router.get('/:hash/languages', languages)
-  // Update categories for list
-  router.post('/:hash/languages', updateLanguages)
-}
+// Display edit list categories modal
+router.get('/:hash/categories', categories)
+// Update categories for list
+router.post('/:hash/categories', updateCategories)
+// Display edit list languages modal
+router.get('/:hash/languages', languages)
+// Update categories for list
+router.post('/:hash/languages', updateLanguages)
 
 // List details view
 router.get('/:hash/details', details)
