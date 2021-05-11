@@ -6,7 +6,7 @@ import asyncRoutes from '../../utils/asyncRoutes'
 export async function getCategories(req: Request, res: Response, next: NextFunction) {
   const knex = Knex()
 
-  const categories = await knex(Tables.Categories).select('description', 'identifier')
+  const categories = await knex(Tables.Categories).select('description', 'identifier').orderBy('description')
 
   httpContext.set('categories', categories)
 
