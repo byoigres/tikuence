@@ -119,6 +119,7 @@ const EditCategoriesPage = () => {
           <MultiSelect
             label="Categories"
             placeholder="Type a category name"
+            autoFocus
             error={errors.hash !== undefined || errors.categories !== undefined}
             helperText={errors.hash || errors.categories}
             maxSelected={3}
