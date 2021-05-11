@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -29,70 +28,42 @@ const useStyles = makeStyles((theme) => ({
 /* eslint react/jsx-props-no-spreading: 0 */
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const AddPage = ({ pageReferer }) => {
+const EditLanguagesPage = () => {
   const classes = useStyles();
   const {
     props: {
+      referer,
       isMobile,
-      referer: initialReferer,
       errors,
-      modal: { categories, languages },
+      modal: { listId, languages, selected },
     },
   } = usePage();
   const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [title, setTitle] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
-  const [referer] = useState(initialReferer);
-  const listNameRef = useRef(null);
+  const [selectedLanguages, setSelectedLanguages] = useState(selected);
 
   function onCreate() {
     Inertia.post(
-      '/list',
+      `/list/${listId}/languages`,
       {
-        title,
-        categories: selectedCategories,
         languages: selectedLanguages,
       },
       {
         preserveScroll: true,
-        only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'modal', 'title'],
-        headers: {
-          'X-Page-Referer': pageReferer,
-        },
+        only: ['auth', 'flash', 'errors', 'isMobile', 'referer', 'modal', 'languages'],
         onStart() {
           setIsLoading(true);
         },
-        onSuccess() {
-          Inertia.reload();
-        },
         onFinish() {
           setIsLoading(false);
-          if (listNameRef.current) {
-            listNameRef.current.focus();
-          }
         },
       }
     );
   }
 
-  function handleChange(e) {
-    const { value } = e.target;
-
-    setTitle(value);
-  }
-
   const handleClose = () => {
     setIsOpen(false);
   };
-
-  function handleOnKeyPress(ev) {
-    if (ev.key === 'Enter') {
-      ev.preventDefault();
-      onCreate();
-    }
-  }
 
   const handleCreate = (e) => {
     e.preventDefault();
@@ -103,7 +74,7 @@ const AddPage = ({ pageReferer }) => {
 
   return (
     <>
-      <SEO title="Add new list" />
+      <SEO title="Change languages" />
       <Dialog
         fullScreen={isMobile}
         fullWidth
@@ -137,72 +108,31 @@ const AddPage = ({ pageReferer }) => {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" component="h1" className={classes.title}>
-              New list
+              Change languages
             </Typography>
             <Button autoFocus color="inherit" onClick={handleCreate} disabled={isLoading}>
-              Create
+              Update
             </Button>
           </Toolbar>
         </AppBar>
         <DialogContent>
-          <TextField
-            placeholder="Enter the name of the list"
-            label="List name"
-            autoFocus
-            fullWidth
-            margin="dense"
-            inputProps={{
-              maxLength: 150,
-              ref: listNameRef,
-            }}
-            disabled={isLoading}
-            value={title}
-            onChange={handleChange}
-            onKeyPress={handleOnKeyPress}
-            error={errors.title !== undefined}
-            helperText={errors.title}
-          />
-          <DialogContentText>
-            <Typography variant="body2">Choose a useful name for the list</Typography>
-          </DialogContentText>
           <MultiSelect
-            label="Categories"
-            placeholder="Type a category name"
-            error={errors.categories !== undefined}
-            helperText={errors.categories}
-            maxSelected={3}
-            options={categories}
-            labelPropertyName="description"
-            onValueChage={(values) => {
-              setSelectedCategories(values.map((x) => x.identifier));
-            }}
-          />
-          <DialogContentText>
-            <Typography variant="body2">
-              Categories help us to organize the content on the site
-            </Typography>
-          </DialogContentText>
-          <MultiSelect
-            label="Languages (optional)"
+            label="Languages"
             placeholder="Type a language name"
-            error={errors.languages !== undefined}
-            helperText={errors.languages}
+            error={errors.hash !== undefined || errors.languages !== undefined}
+            helperText={errors.hash || errors.languages}
             maxSelected={2}
             options={languages}
+            defaultValue={selected}
+            keyPropertyName="code"
             labelPropertyName="name"
             onValueChage={(values) => {
               setSelectedLanguages(values.map((x) => x.code));
             }}
           />
           <DialogContentText>
-            <Typography variant="body2">
-              If the videos have audio in a language or subtitles help us by selecting both
-              languages.
-            </Typography>
-          </DialogContentText>
-          <DialogContentText>
-            <Typography variant="subtitle2">
-              After creating the list you would be able to add videos to it.
+            <Typography component="span" variant="body2">
+              Choose a list of languages for the list
             </Typography>
           </DialogContentText>
         </DialogContent>
@@ -211,4 +141,4 @@ const AddPage = ({ pageReferer }) => {
   );
 };
 
-export default AddPage;
+export default EditLanguagesPage;
