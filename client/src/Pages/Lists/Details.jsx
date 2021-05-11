@@ -346,6 +346,14 @@ const Details = ({ isLoading, categories, languages }) => {
                   items={languages}
                   keyProperty="code"
                   labelProperty="name"
+                  onEditClick={(e) => {
+                    e.preventDefault();
+                    Inertia.visit(`/list/${id}/languages`, {
+                      only: ['auth', 'flash', 'errors', 'listId', 'modal', 'referer'],
+                      preserveScroll: true,
+                      preserveState: true,
+                    });
+                  }}
                 />
               </Collapse>
               <Divider variant="fullWidth" />
