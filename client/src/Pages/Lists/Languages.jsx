@@ -119,6 +119,7 @@ const EditLanguagesPage = () => {
           <MultiSelect
             label="Languages"
             placeholder="Type a language name"
+            autoFocus
             error={errors.hash !== undefined || errors.languages !== undefined}
             helperText={errors.hash || errors.languages}
             maxSelected={2}

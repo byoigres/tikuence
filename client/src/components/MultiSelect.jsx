@@ -13,6 +13,7 @@ const CategorySelector = ({
   onValueChage,
   error,
   helperText,
+  autoFocus,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(
@@ -49,6 +50,7 @@ const CategorySelector = ({
           <TextField
             // eslint-disable-next-line react/jsx-props-no-spreading
             {...params}
+            autoFocus={autoFocus}
             variant="standard"
             label={label}
             placeholder={maxSelected && selected.length === maxSelected ? null : placeholder}

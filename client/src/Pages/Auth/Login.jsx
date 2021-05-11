@@ -7,7 +7,6 @@ import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import GTranslateIcon from '@material-ui/icons/GTranslate';
 import { InertiaLink } from '@inertiajs/inertia-react';
-import { Inertia } from '@inertiajs/inertia';
 import Layout from '../../components/Layout';
 import SEO from '../../components/SEO';
 
