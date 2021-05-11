@@ -10,6 +10,9 @@ import add from './add'
 import video from './video'
 import cover from './cover'
 import categories from './categories'
+import updateCategories from './updateCategories'
+import languages from './languages'
+import updateLanguages from './updateLanguages'
 
 const router = Router({
   mergeParams: true
@@ -33,8 +36,14 @@ router.post('/:hash/favorite', favorite)
 router.post('/:hash/cover', cover)
 
 if (process.env.NODE_ENV !== 'production') {
+  // Display edit list categories modal
+  router.get('/:hash/categories', categories)
   // Update categories for list
-  router.post('/:hash/categories', categories)
+  router.post('/:hash/categories', updateCategories)
+  // Display edit list languages modal
+  router.get('/:hash/languages', languages)
+  // Update categories for list
+  router.post('/:hash/languages', updateLanguages)
 }
 
 // List details view

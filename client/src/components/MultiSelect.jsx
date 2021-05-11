@@ -6,14 +6,19 @@ const CategorySelector = ({
   label,
   placeholder = '',
   options,
+  defaultValue = [],
   maxSelected = null,
+  keyPropertyName,
   labelPropertyName,
   onValueChage,
   error,
   helperText,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState(
+    options.filter((option) => defaultValue.includes(option[keyPropertyName]))
+  );
+  const [defaultValues] = useState(selected);
 
   return (
     <div>
@@ -27,17 +32,11 @@ const CategorySelector = ({
           if (onValueChage) {
             onValueChage(value);
           }
-          // console.log('onChange', value);
         }}
         onClose={() => {
-          // console.log('onClose');
           setIsOpen(!isOpen);
         }}
-        onInputChange={() => {
-          // console.log('onInputChange');
-        }}
         onOpen={(e) => {
-          // console.log('onOpen');
           if (selected.length >= maxSelected) {
             e.preventDefault();
           } else {
@@ -45,6 +44,7 @@ const CategorySelector = ({
           }
         }}
         open={isOpen}
+        defaultValue={defaultValues}
         renderInput={(params) => (
           <TextField
             // eslint-disable-next-line react/jsx-props-no-spreading

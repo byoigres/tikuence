@@ -5,13 +5,14 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useGridClasses = makeStyles((theme) => ({
   [theme.breakpoints.down('md')]: {
     root: {
-      maxHeight: theme.spacing(8),
       flexWrap: 'nowrap',
       width: 'auto',
       overflowX: 'auto',
@@ -33,9 +34,11 @@ const useChipClasses = makeStyles((theme) => ({
 const ItemsList = ({
   title,
   items: initialItems = [],
+  displayItemCount = false,
   keyProperty,
   labelProperty,
   minimal = null,
+  onEditClick,
 }) => {
   const chipClasses = useChipClasses();
   const gridClasses = useGridClasses();
@@ -54,16 +57,18 @@ const ItemsList = ({
     } else {
       setBaseItems(initialItems);
     }
-  }, [isFullWidthMatch]);
-
-  if (initialItems.length === 0) {
-    return null;
-  }
+  }, [isFullWidthMatch, initialItems]);
 
   return (
     <>
       <Typography variant="button">
-        {title} ({initialItems.length})
+        {title}
+        {displayItemCount && initialItems.length > minimal && ` (${initialItems.length})`}
+        {onEditClick && (
+          <IconButton size="small" onClick={onEditClick}>
+            <EditIcon fontSize="small" />
+          </IconButton>
+        )}
       </Typography>
       <Grid
         container

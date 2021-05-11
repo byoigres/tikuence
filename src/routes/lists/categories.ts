@@ -1,70 +1,44 @@
 import { Request, Response, NextFunction } from 'express'
-import { checkSchema } from 'express-validator'
 import httpContext from 'express-http-context'
 import asyncRoutes from '../../utils/asyncRoutes'
-import { prepareValidationForErrorMessages } from '../../middlewares/validations'
-// import { isAuthenticated } from '../../middlewares/inertia'
 import Knex, { Tables } from '../../utils/knex'
 import { setListIdAndHashToContext } from '../../middlewares/utils'
-import { paramSchemaCategories } from '../../utils/validations'
+import { isAuthenticated } from '../../middlewares/inertia'
+import { getCategories } from '../categories/list'
 
-interface iPayload {
-  categories: number[]
-}
-
-const validations = checkSchema({
-  categories: paramSchemaCategories
-})
-
-/**
- * TODO: check if list belongs to the current user
- */
-
-async function updateCategories(req: Request, _res: Response, next: NextFunction) {
+export async function getCategoriesFromList(req: Request, res: Response, next: NextFunction) {
   const listId = httpContext.get('listId')
-  const payload = <iPayload>req.body
   const knex = Knex()
 
-  const transaction = await knex.transaction()
+  const categories = await knex(`${Tables.ListsCategories} AS LC`)
+    .select('C.identifier')
+    .join(`${Tables.Categories} AS C`, 'LC.category_id', 'C.id')
+    .where('LC.list_id', listId)
 
-  try {
-    await knex(Tables.ListsCategories)
-      .transacting(transaction)
-      .whereNotIn('category_id', payload.categories)
-      .andWhere('list_id', listId)
-      .del()
-
-    for await (const categoryId of payload.categories) {
-      await knex(Tables.ListsCategories)
-        .transacting(transaction)
-        .insert({
-          list_id: listId,
-          category_id: categoryId,
-          created_at: new Date(),
-          updated_at: new Date()
-        })
-        .onConflict(['list_id', 'category_id'])
-        .ignore()
-    }
-
-    transaction.commit()
-  } catch (e) {
-    transaction.rollback()
-    throw e
-  }
+  httpContext.set(
+    'list_categories',
+    categories.map((x) => x.identifier)
+  )
 
   next()
 }
 
-async function response(req: Request) {
-  req.Inertia.redirect(`/list/${req.params.hash}/details`)
+function response(req: Request) {
+  const listId = httpContext.get('hash')
+  const selected = httpContext.get('list_categories')
+  const categories = httpContext.get('categories')
+
+  req.Inertia.setViewData({ title: 'Change categories' }).render({
+    component: 'Lists/Details',
+    props: {
+      modal: {
+        modalName: 'edit-categories',
+        listId,
+        selected,
+        categories
+      }
+    }
+  })
 }
 
-export default asyncRoutes([
-  ...validations,
-  prepareValidationForErrorMessages((req: Request) => `/list/${req.params.hash}/details`),
-  // isAuthenticated,
-  setListIdAndHashToContext,
-  updateCategories,
-  response
-])
+export default asyncRoutes([isAuthenticated, setListIdAndHashToContext, getCategories, getCategoriesFromList, response])

@@ -55,8 +55,12 @@ const template = (page: object, viewData: ViewData) => `
     <script>
         var __page__ = "${escape(JSON.stringify(page))}";
     </script>
-    <script defer type="module" src="/assets/app.js"></script>
-    ${process.env.NODE_ENV === 'production' ? '<script defer type="module" src="/assets/vendors.js"></script>' : ''}
+    <script rel="preload" defer type="module" src="/assets/app.js"></script>
+    ${
+      process.env.NODE_ENV === 'production'
+        ? '<script rel="preload" defer type="module" src="/assets/vendors.js"></script>'
+        : ''
+    }
   </body>
 </html>
 `
