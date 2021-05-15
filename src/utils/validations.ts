@@ -82,7 +82,6 @@ export const paramSchemaLanguages: ParamSchema = {
   errorMessage: 'You must select at least one language',
   isArray: {
     options: {
-      min: 1,
       max: 2
     },
     bail: true

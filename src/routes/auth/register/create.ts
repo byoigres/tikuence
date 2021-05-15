@@ -78,7 +78,7 @@ async function verifyTokenExpiration(req: Request, res: Response, next: NextFunc
       identifier: string
       picture: string
       expiresAt: Date
-    }>('email2', 'provider_id AS providerId', 'identifier', 'profile_picture_url AS picture', 'expires_at AS expiresAt')
+    }>('email', 'provider_id AS providerId', 'identifier', 'profile_picture_url AS picture', 'expires_at AS expiresAt')
     .where('token', req.body.token)
     .first()
 
