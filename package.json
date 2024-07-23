@@ -1,0 +1,36 @@
+{
+  "name": "tikuence",
+  "version": "0.1.0",
+  "description": "Tikuence Project",
+  "main": "lib/server/index.ts",
+  "dependencies": {
+    "@hapi/glue": "^9.0.1",
+    "@hapi/vision": "^7.0.3",
+    "handlebars": "^4.7.8"
+  },
+  "devDependencies": {
+    "@types/hapi__glue": "^6.1.9",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  },
+  "scripts": {
+    "dev": "nodemon -e ts --ignore public --exec 'node --inspect=0.0.0.0:8080 --require ts-node/register ./lib/server/index.ts'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/byoigres/tikuence.git"
+  },
+  "keywords": [
+    "tiktok",
+    "videos",
+    "lists"
+  ],
+  "author": "Sergio Flores <sergio@byoigr.es>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/byoigres/tikuence/issues"
+  },
+  "homepage": "https://github.com/byoigres/tikuence#readme"
+}
