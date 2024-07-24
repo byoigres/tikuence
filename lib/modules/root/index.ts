@@ -9,12 +9,26 @@ const root: Plugin<PluginNameVersion> = {
         server.route({
             method: "GET",
             path: "/",
-            handler(request, h) {
-                return h.inertia()
-                return h.view("index", {
-                    title: "Hello world",
-                    message: "Welcome!"
-                })
+            handler(_request, h) {
+                return h.inertia("index", {
+                    name: "Sergio",
+                    points: 1000
+                }, {
+                    title: "Hey root!",
+                    message: "Welcome!",
+                    year: 2021
+                });
+
+                // return h.view("index", {
+                //     title: "Hello world",
+                //     message: "Welcome!",
+                //     page: {
+                //         version: 1,
+                //         component,
+                //         props: props,
+                //         url: this.request.url
+                //     }
+                // })
             }
         })
     }

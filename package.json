@@ -6,7 +6,8 @@
   "dependencies": {
     "@hapi/glue": "^9.0.1",
     "@hapi/vision": "^7.0.3",
-    "handlebars": "^4.7.8"
+    "handlebars": "^4.7.8",
+    "hapi-inertia": "github:byoigres/hapi-inertia#develop"
   },
   "devDependencies": {
     "@types/hapi__glue": "^6.1.9",
