@@ -1,9 +1,11 @@
 import { Server } from "@hapi/hapi";
 import Glue, { Manifest } from "@hapi/glue";
+import Path from 'path';
 import Handlebars from "handlebars";
 import Vision from "@hapi/vision";
-import inertia from "hapi-inertia";
-import root from "../modules/root";
+import Inert from "@hapi/inert";
+// import inertia from "hapi-inertia";
+import inertia from "../../../../@byoigres/hapi-inertia/lib/index.js";
 
 const options = {
     relativeTo: __dirname
@@ -11,25 +13,34 @@ const options = {
 
 const manifest: Manifest = {
     server: {
-        port: 8000
-    },
-register: {
-    plugins: [
-        Vision,
-        {
-            plugin: inertia.plugin,
-            options: {
-                defaultTemplate: "index",
-                sharedProps: (_server: Server) => ({
-                    appName: "Tikuence"
-                })
+        port: 8000,
+        routes: {
+            files: {
+                relativeTo: Path.join(__dirname, "..", "..", 'public')
             }
-        },
-        {
-            plugin: root
         }
-    ]
-}
+    },
+    register: {
+        plugins: [
+            Inert,
+            Vision,
+            {
+                plugin: inertia.plugin,
+                options: {
+                    defaultTemplate: "index",
+                    sharedProps: (_server: Server) => ({
+                        appName: "Tikuence"
+                    })
+                }
+            },
+            {
+                plugin: "../modules/public"
+            },
+            {
+                plugin: "../modules/root"
+            }
+        ]
+    }
 }
 
 const startServer = async function () {
@@ -37,7 +48,7 @@ const startServer = async function () {
         const server = await Glue.compose(manifest, options);
 
         server.views({
-            engines: { html: Handlebars },
+            engines: { hbs: Handlebars },
             relativeTo: __dirname,
             path: "../templates"
         });

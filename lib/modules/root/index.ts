@@ -10,7 +10,7 @@ const root: Plugin<PluginNameVersion> = {
             method: "GET",
             path: "/",
             handler(_request, h) {
-                return h.inertia("index", {
+                return h.inertia("Feed", {
                     name: "Sergio",
                     points: 1000
                 }, {
@@ -18,17 +18,6 @@ const root: Plugin<PluginNameVersion> = {
                     message: "Welcome!",
                     year: 2021
                 });
-
-                // return h.view("index", {
-                //     title: "Hello world",
-                //     message: "Welcome!",
-                //     page: {
-                //         version: 1,
-                //         component,
-                //         props: props,
-                //         url: this.request.url
-                //     }
-                // })
             }
         })
     }
