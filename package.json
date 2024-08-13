@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Tikuence Project",
   "main": "lib/server/index.ts",
+  "type": "commonjs",
   "dependencies": {
     "@hapi/glue": "^9.0.1",
     "@hapi/inert": "^7.1.0",
@@ -17,7 +18,8 @@
     "typescript": "^5.5.3"
   },
   "scripts": {
-    "dev": "nodemon -e ts -e hbs --ignore public --exec 'node --inspect=0.0.0.0:8080 --require ts-node/register ./lib/server/index.ts'",
+    "dev": "nodemon -e ts,hbs --ignore public --exec 'node --inspect=0.0.0.0:8080 --require ts-node/register ./lib/server/index.ts'",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

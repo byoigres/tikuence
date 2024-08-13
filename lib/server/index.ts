@@ -58,7 +58,7 @@ const startServer = async function () {
         });
 
         await server.start();
-        console.log('hapi days!');
+        console.log(`Tikuence running at ${server.info.uri}`);
     }
     catch (err) {
         console.error(err);
