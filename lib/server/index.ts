@@ -1,51 +1,65 @@
-import { Server } from "@hapi/hapi";
-import Glue, { Manifest } from "@hapi/glue";
+import { Server, Request } from "@hapi/hapi";
 import Path from 'path';
 import Handlebars from "handlebars";
 import Vision from "@hapi/vision";
 import Inert from "@hapi/inert";
-// import inertia from "hapi-inertia";
-import inertia from "../../../../@byoigres/hapi-inertia/lib/index.js";
-
-const options = {
-    relativeTo: __dirname
-}
-
-const manifest: Manifest = {
-    server: {
-        port: 8000,
-        routes: {
-            files: {
-                relativeTo: Path.join(__dirname, "..", "..", 'public')
-            }
-        }
-    },
-    register: {
-        plugins: [
-            Inert,
-            Vision,
-            {
-                plugin: inertia.plugin,
-                options: {
-                    defaultTemplate: "index",
-                    sharedProps: (_server: Server) => ({
-                        appName: "Tikuence"
-                    })
-                }
-            },
-            {
-                plugin: "../modules/public"
-            },
-            {
-                plugin: "../modules/root"
-            }
-        ]
-    }
-}
+import Bell from "@hapi/bell";
+import Cookie from "@hapi/cookie";
+import inertia from "hapi-inertia";
+import Config from './config';
+import PublicModule from "../modules/public";
+import RootModule from "../modules/root";
+import AuthModule, { GoogleProfile } from "../modules/auth";
 
 const startServer = async function () {
     try {
-        const server = await Glue.compose(manifest, options);
+        const server = new Server({
+            host: Config.get("/server/host"),
+            port: Config.get("/server/port"),
+            debug: Config.get("/server/debug"),
+            routes: {
+                files: {
+                    relativeTo: Path.join(__dirname, "..", "..", 'public')
+                },
+                cors: true
+            },
+        });
+
+        server.app.appName = "Tikuence";
+
+        await server.register(Inert);
+        await server.register(Vision);
+        await server.register(Bell);
+        await server.register(Cookie);
+        await server.register({
+            plugin: inertia.plugin,
+            options: {
+                defaultTemplate: "index",
+                sharedProps: (request: Request, server: Server) => ({
+                    appName: request.server.app.appName,
+                    profile: request.auth.isAuthenticated ? request.auth.credentials.profile as GoogleProfile : null
+                })
+            }
+        });
+
+        server.auth.strategy("google", "bell", {
+            provider: "google",
+            password: Config.get("/auth/providers/google/cookie_encryption_password"),
+            clientId: Config.get("/auth/providers/google/clientId"),
+            clientSecret: Config.get("/auth/providers/google/clientSecret"),
+            isSecure: Config.get("/auth/providers/google/isSecure")
+        });
+
+        server.auth.strategy('session', 'cookie', {
+            cookie: {
+                name: "sid-example",
+                password: 'password-should-be-32-characters',
+                isSecure: false,
+                isSameSite: false,
+                path: "/"
+            },
+            redirectTo: '/auth/login',
+        });
 
         server.views({
             engines: { hbs: Handlebars },
@@ -55,6 +69,15 @@ const startServer = async function () {
 
         Handlebars.registerHelper('json', function (context) {
             return JSON.stringify(context);
+        });
+
+        await server.register(PublicModule);
+        await server.register(RootModule);
+        await server.register({
+            plugin: AuthModule,
+            routes: {
+                prefix: '/auth'
+            }
         });
 
         await server.start();

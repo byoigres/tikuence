@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePage } from '@inertiajs/react';
+import { usePage, Link } from '@inertiajs/react';
 
 const PageFeed = () => {
   const {
@@ -12,10 +12,9 @@ const PageFeed = () => {
       <pre>
         <code>{JSON.stringify(props, null, 2)}</code>
       </pre>
+      <Link href='/auth/register'>Register</Link>
     </>
   );
 };
-
-// PageFeed.layout = (page) => <Layout children={page} />;
 
 export default PageFeed;
