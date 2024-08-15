@@ -37,7 +37,10 @@ const startServer = async function () {
                 defaultTemplate: "index",
                 sharedProps: (request: Request, server: Server) => ({
                     appName: request.server.app.appName,
-                    profile: request.auth.isAuthenticated ? request.auth.credentials.profile as GoogleProfile : null
+                    auth: {
+                        isAuthenticated: request.auth.isAuthenticated,
+                        profile: request.auth.isAuthenticated ? request.auth.credentials.profile as GoogleProfile : null
+                    }
                 })
             }
         });

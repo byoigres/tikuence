@@ -1,7 +1,8 @@
 import React from 'react';
 import { usePage, Link } from '@inertiajs/react';
+import AuthLayout from '../../components/layouts/AuthLayout';
 
-const AuthRegisterPage = () => {
+const LoginPage = () => {
   const {
     props,
   } = usePage();
@@ -24,4 +25,6 @@ const AuthRegisterPage = () => {
   );
 };
 
-export default AuthRegisterPage;
+LoginPage.layout = (page) => <AuthLayout children={page} />;
+
+export default LoginPage;

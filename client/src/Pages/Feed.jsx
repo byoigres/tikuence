@@ -1,5 +1,6 @@
 import React from 'react';
 import { usePage, Link } from '@inertiajs/react';
+import MainLayout from '@tikuence/components/layouts/MainLayout';
 
 const PageFeed = () => {
   const {
@@ -16,5 +17,7 @@ const PageFeed = () => {
     </>
   );
 };
+
+PageFeed.layout = (page) => <MainLayout children={page} />;
 
 export default PageFeed;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { usePage, Link } from '@inertiajs/react';
+import AuthLayout from '../../components/layouts/AuthLayout';
 
 const AuthRegisterPage = () => {
   const {
@@ -23,5 +24,7 @@ const AuthRegisterPage = () => {
     </>
   );
 };
+
+AuthRegisterPage.layout = (page) => <AuthLayout children={page} />;
 
 export default AuthRegisterPage;

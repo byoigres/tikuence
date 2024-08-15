@@ -3,7 +3,12 @@ import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
 import { InertiaProgress } from '@inertiajs/progress/src';
 
-const el = document.getElementById('app');
+// Fonts
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
 
 InertiaProgress.init({
   delay: 250,
