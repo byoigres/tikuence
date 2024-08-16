@@ -1,6 +1,6 @@
-import React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
-import { usePage } from '@inertiajs/react';
+import React from "react";
+import CssBaseline from "@mui/material/CssBaseline";
+import { usePage } from "@inertiajs/react";
 import Navbar from "@tikuence/components/Navbar";
 
 const MainLayout = ({ children }) => {
@@ -12,10 +12,7 @@ const MainLayout = ({ children }) => {
   return (
     <>
       <CssBaseline />
-      <Navbar
-        isAuthenticated={isAuthenticated}
-        profile={profile}
-      />
+      <Navbar isAuthenticated={isAuthenticated} profile={profile} />
       <h1>Hello from MainLayout component!</h1>
       {React.Children.map(children, (child) => {
         if (!React.isValidElement(child)) {

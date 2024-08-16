@@ -1,11 +1,9 @@
-import React from 'react';
-import { usePage, Link } from '@inertiajs/react';
-import AuthLayout from '../../components/layouts/AuthLayout';
+import React from "react";
+import { usePage, Link } from "@inertiajs/react";
+import AuthLayout from "../../components/layouts/AuthLayout";
 
 const LoginPage = () => {
-  const {
-    props,
-  } = usePage();
+  const { props } = usePage();
 
   return (
     <>
@@ -15,10 +13,10 @@ const LoginPage = () => {
       </pre>
       <ul>
         <li>
-          <Link href='/'>Home</Link>
+          <Link href="/">Home</Link>
         </li>
         <li>
-          <a href='/auth/google'>Login with Google</a>
+          <a href="/auth/google">Login with Google</a>
         </li>
       </ul>
     </>

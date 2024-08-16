@@ -1,11 +1,9 @@
-import React from 'react';
-import { usePage, Link } from '@inertiajs/react';
-import MainLayout from '@tikuence/components/layouts/MainLayout';
+import React from "react";
+import { usePage, Link } from "@inertiajs/react";
+import MainLayout from "@tikuence/components/layouts/MainLayout";
 
 const PageFeed = () => {
-  const {
-    props,
-  } = usePage();
+  const { props } = usePage();
 
   return (
     <>
@@ -13,7 +11,7 @@ const PageFeed = () => {
       <pre>
         <code>{JSON.stringify(props, null, 2)}</code>
       </pre>
-      <Link href='/auth/register'>Register</Link>
+      <Link href="/auth/register">Register</Link>
     </>
   );
 };

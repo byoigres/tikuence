@@ -1,7 +1,7 @@
-import '@hapi/hapi';
+import "@hapi/hapi";
 
-declare module '@hapi/hapi' {
-    interface ServerApplicationState {
-        appName: string;
-    }
+declare module "@hapi/hapi" {
+  interface ServerApplicationState {
+    appName: string;
+  }
 }
