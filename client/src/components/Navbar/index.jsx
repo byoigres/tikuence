@@ -2,16 +2,18 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
+import MenuIcon from "@mui/icons-material/Menu";
 import Tooltip from "@mui/material/Tooltip";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { styled } from "@mui/material/styles";
 import { Link as InertiaLink } from "@inertiajs/react";
+import { styled } from "@mui/material/styles";
+import Logo from "@tikuence/components/Navbar/Logo";
+import UserAvatar from "@tikuence/components/Navbar/UserAvatar";
 
-const MyAppBar = styled(AppBar)(({ theme }) => ({
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
     display: "none",
     zIndex: 1201,
@@ -20,50 +22,60 @@ const MyAppBar = styled(AppBar)(({ theme }) => ({
 
 const NavBar = ({ isAuthenticated, profile }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-
   const handleUserMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleUserMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <MyAppBar position="fixed">
-      <Toolbar>
-        <IconButton color="inherit" aria-label="open drawer" edge="start">
-          <MenuIcon />
-        </IconButton>
-        <Tooltip title={isAuthenticated ? profile.displayName : "Login"}>
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            aria-haspopup="true"
-            onClick={handleUserMenuClick}
-          >
-            <AccountCircleIcon />
+    <>
+      <StyledAppBar position="fixed">
+        <Toolbar>
+          <IconButton color="inherit" aria-label="open drawer" edge="start">
+            <MenuIcon />
           </IconButton>
-        </Tooltip>
-        <Menu
-          // anchorEl={anchorEl}
-          keepMounted
-          open
+          <Logo size={"small"} disableGutters sx={{ flexGrow: 1 }} />
+          <Tooltip title={isAuthenticated ? profile.displayName : "Login"}>
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="menu"
+              aria-haspopup="true"
+              onClick={handleUserMenuClick}
+            >
+              {isAuthenticated ? (
+                <UserAvatar name={profile.displayName} />
+              ) : (
+              <AccountCircleIcon />
+              )}
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
+      </StyledAppBar>
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleUserMenuClose}
+      >
+        <MenuItem
+          key="menu-item-auth-login"
+          component={InertiaLink}
+          href="/auth/login"
         >
-          <MenuItem
-            key="menu-item-auth-login"
-            component={InertiaLink}
-            href="/auth/login"
-          >
-            Sing in
-          </MenuItem>
-          <MenuItem
-            key="menu-item-auth-register"
-            component={InertiaLink}
-            href="/auth/register"
-          >
-            <Typography color="secondary">Create account</Typography>
-          </MenuItem>
-        </Menu>
-      </Toolbar>
-    </MyAppBar>
+          Sing in
+        </MenuItem>
+        <MenuItem
+          key="menu-item-auth-register"
+          component={InertiaLink}
+          href="/auth/register"
+        >
+          <Typography color="secondary">Create account</Typography>
+        </MenuItem>
+      </Menu>
+    </>
   );
 };
 
