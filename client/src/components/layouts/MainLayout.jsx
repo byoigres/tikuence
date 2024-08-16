@@ -12,7 +12,10 @@ const MainLayout = ({ children }) => {
   return (
     <>
       <CssBaseline />
-      <Navbar />
+      <Navbar
+        isAuthenticated={isAuthenticated}
+        profile={profile}
+      />
       <h1>Hello from MainLayout component!</h1>
       {React.Children.map(children, (child) => {
         if (!React.isValidElement(child)) {
