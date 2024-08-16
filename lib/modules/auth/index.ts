@@ -79,6 +79,20 @@ const root: Plugin<PluginNameVersion> = {
         },
       },
       {
+        method: "GET",
+        path: "/logout",
+        options: {
+          auth: {
+            mode: "required",
+            strategy: "session",
+          },
+        },
+        handler(request, h) {
+          request.cookieAuth.clear();
+          return h.redirect("/");
+        },
+      },
+      {
         method: ["GET", "POST"],
         path: "/google",
         options: {

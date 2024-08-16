@@ -60,20 +60,35 @@ const NavBar = ({ isAuthenticated, profile }) => {
         open={Boolean(anchorEl)}
         onClose={handleUserMenuClose}
       >
-        <MenuItem
-          key="menu-item-auth-login"
-          component={InertiaLink}
-          href="/auth/login"
-        >
-          Sing in
-        </MenuItem>
-        <MenuItem
-          key="menu-item-auth-register"
-          component={InertiaLink}
-          href="/auth/register"
-        >
-          <Typography color="secondary">Create account</Typography>
-        </MenuItem>
+        {isAuthenticated && [
+          <MenuItem
+            key="menu-item-user-profile"
+            onClick={handleUserMenuClose}
+            component={InertiaLink}
+            href={`/users/${profile.displayName}`}
+          >
+            My Profile
+          </MenuItem>,
+          <MenuItem key="menu-item-logout" component="a" href="/auth/logout">
+            <Typography color="secondary">Logout</Typography>
+          </MenuItem>,
+        ]}
+        {!isAuthenticated && [
+          <MenuItem
+            key="menu-item-auth-login"
+            component={InertiaLink}
+            href="/auth/login"
+          >
+            Sing in
+          </MenuItem>,
+          <MenuItem
+            key="menu-item-auth-register"
+            component={InertiaLink}
+            href="/auth/register"
+          >
+            <Typography color="secondary">Create account</Typography>
+          </MenuItem>
+        ]}
       </Menu>
     </>
   );
