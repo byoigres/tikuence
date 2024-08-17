@@ -1,0 +1,47 @@
+{
+  "name": "tikuence",
+  "version": "0.1.0",
+  "description": "Tikuence Project",
+  "main": "lib/server/index.ts",
+  "type": "commonjs",
+  "dependencies": {
+    "@hapi/bell": "^13.0.2",
+    "@hapi/cookie": "^12.0.1",
+    "@hapi/glue": "^9.0.1",
+    "@hapi/inert": "^7.1.0",
+    "@hapi/vision": "^7.0.3",
+    "confidence": "^5.0.1",
+    "handlebars": "^4.7.8",
+    "hapi-inertia": "github:byoigres/hapi-inertia#develop"
+  },
+  "devDependencies": {
+    "@types/confidence": "^1.4.34",
+    "@types/hapi__cookie": "^12.0.5",
+    "@types/hapi__glue": "^6.1.9",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.4",
+    "prettier": "3.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  },
+  "scripts": {
+    "dev": "nodemon -e ts,hbs --ignore public --exec 'node --inspect=0.0.0.0:8080 -r dotenv/config -r ts-node/register ./lib/server/index.ts'",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/byoigres/tikuence.git"
+  },
+  "keywords": [
+    "tiktok",
+    "videos",
+    "lists"
+  ],
+  "author": "Sergio Flores <sergio@byoigr.es>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/byoigres/tikuence/issues"
+  },
+  "homepage": "https://github.com/byoigres/tikuence#readme"
+}
