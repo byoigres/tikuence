@@ -1,8 +1,8 @@
 import React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { usePage } from "@inertiajs/react";
-import Navbar from "@tikuence/components/Navbar";
-import Navigation from "@tikuence/components/Navbar/Navigation";
+import Navbar from "../Navbar";
+import Navigation from "../Navbar/Navigation";
 
 const MainLayout = ({ children }) => {
   const {

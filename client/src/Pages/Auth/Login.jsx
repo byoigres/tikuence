@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Link as InertiaLink } from "@inertiajs/react";
-import AuthLayout from "../../components/layouts/AuthLayout";
+import MainLayout from "../../components/layouts/MainLayout";
 import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
 
@@ -70,6 +70,6 @@ const LoginPage = ({ isLogin, isMobile = true}) => (
   </>
 );
 
-LoginPage.layout = (page) => <AuthLayout children={page} />;
+LoginPage.layout = (page) => <MainLayout children={page} />;
 
 export default LoginPage;

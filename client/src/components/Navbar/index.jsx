@@ -10,8 +10,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { Link as InertiaLink } from "@inertiajs/react";
 import { styled } from "@mui/material/styles";
-import Logo from "@tikuence/components/Navbar/Logo";
-import UserAvatar from "@tikuence/components/Navbar/UserAvatar";
+import Logo from "./Logo";
+import UserAvatar from "./UserAvatar";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   [theme.breakpoints.up("md")]: {

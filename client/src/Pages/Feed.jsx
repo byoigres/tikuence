@@ -1,6 +1,6 @@
 import React from "react";
 import { usePage, Link } from "@inertiajs/react";
-import MainLayout from "@tikuence/components/layouts/MainLayout";
+import MainLayout from "../components/layouts/MainLayout";
 
 const PageFeed = () => {
   const { props } = usePage();
