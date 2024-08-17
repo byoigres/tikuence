@@ -37,18 +37,12 @@ const root: Plugin<PluginNameVersion> = {
           if (!request.auth.isAuthenticated) {
             h.redirect("/");
           }
-          return h.inertia(
-            "Auth/Login",
-            {
-              name: "Sergio",
-              points: 1000,
-            },
-            {
-              title: "Hey root!",
-              message: "Welcome!",
-              year: 2021,
-            },
-          );
+
+          return h.inertia("Auth/Login",{
+            isLogin: true
+          },{
+            title: "Login"
+          });
         },
       },
       {
@@ -64,18 +58,12 @@ const root: Plugin<PluginNameVersion> = {
           if (!request.auth.isAuthenticated) {
             h.redirect("/");
           }
-          return h.inertia(
-            "Auth/Register",
-            {
-              name: "Sergio",
-              points: 1000,
-            },
-            {
-              title: "Hey root!",
-              message: "Welcome!",
-              year: 2021,
-            },
-          );
+
+          return h.inertia("Auth/Login", {
+            isLogin: false
+          }, {
+            title: "Register"
+          });
         },
       },
       {
