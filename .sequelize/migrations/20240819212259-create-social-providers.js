@@ -14,14 +14,18 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      createdAt: {
+      created_at: {
+        field: 'created_at',
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
+        field: 'updated_at',
         allowNull: false,
         type: Sequelize.DATE,
       }
+    }, {
+      
     });
   },
   async down(queryInterface, Sequelize) {

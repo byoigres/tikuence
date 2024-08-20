@@ -4,7 +4,7 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
    await queryInterface.bulkInsert('social_providers', [
-    { name: 'google', createdAt: new Date(), updatedAt: new Date() }
+    { name: 'google', created_at: new Date(), updated_at: new Date() }
   ], {});
   },
 

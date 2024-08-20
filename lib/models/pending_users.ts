@@ -51,7 +51,10 @@ export function initModel(sequelize: Sequelize) {
       allowNull: false,
     },
   }, {
-    sequelize
+    sequelize,
+    timestamps: true,
+    underscored: true,
+    tableName: 'pending_users'
   });
 
   PendingUser.belongsTo(SocialProviders, {

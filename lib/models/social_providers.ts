@@ -28,6 +28,8 @@ export function initModel(sequelize: Sequelize) {
     underscored: true,
     tableName: 'social_providers'
   });
+
+  return SocialProviders
 };
 
 export default SocialProviders;

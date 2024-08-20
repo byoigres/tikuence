@@ -3,11 +3,19 @@ import { Model } from 'sequelize';
 import PendingUser from "lib/models/pending_users";
 import SocialProviders from "lib/models/social_providers";
 
+interface SequelizeModels {
+  PendingUsers: typeof PendingUser;
+  SocialProviders: typeof SocialProviders;
+}
+
 declare module "@hapi/hapi" {
   interface Server {
-    models: {
-      PendingUsers: typeof PendingUser;
-      SocialProviders: typeof SocialProviders;
+    models: SequelizeModels;
+  }
+
+  interface PluginProperties {
+    "plugins/sequelize": {
+      models: SequelizeModels;
     };
   }
 
