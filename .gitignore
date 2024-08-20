@@ -3,9 +3,7 @@
 
 build/
 .ignore
-public/assets
 public/images
-client/node_modules
 
 ### Node ###
 
