@@ -3,7 +3,7 @@ import {
   PluginNameVersion,
   Server,
 } from "@hapi/hapi";
-import view from "./view";
+import access from "./access";
 import logout from "./logout";
 import google from "./google";
 
@@ -18,13 +18,13 @@ const auth: Plugin<PluginNameVersion> = {
     server.route([
       {
         method: "GET",
-        path: "/login",
-        options: view,
+        path: "/signin",
+        options: access,
       },
       {
         method: "GET",
-        path: "/register",
-        options: view,
+        path: "/signup",
+        options: access,
       },
       {
         method: "GET",
