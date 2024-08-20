@@ -46,6 +46,23 @@ const config = {
       },
     },
   },
+  database: {
+    port: {
+      $env: "POSTGRES_PORT",
+      $default: "sqlite",
+    },
+    database: {
+      $env: "POSTGRES_DB",
+      $default: "tikuence",
+    },
+    username: {
+      $env: "POSTGRES_USER",
+      $default: "tikuence",
+    },
+    password: {
+      $env: "POSTGRES_PASSWORD",
+    },
+  }
 };
 
 const store = new Confidence.Store(config);

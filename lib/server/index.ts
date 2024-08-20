@@ -8,6 +8,7 @@ import Cookie from "@hapi/cookie";
 // import inertia from "hapi-inertia";
 import inertia from "../../../../@byoigres/hapi-inertia/lib/index.js";
 import Config from "./config";
+import SequelizePlugin from "../plugins/sequelize";
 import PublicModule from "../modules/public";
 import RootModule from "../modules/root";
 import AuthModule, { GoogleProfile } from "../modules/auth";
@@ -26,8 +27,15 @@ const startServer = async function () {
       },
     });
 
-    server.app.appName = "Tikuence";
+    server.app.appName = "Tikuence";    
 
+    await server.register({
+      plugin: SequelizePlugin,
+      options: {
+        config: Config,
+      },
+    });
+    await server.register(Inert);
     await server.register(Inert);
     await server.register(Vision);
     await server.register(Bell);

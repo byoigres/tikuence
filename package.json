@@ -12,15 +12,23 @@
     "@hapi/vision": "^7.0.3",
     "confidence": "^5.0.1",
     "handlebars": "^4.7.8",
-    "hapi-inertia": "github:byoigres/hapi-inertia#develop"
+    "hapi-inertia": "github:byoigres/hapi-inertia#develop",
+    "pg": "^8.12.0",
+    "reflect-metadata": "^0.2.2",
+    "sequelize": "^6.37.3",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/confidence": "^1.4.34",
     "@types/hapi__cookie": "^12.0.5",
     "@types/hapi__glue": "^6.1.9",
+    "@types/node": "^22.4.0",
+    "@types/uuid": "^10.0.0",
+    "@types/validator": "^13.12.0",
     "dotenv": "^16.4.5",
     "nodemon": "^3.1.4",
     "prettier": "3.3.3",
+    "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   },

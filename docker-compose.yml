@@ -1,0 +1,20 @@
+services:
+    tikuence-database:
+        container_name: tikuence-database
+        image: postgres:16.4-alpine
+        shm_size: 1g
+        ports:
+            - "${POSTGRES_PORT}:5432"
+        volumes:
+            - ./.docker/postgres/data:/var/lib/postgresql/data
+        env_file:
+          - .env
+        networks:
+            - tikuence-network
+networks:
+    tikuence-network:
+        name: tikuence-network
+        driver: "bridge"
+volumes:
+    data:
+        driver: "local"

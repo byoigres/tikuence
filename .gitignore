@@ -2,7 +2,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
 
 build/
-*.js
 .ignore
 public/assets
 public/images
@@ -10,7 +9,7 @@ client/node_modules
 
 ### Node ###
 
-*.js
+lib/*.js
 
 # Logs
 logs
