@@ -10,7 +10,7 @@ const logout: RouteOptions = {
       request.cookieAuth.clear();
     }
 
-    h.redirect("/");
+    return h.redirect("/");
   },
 };
 

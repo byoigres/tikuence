@@ -71,7 +71,7 @@ const startServer = async function () {
         isSameSite: false,
         path: "/",
       },
-      redirectTo: "/auth/sigin",
+      redirectTo: "/auth/signin",
     });
 
     server.views({
