@@ -4,6 +4,7 @@ import {
   Server,
 } from "@hapi/hapi";
 import access from "./access";
+import completeProfile from "./complete-profile";
 import logout from "./logout";
 import google from "./google";
 
@@ -30,6 +31,11 @@ const auth: Plugin<PluginNameVersion> = {
         method: "GET",
         path: "/logout",
         options: logout,
+      },
+      {
+        method: "GET",
+        path: "/complete-profile",
+        options: completeProfile,
       },
       {
         method: ["GET", "POST"],

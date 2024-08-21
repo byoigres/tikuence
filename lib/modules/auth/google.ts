@@ -43,7 +43,7 @@ const google: RouteOptions = {
     const expires_at = new Date()
     expires_at.setTime(expires_at.getTime() + 900000)
 
-    await PendingUsers.findOrCreate({
+    const [user, isUserCreated] = await PendingUsers.findOrCreate({
       where: {
         email: profile.email,
         provider_id: 1,
@@ -60,15 +60,14 @@ const google: RouteOptions = {
       },
     });
 
+    if (isUserCreated) {
+      return h.redirect(`/auth/complete-profile?token=${user.token}`);
+    }
+
     request.cookieAuth.set("profile", {
       displayName: profile.displayName,
       email: profile.email,
     });
-
-    // Perform any account lookup or registration, setup local session,
-    // and redirect to the application. The third-party credentials are
-    // stored in request.auth.credentials. Any query parameters from
-    // the initial request are passed back via request.auth.credentials.query.
 
     return h.redirect("/");
   },
