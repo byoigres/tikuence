@@ -10,6 +10,7 @@
     "@hapi/glue": "^9.0.1",
     "@hapi/inert": "^7.1.0",
     "@hapi/vision": "^7.0.3",
+    "@hapi/yar": "^11.0.2",
     "confidence": "^5.0.1",
     "handlebars": "^4.7.8",
     "hapi-inertia": "github:byoigres/hapi-inertia#develop",

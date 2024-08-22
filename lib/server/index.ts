@@ -5,12 +5,14 @@ import Vision from "@hapi/vision";
 import Inert from "@hapi/inert";
 import Bell from "@hapi/bell";
 import Cookie from "@hapi/cookie";
+import Yar from "@hapi/yar";
 import inertia from "hapi-inertia";
 import Config from "./config";
 import SequelizePlugin from "../plugins/sequelize";
 import PublicModule from "../modules/public";
 import RootModule from "../modules/root";
 import AuthModule, { GoogleProfile } from "../modules/auth";
+import failAction from "./failAction";
 
 const startServer = async function () {
   try {
@@ -23,7 +25,13 @@ const startServer = async function () {
           relativeTo: Path.join(__dirname, "..", "..", "public"),
         },
         cors: true,
+        validate: {
+          options: {
+            abortEarly: false,
+          },
+          failAction,
       },
+    },
     });
 
     server.app.appName = "Tikuence";    
@@ -35,23 +43,38 @@ const startServer = async function () {
       },
     });
     await server.register(Inert);
-    await server.register(Inert);
     await server.register(Vision);
     await server.register(Bell);
     await server.register(Cookie);
     await server.register({
+      plugin: Yar,
+      options: {
+        storeBlank: false,
+        cookieOptions: {
+          password: "password-should-be-32-characters",
+          isSecure: false,
+          isSameSite: false,
+        },
+      },
+    });
+
+    await server.register({
       plugin: inertia.plugin,
       options: {
         defaultTemplate: "index",
-        sharedProps: (request: Request, server: Server) => ({
-          appName: request.server.app.appName,
-          auth: {
-            isAuthenticated: request.auth.isAuthenticated,
-            profile: request.auth.isAuthenticated
-              ? (request.auth.credentials.profile as GoogleProfile)
-              : null,
-          },
-        }),
+        sharedProps: (request: Request, server: Server) => {
+          const errors = request.yar.flash("errors");
+          return ({
+            appName: request.server.app.appName,
+            auth: {
+              isAuthenticated: request.auth.isAuthenticated,
+              profile: request.auth.isAuthenticated
+                ? (request.auth.credentials.profile as GoogleProfile)
+                : null,
+            },
+            errors: errors ?? {},
+          });
+        },
       },
     });
 

@@ -40,8 +40,9 @@ const google: RouteOptions = {
 
     const profile = request.auth.credentials.profile as GoogleProfile;
 
-    const expires_at = new Date()
-    expires_at.setTime(expires_at.getTime() + 900000)
+    const expires_at = new Date();
+    // Expires in 24 hours
+    expires_at.setTime(expires_at.getTime() + 86400000);
 
     const [user, isUserCreated] = await PendingUsers.findOrCreate({
       where: {

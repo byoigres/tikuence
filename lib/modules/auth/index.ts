@@ -5,6 +5,7 @@ import {
 } from "@hapi/hapi";
 import access from "./access";
 import completeProfile from "./complete-profile";
+import finishUserRegistration from "./finish-user-registration";
 import logout from "./logout";
 import google from "./google";
 
@@ -36,6 +37,11 @@ const auth: Plugin<PluginNameVersion> = {
         method: "GET",
         path: "/complete-profile",
         options: completeProfile,
+      },
+      {
+        method: "POST",
+        path: "/complete-profile",
+        options: finishUserRegistration,
       },
       {
         method: ["GET", "POST"],

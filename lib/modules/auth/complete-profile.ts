@@ -1,19 +1,5 @@
 import { RouteOptions } from '@hapi/hapi';
 import Joi from 'joi';
-import { v4 as uuidv4 } from "uuid";
-import { SocialProvidersEnum } from "../../models/social_providers";
-import { title } from 'process';
-
-export interface GoogleProfile {
-  id: string;
-  displayName: string;
-  name: {
-    given_name: string;
-    family_name: string;
-  };
-  email: string;
-  raw: any;
-}
 
 const completeProfile: RouteOptions = {
   validate: {
