@@ -1,9 +1,13 @@
-import { RouteOptions } from '@hapi/hapi';
+import { RouteOptions, RouteOptionsPreObject } from '@hapi/hapi';
 import Joi from 'joi';
 import { getJoiMessages } from "../../server/failAction"
 
 type Payload = {
   token: string;
+  name: string;
+  username: string;
+  bio: string;
+  tiktokUsername: string;
 }
 
 const getMessages = getJoiMessages([
@@ -40,6 +44,42 @@ const getMessages = getJoiMessages([
   },
 ]);
 
+const component = 'Auth/CompleteProfile';
+
+export const verifyToken: RouteOptionsPreObject = {
+  assign: "verifyToken",
+  method: async (request, h) => {
+    const { token } = request.payload as Payload;
+
+    const { PendingUsers } = request.server.plugins["plugins/sequelize"].models;
+
+    const user = await PendingUsers.findOne({
+      where: {
+        token,
+      },
+    });
+
+    if (!user) {
+      request.yar.flash("error", "The provided token was invalid");
+      return h.redirect(`/auth/singup`).takeover();
+    }
+
+    if (user.expires_at < new Date()) {
+      return h.inertia(component, {
+        isExpired: true,
+      }, {
+        title: "Complete Profile",
+      });
+    }
+
+    return {
+      email: user.email,
+      name: user.name,
+      token,
+    }
+  },
+};
+
 const finishUserRegistration: RouteOptions = {
   validate: {
     payload: Joi.object({
@@ -51,12 +91,23 @@ const finishUserRegistration: RouteOptions = {
       terms: Joi.boolean().valid(true).required().label("terms").messages(getMessages("terms")),
     }),
   },
+  pre: [verifyToken],
   handler: async (request, h) => {
     if (request.auth.isAuthenticated) {
       return h.redirect("/");
     }
 
     const { token } = request.payload as Payload;
+
+    // const { PendingUsers } = request.server.plugins["plugins/sequelize"].models;
+
+    // const user = await PendingUsers.findOne({
+    //   where: { token },
+    // });
+
+    // if (!user) {
+    //   request.yar.flash("error", "Invalid token");
+    // }
 
     // TODO: Implement the logic to complete the user registration
 

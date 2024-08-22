@@ -1,30 +1,28 @@
-import { RouteOptions } from '@hapi/hapi';
+import { RouteOptions, RouteOptionsPreObject } from '@hapi/hapi';
 import Joi from 'joi';
 
-const completeProfile: RouteOptions = {
-  validate: {
-    query: Joi.object({
-      token: Joi.string().uuid().required(),
-    }),
-  },
-  handler: async (request, h) => {
-    if (request.auth.isAuthenticated) {
-      return h.redirect("/");
-    }
+const component = 'Auth/CompleteProfile';
 
-    const component = 'Auth/CompleteProfile';
+export interface verifyTokenPreResponse {
+  email: string;
+  name: string;
+  token: string;
+}
 
+export const verifyToken: RouteOptionsPreObject = {
+  assign: "verifyToken",
+  method: async (request, h) => {
     const { token } = request.query;
 
     const { PendingUsers } = request.server.plugins["plugins/sequelize"].models;
 
-    const pedingUser = await PendingUsers.findOne({
+    const user = await PendingUsers.findOne({
       where: {
         token,
       },
     });
 
-    if (!pedingUser) {
+    if (!user) {
       return h.inertia(component, {
         isInvalid: true,
       }, {
@@ -32,18 +30,41 @@ const completeProfile: RouteOptions = {
       });
     }
 
-    if (pedingUser.expires_at > new Date()) {
+    if (user.expires_at < new Date()) {
       return h.inertia(component, {
-        email: pedingUser.email,
-        name: pedingUser.name,
-        token,
+        isExpired: true,
       }, {
         title: "Complete Profile",
       });
     }
 
+    return {
+      email: user.email,
+      name: user.name,
+      token,
+    }
+  },
+};
+
+
+const completeProfile: RouteOptions = {
+  validate: {
+    query: Joi.object({
+      token: Joi.string().uuid().required(),
+    }),
+  },
+  pre: [verifyToken],
+  handler: async (request, h) => {
+    if (request.auth.isAuthenticated) {
+      return h.redirect("/");
+    }
+
+    const { email, name, token } = request.pre.verifyToken as verifyTokenPreResponse;
+
     return h.inertia(component, {
-      isExpired: true,
+      email,
+      name,
+      token,
     }, {
       title: "Complete Profile",
     });

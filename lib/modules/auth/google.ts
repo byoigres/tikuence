@@ -44,6 +44,7 @@ const google: RouteOptions = {
     // Expires in 24 hours
     expires_at.setTime(expires_at.getTime() + 86400000);
 
+    // TODO: After user registration works, update the code to check if the user is already registered
     const [user, isUserCreated] = await PendingUsers.findOrCreate({
       where: {
         email: profile.email,

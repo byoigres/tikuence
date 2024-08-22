@@ -56,6 +56,7 @@ const root: Plugin<PluginOptions> = {
       // sequelize.sync({ force: true });
       console.log('Connection has been established successfully.');
     } catch (error) {
+      // TODO: Stop the server when no database connection is available
       console.error('Unable to connect to the database:', error);
     }
 

@@ -73,6 +73,7 @@ const startServer = async function () {
                 : null,
             },
             errors: errors ?? {},
+            error: request.yar.flash("error"),
           });
         },
       },
