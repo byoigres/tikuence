@@ -1,13 +1,19 @@
-import { RouteOptions, RouteOptionsPreObject } from '@hapi/hapi';
+import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import Joi from 'joi';
 
 const component = 'Auth/CompleteProfile';
 
-export interface verifyTokenPreResponse {
+interface verifyTokenPreResponse {
   email: string;
   name: string;
   token: string;
 }
+
+const validate: RouteOptionsValidate = {
+  query: Joi.object({
+    token: Joi.string().uuid().required(),
+  }),
+};
 
 export const verifyToken: RouteOptionsPreObject = {
   assign: "verifyToken",
@@ -46,29 +52,26 @@ export const verifyToken: RouteOptionsPreObject = {
   },
 };
 
+const handler: Lifecycle.Method = async (request, h) => {
+  if (request.auth.isAuthenticated) {
+    return h.redirect("/");
+  }
+
+  const { email, name, token } = request.pre.verifyToken as verifyTokenPreResponse;
+
+  return h.inertia(component, {
+    email,
+    name,
+    token,
+  }, {
+    title: "Complete Profile",
+  });
+};
 
 const completeProfile: RouteOptions = {
-  validate: {
-    query: Joi.object({
-      token: Joi.string().uuid().required(),
-    }),
-  },
+  validate,
   pre: [verifyToken],
-  handler: async (request, h) => {
-    if (request.auth.isAuthenticated) {
-      return h.redirect("/");
-    }
-
-    const { email, name, token } = request.pre.verifyToken as verifyTokenPreResponse;
-
-    return h.inertia(component, {
-      email,
-      name,
-      token,
-    }, {
-      title: "Complete Profile",
-    });
-  },
+  handler,
 };
 
 export default completeProfile;
