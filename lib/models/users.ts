@@ -1,6 +1,6 @@
 import { Sequelize, Model, DataTypes, Optional, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
-export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+export class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {
   declare id: CreationOptional<number>;
   declare email: string;
   declare hash: string;
@@ -13,7 +13,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
 
 export function initModel(sequelize: Sequelize) {
 
-  User.init({
+  Users.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -50,9 +50,14 @@ export function initModel(sequelize: Sequelize) {
       allowNull: false
     },
   }, {
-    sequelize
+    sequelize,
+    timestamps: true,
+    underscored: true,
+    tableName: 'users'
   });
+
+  return Users;
 };
 
-export default User;
+export default Users;
 
