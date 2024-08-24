@@ -1,10 +1,9 @@
-import { RouteOptions, RouteOptionsValidate, Lifecycle } from '@hapi/hapi';
+import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import Joi from 'joi';
 import { getJoiMessages } from "../../server/failAction"
-import { verifyToken } from "./complete-profile"
+import { QueryParams, verifyToken } from "./complete-profile"
 
 type Payload = {
-  token: string;
   name: string;
   username: string;
   bio: string;
@@ -46,8 +45,10 @@ const getMessages = getJoiMessages([
 ]);
 
 const validate: RouteOptionsValidate = {
-  payload: Joi.object({
+  query: Joi.object({
     token: Joi.string().uuid().required().label("token").messages(getMessages("token")),
+  }),
+  payload: Joi.object({
     name: Joi.string().required().label("name").messages(getMessages("name")),
     username: Joi.string().required().label("username").messages(getMessages("username")),
     bio: Joi.string().allow('').optional().label("bio"),
@@ -56,21 +57,53 @@ const validate: RouteOptionsValidate = {
   }),
 };
 
+const verifyUsernameAvailability: RouteOptionsPreObject = {
+  assign: "verifyUsernameAvailability",
+  method: async (request, h) => {
+    const { username } = request.payload as Payload;
+
+    const { Users } = request.server.plugins["plugins/sequelize"].models;
+
+    const user = await Users.findOne({
+      where: {
+        username,
+      },
+    });
+
+    if (user) {
+      const { token } = request.query as QueryParams;
+
+      request.yar.flash("errors", {
+        username: "This username is already taken",
+      });
+
+      return h.redirect(`/auth/complete-profile?token=${token}`).takeover();
+    }
+
+    return h.continue;
+  },
+};
+
 const handler: Lifecycle.Method = async (request, h) => {
   if (request.auth.isAuthenticated) {
     return h.redirect("/");
   }
 
-  const { token } = request.payload as Payload;
+  const { token } = request.query as QueryParams;
 
   // TODO: Implement the logic to complete the user registration
+
+  
 
   return h.redirect(`/auth/complete-profile?token=${token}`);
 }
 
 const finishUserRegistration: RouteOptions = {
   validate,
-  pre: [verifyToken],
+  pre: [
+    verifyToken,
+    verifyUsernameAvailability,
+  ],
   handler,
 };
 

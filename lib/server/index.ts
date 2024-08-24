@@ -63,7 +63,7 @@ const startServer = async function () {
       options: {
         defaultTemplate: "index",
         sharedProps: (request: Request, server: Server) => {
-          const errors = request.yar.flash("errors");
+          const [errors] = request.yar.flash("errors");
           return ({
             appName: request.server.app.appName,
             auth: {

@@ -3,6 +3,10 @@ import Joi from 'joi';
 
 const component = 'Auth/CompleteProfile';
 
+export type QueryParams = {
+  token: string;
+}
+
 interface verifyTokenPreResponse {
   email: string;
   name: string;
@@ -18,7 +22,7 @@ const validate: RouteOptionsValidate = {
 export const verifyToken: RouteOptionsPreObject = {
   assign: "verifyToken",
   method: async (request, h) => {
-    const { token } = request.query;
+    const { token } = request.query as QueryParams;
 
     const { PendingUsers } = request.server.plugins["plugins/sequelize"].models;
 
