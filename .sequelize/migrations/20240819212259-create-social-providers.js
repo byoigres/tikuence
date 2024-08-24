@@ -15,17 +15,15 @@ module.exports = {
         unique: true,
       },
       created_at: {
-        field: 'created_at',
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updated_at: {
-        field: 'updated_at',
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       }
-    }, {
-      
     });
   },
   async down(queryInterface, Sequelize) {

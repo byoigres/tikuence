@@ -35,13 +35,19 @@ module.exports = {
         type: Sequelize.STRING(64),
         allowNull: false
       },
+      profile_picture_url: {
+        type: Sequelize.STRING(255),
+        allowNull: false
+      },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },

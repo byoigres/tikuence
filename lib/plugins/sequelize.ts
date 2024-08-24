@@ -42,6 +42,10 @@ const root: Plugin<PluginOptions> = {
           file: "pending_users",
           modelName: "PendingUsers",
         },
+        {
+          file: "users",
+          modelName: "Users",
+        },
       ];
 
       const models: Record<string, Model> = {};
