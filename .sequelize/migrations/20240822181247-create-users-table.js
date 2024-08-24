@@ -25,11 +25,11 @@ module.exports = {
       username: {
         type: Sequelize.STRING(15),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       biography: {
         type: Sequelize.STRING(160),
-        allowNull: false
+        allowNull: false,
       },
       tiktok_username: {
         type: Sequelize.STRING(64),
@@ -37,17 +37,17 @@ module.exports = {
       },
       profile_picture_url: {
         type: Sequelize.STRING(255),
-        allowNull: false
+        allowNull: false,
       },
       created_at: {
-        allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        allowNull: false,
       },
       updated_at: {
-        allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        allowNull: false,
       }
     });
   },
