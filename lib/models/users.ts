@@ -1,4 +1,5 @@
 import { Sequelize, Model, DataTypes, Optional, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import UsersSocialProviders from './users_social_providers';
 
 export class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {
   declare id: CreationOptional<number>;
@@ -9,6 +10,14 @@ export class Users extends Model<InferAttributes<Users>, InferCreationAttributes
   declare biography: string;
   declare tiktok_username: string;
   declare profile_picture_url: string;
+
+  static associate() {
+    Users.hasMany(UsersSocialProviders, {
+      foreignKey: 'user_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    });
+  }
 }
 
 export function initModel(sequelize: Sequelize) {

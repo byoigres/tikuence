@@ -7,9 +7,12 @@ export type QueryParams = {
   token: string;
 }
 
-interface verifyTokenPreResponse {
+export interface verifyTokenPreResponse {
   email: string;
   name: string;
+  profilePictureURL: string;
+  providerId: number;
+  profileId: string;
   token: string;
 }
 
@@ -27,6 +30,14 @@ export const verifyToken: RouteOptionsPreObject = {
     const { PendingUsers } = request.server.plugins["plugins/sequelize"].models;
 
     const user = await PendingUsers.findOne({
+      attributes: [
+        "email",
+        "name",
+        "expires_at",
+        "profile_picture_url",
+        "provider_id",
+        "profile_id"
+      ],
       where: {
         token,
       },
@@ -51,6 +62,9 @@ export const verifyToken: RouteOptionsPreObject = {
     return {
       email: user.email,
       name: user.name,
+      profilePictureURL: user.profile_picture_url,
+      providerId: user.provider_id,
+      profileId: user.profile_id,
       token,
     }
   },

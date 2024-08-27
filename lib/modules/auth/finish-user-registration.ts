@@ -1,13 +1,20 @@
 import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import Joi from 'joi';
 import { getJoiMessages } from "../../server/failAction"
-import { QueryParams, verifyToken } from "./complete-profile"
+import { QueryParams, verifyToken, verifyTokenPreResponse } from "./complete-profile"
+import { UserProfile } from "./google"
 
 type Payload = {
   name: string;
   username: string;
   bio: string;
   tiktokUsername: string;
+}
+
+type createUserPreResponse = {
+  user_id: number;
+  name: string;
+  email: string;
 }
 
 const getMessages = getJoiMessages([
@@ -84,18 +91,79 @@ const verifyUsernameAvailability: RouteOptionsPreObject = {
   },
 };
 
+const createUser: RouteOptionsPreObject = {
+  assign: "createUser",
+  method: async (request, _h) => {
+    const { name, username, bio, tiktokUsername } = request.payload as Payload;
+    const { email, profilePictureURL, providerId, profileId } = request.pre.verifyToken as verifyTokenPreResponse;
+
+    const { models, sequelize } = request.server.plugins["plugins/sequelize"];
+
+    const transaction = await sequelize.transaction();
+
+    try {
+      const user = await models.Users.create({
+        name,
+        username,
+        email,
+        biography: bio,
+        tiktok_username: tiktokUsername,
+        hash: "",
+        profile_picture_url: profilePictureURL,
+      }, {
+        transaction,
+        returning: true
+      });
+
+      await models.UsersSocialProviders.create({
+        user_id: user.id,
+        provider_id: providerId,
+        profile_id: profileId,
+        data: {},
+      }, {
+        transaction,
+      });
+
+      await models.PendingUsers.destroy({
+        where: {
+          email,
+          provider_id: providerId,
+          profile_id: profileId,
+        },
+        transaction,
+      });
+
+      await transaction.commit();
+
+      return {
+        user_id: user.id,
+        name,
+        email,
+      };
+    } catch (error) {
+      await transaction.rollback();
+
+      throw error;
+    }
+  },
+};
+
 const handler: Lifecycle.Method = async (request, h) => {
   if (request.auth.isAuthenticated) {
     return h.redirect("/");
   }
 
-  const { token } = request.query as QueryParams;
+  const { user_id, name, email } = request.pre.createUser as createUserPreResponse;
 
-  // TODO: Implement the logic to complete the user registration
+  const profile: UserProfile = {
+    id: user_id,
+    email,
+    name,
+  };
 
-  
+  request.cookieAuth.set(profile);
 
-  return h.redirect(`/auth/complete-profile?token=${token}`);
+  return h.redirect("/");
 }
 
 const finishUserRegistration: RouteOptions = {
@@ -103,7 +171,17 @@ const finishUserRegistration: RouteOptions = {
   pre: [
     verifyToken,
     verifyUsernameAvailability,
+    createUser,
   ],
+  auth: {
+    mode: "try",
+    strategy: "session",
+  },
+  cors: {
+    credentials: true,
+    origin: ["*"],
+    headers: ["WWW-Authenticate", "Server-Authorization"],
+  },
   handler,
 };
 

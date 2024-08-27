@@ -11,8 +11,9 @@ import Config from "./config";
 import SequelizePlugin from "../plugins/sequelize";
 import PublicModule from "../modules/public";
 import RootModule from "../modules/root";
-import AuthModule, { GoogleProfile } from "../modules/auth";
+import AuthModule, { UserProfile } from "../modules/auth";
 import failAction from "./failAction";
+import { validate } from "uuid";
 
 const startServer = async function () {
   try {
@@ -64,16 +65,23 @@ const startServer = async function () {
         defaultTemplate: "index",
         sharedProps: (request: Request, server: Server) => {
           const [errors] = request.yar.flash("errors");
+          const [error] = request.yar.flash("error");
+          const [success] = request.yar.flash("success");
           return ({
             appName: request.server.app.appName,
             auth: {
               isAuthenticated: request.auth.isAuthenticated,
+              // TODO: Not the best way to do this, but it works for now
               profile: request.auth.isAuthenticated
-                ? (request.auth.credentials.profile as GoogleProfile)
+                ? ({
+                  name: request.auth.credentials.name,
+                  email: request.auth.credentials.email,
+                })
                 : null,
             },
             errors: errors ?? {},
-            error: request.yar.flash("error"),
+            error,
+            success,
           });
         },
       },

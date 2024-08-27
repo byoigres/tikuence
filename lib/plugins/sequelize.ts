@@ -1,9 +1,7 @@
 import { Plugin, Server } from "@hapi/hapi";
 import { Sequelize, Model } from 'sequelize';
 import { Store } from "confidence";
-import { readdirSync } from "fs";
 import path from "path";
-// import { initModel } from "../models/user";
 const basename = path.join(__dirname, "../models");
 
 type PluginOptions = {
@@ -43,6 +41,10 @@ const root: Plugin<PluginOptions> = {
           modelName: "PendingUsers",
         },
         {
+          file: "users_social_providers",
+          modelName: "UsersSocialProviders",
+        },
+        {
           file: "users",
           modelName: "Users",
         },
@@ -55,7 +57,14 @@ const root: Plugin<PluginOptions> = {
         models[meta.modelName] = modelInit;
       });
 
+      Object.values(models).forEach((model: Model) => {
+        if ("associate" in model) {
+          (model as any).associate();
+        }
+      });
+
       server.expose('models', models);
+      server.expose('sequelize', sequelize);
 
       // sequelize.sync({ force: true });
       console.log('Connection has been established successfully.');
@@ -68,8 +77,6 @@ const root: Plugin<PluginOptions> = {
       
       return sequelize;
     });
-
-
   },
 };
 

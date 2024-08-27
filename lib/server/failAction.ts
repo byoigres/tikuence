@@ -59,7 +59,7 @@ const failAction: Lifecycle.FailAction = async (request, h, err) => {
       errors.set(label, message);
     });
     const path = referer.pathname + referer.search + referer.hash;
-    request.yar.flash("errors", Object.fromEntries(errors.entries()), true);
+    request.yar.flash("errors", Object.fromEntries(errors.entries()));
     return h.redirect(path).takeover();
   } else {
     throw err;

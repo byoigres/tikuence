@@ -9,7 +9,7 @@ import finishUserRegistration from "./finish-user-registration";
 import logout from "./logout";
 import google from "./google";
 
-export { GoogleProfile } from './google';
+export { GoogleProfile, UserProfile } from './google';
 
 const auth: Plugin<PluginNameVersion> = {
   name: "modules/auth",
