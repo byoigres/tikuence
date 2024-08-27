@@ -162,6 +162,7 @@ const handler: Lifecycle.Method = async (request, h) => {
   };
 
   request.cookieAuth.set(profile);
+  request.yar.flash("success", "Successfully registered");
 
   return h.redirect("/");
 }

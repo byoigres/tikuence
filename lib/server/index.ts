@@ -80,8 +80,10 @@ const startServer = async function () {
                 : null,
             },
             errors: errors ?? {},
-            error,
-            success,
+            flash: {
+              error,
+              success,
+            },
           });
         },
       },
