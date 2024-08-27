@@ -10,6 +10,8 @@ const logout: RouteOptions = {
       request.cookieAuth.clear();
     }
 
+    request.yar.flash("info", "Successfully logged out");
+
     return h.redirect("/");
   },
 };
