@@ -1,7 +1,7 @@
 import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import Joi from 'joi';
 import { getJoiMessages } from "../../server/failAction"
-import { QueryParams, verifyToken, verifyTokenPreResponse } from "./complete-profile"
+import { QueryParams, verifyToken, VerifyTokenPreResponse } from "./complete-profile"
 import { UserProfile } from "./google"
 
 type Payload = {
@@ -11,10 +11,12 @@ type Payload = {
   tiktokUsername: string;
 }
 
-type createUserPreResponse = {
+type CreateUserPreResponse = {
   user_id: number;
   name: string;
   email: string;
+  username: string;
+  picture: string;
 }
 
 const getMessages = getJoiMessages([
@@ -95,7 +97,7 @@ const createUser: RouteOptionsPreObject = {
   assign: "createUser",
   method: async (request, _h) => {
     const { name, username, bio, tiktokUsername } = request.payload as Payload;
-    const { email, profilePictureURL, providerId, profileId } = request.pre.verifyToken as verifyTokenPreResponse;
+    const { email, profilePictureURL, providerId, profileId } = request.pre.verifyToken as VerifyTokenPreResponse;
 
     const { models, sequelize } = request.server.plugins["plugins/sequelize"];
 
@@ -139,6 +141,8 @@ const createUser: RouteOptionsPreObject = {
         user_id: user.id,
         name,
         email,
+        username,
+        picture: profilePictureURL,
       };
     } catch (error) {
       await transaction.rollback();
@@ -153,12 +157,14 @@ const handler: Lifecycle.Method = async (request, h) => {
     return h.redirect("/");
   }
 
-  const { user_id, name, email } = request.pre.createUser as createUserPreResponse;
+  const { user_id, name, email, username, picture } = request.pre.createUser as CreateUserPreResponse;
 
   const profile: UserProfile = {
     id: user_id,
-    email,
     name,
+    email,
+    username,
+    picture,
   };
 
   request.cookieAuth.set(profile);

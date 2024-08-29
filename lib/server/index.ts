@@ -77,10 +77,7 @@ const startServer = async function () {
               isAuthenticated: request.auth.isAuthenticated,
               // TODO: Not the best way to do this, but it works for now
               profile: request.auth.isAuthenticated
-                ? ({
-                  name: request.auth.credentials.name,
-                  email: request.auth.credentials.email,
-                })
+                ? request.auth.credentials
                 : null,
             },
             errors: errors ?? {},

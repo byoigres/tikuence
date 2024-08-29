@@ -17,9 +17,11 @@ export interface UserProfile {
   id: number;
   name: string;
   email: string;
+  username: string;
+  picture: string;
 }
 
-export interface verifyUserExistPreResponse {
+export interface VerifyUserExistPreResponse {
   user: UserProfile;
 }
 
@@ -54,7 +56,7 @@ const verifyUserExist: RouteOptionsPreObject = {
     const googleProfile = request.auth.credentials.profile as GoogleProfile;
 
     const user = await Users.findOne({
-      attributes: ['id', 'name', 'email', 'username'],
+      attributes: ['id', 'name', 'email', 'username', 'profile_picture_url'],
       where: {
         email: googleProfile.email
       },
@@ -74,6 +76,8 @@ const verifyUserExist: RouteOptionsPreObject = {
         id: user.id,
         name: user.name,
         email: user.email,
+        username: user.username,
+        picture: user.profile_picture_url,
       };
       request.cookieAuth.set(userProfile);
       request.yar.flash("success", "Successfully logged in");

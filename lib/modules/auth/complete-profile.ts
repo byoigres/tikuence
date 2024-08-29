@@ -7,7 +7,7 @@ export type QueryParams = {
   token: string;
 }
 
-export interface verifyTokenPreResponse {
+export interface VerifyTokenPreResponse {
   email: string;
   name: string;
   profilePictureURL: string;
@@ -75,7 +75,7 @@ const handler: Lifecycle.Method = async (request, h) => {
     return h.redirect("/");
   }
 
-  const { email, name, token } = request.pre.verifyToken as verifyTokenPreResponse;
+  const { email, name, token } = request.pre.verifyToken as VerifyTokenPreResponse;
 
   return h.inertia(component, {
     email,
