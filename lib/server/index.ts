@@ -12,8 +12,8 @@ import SequelizePlugin from "../plugins/sequelize";
 import PublicModule from "../modules/public";
 import RootModule from "../modules/root";
 import AuthModule, { UserProfile } from "../modules/auth";
+import ListsModule from "../modules/lists";
 import failAction from "./failAction";
-import { validate } from "uuid";
 
 const startServer = async function () {
   try {
@@ -127,6 +127,12 @@ const startServer = async function () {
       plugin: AuthModule,
       routes: {
         prefix: "/auth",
+      },
+    });
+    await server.register({
+      plugin: ListsModule,
+      routes: {
+        prefix: "/lists",
       },
     });
 
