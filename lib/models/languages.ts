@@ -1,12 +1,12 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
-export class Categories extends Model<InferAttributes<Categories>, InferCreationAttributes<Categories>> {
+export class Languages extends Model<InferAttributes<Languages>, InferCreationAttributes<Languages>> {
   declare id: CreationOptional<number>;
-  declare description: string;
-  declare url_identifier: string;
+  declare name: string;
+  declare code: string;
 
   static associate() {
-    // Categories.hasMany(UsersSocialProviders, {
+    // Languages.hasMany(UsersSocialProviders, {
     //   foreignKey: 'user_id',
     //   onDelete: 'CASCADE',
     //   onUpdate: 'CASCADE'
@@ -16,29 +16,28 @@ export class Categories extends Model<InferAttributes<Categories>, InferCreation
 
 export function initModel(sequelize: Sequelize) {
 
-  Categories.init({
+  Languages.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    description: {
-      type: DataTypes.STRING(256),
+    name: {
+      type: DataTypes.STRING(32),
       allowNull: false
     },
-    url_identifier: {
-      type: DataTypes.STRING(32),
-      unique: true,
+    code: {
+      type: DataTypes.STRING(3),
       allowNull: false
     },
   }, {
     sequelize,
     timestamps: true,
     underscored: true,
-    tableName: 'categories',
+    tableName: 'languages',
   });
 
-  return Categories;
+  return Languages;
 }
 
-export default Categories;
+export default Languages;

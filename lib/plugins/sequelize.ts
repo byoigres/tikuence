@@ -52,6 +52,10 @@ const root: Plugin<PluginOptions> = {
           file: "categories",
           modelName: "Categories",
         },
+        {
+          file: "languages",
+          modelName: "Languages",
+        },
       ];
 
       const models: Record<string, Model> = {};

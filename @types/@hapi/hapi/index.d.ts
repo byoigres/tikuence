@@ -4,6 +4,7 @@ import SocialProviders from "lib/models/social_providers";
 import Users from "lib/models/users";
 import UsersSocialProviders from "lib/models/users_social_providers";
 import Categories from "lib/models/categories";
+import Languages from "lib/models/languages";
 import { Sequelize } from "sequelize";
 
 interface SequelizeModels {
@@ -12,6 +13,7 @@ interface SequelizeModels {
   Users: typeof Users;
   UsersSocialProviders: typeof UsersSocialProviders;
   Categories: typeof Categories;
+  Languages: typeof Languages;
 }
 
 declare module "@hapi/hapi" {
