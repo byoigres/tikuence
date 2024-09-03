@@ -11,7 +11,7 @@ import Config from "./config";
 import SequelizePlugin from "../plugins/sequelize";
 import PublicModule from "../modules/public";
 import RootModule from "../modules/root";
-import AuthModule, { UserProfile } from "../modules/auth";
+import AuthModule from "../modules/auth";
 import ListsModule from "../modules/lists";
 import failAction from "./failAction";
 

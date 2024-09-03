@@ -1,5 +1,6 @@
 import { Plugin, PluginNameVersion, Server } from "@hapi/hapi";
 import addView from "./add-view";
+import createList from "./create-list";
 
 const lists: Plugin<PluginNameVersion> = {
   name: "tikuence/modules/lists",
@@ -7,12 +8,19 @@ const lists: Plugin<PluginNameVersion> = {
   register: function (server: Server) {
     console.log("Inside 'tikuence/modules/lists'");
 
-    server.route({
-      method: "GET",
-      path: "/add",
-      options: addView,
-    });
+    server.route([
+      {
+        method: "GET",
+        path: "/add",
+        options: addView,
+      },
+      {
+        method: "POST",
+        path: "/",
+        options: createList,
+      }
+    ]);
   }
 };
 
-  export default lists;
+export default lists;

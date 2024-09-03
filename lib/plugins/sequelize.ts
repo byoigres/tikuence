@@ -25,6 +25,7 @@ const root: Plugin<PluginOptions> = {
         password: config.get("/database/password"),
         host: config.get("/database/host"),
         port: config.get("/database/port"),
+        // logging: (...msg) => console.log(msg),
       }
     );
 

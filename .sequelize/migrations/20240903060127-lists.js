@@ -15,7 +15,7 @@ module.exports = {
       },
       video_cover_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       url_uid: {
         type: Sequelize.STRING(16),
@@ -24,7 +24,6 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         references: {
           model: 'users',
           key: 'id',

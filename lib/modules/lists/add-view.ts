@@ -50,7 +50,7 @@ const handler: Lifecycle.Method = async (request, h) => {
   });
 };
 
-const access: RouteOptions = {
+const addList: RouteOptions = {
   auth: {
     mode: "try",
     strategy: "session",
@@ -62,4 +62,4 @@ const access: RouteOptions = {
   handler
 };
 
-export default access;
+export default addList;

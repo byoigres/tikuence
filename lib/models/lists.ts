@@ -3,7 +3,7 @@ import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, 
 export class Lists extends Model<InferAttributes<Lists>, InferCreationAttributes<Lists>> {
   declare id: CreationOptional<number>;
   declare title: string;
-  declare video_cover_id: number;
+  declare video_cover_id: CreationOptional<number>;
   declare url_uid: string;
   declare user_id: number;
 }
@@ -22,7 +22,8 @@ export function initModel(sequelize: Sequelize) {
     },
     video_cover_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true,
+      defaultValue: null
     },
     url_uid: {
       type: DataTypes.STRING(16),
