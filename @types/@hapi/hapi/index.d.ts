@@ -3,6 +3,7 @@ import PendingUser from "lib/models/pending_users";
 import SocialProviders from "lib/models/social_providers";
 import Users from "lib/models/users";
 import UsersSocialProviders from "lib/models/users_social_providers";
+import Categories from "lib/models/categories";
 import { Sequelize } from "sequelize";
 
 interface SequelizeModels {
@@ -10,6 +11,7 @@ interface SequelizeModels {
   SocialProviders: typeof SocialProviders;
   Users: typeof Users;
   UsersSocialProviders: typeof UsersSocialProviders;
+  Categories: typeof Categories;
 }
 
 declare module "@hapi/hapi" {

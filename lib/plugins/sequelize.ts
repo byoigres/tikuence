@@ -48,6 +48,10 @@ const root: Plugin<PluginOptions> = {
           file: "users",
           modelName: "Users",
         },
+        {
+          file: "categories",
+          modelName: "Categories",
+        },
       ];
 
       const models: Record<string, Model> = {};
