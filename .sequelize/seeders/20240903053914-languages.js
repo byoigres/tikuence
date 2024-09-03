@@ -461,7 +461,7 @@ module.exports = {
         "code": "nep"
       },
       {
-        "name": "Norwegian",
+        "name": "Norwegian Nynorsk",
         "code": "nno"
       },
       {
