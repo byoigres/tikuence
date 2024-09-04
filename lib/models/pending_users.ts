@@ -9,6 +9,13 @@ export class PendingUser extends Model<InferAttributes<PendingUser>, InferCreati
   declare expires_at: Date;
   declare token: string;
   declare profile_picture_url: string;
+
+  static associate() {
+    PendingUser.belongsTo(SocialProviders, {
+      foreignKey: 'provider_id',
+      targetKey: 'id',
+    });
+  }
 }
 
 export function initModel(sequelize: Sequelize) {
@@ -57,10 +64,6 @@ export function initModel(sequelize: Sequelize) {
     tableName: 'pending_users'
   });
 
-  PendingUser.belongsTo(SocialProviders, {
-    foreignKey: 'provider_id',
-    targetKey: 'id',
-  });
 
   return PendingUser;
 };

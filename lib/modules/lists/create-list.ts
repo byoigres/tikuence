@@ -35,35 +35,70 @@ const getMessages = getJoiMessages([
 
 type Payload = {
   title: string;
-  category_id: number;
+  categories: string[];
   language_code: string;
 }
 
 const validate: RouteOptionsValidate = {
   payload: Joi.object({
     title: Joi.string().required().label("title").messages(getMessages("title")),
-    category_id: Joi.number().optional().label("categories"),
+    categories: Joi.array().items(Joi.string().required()).min(1).max(3).label("categories").messages(getMessages("categories")),
     language_code: Joi.string().optional().label("languages"),
   }),
+};
+
+const getCategoryIds: RouteOptionsPreObject = {
+  assign: "categoryIds",
+  method: async (request, h) => {
+    const payload = request.payload as Payload;
+    const { models } = request.server.plugins["plugins/sequelize"];
+
+    const categories = await models.Categories.findAll({
+      attributes: ["id"],
+      where: {
+        url_identifier: payload.categories,
+      },
+    });
+
+    return categories.map((category) => category.id);
+  },
 };
 
 const createList: RouteOptionsPreObject = {
   assign: "listId",
   method: async (request, h) => {
-    const { title } = request.payload as Payload;
-    // TODO: Update the tyupe of credentials object.
-    const { id } = request.auth.credentials as { id:number };
-    const { models } = request.server.plugins["plugins/sequelize"]
+    const payload = request.payload as Payload;
+    const { id: user_id } = request.auth.credentials as { id:number };
+    const categoryIds = request.pre.categoryIds as number[];
 
-    const list = await models.Lists.create({
-      title,
-      user_id: id,
-      url_uid: Date.now().toString(),
-    }, {
-      returning: ["id"],
-    });
-    
-    return list.id;
+    const { models, sequelize } = request.server.plugins["plugins/sequelize"]
+
+    const transaction = await sequelize.transaction();
+
+    try {
+      const list = await models.Lists.create({
+        title: payload.title,
+        user_id,
+        url_uid: Date.now().toString(),
+      }, {
+        transaction,
+        returning: ["id"],
+      });
+
+      await models.ListsCategories.bulkCreate(categoryIds.map((category_id) => ({
+        list_id: list.id,
+        category_id,
+      })), {
+        transaction,
+      });
+
+      await transaction.commit();
+
+      return list.id;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   },
 };
 
@@ -80,6 +115,7 @@ const createListOptions: RouteOptions = {
   },
   validate,
   pre: [
+    getCategoryIds,
     createList,
   ],
   handler,

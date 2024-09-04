@@ -61,6 +61,10 @@ const root: Plugin<PluginOptions> = {
           file: "lists",
           modelName: "Lists",
         },
+        {
+          file: "lists_categories",
+          modelName: "ListsCategories",
+        },
       ];
 
       const models: Record<string, Model> = {};
