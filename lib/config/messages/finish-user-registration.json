@@ -1,0 +1,30 @@
+{
+  "name": [
+    {
+      "types": [
+        "any.required",
+        "string.empty",
+        "alternatives.match"
+      ],
+      "message": "You must provide a name"
+    }
+  ],
+  "username": [
+    {
+      "types": [
+        "any.required",
+        "string.empty",
+        "alternatives.match"
+      ],
+      "message": "You must provide a username"
+    }
+  ],
+  "terms": [
+    {
+      "types": [
+        "any.only"
+      ],
+      "message": "You must agree to the terms and conditions"
+    }
+  ]
+}

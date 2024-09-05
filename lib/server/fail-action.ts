@@ -1,10 +1,4 @@
 import { Lifecycle } from "@hapi/hapi";
-import { LanguageMessages } from "joi";
-
-type PreConfiguredMessages = {
-  name: string;
-  messages: { types: string[]; message: string }[];
-}[];
 
 interface ErrorDetails {
   message: string;
@@ -29,25 +23,6 @@ interface JoiError extends Error {
     };
   };
 }
-
-
-export const getJoiMessages =
-  (config: PreConfiguredMessages) =>
-    (name: string): LanguageMessages => {
-      const item = config.find((x) => x.name === name);
-
-      if (item) {
-        const result: LanguageMessages = {};
-
-        item.messages.forEach((message) => {
-          message.types.forEach((type) => (result[type] = message.message));
-        });
-
-        return result;
-      }
-
-      return {};
-    };
 
 const failAction: Lifecycle.FailAction = async (request, h, err) => {
   const error = err as JoiError;

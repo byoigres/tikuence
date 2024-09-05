@@ -1,0 +1,30 @@
+{
+  "title": [
+    {
+      "types": [
+        "any.required",
+        "string.empty"
+      ],
+      "message": "You must provide a title"
+    }
+  ],
+  "categories": [
+    {
+      "types": [
+        "any.required",
+        "array.empty",
+        "array.min"
+      ],
+      "message": "You must provide at least one category"
+    }
+  ],
+  "languages": [
+    {
+      "types": [
+        "any.required",
+        "array.empty"
+      ],
+      "message": "You must provide at least one language"
+    }
+  ]
+}

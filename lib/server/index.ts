@@ -13,7 +13,7 @@ import PublicModule from "../modules/public";
 import RootModule from "../modules/root";
 import AuthModule from "../modules/auth";
 import ListsModule from "../modules/lists";
-import failAction from "./failAction";
+import failAction from "./fail-action";
 
 const startServer = async function () {
   try {

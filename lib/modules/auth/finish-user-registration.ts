@@ -1,6 +1,6 @@
 import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import Joi from 'joi';
-import { getJoiMessages } from "../../server/failAction"
+import { getJoiMessages } from "../../server/messages"
 import { QueryParams, verifyToken, VerifyTokenPreResponse } from "./complete-profile"
 import { UserProfile } from "./google"
 
@@ -19,39 +19,7 @@ type CreateUserPreResponse = {
   picture: string;
 }
 
-const getMessages = getJoiMessages([
-  {
-    name: "token",
-    messages: [],
-  },
-  {
-    name: "name",
-    messages: [
-      {
-        types: ["any.required", "string.empty", "alternatives.match"],
-        message: "You must provide a name",
-      },
-    ],
-  },
-  {
-    name: "username",
-    messages: [
-      {
-        types: ["any.required", "string.empty", "alternatives.match"],
-        message: "You must provide a username",
-      },
-    ],
-  },
-  {
-    name: "terms",
-    messages: [
-      {
-        types: ["any.only"],
-        message: "You must agree to the terms and conditions",
-      }
-    ],
-  },
-]);
+const getMessages = getJoiMessages("finish-user-registration");
 
 const validate: RouteOptionsValidate = {
   query: Joi.object({

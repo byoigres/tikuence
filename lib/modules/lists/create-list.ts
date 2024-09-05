@@ -1,37 +1,8 @@
 import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import Joi from 'joi';
-import { getJoiMessages } from "../../server/failAction"
-import { UserProfile } from "../auth/google"
+import { getJoiMessages } from "../../server/messages"
 
-const getMessages = getJoiMessages([
-  {
-    name: "title",
-    messages: [
-      {
-        types: ["any.required", "string.empty"],
-        message: "You must provide a title",
-      },
-    ],
-  },
-  {
-    name: "categories",
-    messages: [
-      {
-        types: ["any.required"],
-        message: "You must select a category",
-      },
-    ],
-  },
-  {
-    name: "languages",
-    messages: [
-      {
-        types: ["any.required"],
-        message: "You must select a language",
-      },
-    ],
-  },
-]);
+const getMessages = getJoiMessages("create-list");
 
 type Payload = {
   title: string;
