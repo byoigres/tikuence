@@ -65,6 +65,10 @@ const root: Plugin<PluginOptions> = {
           file: "lists_categories",
           modelName: "ListsCategories",
         },
+        {
+          file: "lists_languages",
+          modelName: "ListsLanguages",
+        },
       ];
 
       const models: Record<string, Model> = {};

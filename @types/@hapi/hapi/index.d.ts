@@ -7,6 +7,7 @@ import Categories from "lib/models/categories";
 import Languages from "lib/models/languages";
 import Lists from "lib/models/lists";
 import ListsCategories from "lib/models/lists_categories";
+import ListsLanguages from "lib/models/lists_languages";
 import { Sequelize } from "sequelize";
 
 interface SequelizeModels {
@@ -18,6 +19,7 @@ interface SequelizeModels {
   Languages: typeof Languages;
   Lists: typeof Lists;
   ListsCategories: typeof ListsCategories;
+  ListsLanguages: typeof ListsLanguages;
 }
 
 declare module "@hapi/hapi" {

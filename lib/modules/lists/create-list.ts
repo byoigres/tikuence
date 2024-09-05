@@ -36,14 +36,14 @@ const getMessages = getJoiMessages([
 type Payload = {
   title: string;
   categories: string[];
-  language_code: string;
+  languages: string[];
 }
 
 const validate: RouteOptionsValidate = {
   payload: Joi.object({
     title: Joi.string().required().label("title").messages(getMessages("title")),
     categories: Joi.array().items(Joi.string().required()).min(1).max(3).label("categories").messages(getMessages("categories")),
-    language_code: Joi.string().optional().label("languages"),
+    languages: Joi.array().items(Joi.string().optional()).max(2).label("languages"),
   }),
 };
 
@@ -64,12 +64,30 @@ const getCategoryIds: RouteOptionsPreObject = {
   },
 };
 
+const getLanguageIds: RouteOptionsPreObject = {
+  assign: "languageIds",
+  method: async (request, h) => {
+    const payload = request.payload as Payload;
+    const { models } = request.server.plugins["plugins/sequelize"];
+
+    const languages = await models.Languages.findAll({
+      attributes: ["id"],
+      where: {
+        code: payload.languages,
+      },
+    });
+
+    return languages.map((language) => language.id);
+  },
+};
+
 const createList: RouteOptionsPreObject = {
   assign: "listId",
   method: async (request, h) => {
     const payload = request.payload as Payload;
     const { id: user_id } = request.auth.credentials as { id:number };
     const categoryIds = request.pre.categoryIds as number[];
+    const languageIds = request.pre.languageIds as number[];
 
     const { models, sequelize } = request.server.plugins["plugins/sequelize"]
 
@@ -91,6 +109,15 @@ const createList: RouteOptionsPreObject = {
       })), {
         transaction,
       });
+
+      if (languageIds.length > 0) {
+        await models.ListsLanguages.bulkCreate(languageIds.map((language_id) => ({
+          list_id: list.id,
+          language_id,
+        })), {
+          transaction,
+        });
+      }
 
       await transaction.commit();
 
@@ -116,6 +143,7 @@ const createListOptions: RouteOptions = {
   validate,
   pre: [
     getCategoryIds,
+    getLanguageIds,
     createList,
   ],
   handler,

@@ -4,14 +4,6 @@ export class Languages extends Model<InferAttributes<Languages>, InferCreationAt
   declare id: CreationOptional<number>;
   declare name: string;
   declare code: string;
-
-  static associate() {
-    // Languages.hasMany(UsersSocialProviders, {
-    //   foreignKey: 'user_id',
-    //   onDelete: 'CASCADE',
-    //   onUpdate: 'CASCADE'
-    // });
-  }
 }
 
 export function initModel(sequelize: Sequelize) {

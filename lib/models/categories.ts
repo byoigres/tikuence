@@ -4,14 +4,6 @@ export class Categories extends Model<InferAttributes<Categories>, InferCreation
   declare id: CreationOptional<number>;
   declare description: string;
   declare url_identifier: string;
-
-  static associate() {
-    // Categories.hasMany(UsersSocialProviders, {
-    //   foreignKey: 'user_id',
-    //   onDelete: 'CASCADE',
-    //   onUpdate: 'CASCADE'
-    // });
-  }
 }
 
 export function initModel(sequelize: Sequelize) {
