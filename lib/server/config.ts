@@ -49,7 +49,7 @@ const config = {
   database: {
     dialect: {
       $env: "DATABASE_DIALECT",
-      $default: "sqlite",
+      $default: "postgres",
     },
     port: {
       $env: "DATABASE_PORT",

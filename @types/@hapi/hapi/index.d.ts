@@ -32,7 +32,7 @@ declare module "@hapi/hapi" {
 
   interface Request {
     methods: {
-      encodeUrlId: (type: UrlIDType, value: number) => string;
+      encodeListID: (type: UrlIDType, value: number) => string;
     }
   }
 

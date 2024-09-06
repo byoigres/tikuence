@@ -18,7 +18,11 @@ const lists: Plugin<PluginNameVersion> = {
         method: "POST",
         path: "/",
         options: createList,
-      }
+      },
+      // {
+      //   method: "GET",
+      //   path: "/{urlId}",
+      // },
     ]);
   }
 };

@@ -21,16 +21,22 @@ const UrlIDPlugin: Plugin<UrlIDPluginOptions> = {
   register: async function (server: Server, options: UrlIDPluginOptions) {
     console.log("Inside 'plugins/url-id'");
 
-    server.method("encodeUrlId", (type: UrlIDType, value: number) => {
-      const sqids = new Sqids({
+    const createSqids = (type: UrlIDType) => {
+      return new Sqids({
         alphabet: options[type].alphabet,
         minLength: options[type].minLength,
       });
+    };
 
-      return sqids.encode([
+    server.method("encodeUrlId", (type: UrlIDType, value: number) => {
+      return createSqids(type).encode([
         value,
         options[type].salt,
       ]);
+    });
+
+    server.method("decodeUrlId", (type: UrlIDType, value: string) => {
+      return createSqids(type).decode(value);
     });
   },
 };

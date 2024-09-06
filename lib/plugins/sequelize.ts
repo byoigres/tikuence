@@ -18,6 +18,11 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
   register: async function (server: Server, options: SequelizePluginOptions) {
     console.log("Inside 'plugins/sequelize'");
 
+    console.log({
+      dialect: options.dialect,
+      type: typeof options.dialect
+    });
+
     const sequelize = new Sequelize(
       options.database,
       options.username,

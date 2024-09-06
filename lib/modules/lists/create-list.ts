@@ -75,7 +75,7 @@ const createList: RouteOptionsPreObject = {
         returning: ["id"],
       });
       
-      const listUrlId = request.server.methods.encodeUrlId(UrlIDType.LISTS, list.id);
+      const listUrlId = request.server.methods.encodeListID(UrlIDType.LISTS, list.id);
 
       await list.update({
         url_uid: listUrlId,
