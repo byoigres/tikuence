@@ -1,30 +1,34 @@
 import { Plugin, Server } from "@hapi/hapi";
-import { Sequelize, Model } from 'sequelize';
-import { Store } from "confidence";
+import { Sequelize, Model, Dialect } from 'sequelize';
 import path from "path";
 const basename = path.join(__dirname, "../models");
 
-type PluginOptions = {
-  config: Store;
+type SequelizePluginOptions = {
+  dialect: Dialect;
+  database: string;
+  username: string;
+  password: string;
+  host: string;
+  port: number;
 };
 
-const root: Plugin<PluginOptions> = {
+const SequelizePlugin: Plugin<SequelizePluginOptions> = {
   name: "plugins/sequelize",
   version: "1.0.0",
-  register: async function (server: Server, { config }: PluginOptions) {
+  register: async function (server: Server, options: SequelizePluginOptions) {
     console.log("Inside 'plugins/sequelize'");
 
     const sequelize = new Sequelize(
-      config.get("/database/database"),
-      config.get("/database/username"),
-      config.get("/database/password"),
+      options.database,
+      options.username,
+      options.password,
       {
-        dialect: "postgres",
-        database: config.get("/database/database"),
-        username: config.get("/database/username"),
-        password: config.get("/database/password"),
-        host: config.get("/database/host"),
-        port: config.get("/database/port"),
+        dialect: options.dialect,
+        database: options.database,
+        username: options.username,
+        password: options.password,
+        host: options.host,
+        port: options.port,
         // logging: (...msg) => console.log(msg),
       }
     );
@@ -101,4 +105,4 @@ const root: Plugin<PluginOptions> = {
   },
 };
 
-export default root;
+export default SequelizePlugin;

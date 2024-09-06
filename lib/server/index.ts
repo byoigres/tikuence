@@ -52,7 +52,12 @@ const startServer = async function () {
     await server.register({
       plugin: SequelizePlugin,
       options: {
-        config: Config,
+        dialect: Config.get("/database/dialect"),
+        database: Config.get("/database/database"),
+        username: Config.get("/database/username"),
+        password: Config.get("/database/password"),
+        host: Config.get("/database/host"),
+        port: Config.get("/database/port"),
       },
     });
     await server.register(Inert);
