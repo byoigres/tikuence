@@ -47,20 +47,24 @@ const config = {
     },
   },
   database: {
+    dialect: {
+      $env: "DATABASE_DIALECT",
+      $default: "sqlite",
+    },
     port: {
-      $env: "POSTGRES_PORT",
+      $env: "DATABASE_PORT",
       $default: "sqlite",
     },
     database: {
-      $env: "POSTGRES_DB",
+      $env: "DATABASE_DB",
       $default: "tikuence",
     },
     username: {
-      $env: "POSTGRES_USER",
+      $env: "DATABASE_USER",
       $default: "tikuence",
     },
     password: {
-      $env: "POSTGRES_PASSWORD",
+      $env: "DATABASE_PASSWORD",
     },
   },
   security: {
