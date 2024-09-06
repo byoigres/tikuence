@@ -75,7 +75,7 @@ const createList: RouteOptionsPreObject = {
         returning: ["id"],
       });
       
-      const listUrlId = request.server.methods.encodeListID(UrlIDType.LISTS, list.id);
+      const listUrlId = request.server.methods.encodeUrlID(UrlIDType.LISTS, list.id);
 
       await list.update({
         url_uid: listUrlId,
@@ -112,7 +112,7 @@ const createList: RouteOptionsPreObject = {
 const handler: Lifecycle.Method = async (request, h) => {
   const listUrlId = request.pre.listUrlId as string;
   request.yar.flash("success", `List created successfully with URL Id: ${listUrlId}`);
-  return h.redirect("/lists/add");
+  return h.redirect(`/lists/${listUrlId}`);
 }
 
 const createListOptions: RouteOptions = {

@@ -25,15 +25,15 @@ interface SequelizeModels {
   ListsLanguages: typeof ListsLanguages;
 }
 
+interface ServerMethods {
+  encodeUrlID: (type: UrlIDType, value: number) => string;
+  decodeUrlID: (value: string) => number | null;
+}
+
 declare module "@hapi/hapi" {
   interface Server {
     models: SequelizeModels;
-  }
-
-  interface Request {
-    methods: {
-      encodeListID: (type: UrlIDType, value: number) => string;
-    }
+    methods: ServerMethods
   }
 
   interface PluginProperties {
@@ -41,10 +41,12 @@ declare module "@hapi/hapi" {
       models: SequelizeModels;
       sequelize: Sequelize
     };
+    // methods: ServerMethods;
   }
 
   interface ServerApplicationState {
     appName: string;
     config: Store;
+    // methods: ServerMethods;
   }
 }

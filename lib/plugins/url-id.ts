@@ -28,15 +28,19 @@ const UrlIDPlugin: Plugin<UrlIDPluginOptions> = {
       });
     };
 
-    server.method("encodeUrlId", (type: UrlIDType, value: number) => {
+    server.method("encodeUrlID", (type: UrlIDType, value: number): string => {
       return createSqids(type).encode([
         value,
         options[type].salt,
       ]);
     });
 
-    server.method("decodeUrlId", (type: UrlIDType, value: string) => {
-      return createSqids(type).decode(value);
+    server.method("decodeUrlID", (type: UrlIDType, value: string): number | null => {
+      const [id, salt] = createSqids(type).decode(value);
+      if (salt !== options[type].salt) {
+        return null;
+      }
+      return id;
     });
   },
 };

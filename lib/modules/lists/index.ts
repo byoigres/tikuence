@@ -1,6 +1,7 @@
 import { Plugin, PluginNameVersion, Server } from "@hapi/hapi";
 import addView from "./add-view";
 import createList from "./create-list";
+import viewList from "./view";
 
 const lists: Plugin<PluginNameVersion> = {
   name: "tikuence/modules/lists",
@@ -19,10 +20,11 @@ const lists: Plugin<PluginNameVersion> = {
         path: "/",
         options: createList,
       },
-      // {
-      //   method: "GET",
-      //   path: "/{urlId}",
-      // },
+      {
+        method: "GET",
+        path: "/{urlId}",
+        options: viewList,
+      },
     ]);
   }
 };
