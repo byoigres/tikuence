@@ -18,6 +18,7 @@
     "pg": "^8.12.0",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.3",
+    "sqids": "^0.3.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

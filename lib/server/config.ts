@@ -62,7 +62,24 @@ const config = {
     password: {
       $env: "POSTGRES_PASSWORD",
     },
-  }
+  },
+  security: {
+    urlid: {
+      lists: {
+        alphabet: {
+          $env: "SECURITY_URL_ID_LIST_ALPHABET",
+        },
+        minLength: {
+          $env: "SECURITY_URL_ID_LIST_MIN_LENGTH",
+          $coerce: "number",
+        },
+        salt: {
+          $env: "SECURITY_URL_ID_LIST_SALT_NUMBER",
+          $coerce: "number",
+        },
+      },
+    },
+  },
 };
 
 const store = new Confidence.Store(config);

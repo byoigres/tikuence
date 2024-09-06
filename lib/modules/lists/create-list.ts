@@ -1,5 +1,6 @@
 import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import Joi from 'joi';
+import { UrlIDType } from "../../../lib/plugins/url-id"
 import { getJoiMessages } from "../../server/messages"
 
 const getMessages = getJoiMessages("create-list");
@@ -53,8 +54,8 @@ const getLanguageIds: RouteOptionsPreObject = {
 };
 
 const createList: RouteOptionsPreObject = {
-  assign: "listId",
-  method: async (request, h) => {
+  assign: "listUrlId",
+  method: async (request, _h) => {
     const payload = request.payload as Payload;
     const { id: user_id } = request.auth.credentials as { id:number };
     const categoryIds = request.pre.categoryIds as number[];
@@ -72,6 +73,14 @@ const createList: RouteOptionsPreObject = {
       }, {
         transaction,
         returning: ["id"],
+      });
+      
+      const listUrlId = request.server.methods.encodeUrlId(UrlIDType.LISTS, list.id);
+
+      await list.update({
+        url_uid: listUrlId,
+      }, {
+        transaction
       });
 
       await models.ListsCategories.bulkCreate(categoryIds.map((category_id) => ({
@@ -92,7 +101,7 @@ const createList: RouteOptionsPreObject = {
 
       await transaction.commit();
 
-      return list.id;
+      return list.url_uid;
     } catch (error) {
       await transaction.rollback();
       throw error;
@@ -101,8 +110,8 @@ const createList: RouteOptionsPreObject = {
 };
 
 const handler: Lifecycle.Method = async (request, h) => {
-  const id = request.pre.listId as number;
-  request.yar.flash("success", `List created successfully with id: ${id}`);
+  const listUrlId = request.pre.listUrlId as string;
+  request.yar.flash("success", `List created successfully with URL Id: ${listUrlId}`);
   return h.redirect("/lists/add");
 }
 

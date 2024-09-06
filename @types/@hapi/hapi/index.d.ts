@@ -1,4 +1,7 @@
 import "@hapi/hapi";
+import { Store } from "confidence";
+import { UrlIDType } from "lib/plugins/url-id"
+// Sequelize models
 import PendingUser from "lib/models/pending_users";
 import SocialProviders from "lib/models/social_providers";
 import Users from "lib/models/users";
@@ -27,6 +30,12 @@ declare module "@hapi/hapi" {
     models: SequelizeModels;
   }
 
+  interface Request {
+    methods: {
+      encodeUrlId: (type: UrlIDType, value: number) => string;
+    }
+  }
+
   interface PluginProperties {
     "plugins/sequelize": {
       models: SequelizeModels;
@@ -36,5 +45,6 @@ declare module "@hapi/hapi" {
 
   interface ServerApplicationState {
     appName: string;
+    config: Store;
   }
 }

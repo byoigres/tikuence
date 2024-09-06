@@ -9,6 +9,7 @@ import Yar from "@hapi/yar";
 import inertia from "hapi-inertia";
 import Config from "./config";
 import SequelizePlugin from "../plugins/sequelize";
+import UrlIDPlugin from "../plugins/url-id";
 import PublicModule from "../modules/public";
 import RootModule from "../modules/root";
 import AuthModule from "../modules/auth";
@@ -35,8 +36,19 @@ const startServer = async function () {
     },
     });
 
-    server.app.appName = "Tikuence";    
+    server.app.appName = "Tikuence";
+    server.app.config = Config;
 
+    await server.register({
+      plugin: UrlIDPlugin,
+      options: {
+        lists: {
+          alphabet: server.app.config.get(`/security/urlid/lists/alphabet`) as string,
+          minLength: server.app.config.get(`/security/urlid/lists/minLength`) as number,
+          salt: server.app.config.get(`/security/urlid/lists/salt`) as number,
+        }
+      },
+    });
     await server.register({
       plugin: SequelizePlugin,
       options: {
