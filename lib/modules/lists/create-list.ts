@@ -23,7 +23,7 @@ const getCategoryIds: RouteOptionsPreObject = {
   assign: "categoryIds",
   method: async (request, h) => {
     const payload = request.payload as Payload;
-    const { models } = request.server.plugins["plugins/sequelize"];
+    const { models } = request.server.plugins.sequelize;
 
     const categories = await models.Categories.findAll({
       attributes: ["id"],
@@ -40,7 +40,7 @@ const getLanguageIds: RouteOptionsPreObject = {
   assign: "languageIds",
   method: async (request, h) => {
     const payload = request.payload as Payload;
-    const { models } = request.server.plugins["plugins/sequelize"];
+    const { models } = request.server.plugins.sequelize;
 
     const languages = await models.Languages.findAll({
       attributes: ["id"],
@@ -61,7 +61,7 @@ const createList: RouteOptionsPreObject = {
     const categoryIds = request.pre.categoryIds as number[];
     const languageIds = request.pre.languageIds as number[];
 
-    const { models, sequelize } = request.server.plugins["plugins/sequelize"]
+    const { models, sequelize } = request.server.plugins.sequelize
 
     const transaction = await sequelize.transaction();
 

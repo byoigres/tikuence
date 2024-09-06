@@ -28,7 +28,7 @@ export interface VerifyUserExistPreResponse {
 const getGoogleProviderId: RouteOptionsPreObject = {
   assign: "getGoogleProviderId",
   method: async (request, h) => {
-    const { SocialProviders } = request.server.plugins["plugins/sequelize"].models;
+    const { SocialProviders } = request.server.plugins.sequelize.models;
 
     const googleProvier = await SocialProviders.findOne({
       where: { name: SocialProvidersEnum.GOOGLE }
@@ -51,7 +51,7 @@ const verifyUserExist: RouteOptionsPreObject = {
 
     const googleProviderId = request.pre.getGoogleProviderId as number;
 
-    const { Users, UsersSocialProviders } = request.server.plugins["plugins/sequelize"].models;
+    const { Users, UsersSocialProviders } = request.server.plugins.sequelize.models;
 
     const googleProfile = request.auth.credentials.profile as GoogleProfile;
 
@@ -89,7 +89,7 @@ const verifyUserExist: RouteOptionsPreObject = {
 };
 
 const handler: Lifecycle.Method = async (request, h) => {
-  const { PendingUsers } = request.server.plugins["plugins/sequelize"].models;
+  const { PendingUsers } = request.server.plugins.sequelize.models;
   const googleProfile = request.pre.verifyUserExist as GoogleProfile;
   const googleProviderId = request.pre.getGoogleProviderId as number;
 

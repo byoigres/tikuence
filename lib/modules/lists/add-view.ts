@@ -5,7 +5,7 @@ import Languages from "lib/models/languages";
 const getCategories: RouteOptionsPreObject = {
   assign: "categories",
   method: async (request, h) => {
-    const { models } = request.server.plugins["plugins/sequelize"];
+    const { models } = request.server.plugins.sequelize;
 
     const categories = await models.Categories.findAll({
       attributes: [
@@ -21,7 +21,7 @@ const getCategories: RouteOptionsPreObject = {
 const getLanguages: RouteOptionsPreObject = {
   assign: "languages",
   method: async (request, h) => {
-    const { models } = request.server.plugins["plugins/sequelize"];
+    const { models } = request.server.plugins.sequelize;
 
     const languages = await models.Languages.findAll({
       attributes: [

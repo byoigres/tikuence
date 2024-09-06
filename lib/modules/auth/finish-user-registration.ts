@@ -39,7 +39,7 @@ const verifyUsernameAvailability: RouteOptionsPreObject = {
   method: async (request, h) => {
     const { username } = request.payload as Payload;
 
-    const { Users } = request.server.plugins["plugins/sequelize"].models;
+    const { Users } = request.server.plugins.sequelize.models;
 
     const user = await Users.findOne({
       where: {
@@ -67,7 +67,7 @@ const createUser: RouteOptionsPreObject = {
     const { name, username, bio, tiktokUsername } = request.payload as Payload;
     const { email, profilePictureURL, providerId, profileId } = request.pre.verifyToken as VerifyTokenPreResponse;
 
-    const { models, sequelize } = request.server.plugins["plugins/sequelize"];
+    const { models, sequelize } = request.server.plugins.sequelize;
 
     const transaction = await sequelize.transaction();
 

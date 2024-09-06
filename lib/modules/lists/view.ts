@@ -23,7 +23,7 @@ const getList: RouteOptionsPreObject = {
   assign: "title",
   method: async (request, h) => {
     const listId = request.pre.listId as number;
-    const { models } = request.server.plugins["plugins/sequelize"];
+    const { models } = request.server.plugins.sequelize;
     const list = await models.Lists.findByPk(listId);
 
     if (!list) {
