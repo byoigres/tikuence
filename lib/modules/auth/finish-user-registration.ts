@@ -67,12 +67,19 @@ const createUser: RouteOptionsPreObject = {
     const { name, username, bio, tiktokUsername } = request.payload as Payload;
     const { email, profilePictureURL, providerId, profileId } = request.pre.verifyToken as VerifyTokenPreResponse;
 
-    const { models, sequelize } = request.server.plugins.sequelize;
+    const {
+      models: {
+        Users,
+        UsersSocialProviders,
+        PendingUsers,
+      },
+      sequelize
+    } = request.server.plugins.sequelize;
 
     const transaction = await sequelize.transaction();
 
     try {
-      const user = await models.Users.create({
+      const user = await Users.create({
         name,
         username,
         email,
@@ -85,7 +92,7 @@ const createUser: RouteOptionsPreObject = {
         returning: true
       });
 
-      await models.UsersSocialProviders.create({
+      await UsersSocialProviders.create({
         user_id: user.id,
         provider_id: providerId,
         profile_id: profileId,
@@ -94,7 +101,7 @@ const createUser: RouteOptionsPreObject = {
         transaction,
       });
 
-      await models.PendingUsers.destroy({
+      await PendingUsers.destroy({
         where: {
           email,
           provider_id: providerId,

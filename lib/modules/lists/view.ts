@@ -23,8 +23,8 @@ const getList: RouteOptionsPreObject = {
   assign: "title",
   method: async (request, h) => {
     const listId = request.pre.listId as number;
-    const { models } = request.server.plugins.sequelize;
-    const list = await models.Lists.findByPk(listId);
+    const { Lists } = request.server.plugins.sequelize.models;
+    const list = await Lists.findByPk(listId);
 
     if (!list) {
       return h.response("Not found").code(404).takeover();

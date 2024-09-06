@@ -23,9 +23,9 @@ const getCategoryIds: RouteOptionsPreObject = {
   assign: "categoryIds",
   method: async (request, h) => {
     const payload = request.payload as Payload;
-    const { models } = request.server.plugins.sequelize;
+    const { Categories } = request.server.plugins.sequelize.models;
 
-    const categories = await models.Categories.findAll({
+    const categories = await Categories.findAll({
       attributes: ["id"],
       where: {
         url_identifier: payload.categories,
@@ -40,9 +40,9 @@ const getLanguageIds: RouteOptionsPreObject = {
   assign: "languageIds",
   method: async (request, h) => {
     const payload = request.payload as Payload;
-    const { models } = request.server.plugins.sequelize;
+    const { Languages } = request.server.plugins.sequelize.models;
 
-    const languages = await models.Languages.findAll({
+    const languages = await Languages.findAll({
       attributes: ["id"],
       where: {
         code: payload.languages,
@@ -61,12 +61,19 @@ const createList: RouteOptionsPreObject = {
     const categoryIds = request.pre.categoryIds as number[];
     const languageIds = request.pre.languageIds as number[];
 
-    const { models, sequelize } = request.server.plugins.sequelize
+    const {
+      models: {
+        Lists,
+        ListsCategories,
+        ListsLanguages,
+      },
+      sequelize
+    } = request.server.plugins.sequelize
 
     const transaction = await sequelize.transaction();
 
     try {
-      const list = await models.Lists.create({
+      const list = await Lists.create({
         title: payload.title,
         user_id,
         url_uid: Date.now().toString(),
@@ -83,7 +90,7 @@ const createList: RouteOptionsPreObject = {
         transaction
       });
 
-      await models.ListsCategories.bulkCreate(categoryIds.map((category_id) => ({
+      await ListsCategories.bulkCreate(categoryIds.map((category_id) => ({
         list_id: list.id,
         category_id,
       })), {
@@ -91,7 +98,7 @@ const createList: RouteOptionsPreObject = {
       });
 
       if (languageIds.length > 0) {
-        await models.ListsLanguages.bulkCreate(languageIds.map((language_id) => ({
+        await ListsLanguages.bulkCreate(languageIds.map((language_id) => ({
           list_id: list.id,
           language_id,
         })), {

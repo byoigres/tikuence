@@ -13,11 +13,9 @@ type SequelizePluginOptions = {
 };
 
 const SequelizePlugin: Plugin<SequelizePluginOptions> = {
-  name: "plugins/sequelize",
+  name: "sequelize",
   version: "1.0.0",
   register: async function (server: Server, options: SequelizePluginOptions) {
-    console.log("Inside 'plugins/sequelize'");
-
     console.log({
       dialect: options.dialect,
       type: typeof options.dialect
@@ -102,11 +100,6 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
       // TODO: Stop the server when no database connection is available
       console.error('Unable to connect to the database:', error);
     }
-
-    server.method("sequelize", () => {
-      
-      return sequelize;
-    });
   },
 };
 
