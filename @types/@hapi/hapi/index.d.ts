@@ -37,16 +37,14 @@ declare module "@hapi/hapi" {
   }
 
   interface PluginProperties {
-    "plugins/sequelize": {
+    "sequelize": {
       models: SequelizeModels;
       sequelize: Sequelize
     };
-    // methods: ServerMethods;
   }
 
   interface ServerApplicationState {
     appName: string;
     config: Store;
-    // methods: ServerMethods;
   }
 }
