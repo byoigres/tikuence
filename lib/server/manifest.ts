@@ -2,7 +2,7 @@ import { Server, Request } from "@hapi/hapi";
 import { Manifest } from "@hapi/glue";
 import Path from "path";
 import Yar from "@hapi/yar";
-import Config from "./config";
+import Store from "./store";
 import inertia from "hapi-inertia";
 import failAction from "./fail-action";
 import UrlIDPlugin from "../plugins/url-id";
@@ -14,9 +14,9 @@ import ListsModule from "../modules/lists";
 
 const manifest: Manifest = {
   server: {
-    host: Config.get("/server/host"),
-    port: Config.get("/server/port"),
-    debug: Config.get("/server/debug"),
+    host: Store.get("/server/host"),
+    port: Store.get("/server/port"),
+    debug: Store.get("/server/debug"),
     routes: {
       files: {
         relativeTo: Path.join(__dirname, "..", "..", "public"),
@@ -36,21 +36,21 @@ const manifest: Manifest = {
         plugin: UrlIDPlugin,
         options: {
           lists: {
-            alphabet: Config.get(`/security/urlid/lists/alphabet`) as string,
-            minLength: Config.get(`/security/urlid/lists/minLength`) as number,
-            salt: Config.get(`/security/urlid/lists/salt`) as number,
+            alphabet: Store.get(`/security/urlid/lists/alphabet`) as string,
+            minLength: Store.get(`/security/urlid/lists/minLength`) as number,
+            salt: Store.get(`/security/urlid/lists/salt`) as number,
           }
         },
       },
       {
         plugin: SequelizePlugin,
         options: {
-          dialect: Config.get("/database/dialect"),
-          database: Config.get("/database/database"),
-          username: Config.get("/database/username"),
-          password: Config.get("/database/password"),
-          host: Config.get("/database/host"),
-          port: Config.get("/database/port"),
+          dialect: Store.get("/database/dialect"),
+          database: Store.get("/database/database"),
+          username: Store.get("/database/username"),
+          password: Store.get("/database/password"),
+          host: Store.get("/database/host"),
+          port: Store.get("/database/port"),
         },
       },
       {

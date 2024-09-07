@@ -4,7 +4,7 @@ import Inert from "@hapi/inert";
 import Bell from "@hapi/bell";
 import Cookie from "@hapi/cookie";
 import Handlebars from "handlebars";
-import Config from "./config";
+import Store from "./store";
 
 export default async function preRegister(server: Server) {
   server.register(Cookie);
@@ -14,10 +14,10 @@ export default async function preRegister(server: Server) {
 
   server.auth.strategy("google", "bell", {
     provider: "google",
-    password: Config.get("/auth/providers/google/cookie_encryption_password"),
-    clientId: Config.get("/auth/providers/google/clientId"),
-    clientSecret: Config.get("/auth/providers/google/clientSecret"),
-    isSecure: Config.get("/auth/providers/google/isSecure"),
+    password: Store.get("/auth/providers/google/cookie_encryption_password"),
+    clientId: Store.get("/auth/providers/google/clientId"),
+    clientSecret: Store.get("/auth/providers/google/clientSecret"),
+    isSecure: Store.get("/auth/providers/google/isSecure"),
   });
 
   server.auth.strategy("session", "cookie", {
@@ -40,4 +40,6 @@ export default async function preRegister(server: Server) {
   Handlebars.registerHelper("json", function (context) {
     return JSON.stringify(context);
   });
+
+  server.app.appName = "Tikuence";
 }

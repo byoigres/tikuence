@@ -1,6 +1,6 @@
 import Confidence from "confidence";
 
-const config = {
+const store = {
   server: {
     host: {
       $env: "APP_HOST",
@@ -86,6 +86,6 @@ const config = {
   },
 };
 
-const store = new Confidence.Store(config);
+const document = new Confidence.Store(store);
 
-export default store;
+export default document;

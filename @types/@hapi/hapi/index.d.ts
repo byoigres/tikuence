@@ -1,5 +1,4 @@
 import "@hapi/hapi";
-import { Store } from "confidence";
 import { UrlIDType } from "lib/plugins/url-id"
 // Sequelize models
 import PendingUser from "lib/models/pending_user";
@@ -45,6 +44,5 @@ declare module "@hapi/hapi" {
 
   interface ServerApplicationState {
     appName: string;
-    config: Store;
   }
 }
