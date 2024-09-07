@@ -4,14 +4,14 @@ export enum SocialProvidersEnum {
   GOOGLE = "google",
 }
 
-export class SocialProviders extends Model<InferAttributes<SocialProviders>, InferCreationAttributes<SocialProviders>> {
+export class SocialProvider extends Model<InferAttributes<SocialProvider>, InferCreationAttributes<SocialProvider>> {
   declare id: CreationOptional<number>;
   declare name: SocialProvidersEnum;
 }
 
 export function initModel(sequelize: Sequelize) {
 
-  SocialProviders.init({
+  SocialProvider.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -29,8 +29,8 @@ export function initModel(sequelize: Sequelize) {
     tableName: 'social_providers'
   });
 
-  return SocialProviders
+  return SocialProvider
 };
 
-export default SocialProviders;
+export default SocialProvider;
 

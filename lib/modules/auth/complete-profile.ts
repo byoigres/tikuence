@@ -27,9 +27,9 @@ export const verifyToken: RouteOptionsPreObject = {
   method: async (request, h) => {
     const { token } = request.query as QueryParams;
 
-    const { PendingUsers } = request.server.plugins.sequelize.models;
+    const { PendingUser } = request.server.plugins.sequelize.models;
 
-    const user = await PendingUsers.findOne({
+    const user = await PendingUser.findOne({
       attributes: [
         "email",
         "name",

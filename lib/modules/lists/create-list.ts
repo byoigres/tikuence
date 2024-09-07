@@ -23,9 +23,9 @@ const getCategoryIds: RouteOptionsPreObject = {
   assign: "categoryIds",
   method: async (request, h) => {
     const payload = request.payload as Payload;
-    const { Categories } = request.server.plugins.sequelize.models;
+    const { Category } = request.server.plugins.sequelize.models;
 
-    const categories = await Categories.findAll({
+    const categories = await Category.findAll({
       attributes: ["id"],
       where: {
         url_identifier: payload.categories,
@@ -40,9 +40,9 @@ const getLanguageIds: RouteOptionsPreObject = {
   assign: "languageIds",
   method: async (request, h) => {
     const payload = request.payload as Payload;
-    const { Languages } = request.server.plugins.sequelize.models;
+    const { Language } = request.server.plugins.sequelize.models;
 
-    const languages = await Languages.findAll({
+    const languages = await Language.findAll({
       attributes: ["id"],
       where: {
         code: payload.languages,
@@ -63,9 +63,9 @@ const createList: RouteOptionsPreObject = {
 
     const {
       models: {
-        Lists,
-        ListsCategories,
-        ListsLanguages,
+        List,
+        ListCategory,
+        ListLanguage,
       },
       sequelize
     } = request.server.plugins.sequelize
@@ -73,7 +73,7 @@ const createList: RouteOptionsPreObject = {
     const transaction = await sequelize.transaction();
 
     try {
-      const list = await Lists.create({
+      const list = await List.create({
         title: payload.title,
         user_id,
         url_uid: Date.now().toString(),
@@ -90,7 +90,7 @@ const createList: RouteOptionsPreObject = {
         transaction
       });
 
-      await ListsCategories.bulkCreate(categoryIds.map((category_id) => ({
+      await ListCategory.bulkCreate(categoryIds.map((category_id) => ({
         list_id: list.id,
         category_id,
       })), {
@@ -98,7 +98,7 @@ const createList: RouteOptionsPreObject = {
       });
 
       if (languageIds.length > 0) {
-        await ListsLanguages.bulkCreate(languageIds.map((language_id) => ({
+        await ListLanguage.bulkCreate(languageIds.map((language_id) => ({
           list_id: list.id,
           language_id,
         })), {

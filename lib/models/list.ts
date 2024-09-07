@@ -1,6 +1,6 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
-export class Lists extends Model<InferAttributes<Lists>, InferCreationAttributes<Lists>> {
+export class List extends Model<InferAttributes<List>, InferCreationAttributes<List>> {
   declare id: CreationOptional<number>;
   declare title: string;
   declare video_cover_id: CreationOptional<number>;
@@ -10,7 +10,7 @@ export class Lists extends Model<InferAttributes<Lists>, InferCreationAttributes
 
 export function initModel(sequelize: Sequelize) {
 
-  Lists.init({
+  List.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -40,7 +40,7 @@ export function initModel(sequelize: Sequelize) {
     tableName: 'lists',
   });
 
-  return Lists;
+  return List;
 }
 
-export default Lists;
+export default List;

@@ -41,40 +41,40 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
 
       const modelsMeta = [
         {
-          file: "social_providers",
-          modelName: "SocialProviders",
+          file: "social_provider",
+          modelName: "SocialProvider",
         },
         {
-          file: "pending_users",
-          modelName: "PendingUsers",
+          file: "pending_user",
+          modelName: "PendingUser",
         },
         {
-          file: "users_social_providers",
-          modelName: "UsersSocialProviders",
+          file: "users_social_provider",
+          modelName: "UsersSocialProvider",
         },
         {
           file: "users",
           modelName: "Users",
         },
         {
-          file: "categories",
-          modelName: "Categories",
+          file: "category",
+          modelName: "Category",
         },
         {
-          file: "languages",
-          modelName: "Languages",
+          file: "language",
+          modelName: "Language",
         },
         {
-          file: "lists",
-          modelName: "Lists",
+          file: "list",
+          modelName: "List",
         },
         {
-          file: "lists_categories",
-          modelName: "ListsCategories",
+          file: "list_category",
+          modelName: "ListCategory",
         },
         {
-          file: "lists_languages",
-          modelName: "ListsLanguages",
+          file: "list_language",
+          modelName: "ListLanguage",
         },
       ];
 

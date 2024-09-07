@@ -1,5 +1,5 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
-import SocialProviders from './social_providers';
+import SocialProvider from './social_provider';
 
 export class PendingUser extends Model<InferAttributes<PendingUser>, InferCreationAttributes<PendingUser>> {
   declare email: string;
@@ -11,7 +11,7 @@ export class PendingUser extends Model<InferAttributes<PendingUser>, InferCreati
   declare profile_picture_url: string;
 
   static associate() {
-    PendingUser.belongsTo(SocialProviders, {
+    PendingUser.belongsTo(SocialProvider, {
       foreignKey: 'provider_id',
       targetKey: 'id',
     });
@@ -36,7 +36,7 @@ export function initModel(sequelize: Sequelize) {
       allowNull: false,
       primaryKey: true,
       references: {
-        model: SocialProviders,
+        model: SocialProvider,
         key: 'id',
       }
     },

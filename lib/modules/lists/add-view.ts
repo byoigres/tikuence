@@ -1,13 +1,13 @@
 import { RouteOptions, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
-import Categories from "lib/models/categories";
-import Languages from "lib/models/languages";
+import Category from "lib/models/category";
+import Language from "lib/models/language";
 
 const getCategories: RouteOptionsPreObject = {
   assign: "categories",
   method: async (request, h) => {
-    const { Categories } = request.server.plugins.sequelize.models;
+    const { Category } = request.server.plugins.sequelize.models;
 
-    const categories = await Categories.findAll({
+    const categories = await Category.findAll({
       attributes: [
         ["url_identifier", "name"],
         "description"
@@ -21,9 +21,9 @@ const getCategories: RouteOptionsPreObject = {
 const getLanguages: RouteOptionsPreObject = {
   assign: "languages",
   method: async (request, h) => {
-    const { Languages } = request.server.plugins.sequelize.models;
+    const { Language } = request.server.plugins.sequelize.models;
 
-    const languages = await Languages.findAll({
+    const languages = await Language.findAll({
       attributes: [
         "code",
         "name"
@@ -36,8 +36,8 @@ const getLanguages: RouteOptionsPreObject = {
 
 const handler: Lifecycle.Method = async (request, h) => {
   const defaultComponent = "Feed";  
-  const categories = request.pre.categories as Categories[];
-  const languages = request.pre.languages as Languages[];
+  const categories = request.pre.categories as Category[];
+  const languages = request.pre.languages as Language[];
 
   return h.inertia(defaultComponent, {
     modal: {

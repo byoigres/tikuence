@@ -1,5 +1,5 @@
 import { Sequelize, Model, DataTypes, Optional, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import UsersSocialProviders from './users_social_providers';
+import UsersSocialProvider from './users_social_provider';
 
 export class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {
   declare id: CreationOptional<number>;
@@ -12,7 +12,7 @@ export class Users extends Model<InferAttributes<Users>, InferCreationAttributes
   declare profile_picture_url: string;
 
   static associate() {
-    Users.hasMany(UsersSocialProviders, {
+    Users.hasMany(UsersSocialProvider, {
       foreignKey: 'user_id',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'

@@ -70,8 +70,8 @@ const createUser: RouteOptionsPreObject = {
     const {
       models: {
         Users,
-        UsersSocialProviders,
-        PendingUsers,
+        UsersSocialProvider,
+        PendingUser,
       },
       sequelize
     } = request.server.plugins.sequelize;
@@ -92,7 +92,7 @@ const createUser: RouteOptionsPreObject = {
         returning: true
       });
 
-      await UsersSocialProviders.create({
+      await UsersSocialProvider.create({
         user_id: user.id,
         provider_id: providerId,
         profile_id: profileId,
@@ -101,7 +101,7 @@ const createUser: RouteOptionsPreObject = {
         transaction,
       });
 
-      await PendingUsers.destroy({
+      await PendingUser.destroy({
         where: {
           email,
           provider_id: providerId,

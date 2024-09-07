@@ -1,6 +1,6 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
-export class Categories extends Model<InferAttributes<Categories>, InferCreationAttributes<Categories>> {
+export class Category extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {
   declare id: CreationOptional<number>;
   declare description: string;
   declare url_identifier: string;
@@ -8,7 +8,7 @@ export class Categories extends Model<InferAttributes<Categories>, InferCreation
 
 export function initModel(sequelize: Sequelize) {
 
-  Categories.init({
+  Category.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -30,7 +30,7 @@ export function initModel(sequelize: Sequelize) {
     tableName: 'categories',
   });
 
-  return Categories;
+  return Category;
 }
 
-export default Categories;
+export default Category;

@@ -1,12 +1,12 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import Lists from './lists';
+import List from './list';
 
-export class ListsLanguages extends Model<InferAttributes<ListsLanguages>, InferCreationAttributes<ListsLanguages>> {
+export class ListCategory extends Model<InferAttributes<ListCategory>, InferCreationAttributes<ListCategory>> {
   declare list_id: number;
-  declare language_id: number;
+  declare category_id: number;
 
   static associate() {
-    ListsLanguages.belongsTo(Lists, {
+    ListCategory.belongsTo(List, {
       foreignKey: 'list_id',
       targetKey: 'id',
     });
@@ -15,13 +15,13 @@ export class ListsLanguages extends Model<InferAttributes<ListsLanguages>, Infer
 
 export function initModel(sequelize: Sequelize) {
 
-  ListsLanguages.init({
+  ListCategory.init({
     list_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
     },
-    language_id: {
+    category_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
@@ -30,8 +30,8 @@ export function initModel(sequelize: Sequelize) {
     sequelize,
     timestamps: false,
     underscored: true,
-    tableName: 'lists_languages',
+    tableName: 'lists_categories',
   });
 
-  return ListsLanguages;
+  return ListCategory;
 }

@@ -1,6 +1,6 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
-export class Languages extends Model<InferAttributes<Languages>, InferCreationAttributes<Languages>> {
+export class Language extends Model<InferAttributes<Language>, InferCreationAttributes<Language>> {
   declare id: CreationOptional<number>;
   declare name: string;
   declare code: string;
@@ -8,7 +8,7 @@ export class Languages extends Model<InferAttributes<Languages>, InferCreationAt
 
 export function initModel(sequelize: Sequelize) {
 
-  Languages.init({
+  Language.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -29,7 +29,7 @@ export function initModel(sequelize: Sequelize) {
     tableName: 'languages',
   });
 
-  return Languages;
+  return Language;
 }
 
-export default Languages;
+export default Language;

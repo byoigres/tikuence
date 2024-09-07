@@ -1,6 +1,6 @@
 import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import { v4 as uuidv4 } from "uuid";
-import { SocialProvidersEnum } from "../../models/social_providers";
+import { SocialProvidersEnum } from "../../models/social_provider";
 
 export interface GoogleProfile {
   id: string;
@@ -28,9 +28,9 @@ export interface VerifyUserExistPreResponse {
 const getGoogleProviderId: RouteOptionsPreObject = {
   assign: "getGoogleProviderId",
   method: async (request, h) => {
-    const { SocialProviders } = request.server.plugins.sequelize.models;
+    const { SocialProvider } = request.server.plugins.sequelize.models;
 
-    const googleProvier = await SocialProviders.findOne({
+    const googleProvier = await SocialProvider.findOne({
       where: { name: SocialProvidersEnum.GOOGLE }
     });
 
@@ -51,7 +51,7 @@ const verifyUserExist: RouteOptionsPreObject = {
 
     const googleProviderId = request.pre.getGoogleProviderId as number;
 
-    const { Users, UsersSocialProviders } = request.server.plugins.sequelize.models;
+    const { Users, UsersSocialProvider } = request.server.plugins.sequelize.models;
 
     const googleProfile = request.auth.credentials.profile as GoogleProfile;
 
@@ -62,7 +62,7 @@ const verifyUserExist: RouteOptionsPreObject = {
       },
       include: [
         {
-          model: UsersSocialProviders,
+          model: UsersSocialProvider,
           where: {
             profile_id: googleProfile.id,
             provider_id: googleProviderId
@@ -89,7 +89,7 @@ const verifyUserExist: RouteOptionsPreObject = {
 };
 
 const handler: Lifecycle.Method = async (request, h) => {
-  const { PendingUsers } = request.server.plugins.sequelize.models;
+  const { PendingUser } = request.server.plugins.sequelize.models;
   const googleProfile = request.pre.verifyUserExist as GoogleProfile;
   const googleProviderId = request.pre.getGoogleProviderId as number;
 
@@ -97,7 +97,7 @@ const handler: Lifecycle.Method = async (request, h) => {
   // Expires in 24 hours
   expires_at.setTime(expires_at.getTime() + 86400000);
 
-  await PendingUsers.destroy({
+  await PendingUser.destroy({
     where: {
       email: googleProfile.email,
       provider_id: googleProviderId,
@@ -105,7 +105,7 @@ const handler: Lifecycle.Method = async (request, h) => {
     }
   });
 
-  const pendingUser = await PendingUsers.create({
+  const pendingUser = await PendingUser.create({
     email: googleProfile.email,
     name: googleProfile.displayName,
     provider_id: googleProviderId,
