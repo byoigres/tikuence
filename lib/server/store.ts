@@ -46,6 +46,14 @@ const store = {
       },
     },
   },
+  session: {
+    storeBlank: false,
+    cookieOptions: {
+      password: "password-should-be-32-characters",
+      isSecure: false,
+      isSameSite: false,
+    },
+  },
   database: {
     dialect: {
       $env: "DATABASE_DIALECT",
@@ -83,6 +91,9 @@ const store = {
         },
       },
     },
+  },
+  inertia: {
+    defaultTemplate: "index",
   },
 };
 

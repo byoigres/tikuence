@@ -1,35 +1,38 @@
-import { Plugin, PluginNameVersion, Server } from "@hapi/hapi";
+import { Server } from "@hapi/hapi";
+import { PluginObject } from "@hapi/glue";
 
-const root: Plugin<PluginNameVersion> = {
-  name: "tikuence/modules/root",
-  version: "1.0.0",
-  register: function (server: Server) {
+const Root: PluginObject = {
+  plugin: {
+    name: "modules/root",
+    version: "1.0.0",
+    register: function (server: Server) {
 
-    server.route({
-      method: "GET",
-      path: "/",
-      options: {
-        auth: {
-          mode: "try",
-          strategy: "session",
+      server.route({
+        method: "GET",
+        path: "/",
+        options: {
+          auth: {
+            mode: "try",
+            strategy: "session",
+          },
         },
-      },
-      handler(_request, h) {
-        return h.inertia(
-          "Feed",
-          {
-            name: "Sergio",
-            points: 1000,
-          },
-          {
-            title: "Hey root!",
-            message: "Welcome!",
-            year: 2021,
-          },
-        );
-      },
-    });
+        handler(_request, h) {
+          return h.inertia(
+            "Feed",
+            {
+              name: "Sergio",
+              points: 1000,
+            },
+            {
+              title: "Hey root!",
+              message: "Welcome!",
+              year: 2021,
+            },
+          );
+        },
+      });
+    },
   },
 };
 
-export default root;
+export default Root;

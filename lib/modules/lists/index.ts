@@ -4,7 +4,7 @@ import createList from "./create-list";
 import viewList from "./view";
 
 const lists: Plugin<PluginNameVersion> = {
-  name: "tikuence/modules/list",
+  name: "modules/list",
   version: "1.0.0",
   register: function (server: Server) {
     console.log("Inside 'tikuence/modules/list'");

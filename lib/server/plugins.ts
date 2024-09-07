@@ -1,15 +1,16 @@
-import { Server, Request } from "@hapi/hapi";
+import { PluginObject } from "@hapi/glue";
 import Yar from "@hapi/yar";
 import inertia from "hapi-inertia";
 import Store from "./store";
 import UrlIDPlugin from "../plugins/url-id";
+import sharedProps from "./inertia";
 import SequelizePlugin from "../plugins/sequelize";
 import PublicModule from "../modules/public";
 import RootModule from "../modules/root";
 import AuthModule from "../modules/auth";
 import ListsModule from "../modules/lists";
 
-export default [
+const plugins: PluginObject[] = [
   {
     plugin: UrlIDPlugin,
     options: {
@@ -34,52 +35,19 @@ export default [
   {
     plugin: Yar,
     options: {
-      storeBlank: false,
-      cookieOptions: {
-        password: "password-should-be-32-characters",
-        isSecure: false,
-        isSameSite: false,
-      },
+      storeBlank: Store.get("/session/storeBlank"),
+      cookieOptions: Store.get("/session/cookieOptions"),
     },
   },
   {
     plugin: inertia.plugin,
     options: {
-      defaultTemplate: "index",
-      sharedProps: (request: Request, server: Server) => {
-        const [errors] = request.yar.flash("errors");
-        const [error, success, warning, info] = [
-          request.yar.flash("error")?.[0],
-          request.yar.flash("success")?.[0],
-          request.yar.flash("warning")?.[0],
-          request.yar.flash("info")?.[0],
-        ];
-        return ({
-          appName: request.server.app.appName,
-          auth: {
-            isAuthenticated: request.auth.isAuthenticated,
-            // TODO: Not the best way to do this, but it works for now
-            profile: request.auth.isAuthenticated
-              ? request.auth.credentials
-              : null,
-          },
-          errors: errors ?? {},
-          flash: {
-            error,
-            success,
-            warning,
-            info,
-          },
-        });
-      },
-    },
+      defaultTemplate: Store.get("/inertia/defaultTemplate"),
+      sharedProps
+    }
   },
-  {
-    plugin: PublicModule,
-  },
-  {
-    plugin: RootModule,
-  },
+  PublicModule,
+  RootModule,
   {
     plugin: AuthModule,
     routes: {
@@ -93,3 +61,6 @@ export default [
     },
   }
 ];
+
+
+export default plugins;
