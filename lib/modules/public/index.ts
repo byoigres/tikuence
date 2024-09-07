@@ -1,6 +1,6 @@
 import { Plugin, PluginNameVersion, Server } from "@hapi/hapi";
 
-const root: Plugin<PluginNameVersion> = {
+const PublicModule: Plugin<PluginNameVersion> = {
   name: "tikuence/modules/public",
   version: "1.0.0",
   register: function (server: Server) {
@@ -19,4 +19,4 @@ const root: Plugin<PluginNameVersion> = {
   },
 };
 
-export default root;
+export default PublicModule;
