@@ -1,7 +1,7 @@
 import { RouteOptions } from '@hapi/hapi';
 
 const access: RouteOptions = {
-auth: {
+  auth: {
     mode: "try",
     strategy: "session",
   },

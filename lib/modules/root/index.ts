@@ -4,7 +4,6 @@ const root: Plugin<PluginNameVersion> = {
   name: "tikuence/modules/root",
   version: "1.0.0",
   register: function (server: Server) {
-    console.log("Inside 'tikuence/modules/root'");
 
     server.route({
       method: "GET",
