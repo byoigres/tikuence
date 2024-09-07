@@ -35,8 +35,10 @@ const getList: RouteOptionsPreObject = {
 };
 
 const handler: Lifecycle.Method = async (request, h) => {
+  const { urlId } = request.params as RequestParams;
   const title = request.pre.title as string;
   return h.inertia("Lists/View", {  
+    id: urlId,
     title,
   }, {
     title: "Add a new list",

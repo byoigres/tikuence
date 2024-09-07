@@ -5,10 +5,7 @@ import Store from "./store";
 import UrlIDPlugin from "../plugins/url-id";
 import sharedProps from "./inertia";
 import SequelizePlugin from "../plugins/sequelize";
-import PublicModule from "../modules/public";
-import RootModule from "../modules/root";
-import AuthModule from "../modules/auth";
-import ListsModule from "../modules/lists";
+import Modules from "../modules";
 
 const plugins: PluginObject[] = [
   {
@@ -46,20 +43,7 @@ const plugins: PluginObject[] = [
       sharedProps
     }
   },
-  PublicModule,
-  RootModule,
-  {
-    plugin: AuthModule,
-    routes: {
-      prefix: "/auth",
-    },
-  },
-  {
-    plugin: ListsModule,
-    routes: {
-      prefix: "/lists",
-    },
-  }
+  Modules,
 ];
 
 

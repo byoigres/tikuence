@@ -1,32 +1,24 @@
-import { Plugin, PluginNameVersion, Server } from "@hapi/hapi";
+import { ServerRoute } from "@hapi/hapi";
 import addView from "./add-view";
 import createList from "./create-list";
 import viewList from "./view";
 
-const lists: Plugin<PluginNameVersion> = {
-  name: "modules/list",
-  version: "1.0.0",
-  register: function (server: Server) {
-    console.log("Inside 'tikuence/modules/list'");
+const ListsRoutes: ServerRoute[] = [
+  {
+    method: "GET",
+    path: "/lists/add",
+    options: addView,
+  },
+  {
+    method: "POST",
+    path: "/lists",
+    options: createList,
+  },
+  {
+    method: "GET",
+    path: "/lists/{urlId}",
+    options: viewList,
+  },
+];
 
-    server.route([
-      {
-        method: "GET",
-        path: "/add",
-        options: addView,
-      },
-      {
-        method: "POST",
-        path: "/",
-        options: createList,
-      },
-      {
-        method: "GET",
-        path: "/{urlId}",
-        options: viewList,
-      },
-    ]);
-  }
-};
-
-export default lists;
+export default ListsRoutes;
