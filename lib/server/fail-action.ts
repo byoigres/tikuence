@@ -25,16 +25,24 @@ interface JoiError extends Error {
 }
 
 const failAction: Lifecycle.FailAction = async (request, h, err) => {
-  const error = err as JoiError;
+  const joiError = err as JoiError;
   const referer = new URL(request.headers["referer"]);
-  if (referer && error) {
+  if (referer && joiError) {
     const errors = new Map<string, string>();
+    let error = null;
 
-    error.details.forEach(({ message, context: { label } }) => {
-      errors.set(label, message);
+    joiError.details.forEach(({ message, context: { label } }) => {
+      if (Object.keys(request.params).includes(label)) {
+        error = message;
+      } else {
+        errors.set(label, message);
+      }
     });
     const path = referer.pathname + referer.search + referer.hash;
     request.yar.flash("errors", Object.fromEntries(errors.entries()));
+    if (error) {
+      request.yar.flash("error", error);
+    }
     return h.redirect(path).takeover();
   } else {
     throw err;
