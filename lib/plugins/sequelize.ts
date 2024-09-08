@@ -76,6 +76,10 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
           file: "list_language",
           modelName: "ListLanguage",
         },
+        {
+          file: "author",
+          modelName: "Author",
+        },
       ];
 
       const models: Record<string, Model> = {};

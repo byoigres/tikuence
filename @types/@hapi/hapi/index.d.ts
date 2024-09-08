@@ -10,6 +10,7 @@ import Language from "lib/models/language";
 import List from "lib/models/list";
 import ListCategory from "lib/models/list_category";
 import ListLanguage from "lib/models/list_language";
+import Author from "lib/models/author";
 import { Sequelize } from "sequelize";
 
 interface SequelizeModels {
@@ -22,6 +23,7 @@ interface SequelizeModels {
   List: typeof List;
   ListCategory: typeof ListCategory;
   ListLanguage: typeof ListLanguage;
+  Author: typeof Author;
 }
 
 interface ServerMethods {

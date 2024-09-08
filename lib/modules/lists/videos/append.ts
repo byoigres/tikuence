@@ -18,20 +18,27 @@ type validateUrlIDResponse = {
   tiktokVideoUrl: string;
 }
 
+enum TikTokOembedType {
+  Video = "video"
+}
+
 interface TikTokOembed {
-  version: string
-  type: string
-  title: string
-  author_url: string
-  author_name: string
-  width: string
-  height: string
-  html: string
-  thumbnail_width: number
-  thumbnail_height: number
-  thumbnail_url: string
-  provider_url: string
-  provider_name: string
+  version: string;
+  type: TikTokOembedType;
+  title: string;
+  author_url: string;
+  author_name: string;
+  width: string;
+  height: string;
+  html: string;
+  thumbnail_width: number;
+  thumbnail_height: number;
+  thumbnail_url: string;
+  provider_url: string;
+  provider_name: string;
+  author_unique_id: string;
+  embed_product_id: string;
+  embed_type: string;
 }
 
 const getMessages = getJoiMessages("append-video");
@@ -83,7 +90,18 @@ const validateUrlID: RouteOptionsPreObject = {
       return redirect;
     }
 
-    // TODO: If the url.URL is a shorturl, get the "real" url by following the redirection
+    if (parsedUrl.hostname === 'vm.tiktok.com') {
+      await Wreck.get(videoUrl, {
+        json: true,
+        redirects: 1,
+        beforeRedirect: (_redirectMethod, statusCode, location, _resHeaders, _redirectOptions, next) => {
+          if (statusCode === 301 || statusCode === 302) {
+            parsedUrl = new Url.URL(location)
+          }
+          next();
+        }
+      });
+    }
 
     if (parsedUrl.hostname === 'www.tiktok.com' || parsedUrl.hostname === 'm.tiktok.com') {
       const parsedPath = parsedUrl.pathname.match(
@@ -126,23 +144,6 @@ const fetchVideoInfo: RouteOptionsPreObject = {
   }
 };
 
-const extractAuthorFromUrl: RouteOptionsPreObject = {
-  assign: "authorUsername",
-  method: async (request, h) => {
-    const { listUrlId } = request.params as Params;
-    const videoInfo = request.pre.videoInfo as TikTokOembed;
-    const parsedUrl = new Url.URL(videoInfo.author_url);
-    const authorUsername = parsedUrl.pathname.slice(2);
-
-    if (authorUsername.length > 24) {
-      request.yar.flash("warning", "It appears that the video you are trying to add is an sponsored video, you can't do that. 😔");
-      return h.redirect(`/lists/${listUrlId}/videos/add`).takeover();
-    }
-
-    return h.continue;
-  }
-};
-
 const verifyIfVideoExistinList: RouteOptionsPreObject = {
   method: async (request, h) => {
     return h.continue;
@@ -150,8 +151,25 @@ const verifyIfVideoExistinList: RouteOptionsPreObject = {
 };
 
 const createAuthor: RouteOptionsPreObject = {
+  assign: "authorId",
   method: async (request, h) => {
-    return h.continue;
+    const videoInfo = request.pre.videoInfo as TikTokOembed;
+    const { Author } = request.server.plugins.sequelize.models;
+    const [author] = await Author.findOrCreate({
+      attributes: ["id"],
+      where: {
+        username: videoInfo.author_unique_id,
+      },
+      defaults: {
+        username: videoInfo.author_unique_id,
+        name: videoInfo.author_name,
+      }
+    });
+
+    // TODO: Get oembed author profile data
+    // https://developers.tiktok.com/doc/embed-creator-profiles?enter_method=left_navigation
+
+    return author.id;
   }
 };
 
@@ -184,7 +202,6 @@ const addList: RouteOptions = {
     verifyList,
     validateUrlID,
     fetchVideoInfo,
-    extractAuthorFromUrl,
     verifyIfVideoExistinList,
     createAuthor,
     createVideo,
