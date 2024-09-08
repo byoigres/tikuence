@@ -1,0 +1,32 @@
+{
+  "listUrlId": [
+    {
+      "types": [
+        "any.required",
+        "string.empty"
+      ],
+      "message": "List ID is required"
+    },
+    {
+      "types": [
+        "string.pattern.base"
+      ],
+      "message": "The request was made with invalid data"
+    }
+  ],
+  "videoUrl": [
+    {
+      "types": [
+        "any.required",
+        "string.empty"
+      ],
+      "message": "Video URL is required"
+    },
+    {
+      "types": [
+        "string.uri"
+      ],
+      "message": "Video URL must be a valid URL"
+    }
+  ]
+}

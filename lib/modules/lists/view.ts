@@ -2,14 +2,14 @@ import { RouteOptions, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import { UrlIDType } from '../../plugins/url-id';
 
 type RequestParams = {
-  urlId: string;
+  listUrlId: string;
 };
 
-const decodeUrlID: RouteOptionsPreObject = {
+export const decodeListUrlID: RouteOptionsPreObject = {
   assign: "listId",
   method: async (request, h) => {
-    const { urlId } = request.params as RequestParams;
-    const id = request.server.methods.decodeUrlID(UrlIDType.LISTS, urlId);
+    const { listUrlId } = request.params as RequestParams;
+    const id = request.server.methods.decodeUrlID(UrlIDType.LISTS, listUrlId);
 
     if (id === null) {
       return h.response("Not found").code(404).takeover();
@@ -35,10 +35,10 @@ const getList: RouteOptionsPreObject = {
 };
 
 const handler: Lifecycle.Method = async (request, h) => {
-  const { urlId } = request.params as RequestParams;
+  const { listUrlId } = request.params as RequestParams;
   const title = request.pre.title as string;
   return h.inertia("Lists/View", {  
-    id: urlId,
+    id: listUrlId,
     title,
   }, {
     title: "Add a new list",
@@ -47,7 +47,7 @@ const handler: Lifecycle.Method = async (request, h) => {
 
 const viewList: RouteOptions = {
   pre: [
-    decodeUrlID,
+    decodeListUrlID,
     getList,
   ],
   handler
