@@ -90,6 +90,19 @@ const store = {
           $coerce: "number",
         },
       },
+      videoThumbnails: {
+        alphabet: {
+          $env: "SECURITY_URL_ID_VIDEO_THUMBNAIL_ALPHABET",
+        },
+        minLength: {
+          $env: "SECURITY_URL_ID_VIDEO_THUMBNAIL_MIN_LENGTH",
+          $coerce: "number",
+        },
+        salt: {
+          $env: "SECURITY_URL_ID_VIDEO_THUMBNAIL_SALT_NUMBER",
+          $coerce: "number",
+        },
+      },
     },
   },
   inertia: {

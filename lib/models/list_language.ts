@@ -20,11 +20,19 @@ export function initModel(sequelize: Sequelize) {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      references: {
+        model: 'List',
+        key: 'id',
+      },
     },
     language_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      references: {
+        model: 'Language',
+        key: 'id',
+      },
     },
   }, {
     sequelize,

@@ -3,6 +3,7 @@ import Sqids from "sqids";
 
 export enum UrlIDType {
   LISTS = "lists",
+  VIDEO_THUMBNAILS = "video_thumbnails",
 };
 
 type SquidConfig = {
@@ -13,6 +14,7 @@ type SquidConfig = {
 
 export type UrlIDPluginOptions = {
   lists: SquidConfig;
+  video_thumbnails: SquidConfig;
 };
 
 const UrlIDPlugin: Plugin<UrlIDPluginOptions> = {
@@ -29,10 +31,13 @@ const UrlIDPlugin: Plugin<UrlIDPluginOptions> = {
     };
 
     server.method("encodeUrlID", (type: UrlIDType, value: number): string => {
-      return createSqids(type).encode([
+      const s = createSqids(type);
+      const e = s.encode([
         value,
         options[type].salt,
       ]);
+
+      return e;
     });
 
     server.method("decodeUrlID", (type: UrlIDType, value: string): number | null => {

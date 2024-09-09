@@ -4,6 +4,7 @@ import Joi from 'joi';
 import Wreck from '@hapi/wreck';
 import { getJoiMessages } from "../../../server/messages"
 import { decodeListUrlID } from '../view'
+import { UrlIDType } from "../../../../lib/plugins/url-id"
 
 type Params = {
   listUrlId: string;
@@ -74,7 +75,7 @@ const verifyList: RouteOptionsPreObject = {
 };
 
 const validateUrlID: RouteOptionsPreObject = {
-  assign: "listId",
+  assign: "tiktokVideo",
   method: async (request, h) => {
     const { listUrlId } = request.params as Params;
     const redirect = h.redirect(`/lists/${listUrlId}/videos/add`).takeover();
@@ -116,7 +117,7 @@ const validateUrlID: RouteOptionsPreObject = {
         return redirect;
       }
 
-      const [,tiktokVideoId] = parsedPath;
+      const [, tiktokVideoId] = parsedPath;
 
       return {
         tiktokVideoId,
@@ -135,7 +136,7 @@ const validateUrlID: RouteOptionsPreObject = {
 const fetchVideoInfo: RouteOptionsPreObject = {
   assign: "videoInfo",
   method: async (request, h) => {
-    const { tiktokVideoUrl } = request.pre.listId as validateUrlIDResponse;
+    const { tiktokVideoUrl } = request.pre.tiktokVideo as validateUrlIDResponse;
     const { payload } = await Wreck.get<TikTokOembed>(`https://www.tiktok.com/oembed?url=${tiktokVideoUrl}`, {
       json: true,
     });
@@ -144,11 +145,6 @@ const fetchVideoInfo: RouteOptionsPreObject = {
   }
 };
 
-const verifyIfVideoExistinList: RouteOptionsPreObject = {
-  method: async (request, h) => {
-    return h.continue;
-  }
-};
 
 const createAuthor: RouteOptionsPreObject = {
   assign: "authorId",
@@ -174,8 +170,78 @@ const createAuthor: RouteOptionsPreObject = {
 };
 
 const createVideo: RouteOptionsPreObject = {
+  assign: "videoId",
   method: async (request, h) => {
-    return h.continue;
+    const listId = request.pre.listId as number;
+    const { tiktokVideoId } = request.pre.tiktokVideo as validateUrlIDResponse;
+    const videoInfo = request.pre.videoInfo as TikTokOembed
+    const authorId = request.pre.authorId as number;
+
+    const {
+      models: {
+        Video,
+        List,
+        ListVideo,
+      },
+      sequelize,
+    } = request.server.plugins.sequelize;
+
+    const transaction = await sequelize.transaction();
+
+    try {
+      const [video, created] = await Video.findOrCreate({
+        where: {
+          tiktok_id: tiktokVideoId,
+          author_id: authorId,
+        },
+        include: [
+          {
+            model: List,
+            where: {
+              id: listId,
+            }
+          }
+        ],
+        defaults: {
+          tiktok_id: tiktokVideoId,
+          title: videoInfo.title,
+          html: videoInfo.html,
+          thumbnail_height: videoInfo.thumbnail_height,
+          thumbnail_width: videoInfo.thumbnail_width,
+          url_uid: videoInfo.author_unique_id,
+          author_id: authorId,
+        },
+        transaction,
+      });
+
+      if (!created) {
+        return video.id;
+      }
+
+      const thumbnail_name = request.server.methods.encodeUrlID(UrlIDType.VIDEO_THUMBNAILS, video.id);
+
+      await video.update({
+        thumbnail_name,
+      }, {
+        transaction,
+      });
+
+      await ListVideo.create({
+        list_id: listId,
+        video_id: video.id,
+        order_id: 1,
+      }, {
+        transaction,
+      });
+
+      transaction.commit();
+
+      return video.id;
+
+    } catch (error) {
+      transaction.rollback();
+      console.error(error);
+    }
   }
 };
 
@@ -202,7 +268,6 @@ const addList: RouteOptions = {
     verifyList,
     validateUrlID,
     fetchVideoInfo,
-    verifyIfVideoExistinList,
     createAuthor,
     createVideo,
     createHashtags,

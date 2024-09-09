@@ -32,7 +32,7 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
         password: options.password,
         host: options.host,
         port: options.port,
-        // logging: (...msg) => console.log(msg),
+        logging: (...msg) => console.log(msg),
       }
     );
 
@@ -80,13 +80,20 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
           file: "author",
           modelName: "Author",
         },
+        {
+          file: "video",
+          modelName: "Video",
+        },
+        {
+          file: "list_video",
+          modelName: "ListVideo",
+        }
       ];
 
       const models: Record<string, Model> = {};
       
       modelsMeta.forEach(meta => {
-        const modelInit = require(path.join(basename, `${meta.file}.ts`)).initModel(sequelize);
-        models[meta.modelName] = modelInit;
+        models[meta.modelName] = require(path.join(basename, `${meta.file}.ts`)).initModel(sequelize)
       });
 
       Object.values(models).forEach((model: Model) => {

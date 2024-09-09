@@ -1,4 +1,6 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import Video from './video';
+import ListVideo from './list_video';
 
 export class List extends Model<InferAttributes<List>, InferCreationAttributes<List>> {
   declare id: CreationOptional<number>;
@@ -6,6 +8,12 @@ export class List extends Model<InferAttributes<List>, InferCreationAttributes<L
   declare video_cover_id: CreationOptional<number>;
   declare url_uid: string;
   declare user_id: number;
+
+  static associate() {
+    List.belongsToMany(Video, {
+      through: ListVideo,
+    });
+  }
 }
 
 export function initModel(sequelize: Sequelize) {

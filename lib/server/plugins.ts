@@ -15,6 +15,11 @@ const plugins: PluginObject[] = [
         alphabet: Store.get(`/security/urlid/lists/alphabet`) as string,
         minLength: Store.get(`/security/urlid/lists/minLength`) as number,
         salt: Store.get(`/security/urlid/lists/salt`) as number,
+      },
+      video_thumbnails: {
+        alphabet: Store.get(`/security/urlid/videoThumbnails/alphabet`) as string,
+        minLength: Store.get(`/security/urlid/videoThumbnails/minLength`) as number,
+        salt: Store.get(`/security/urlid/videoThumbnails/salt`) as number,
       }
     },
   },

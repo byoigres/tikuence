@@ -11,6 +11,8 @@ import List from "lib/models/list";
 import ListCategory from "lib/models/list_category";
 import ListLanguage from "lib/models/list_language";
 import Author from "lib/models/author";
+import Video from "lib/models/video";
+import ListVideo from "lib/models/list_video";
 import { Sequelize } from "sequelize";
 
 interface SequelizeModels {
@@ -24,6 +26,8 @@ interface SequelizeModels {
   ListCategory: typeof ListCategory;
   ListLanguage: typeof ListLanguage;
   Author: typeof Author;
+  Video: typeof Video;
+  ListVideo: typeof ListVideo;
 }
 
 interface ServerMethods {
