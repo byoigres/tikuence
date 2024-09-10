@@ -22,7 +22,7 @@ module.exports = {
       },
       order_id: {
         type: Sequelize.SMALLINT,
-        allowNull: false,
+        allowNull: true,
       },
     });
   },

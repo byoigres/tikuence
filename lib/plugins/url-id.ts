@@ -4,6 +4,7 @@ import Sqids from "sqids";
 export enum UrlIDType {
   LISTS = "lists",
   VIDEO_THUMBNAILS = "video_thumbnails",
+  VIDEO = "video",
 };
 
 type SquidConfig = {
@@ -15,6 +16,7 @@ type SquidConfig = {
 export type UrlIDPluginOptions = {
   lists: SquidConfig;
   video_thumbnails: SquidConfig;
+  video: SquidConfig;
 };
 
 const UrlIDPlugin: Plugin<UrlIDPluginOptions> = {

@@ -3,7 +3,7 @@ import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, 
 export class ListVideo extends Model<InferAttributes<ListVideo>, InferCreationAttributes<ListVideo>> {
   declare list_id: number;
   declare video_id: number;
-  declare order_id: number;
+  declare order_id: CreationOptional<number>;
 }
 
 export function initModel(sequelize: Sequelize) {
@@ -29,8 +29,7 @@ export function initModel(sequelize: Sequelize) {
     },
     order_id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      allowNull: false,
+      allowNull: true,
     },
   }, {
     sequelize,

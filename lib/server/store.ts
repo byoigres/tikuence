@@ -103,6 +103,19 @@ const store = {
           $coerce: "number",
         },
       },
+      video: {
+        alphabet: {
+          $env: "SECURITY_URL_ID_VIDEO_ALPHABET",
+        },
+        minLength: {
+          $env: "SECURITY_URL_ID_VIDEO_MIN_LENGTH",
+          $coerce: "number",
+        },
+        salt: {
+          $env: "SECURITY_URL_ID_VIDEO_SALT_NUMBER",
+          $coerce: "number",
+        },
+      },
     },
   },
   inertia: {

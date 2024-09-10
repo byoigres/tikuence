@@ -35,7 +35,7 @@ module.exports = {
       },
       url_uid: {
         type: Sequelize.STRING(16),
-        allowNull: false,
+        allowNull: true,
         unique: true
       },
       author_id: {

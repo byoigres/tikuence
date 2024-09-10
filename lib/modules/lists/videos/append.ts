@@ -208,7 +208,6 @@ const createVideo: RouteOptionsPreObject = {
           html: videoInfo.html,
           thumbnail_height: videoInfo.thumbnail_height,
           thumbnail_width: videoInfo.thumbnail_width,
-          url_uid: videoInfo.author_unique_id,
           author_id: authorId,
         },
         transaction,
@@ -218,28 +217,47 @@ const createVideo: RouteOptionsPreObject = {
         return video.id;
       }
 
-      const thumbnail_name = request.server.methods.encodeUrlID(UrlIDType.VIDEO_THUMBNAILS, video.id);
-
       await video.update({
-        thumbnail_name,
+        url_uid: request.server.methods.encodeUrlID(UrlIDType.VIDEO, video.id),
+        thumbnail_name: request.server.methods.encodeUrlID(UrlIDType.VIDEO_THUMBNAILS, video.id),
       }, {
         transaction,
       });
 
-      await ListVideo.create({
+      const listVideo = await ListVideo.create({
         list_id: listId,
         video_id: video.id,
-        order_id: 1,
       }, {
         transaction,
       });
 
-      transaction.commit();
+      const counter = await ListVideo.count({
+        where: {
+          list_id: listId,
+        },
+        transaction,
+      });
+
+      listVideo.order_id = counter;
+      await listVideo.save({ transaction });
+
+      if (counter === 1) {
+        await List.update({
+          video_cover_id: video.id,
+        }, {
+          where: {
+            id: listId,
+          },
+          transaction,
+        });
+      }
+
+      await transaction.commit();
 
       return video.id;
 
     } catch (error) {
-      transaction.rollback();
+      await transaction.rollback();
       console.error(error);
     }
   }

@@ -10,7 +10,7 @@ export class Video extends Model<InferAttributes<Video>, InferCreationAttributes
   declare thumbnail_name: CreationOptional<string>;
   declare thumbnail_height: number;
   declare thumbnail_width: number;
-  declare url_uid: string;
+  declare url_uid:CreationOptional<string>;
   declare author_id: number;
 
   static associate() {
@@ -56,7 +56,8 @@ export function initModel(sequelize: Sequelize) {
     },
     url_uid: {
       type: DataTypes.STRING(16),
-      allowNull: false
+      allowNull: true,
+      unique: true,
     },
     author_id: {
       type: DataTypes.INTEGER,
