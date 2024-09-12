@@ -33,13 +33,10 @@ const UrlIDPlugin: Plugin<UrlIDPluginOptions> = {
     };
 
     server.method("encodeUrlID", (type: UrlIDType, value: number): string => {
-      const s = createSqids(type);
-      const e = s.encode([
+      return createSqids(type).encode([
         value,
         options[type].salt,
       ]);
-
-      return e;
     });
 
     server.method("decodeUrlID", (type: UrlIDType, value: string): number | null => {

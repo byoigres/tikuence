@@ -20,7 +20,12 @@ const plugins: PluginObject[] = [
         alphabet: Store.get(`/security/urlid/videoThumbnails/alphabet`) as string,
         minLength: Store.get(`/security/urlid/videoThumbnails/minLength`) as number,
         salt: Store.get(`/security/urlid/videoThumbnails/salt`) as number,
-      }
+      },
+      video: {
+        alphabet: Store.get(`/security/urlid/video/alphabet`) as string,
+        minLength: Store.get(`/security/urlid/video/minLength`) as number,
+        salt: Store.get(`/security/urlid/video/salt`) as number,
+      },
     },
   },
   {

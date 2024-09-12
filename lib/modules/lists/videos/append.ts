@@ -1,6 +1,7 @@
 import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import Url from 'url';
 import Joi from 'joi';
+import HashtagRegex from 'hashtag-regex'
 import Wreck from '@hapi/wreck';
 import { getJoiMessages } from "../../../server/messages"
 import { decodeListUrlID } from '../view'
@@ -214,7 +215,9 @@ const createVideo: RouteOptionsPreObject = {
       });
 
       if (!created) {
-        return video.id;
+        request.yar.flash("error", "Video already exists in the list");
+        // TODO: This will prevent parsing the hashtags again if they change
+        return h.redirect("/").takeover();
       }
 
       await video.update({
@@ -265,6 +268,58 @@ const createVideo: RouteOptionsPreObject = {
 
 const createHashtags: RouteOptionsPreObject = {
   method: async (request, h) => {
+    const videoInfo = request.pre.videoInfo as TikTokOembed;
+    const regex = HashtagRegex()
+    const hashtagStrings = new Map()
+    const {
+      models: {
+        Hashtag,
+        ListHashtag,
+      },
+      sequelize
+    } = request.server.plugins.sequelize;
+    let match
+
+    while ((match = regex.exec(videoInfo.title))) {
+      const [singleMatch] = match
+      const hashtag = singleMatch.substr(1, singleMatch.length)
+
+      if (!hashtagStrings.has(hashtag)) {
+        hashtagStrings.set(hashtag, {})
+      }
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+      const hashtags = await Hashtag.bulkCreate([
+        ...Array.from(hashtagStrings.keys()).map(hashtag => ({ hashtag })),
+      ], {
+        transaction,
+        fields: ["hashtag"],
+        ignoreDuplicates: true,
+        returning: ["id"],
+      });
+
+      const values = [
+        ...hashtags.filter(hashtag => hashtag.id !== null).map(hashtag => ({
+          list_id: request.pre.listId,
+          hashtag_id: hashtag.id,
+        })),
+      ];
+      await ListHashtag.bulkCreate(values, {
+        transaction,
+        ignoreDuplicates: true,
+      });
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      console.error(error);
+    }
+
+
+
     return h.continue;
   }
 };
