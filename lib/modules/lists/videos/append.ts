@@ -301,6 +301,7 @@ const createHashtags: RouteOptionsPreObject = {
         returning: ["id"],
       });
 
+      // TODO: also add hashtags to the video.
       const values = [
         ...hashtags.filter(hashtag => hashtag.id !== null).map(hashtag => ({
           list_id: request.pre.listId,
@@ -317,8 +318,6 @@ const createHashtags: RouteOptionsPreObject = {
       await transaction.rollback();
       console.error(error);
     }
-
-
 
     return h.continue;
   }
