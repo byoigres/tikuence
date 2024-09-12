@@ -13,6 +13,8 @@ import ListLanguage from "lib/models/list_language";
 import Author from "lib/models/author";
 import Video from "lib/models/video";
 import ListVideo from "lib/models/list_video";
+import Hashtag from "lib/models/hashtag";
+import ListHashtag from "lib/models/list_hashtag";
 import { Sequelize } from "sequelize";
 
 interface SequelizeModels {
@@ -28,6 +30,8 @@ interface SequelizeModels {
   Author: typeof Author;
   Video: typeof Video;
   ListVideo: typeof ListVideo;
+  Hashtag: typeof Hashtag;
+  ListHashtag: typeof ListHashtag;
 }
 
 interface ServerMethods {

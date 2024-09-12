@@ -87,6 +87,14 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
         {
           file: "list_video",
           modelName: "ListVideo",
+        },
+        {
+          file: "hashtag",
+          modelName: "Hashtag",
+        },
+        {
+          file: "list_hashtag",
+          modelName: "ListHashtag",
         }
       ];
 
