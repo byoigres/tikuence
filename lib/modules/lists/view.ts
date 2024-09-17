@@ -46,6 +46,10 @@ const handler: Lifecycle.Method = async (request, h) => {
 };
 
 const viewList: RouteOptions = {
+  auth: {
+    mode: "try",
+    strategy: "session",
+  },
   pre: [
     decodeListUrlID,
     getList,
