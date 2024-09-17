@@ -32,9 +32,9 @@ const plugins: PluginObject[] = [
   {
     plugin: FirebasePlugin,
     options: {
-      projectId: Store.get("/firebase/projectId"),
-      clientEmail: Store.get("/firebase/clientEmail"),
-      privateKey: Store.get("/firebase/privateKey"),
+      projectId: Store.get("/firebase/credential/projectId"),
+      clientEmail: Store.get("/firebase/credential/clientEmail"),
+      privateKey: Store.get("/firebase/credential/privateKey"),
     },
   },
   {
