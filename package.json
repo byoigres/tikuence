@@ -13,6 +13,7 @@
     "@hapi/wreck": "^18.1.0",
     "@hapi/yar": "^11.0.2",
     "confidence": "^5.0.1",
+    "firebase-admin": "^12.5.0",
     "handlebars": "^4.7.8",
     "hapi-inertia": "github:byoigres/hapi-inertia#develop",
     "hashtag-regex": "^2.2.0",

@@ -5,6 +5,7 @@ import Store from "./store";
 import UrlIDPlugin from "../plugins/url-id";
 import sharedProps from "./inertia";
 import SequelizePlugin from "../plugins/sequelize";
+import FirebasePlugin from "../plugins/firebase";
 import Modules from "../modules";
 
 const plugins: PluginObject[] = [
@@ -26,6 +27,14 @@ const plugins: PluginObject[] = [
         minLength: Store.get(`/security/urlid/video/minLength`) as number,
         salt: Store.get(`/security/urlid/video/salt`) as number,
       },
+    },
+  },
+  {
+    plugin: FirebasePlugin,
+    options: {
+      projectId: Store.get("/firebase/projectId"),
+      clientEmail: Store.get("/firebase/clientEmail"),
+      privateKey: Store.get("/firebase/privateKey"),
     },
   },
   {
