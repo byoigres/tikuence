@@ -16,6 +16,7 @@ import ListVideo from "lib/models/list_video";
 import Hashtag from "lib/models/hashtag";
 import ListHashtag from "lib/models/list_hashtag";
 import { Sequelize } from "sequelize";
+import { ThumbnailSize } from "lib/plugins/firebase";
 
 interface SequelizeModels {
   PendingUser: typeof PendingUser;
@@ -49,6 +50,14 @@ declare module "@hapi/hapi" {
     "sequelize": {
       models: SequelizeModels;
       sequelize: Sequelize
+    };
+    "Firebase": {
+      generateThumbnailNames: (imageHash: string) => Record<ThumbnailSize, string>;
+      uploadThumbnails: (url: string, video_url_uid: string, imageHash: string) => Promise<void>;
+    };
+
+    "Sharp": {
+      generateThumbnailNames: (imageHash: string) => Record<ThumbnailSize, string>;
     };
   }
 

@@ -35,6 +35,8 @@ const plugins: PluginObject[] = [
       projectId: Store.get("/firebase/credential/projectId"),
       clientEmail: Store.get("/firebase/credential/clientEmail"),
       privateKey: Store.get("/firebase/credential/privateKey"),
+      bucketUrl: Store.get("/firebase/bucketUrl"),
+      thumbnailsFolder: Store.get("/firebase/thumbnailsFolder"),
     },
   },
   {

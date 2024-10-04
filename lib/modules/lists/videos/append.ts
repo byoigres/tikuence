@@ -171,7 +171,7 @@ const createAuthor: RouteOptionsPreObject = {
 };
 
 const createVideo: RouteOptionsPreObject = {
-  assign: "videoId",
+  assign: "video",
   method: async (request, h) => {
     const listId = request.pre.listId as number;
     const { tiktokVideoId } = request.pre.tiktokVideo as validateUrlIDResponse;
@@ -257,12 +257,27 @@ const createVideo: RouteOptionsPreObject = {
 
       await transaction.commit();
 
-      return video.id;
+      return {
+        id: video.id,
+        url_uid: video.url_uid,
+        thumbnail_name: video.thumbnail_name,
+      };
 
     } catch (error) {
       await transaction.rollback();
       console.error(error);
     }
+  }
+};
+
+const uploadThumbnails: RouteOptionsPreObject = {
+  method: async (request, h) => {
+    const videoInfo = request.pre.videoInfo as TikTokOembed;
+    const video = request.pre.video as { id: number, url_uid: string, thumbnail_name: string };
+    const { uploadThumbnails } = request.server.plugins.Firebase;
+    await uploadThumbnails(videoInfo.thumbnail_url, video.url_uid, video.thumbnail_name);
+
+    return h.continue;
   }
 };
 
@@ -342,6 +357,7 @@ const addList: RouteOptions = {
     fetchVideoInfo,
     createAuthor,
     createVideo,
+    uploadThumbnails,
     createHashtags,
   ],
   handler

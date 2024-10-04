@@ -133,6 +133,12 @@ const store = {
         $env: "FIREBASE_PRIVATE_KEY",
       },
     },
+    bucketUrl: {
+      $env: 'FIREBASE_STORAGE_BUCKET_URL'
+    },
+    thumbnailsFolder: {
+      $env: 'FIREBASE_STORAGE_THUMBNAILS_FOLDER'
+    }
   },
 };
 
