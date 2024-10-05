@@ -1,6 +1,6 @@
-import { Server, Request } from "@hapi/hapi";
+import { Request } from "@hapi/hapi";
 
-export default function (request: Request, server: Server) {
+export default function (request: Request) {
   const [errors] = request.yar.flash("errors");
   const [error, success, warning, info] = [
     request.yar.flash("error")?.[0],

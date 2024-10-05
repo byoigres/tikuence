@@ -1,4 +1,4 @@
-import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
 import List from './list';
 
 export class ListLanguage extends Model<InferAttributes<ListLanguage>, InferCreationAttributes<ListLanguage>> {

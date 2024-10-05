@@ -87,7 +87,7 @@ const validateUrlID: RouteOptionsPreObject = {
 
     try {
       parsedUrl = new Url.URL(videoUrl)
-    } catch (error) {
+    } catch {
       request.yar.flash("error", "That doesn't seems to be a valid url.");
       return redirect;
     }
@@ -136,7 +136,7 @@ const validateUrlID: RouteOptionsPreObject = {
 
 const fetchVideoInfo: RouteOptionsPreObject = {
   assign: "videoInfo",
-  method: async (request, h) => {
+  method: async (request) => {
     const { tiktokVideoUrl } = request.pre.tiktokVideo as validateUrlIDResponse;
     const { payload } = await Wreck.get<TikTokOembed>(`https://www.tiktok.com/oembed?url=${tiktokVideoUrl}`, {
       json: true,
@@ -149,7 +149,7 @@ const fetchVideoInfo: RouteOptionsPreObject = {
 
 const createAuthor: RouteOptionsPreObject = {
   assign: "authorId",
-  method: async (request, h) => {
+  method: async (request) => {
     const videoInfo = request.pre.videoInfo as TikTokOembed;
     const { Author } = request.server.plugins.sequelize.models;
     const [author] = await Author.findOrCreate({

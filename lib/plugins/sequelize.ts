@@ -100,12 +100,14 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
 
       const models: Record<string, Model> = {};
       
-      modelsMeta.forEach(meta => {
+      modelsMeta.forEach(async meta => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         models[meta.modelName] = require(path.join(basename, `${meta.file}.ts`)).initModel(sequelize)
       });
 
       Object.values(models).forEach((model: Model) => {
         if ("associate" in model) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (model as any).associate();
         }
       });

@@ -21,7 +21,7 @@ const validate: RouteOptionsValidate = {
 
 const getCategoryIds: RouteOptionsPreObject = {
   assign: "categoryIds",
-  method: async (request, h) => {
+  method: async (request) => {
     const payload = request.payload as Payload;
     const { Category } = request.server.plugins.sequelize.models;
 
@@ -38,7 +38,7 @@ const getCategoryIds: RouteOptionsPreObject = {
 
 const getLanguageIds: RouteOptionsPreObject = {
   assign: "languageIds",
-  method: async (request, h) => {
+  method: async (request) => {
     const payload = request.payload as Payload;
     const { Language } = request.server.plugins.sequelize.models;
 
@@ -55,7 +55,7 @@ const getLanguageIds: RouteOptionsPreObject = {
 
 const createList: RouteOptionsPreObject = {
   assign: "listUrlId",
-  method: async (request, _h) => {
+  method: async (request) => {
     const payload = request.payload as Payload;
     const { id: user_id } = request.auth.credentials as { id:number };
     const categoryIds = request.pre.categoryIds as number[];

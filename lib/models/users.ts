@@ -1,4 +1,4 @@
-import { Sequelize, Model, DataTypes, Optional, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import UsersSocialProvider from './users_social_provider';
 
 export class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {

@@ -1,4 +1,4 @@
-import { RouteOptions, RouteOptionsValidate, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
+import { RouteOptions, RouteOptionsPreObject, Lifecycle } from '@hapi/hapi';
 import { v4 as uuidv4 } from "uuid";
 import { SocialProvidersEnum } from "../../models/social_provider";
 
@@ -10,6 +10,7 @@ export interface GoogleProfile {
     family_name: string;
   };
   email: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   raw: any;
 }
 

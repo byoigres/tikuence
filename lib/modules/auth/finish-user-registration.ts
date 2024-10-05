@@ -63,7 +63,7 @@ const verifyUsernameAvailability: RouteOptionsPreObject = {
 
 const createUser: RouteOptionsPreObject = {
   assign: "createUser",
-  method: async (request, _h) => {
+  method: async (request) => {
     const { name, username, bio, tiktokUsername } = request.payload as Payload;
     const { email, profilePictureURL, providerId, profileId } = request.pre.verifyToken as VerifyTokenPreResponse;
 

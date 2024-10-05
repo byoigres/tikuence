@@ -5,7 +5,7 @@ export class UsersSocialProvider extends Model<InferAttributes<UsersSocialProvid
   declare user_id: number;
   declare provider_id: number;
   declare profile_id: string;
-  declare data: Object
+  declare data: object
 
   static associate() {
     UsersSocialProvider.belongsTo(Users, {

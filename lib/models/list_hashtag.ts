@@ -1,4 +1,4 @@
-import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class ListHashtag extends Model<InferAttributes<ListHashtag>, InferCreationAttributes<ListHashtag>> {
   declare list_id: number;
