@@ -3,8 +3,8 @@ import { UrlIDType } from "lib/plugins/url-id"
 // Sequelize models
 import PendingUser from "lib/models/pending_user";
 import SocialProvider from "lib/models/social_provider";
-import Users from "lib/models/users";
-import UsersSocialProvider from "lib/models/users_social_provider";
+import User from "lib/models/user";
+import UserSocialProvider from "lib/models/user_social_provider";
 import Category from "lib/models/category";
 import Language from "lib/models/language";
 import List from "lib/models/list";
@@ -21,8 +21,8 @@ import { ThumbnailSize } from "lib/plugins/firebase";
 interface SequelizeModels {
   PendingUser: typeof PendingUser;
   SocialProvider: typeof SocialProvider;
-  Users: typeof Users;
-  UsersSocialProvider: typeof UsersSocialProvider;
+  User: typeof User;
+  UserSocialProvider: typeof UserSocialProvider;
   Category: typeof Category;
   Language: typeof Language;
   List: typeof List;

@@ -1,7 +1,9 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import UsersSocialProvider from './users_social_provider';
+import UserSocialProvider from './user_social_provider';
+import SocialProvider from './social_provider';
+import List from './list';
 
-export class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
   declare email: string;
   declare hash: string;
@@ -12,17 +14,15 @@ export class Users extends Model<InferAttributes<Users>, InferCreationAttributes
   declare profile_picture_url: string;
 
   static associate() {
-    Users.hasMany(UsersSocialProvider, {
-      foreignKey: 'user_id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
-    });
+    User.hasMany(List, { foreignKey: 'user_id' });
+    User.hasMany(UserSocialProvider, { foreignKey: 'user_id' });
+    User.belongsToMany(SocialProvider, { through: UserSocialProvider });
   }
 }
 
 export function initModel(sequelize: Sequelize) {
 
-  Users.init({
+  User.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -65,8 +65,8 @@ export function initModel(sequelize: Sequelize) {
     tableName: 'users'
   });
 
-  return Users;
+  return User;
 };
 
-export default Users;
+export default User;
 

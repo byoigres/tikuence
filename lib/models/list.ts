@@ -1,6 +1,7 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import Video from './video';
 import ListVideo from './list_video';
+import User from './user';
 
 export class List extends Model<InferAttributes<List>, InferCreationAttributes<List>> {
   declare id: CreationOptional<number>;
@@ -10,9 +11,26 @@ export class List extends Model<InferAttributes<List>, InferCreationAttributes<L
   declare user_id: number;
 
   static associate() {
+    List.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+    // List.belongsToMany(Category, { through: ListCategory });
+    // List.belongsToMany(Hashtag, { through: ListHashtag });
+    // List.belongsToMany(Language, { through: ListLanguage });
+    // List.belongsToMany(Video, { through: ListVideo });
+    // List.hasMany(ListCategory, { foreignKey: 'list_id' });
+    // List.hasMany(ListHashtag, { foreignKey: 'list_id' });
+    // List.hasMany(ListLanguage, { foreignKey: 'list_id' });
+    List.hasMany(ListVideo, { foreignKey: 'list_id' });
     List.belongsToMany(Video, {
       through: ListVideo,
+      as: "videos"
     });
+
+    // List.belongsTo(User, {
+    //   // foreignKey: 'user_id',
+    //   as: 'user',
+    //   // onDelete: 'CASCADE',
+    //   // onUpdate: 'CASCADE'
+    // });
   }
 }
 

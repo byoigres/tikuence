@@ -52,18 +52,18 @@ const verifyUserExist: RouteOptionsPreObject = {
 
     const googleProviderId = request.pre.getGoogleProviderId as number;
 
-    const { Users, UsersSocialProvider } = request.server.plugins.sequelize.models;
+    const { User, UserSocialProvider } = request.server.plugins.sequelize.models;
 
     const googleProfile = request.auth.credentials.profile as GoogleProfile;
 
-    const user = await Users.findOne({
+    const user = await User.findOne({
       attributes: ['id', 'name', 'email', 'username', 'profile_picture_url'],
       where: {
         email: googleProfile.email
       },
       include: [
         {
-          model: UsersSocialProvider,
+          model: UserSocialProvider,
           where: {
             profile_id: googleProfile.id,
             provider_id: googleProviderId

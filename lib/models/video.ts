@@ -14,8 +14,12 @@ export class Video extends Model<InferAttributes<Video>, InferCreationAttributes
   declare author_id: number;
 
   static associate() {
+    // Video.belongsTo(Author, { foreignKey: 'author_id' });
+    // Video.belongsToMany(List, { through: ListVideo });
+    Video.hasMany(ListVideo, { foreignKey: 'video_id' });
     Video.belongsToMany(List, {
       through: ListVideo,
+      as: "lists"
     });
   }
 }

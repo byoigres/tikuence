@@ -49,12 +49,12 @@ const SequelizePlugin: Plugin<SequelizePluginOptions> = {
           modelName: "PendingUser",
         },
         {
-          file: "users_social_provider",
-          modelName: "UsersSocialProvider",
+          file: "user_social_provider",
+          modelName: "UserSocialProvider",
         },
         {
-          file: "users",
-          modelName: "Users",
+          file: "user",
+          modelName: "User",
         },
         {
           file: "category",

@@ -1,14 +1,14 @@
 import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
-import Users from './users';
+import User from './user';
 
-export class UsersSocialProvider extends Model<InferAttributes<UsersSocialProvider>, InferCreationAttributes<UsersSocialProvider>> {
+export class UserSocialProvider extends Model<InferAttributes<UserSocialProvider>, InferCreationAttributes<UserSocialProvider>> {
   declare user_id: number;
   declare provider_id: number;
   declare profile_id: string;
   declare data: object
 
   static associate() {
-    UsersSocialProvider.belongsTo(Users, {
+    UserSocialProvider.belongsTo(User, {
       foreignKey: 'user_id',
       as: 'User',
       onDelete: 'CASCADE',
@@ -19,7 +19,7 @@ export class UsersSocialProvider extends Model<InferAttributes<UsersSocialProvid
 
 export function initModel(sequelize: Sequelize) {
 
-  UsersSocialProvider.init({
+  UserSocialProvider.init({
     user_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -54,7 +54,7 @@ export function initModel(sequelize: Sequelize) {
     tableName: 'users_social_providers'
   });
 
-  return UsersSocialProvider;
+  return UserSocialProvider;
 }
 
-export default UsersSocialProvider;
+export default UserSocialProvider;

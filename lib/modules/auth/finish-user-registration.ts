@@ -39,9 +39,9 @@ const verifyUsernameAvailability: RouteOptionsPreObject = {
   method: async (request, h) => {
     const { username } = request.payload as Payload;
 
-    const { Users } = request.server.plugins.sequelize.models;
+    const { User } = request.server.plugins.sequelize.models;
 
-    const user = await Users.findOne({
+    const user = await User.findOne({
       where: {
         username,
       },
@@ -69,8 +69,8 @@ const createUser: RouteOptionsPreObject = {
 
     const {
       models: {
-        Users,
-        UsersSocialProvider,
+        User,
+        UserSocialProvider,
         PendingUser,
       },
       sequelize
@@ -79,7 +79,7 @@ const createUser: RouteOptionsPreObject = {
     const transaction = await sequelize.transaction();
 
     try {
-      const user = await Users.create({
+      const user = await User.create({
         name,
         username,
         email,
@@ -92,7 +92,7 @@ const createUser: RouteOptionsPreObject = {
         returning: true
       });
 
-      await UsersSocialProvider.create({
+      await UserSocialProvider.create({
         user_id: user.id,
         provider_id: providerId,
         profile_id: profileId,

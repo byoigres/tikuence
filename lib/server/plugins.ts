@@ -1,6 +1,6 @@
 import { PluginObject } from "@hapi/glue";
 import Yar from "@hapi/yar";
-import inertia from "hapi-inertia";
+import inertia from "../../../../@byoigres/hapi-inertia";
 import Store from "./store";
 import UrlIDPlugin from "../plugins/url-id";
 import sharedProps from "./inertia";
