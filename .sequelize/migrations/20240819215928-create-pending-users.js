@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.STRING(30),
         allowNull: false,
       },
-      provider_id: {
+      social_provider_id: {
         type: Sequelize.SMALLINT,
         primaryKey: true,
         references: {
@@ -51,7 +51,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('pending_users');
   }
 };

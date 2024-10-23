@@ -6,7 +6,7 @@ type Params = {
 
 const handler: Lifecycle.Method = async (request, h) => {
   const { listId } = request.params as Params;
-  return h.inertia("Lists/View", {
+  return h.inertia("Lists/Details", {
     modal: {
       modalName: "add-video",
       listId,

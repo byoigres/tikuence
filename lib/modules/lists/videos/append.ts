@@ -198,6 +198,7 @@ const createVideo: RouteOptionsPreObject = {
         include: [
           {
             model: List,
+            as: "lists",
             where: {
               id: listId,
             }
@@ -215,9 +216,10 @@ const createVideo: RouteOptionsPreObject = {
       });
 
       if (!created) {
+        const { listUrlId } = request.params as Params;
         request.yar.flash("error", "Video already exists in the list");
         // TODO: This will prevent parsing the hashtags again if they change
-        return h.redirect("/").takeover();
+        return h.redirect(`/lists/${listUrlId}/details`).takeover();
       }
 
       await video.update({
@@ -341,7 +343,7 @@ const createHashtags: RouteOptionsPreObject = {
 const handler: Lifecycle.Method = async (request, h) => {
   const { listUrlId } = request.params as Params;
   request.yar.flash("success", "Video added to list");
-  return h.redirect(`/lists/${listUrlId}/videos/add`);
+  return h.redirect(`/lists/${listUrlId}/details`);
 };
 
 const addList: RouteOptions = {

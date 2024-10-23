@@ -12,7 +12,7 @@ module.exports = {
           key: 'id',
         },
       },
-      provider_id: {
+      social_provider_id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         references: {
@@ -41,7 +41,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('users_social_providers');
   }
 };

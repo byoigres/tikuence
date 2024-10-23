@@ -35,7 +35,7 @@ export const verifyToken: RouteOptionsPreObject = {
         "name",
         "expires_at",
         "profile_picture_url",
-        "provider_id",
+        "social_provider_id",
         "profile_id"
       ],
       where: {
@@ -63,7 +63,7 @@ export const verifyToken: RouteOptionsPreObject = {
       email: user.email,
       name: user.name,
       profilePictureURL: user.profile_picture_url,
-      providerId: user.provider_id,
+      providerId: user.social_provider_id,
       profileId: user.profile_id,
       token,
     }

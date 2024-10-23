@@ -12,7 +12,7 @@ const VideosRoutes: ServerRoute[] = [
     method: "POST",
     path: "/lists/{listUrlId}/videos",
     options: append,
-  }
+  },
 ];
 
 export default VideosRoutes;

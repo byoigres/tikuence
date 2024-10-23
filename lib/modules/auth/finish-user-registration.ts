@@ -94,7 +94,7 @@ const createUser: RouteOptionsPreObject = {
 
       await UserSocialProvider.create({
         user_id: user.id,
-        provider_id: providerId,
+        social_provider_id: providerId,
         profile_id: profileId,
         data: {},
       }, {
@@ -104,7 +104,7 @@ const createUser: RouteOptionsPreObject = {
       await PendingUser.destroy({
         where: {
           email,
-          provider_id: providerId,
+          social_provider_id: providerId,
           profile_id: profileId,
         },
         transaction,

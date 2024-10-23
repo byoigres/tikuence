@@ -66,7 +66,7 @@ const verifyUserExist: RouteOptionsPreObject = {
           model: UserSocialProvider,
           where: {
             profile_id: googleProfile.id,
-            provider_id: googleProviderId
+            social_provider_id: googleProviderId
           }
         }
       ]
@@ -101,7 +101,7 @@ const handler: Lifecycle.Method = async (request, h) => {
   await PendingUser.destroy({
     where: {
       email: googleProfile.email,
-      provider_id: googleProviderId,
+      social_provider_id: googleProviderId,
       profile_id: googleProfile.id
     }
   });
@@ -109,7 +109,7 @@ const handler: Lifecycle.Method = async (request, h) => {
   const pendingUser = await PendingUser.create({
     email: googleProfile.email,
     name: googleProfile.displayName,
-    provider_id: googleProviderId,
+    social_provider_id: googleProviderId,
     profile_id: googleProfile.id,
     expires_at,
     token: uuidv4(),

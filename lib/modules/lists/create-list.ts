@@ -119,7 +119,7 @@ const createList: RouteOptionsPreObject = {
 const handler: Lifecycle.Method = async (request, h) => {
   const listUrlId = request.pre.listUrlId as string;
   request.yar.flash("success", `List created successfully with URL Id: ${listUrlId}`);
-  return h.redirect(`/lists/${listUrlId}`);
+  return h.redirect(`/lists/${listUrlId}/details`);
 }
 
 const createListOptions: RouteOptions = {

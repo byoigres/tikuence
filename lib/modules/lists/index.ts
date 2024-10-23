@@ -3,6 +3,7 @@ import addView from "./add-view";
 import createList from "./create-list";
 import viewList from "./view";
 import VideosRoutes from "./videos";
+import details from "./details";
 
 const ListsRoutes: ServerRoute[] = [
   {
@@ -19,6 +20,11 @@ const ListsRoutes: ServerRoute[] = [
     method: "GET",
     path: "/lists/{listUrlId}",
     options: viewList,
+  },
+  {
+    method: "GET",
+    path: "/lists/{listUrlId}/details",
+    options: details,
   },
   ...VideosRoutes,
 ];

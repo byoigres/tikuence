@@ -3,7 +3,7 @@ import User from './user';
 
 export class UserSocialProvider extends Model<InferAttributes<UserSocialProvider>, InferCreationAttributes<UserSocialProvider>> {
   declare user_id: number;
-  declare provider_id: number;
+  declare social_provider_id: number;
   declare profile_id: string;
   declare data: object
 
@@ -29,7 +29,7 @@ export function initModel(sequelize: Sequelize) {
         key: 'id',
       }
     },
-    provider_id: {
+    social_provider_id: {
       type: DataTypes.SMALLINT,
       primaryKey: true,
       allowNull: false,
